@@ -1,6 +1,82 @@
 from django.utils.translation import gettext_lazy as _
+from django.utils.functional import cached_property
+from django.conf import settings
+from django import forms
 
 from wagtail import blocks
+from wagtail.telepath import register as register_adapter
+
+
+MAX_BOOL_EXPR_OPERANDS = 6
+MAX_FIELDS_DEFAULT = 50
+
+
+class ConditionBlock(blocks.StructBlock):
+    field_label = blocks.CharBlock(required=False, form_classname='formbuilder-block-hidden')
+    field_id = blocks.CharBlock(required=False, form_classname='formbuilder-block-hidden')
+    operator = blocks.ChoiceBlock(default='eq', choices=[
+        ('eq', 'equals'),
+        ('neq', 'not equals'),
+    ])
+    value = blocks.CharBlock()
+
+    class Meta:
+        icon = 'user'
+        form_classname = 'formbuilder-condition-block'
+
+
+class ConditionBlockAdapter(blocks.struct_block.StructBlockAdapter):
+    js_constructor = 'forms.blocks.ConditionBlock'
+
+    @cached_property
+    def media(self):
+        streamblock_media = super().media
+        return forms.Media(
+            js=streamblock_media._js + ['forms/js/form_builder.js'],
+            css=streamblock_media._css
+        )
+register_adapter(ConditionBlockAdapter(), ConditionBlock)
+
+
+class BooleanExpressionBlock(blocks.StreamBlock):
+    def __init__(self, local_blocks=None, search_index=True, **kwargs):
+        def build_block(i):
+            return f"cond_{ i + 1 }", ConditionBlock(group=" Fields")
+
+        local_blocks = local_blocks or []
+        max_fields = getattr(settings, "WAGTAILFORMS_MAX_FIELDS", MAX_FIELDS_DEFAULT)
+        local_blocks += [build_block(i) for i in range(max_fields)]
+        super().__init__(local_blocks, search_index, **kwargs)
+
+    class Meta:
+        max_num = 1
+        required = False
+        group = "Boolean group"
+        collapsed = True
+        form_classname = 'formbuilder-boolean-expression-block'
+
+
+class BooleanExpressionBlockAdapter(blocks.stream_block.StreamBlockAdapter):
+    js_constructor = 'forms.blocks.BooleanExpressionBlock'
+
+    @cached_property
+    def media(self):
+        streamblock_media = super().media
+        return forms.Media(
+            js=streamblock_media._js + ['forms/js/form_builder.js'],
+            css=streamblock_media._css
+        )
+register_adapter(BooleanExpressionBlockAdapter(), BooleanExpressionBlock)
+
+
+class BooleanExpressionBlockLvl2(BooleanExpressionBlock):
+    bool_and = BooleanExpressionBlock(label="AND", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
+    bool_or = BooleanExpressionBlock(label="OR", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
+
+
+class BooleanExpressionBlockLvl1(BooleanExpressionBlock):
+    bool_and = BooleanExpressionBlockLvl2(label="AND", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
+    bool_or = BooleanExpressionBlockLvl2(label="OR", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
 
 
 class FormFieldBlock(blocks.StructBlock):
@@ -15,9 +91,23 @@ class FormFieldBlock(blocks.StructBlock):
         required=False,
         help_text=_("If checked, this field must be filled to validate the form."),
     )
+    visibility_condition = BooleanExpressionBlockLvl1()
 
     class Meta:
-        form_classname = "field-block"
+        form_classname = "formbuilder-field-block"
+
+
+class FormFieldBlockAdapter(blocks.struct_block.StructBlockAdapter):
+    js_constructor = 'forms.blocks.FormFieldBlock'
+
+    @cached_property
+    def media(self):
+        streamblock_media = super().media
+        return forms.Media(
+            js=streamblock_media._js + ['forms/js/form_builder.js'],
+            css=streamblock_media._css
+        )
+register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
 
 
 class ChoiceBlock(blocks.StructBlock):
