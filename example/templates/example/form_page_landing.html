@@ -1,5 +1,14 @@
+{% extends "example/base.html" %}
 {% load wagtailcore_tags %}
 
-<h2>merci !</h2>
+{% block title %}
+    {{ page.title }}
+{% endblock %}
 
-<p>{{page.thank_you_text|richtext}}</p>
+{% block content %}
+    <h1>LAAS forms</h1>
+
+    <h2>{{ page.title }}</h2>
+
+    <div id="form-thank-you">{{page.thank_you_text|richtext}}</div>
+{% endblock %}

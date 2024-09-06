@@ -1,0 +1,11 @@
+html {
+    background-color: antiquewhite;
+    font-family: sans-serif;
+}
+
+body {
+    max-width: 800px;
+    margin: auto;
+    background-color: aliceblue;
+    padding: 1em;
+}
