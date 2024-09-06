@@ -1,5 +1,9 @@
 {% extends "example/base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags static %}
+
+{% block extra_js %}
+    <script src="{% static 'forms/js/form.js' %}"></script>
+{% endblock %}
 
 {% block title %}
     {{ page.title }}
