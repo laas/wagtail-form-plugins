@@ -56,7 +56,10 @@ class StreamFieldFormMixin(FormMixin):
         for name, field in form.fields.items():
             raw_vc = fields_data[name]['value']['visibility_condition']
             vc = self.get_visibility_conditions(dom_ids, raw_vc)[0]
-            field.widget.attrs.update({'data-vc': json.dumps(vc)})
+            field.widget.attrs.update({
+                'data-vc': json.dumps(vc),
+                'class': "form-input",
+            })
 
         return form
 

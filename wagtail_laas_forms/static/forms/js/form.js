@@ -41,20 +41,19 @@ function compute_visibility_condition(vc) {
 }
 
 function update_fields_visibility() {
-    console.clear()
-    for(const dom_field of document.getElementsByClassName('field-row')) {
+    for(const dom_field of document.querySelectorAll('input.form-input')) {
         const vc = JSON.parse(dom_field.getAttribute('data-vc'));
         const cvc = compute_visibility_condition(vc)
         console.log(`${vc.field_label}: ${ cvc.formula }  ⇒  ${ cvc.str }  ⇒  ${ cvc.result }`)
 
-        dom_field.style.display = cvc.result ? '' : 'none';
+        dom_field.parentNode.style.display = cvc.result ? '' : 'none';
         // dom_field.style.backgroundColor = cvc.result ? '' : 'lightGrey';
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     update_fields_visibility()
-    Array.from(document.querySelectorAll('.field-row input')).forEach((dom_input) => {
+    Array.from(document.querySelectorAll('input.form-input')).forEach((dom_input) => {
         dom_input.addEventListener('change', () => update_fields_visibility())
     });
 });
