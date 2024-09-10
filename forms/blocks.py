@@ -49,6 +49,7 @@ class BooleanExpressionBlock(blocks.StreamBlock):
         super().__init__(local_blocks, search_index, **kwargs)
 
     class Meta:
+        label = _('Visibility condition')
         max_num = 1
         required = False
         group = "Boolean group"
@@ -91,7 +92,12 @@ class FormFieldBlock(blocks.StructBlock):
         required=False,
         help_text=_("If checked, this field must be filled to validate the form."),
     )
-    visibility_condition = BooleanExpressionBlockLvl1()
+    # name = blocks.CharBlock(required=False, form_classname='formbuilder-block-hidden')
+
+    def __init__(self, local_blocks=None, search_index=True, **kwargs):
+        local_blocks = local_blocks or []
+        local_blocks += [('visibility_condition', BooleanExpressionBlockLvl1())]
+        super().__init__(local_blocks, search_index, **kwargs)
 
     class Meta:
         form_classname = "formbuilder-field-block"

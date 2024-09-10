@@ -1,3 +1,5 @@
+import json
+
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.models import Page
@@ -26,6 +28,37 @@ class StreamFieldFormMixin(FormMixin):
         ]
 
         return data_fields
+
+    @classmethod
+    def get_visibility_conditions(cls, fields_id, visibility_conditions):
+        conditions = []
+        for vc in visibility_conditions:
+            if vc["type"] in ("bool_and", "bool_or"):
+                vc_block = cls.get_visibility_conditions(fields_id, vc["value"])
+                conditions.append({vc["type"][5:]: vc_block})
+            else:
+                vc["value"]["field_id"] = fields_id[vc["value"]["field_id"]]
+                conditions.append(vc["value"])
+
+        return [{}] if not conditions else conditions
+
+    def get_form(self, *args, **kwargs):
+        form_class = self.get_form_class()
+        form_params = self.get_form_parameters()
+        form_params.update(kwargs)
+        form = form_class(*args, **form_params)
+
+        raw_data = form_params['page'].form_fields.raw_data
+        fields_data = { get_field_clean_name(fd['value']['label']): fd for fd in raw_data }
+
+        dom_ids = { fields_data[id]['id']: f'id_{id}' for id in form.fields.keys() }
+
+        for name, field in form.fields.items():
+            raw_vc = fields_data[name]['value']['visibility_condition']
+            vc = self.get_visibility_conditions(dom_ids, raw_vc)[0]
+            field.widget.attrs.update({'data-vc': json.dumps(vc)})
+
+        return form
 
 
 class AbstractStreamFieldForm(StreamFieldFormMixin, Page):
