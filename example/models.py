@@ -2,8 +2,8 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, FieldRowPanel, MultiFieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 
-from forms.blocks import FormFieldsBlock
-from forms.models import AbstractEmailStreamFieldForm
+from wagtail_laas_forms.blocks import FormFieldsBlock
+from wagtail_laas_forms.models import AbstractEmailStreamFieldForm
 
 
 class FormPage(AbstractEmailStreamFieldForm):

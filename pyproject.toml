@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "wagtaillaasforms"
+name = "wagtail_laas_forms"
 version = "0.1.0"
 description = ""
 authors = ["Nathanaël Jourdane <njourdane@laas.fr>"]
