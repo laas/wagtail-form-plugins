@@ -41,7 +41,7 @@ function compute_visibility_condition(vc) {
 }
 
 function update_fields_visibility() {
-    for(const dom_field of document.querySelectorAll('input.form-input')) {
+    for(const dom_field of document.querySelectorAll('input.form-control')) {
         const vc = JSON.parse(dom_field.getAttribute('data-vc'));
         const cvc = compute_visibility_condition(vc)
         console.log(`${vc.field_label}: ${ cvc.formula }  ⇒  ${ cvc.str }  ⇒  ${ cvc.result }`)
@@ -53,7 +53,7 @@ function update_fields_visibility() {
 
 document.addEventListener("DOMContentLoaded", () => {
     update_fields_visibility()
-    Array.from(document.querySelectorAll('input.form-input')).forEach((dom_input) => {
+    Array.from(document.querySelectorAll('input.form-control')).forEach((dom_input) => {
         dom_input.addEventListener('change', () => update_fields_visibility())
     });
 });

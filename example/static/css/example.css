@@ -1,6 +1,5 @@
 html {
     background-color: antiquewhite;
-    font-family: sans-serif;
 }
 
 body {
@@ -8,4 +7,8 @@ body {
     margin: auto;
     background-color: aliceblue;
     padding: 1em;
+}
+
+.helptext {
+    color: grey;
 }
