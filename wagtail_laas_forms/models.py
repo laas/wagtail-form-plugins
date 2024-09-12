@@ -1,10 +1,12 @@
 import json
 
+from django.db import models
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.models import Page
-from wagtail.contrib.forms.models import FormMixin, EmailFormMixin
+from wagtail.contrib.forms.models import FormMixin
 from wagtail.contrib.forms.utils import get_field_clean_name
+from wagtail.admin.mail import send_mail
 
 from .forms import StreamFieldFormBuilder
 
@@ -48,33 +50,43 @@ class StreamFieldFormMixin(FormMixin):
         form_params.update(kwargs)
         form = form_class(*args, **form_params)
 
-        raw_data = form_params['page'].form_fields.raw_data
-        fields_data = { get_field_clean_name(fd['value']['label']): fd for fd in raw_data }
+        raw_data = form_params["page"].form_fields.raw_data
+        fields_data = {
+            get_field_clean_name(fd["value"]["label"]): fd for fd in raw_data
+        }
 
-        dom_ids = { fields_data[id]['id']: f'id_{id}' for id in form.fields.keys() }
+        dom_ids = {fields_data[id]["id"]: f"id_{id}" for id in form.fields.keys()}
 
         for name, field in form.fields.items():
-            raw_vc = fields_data[name]['value']['visibility_condition']
+            raw_vc = fields_data[name]["value"]["visibility_condition"]
             vc = self.get_visibility_conditions(dom_ids, raw_vc)[0]
-            field.widget.attrs.update({
-                'data-vc': json.dumps(vc),
-                'class': "form-control",
-            })
+            field.widget.attrs.update(
+                {
+                    "data-vc": json.dumps(vc),
+                    "class": "form-control",
+                }
+            )
 
         return form
 
 
-class AbstractStreamFieldForm(StreamFieldFormMixin, Page):
-    """A Form Page. Pages implementing a form should inherit from it."""
+class EmailsFormMixin(models.Model):
+    def process_form_submission(self, form):
+        submission = super().process_form_submission(form)
+        for email_block in self.emails_to_send:
+            self.send_email(email_block)
+        return submission
 
-    class Meta:
-        abstract = True
+    def send_email(self, email_block):
+        email = {
+            "subject": email_block.value["subject"],
+            "message": str(email_block.value["message"]),
+            "recipient_list": [a.strip() for a in email_block.value["recipient_list"].split(',')],
+            "from_email": settings.FORMS_FROM_EMAIL,
+        }
 
-
-class AbstractEmailStreamFieldForm(EmailFormMixin, StreamFieldFormMixin, Page):
-    """
-    A Form Page that sends email. Inherit from it if your form sends an email.
-    """
+        print('sending email:', email)
+        # send_mail(**email)
 
     class Meta:
         abstract = True

@@ -121,3 +121,5 @@ DEFAULT_AUTO_FIELD =  "django.db.models.BigAutoField"
 WAGTAIL_SITE_NAME = "Another form builder example site"
 WAGTAILADMIN_BASE_URL = "http://localhost"
 WAGTAILDOCS_EXTENSIONS = ['csv', 'pdf', 'txt']
+
+FORMS_FROM_EMAIL = "LAAS forms <pi2@laas.fr>"
