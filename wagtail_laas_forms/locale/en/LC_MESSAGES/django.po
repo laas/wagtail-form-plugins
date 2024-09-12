@@ -1,0 +1,230 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-12 16:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: wagtail_laas_forms/blocks.py:25
+msgid "Operator"
+msgstr "Operator"
+
+#: wagtail_laas_forms/blocks.py:33
+msgid "Value"
+msgstr "Value"
+
+#: wagtail_laas_forms/blocks.py:65
+msgid "Visibility condition"
+msgstr "Visibility condition"
+
+#: wagtail_laas_forms/blocks.py:114 wagtail_laas_forms/blocks.py:153
+msgid "Label"
+msgstr "Label"
+
+#: wagtail_laas_forms/blocks.py:115
+msgid "Short text describing the field."
+msgstr "Short text describing the field."
+
+#: wagtail_laas_forms/blocks.py:118
+msgid "Help text"
+msgstr "Help text"
+
+#: wagtail_laas_forms/blocks.py:120
+msgid "Text displayed below the label to add more information."
+msgstr "Text displayed below the label to add more information."
+
+#: wagtail_laas_forms/blocks.py:123
+msgid "Required"
+msgstr "Required"
+
+#: wagtail_laas_forms/blocks.py:125
+msgid "If checked, this field must be filled to validate the form."
+msgstr "If checked, this field must be filled to validate the form."
+
+#: wagtail_laas_forms/blocks.py:156
+msgid "Selected"
+msgstr "Selected"
+
+#: wagtail_laas_forms/blocks.py:161
+msgid "Choice"
+msgstr "Choice"
+
+#: wagtail_laas_forms/blocks.py:166 wagtail_laas_forms/blocks.py:188
+#: wagtail_laas_forms/blocks.py:210 wagtail_laas_forms/blocks.py:222
+#: wagtail_laas_forms/blocks.py:244 wagtail_laas_forms/blocks.py:312
+#: wagtail_laas_forms/blocks.py:324 wagtail_laas_forms/blocks.py:336
+msgid "Default value"
+msgstr "Default value"
+
+#: wagtail_laas_forms/blocks.py:168 wagtail_laas_forms/blocks.py:338
+msgid "Text used to pre-fill the field."
+msgstr "Text used to pre-fill the field."
+
+#: wagtail_laas_forms/blocks.py:171 wagtail_laas_forms/blocks.py:193
+msgid "Min length"
+msgstr "Min length"
+
+#: wagtail_laas_forms/blocks.py:172
+msgid "Minimum amount of characters allowed in the field."
+msgstr "Minimum amount of characters allowed in the field."
+
+#: wagtail_laas_forms/blocks.py:176 wagtail_laas_forms/blocks.py:198
+msgid "Max length"
+msgstr "Max length"
+
+#: wagtail_laas_forms/blocks.py:177
+msgid "Maximum amount of characters allowed in the field."
+msgstr "Maximum amount of characters allowed in the field."
+
+#: wagtail_laas_forms/blocks.py:183
+msgid "Single line text"
+msgstr "Single line text"
+
+#: wagtail_laas_forms/blocks.py:190
+msgid "Multi-line text used to pre-fill the text area."
+msgstr "Multi-line text used to pre-fill the text area."
+
+#: wagtail_laas_forms/blocks.py:194
+msgid "Minimum amount of characters allowed in the text area."
+msgstr "Minimum amount of characters allowed in the text area."
+
+#: wagtail_laas_forms/blocks.py:199
+msgid "Maximum amount of characters allowed in the text area."
+msgstr "Maximum amount of characters allowed in the text area."
+
+#: wagtail_laas_forms/blocks.py:205
+msgid "Multi-line text"
+msgstr "Multi-line text"
+
+#: wagtail_laas_forms/blocks.py:212
+msgid "E-mail used to pre-fill the field."
+msgstr "E-mail used to pre-fill the field."
+
+#: wagtail_laas_forms/blocks.py:217
+msgid "E-mail"
+msgstr "E-mail"
+
+#: wagtail_laas_forms/blocks.py:224
+msgid "Number used to pre-fill the field."
+msgstr "Number used to pre-fill the field."
+
+#: wagtail_laas_forms/blocks.py:227
+msgid "Min value"
+msgstr "Min value"
+
+#: wagtail_laas_forms/blocks.py:228
+msgid "Minimum number allowed in the field."
+msgstr "Minimum number allowed in the field."
+
+#: wagtail_laas_forms/blocks.py:232
+msgid "Max value"
+msgstr "Max value"
+
+#: wagtail_laas_forms/blocks.py:233
+msgid "Maximum number allowed in the field."
+msgstr "Maximum number allowed in the field."
+
+#: wagtail_laas_forms/blocks.py:239
+msgid "Number"
+msgstr "Number"
+
+#: wagtail_laas_forms/blocks.py:246
+msgid "URL used to pre-fill the field."
+msgstr "URL used to pre-fill the field."
+
+#: wagtail_laas_forms/blocks.py:251
+msgid "URL"
+msgstr "URL"
+
+#: wagtail_laas_forms/blocks.py:256 wagtail_laas_forms/blocks.py:268
+msgid "Checked"
+msgstr "Checked"
+
+#: wagtail_laas_forms/blocks.py:258
+msgid "If checked, the checkbox will be checked by default."
+msgstr "If checked, the checkbox will be checked by default."
+
+#: wagtail_laas_forms/blocks.py:263
+msgid "Checkbox"
+msgstr "Checkbox"
+
+#: wagtail_laas_forms/blocks.py:269 wagtail_laas_forms/blocks.py:280
+#: wagtail_laas_forms/blocks.py:291 wagtail_laas_forms/blocks.py:302
+msgid "Choices"
+msgstr "Choices"
+
+#: wagtail_laas_forms/blocks.py:274
+msgid "Checkboxes"
+msgstr "Checkboxes"
+
+#: wagtail_laas_forms/blocks.py:285
+msgid "Drop down"
+msgstr "Drop down"
+
+#: wagtail_laas_forms/blocks.py:296
+msgid "Multiple select"
+msgstr "Multiple select"
+
+#: wagtail_laas_forms/blocks.py:307
+msgid "Radio buttons"
+msgstr "Radio buttons"
+
+#: wagtail_laas_forms/blocks.py:314
+msgid "Date used to pre-fill the field."
+msgstr "Date used to pre-fill the field."
+
+#: wagtail_laas_forms/blocks.py:319
+msgid "Date"
+msgstr "Date"
+
+#: wagtail_laas_forms/blocks.py:326
+msgid "Date and time used to pre-fill the field."
+msgstr "Date and time used to pre-fill the field."
+
+#: wagtail_laas_forms/blocks.py:331
+msgid "Date and time"
+msgstr "Date and time"
+
+#: wagtail_laas_forms/blocks.py:343
+msgid "Hidden field"
+msgstr "Hidden field"
+
+#: wagtail_laas_forms/blocks.py:390
+msgid "Recipient list"
+msgstr "Recipient list"
+
+#: wagtail_laas_forms/blocks.py:392
+msgid "E-mail addresses of the recipients, separated by comma."
+msgstr "E-mail addresses of the recipients, separated by comma."
+
+#: wagtail_laas_forms/blocks.py:395
+msgid "Subject"
+msgstr "Subject"
+
+#: wagtail_laas_forms/blocks.py:396
+msgid "The subject of the e-mail."
+msgstr "The subject of the e-mail."
+
+#: wagtail_laas_forms/blocks.py:399
+msgid "Message"
+msgstr "Message"
+
+#: wagtail_laas_forms/blocks.py:400
+msgid "The body of the e-mail."
+msgstr "The body of the e-mail."
+
+#: wagtail_laas_forms/models.py:24
+msgid "Submission date"
+msgstr "Submission date"

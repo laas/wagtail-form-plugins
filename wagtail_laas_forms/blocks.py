@@ -13,13 +13,25 @@ MAX_FIELDS_DEFAULT = 50
 
 
 class ConditionBlock(blocks.StructBlock):
-    field_label = blocks.CharBlock(required=False, form_classname='formbuilder-block-hidden')
-    field_id = blocks.CharBlock(required=False, form_classname='formbuilder-block-hidden')
-    operator = blocks.ChoiceBlock(default='eq', choices=[
-        ('eq', 'equals'),
-        ('neq', 'not equals'),
-    ])
-    value = blocks.CharBlock()
+    field_label = blocks.CharBlock(
+        required=False,
+        form_classname='formbuilder-block-hidden',
+    )
+    field_id = blocks.CharBlock(
+        required=False,
+        form_classname='formbuilder-block-hidden',
+    )
+    operator = blocks.ChoiceBlock(
+        label=_("Operator"),
+        default='eq',
+        choices=[
+            ('eq', 'equals'),
+            ('neq', 'not equals'),
+        ],
+    )
+    value = blocks.CharBlock(
+        label=_("Value"),
+    )
 
     class Meta:
         icon = 'user'
@@ -72,24 +84,43 @@ register_adapter(BooleanExpressionBlockAdapter(), BooleanExpressionBlock)
 
 
 class BooleanExpressionBlockLvl2(BooleanExpressionBlock):
-    bool_and = BooleanExpressionBlock(label="AND", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
-    bool_or = BooleanExpressionBlock(label="OR", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
+    bool_and = BooleanExpressionBlock(
+        label="AND",
+        min_num=2,
+        max_num=MAX_BOOL_EXPR_OPERANDS,
+    )
+    bool_or = BooleanExpressionBlock(
+        label="OR",
+        min_num=2,
+        max_num=MAX_BOOL_EXPR_OPERANDS,
+    )
 
 
 class BooleanExpressionBlockLvl1(BooleanExpressionBlock):
-    bool_and = BooleanExpressionBlockLvl2(label="AND", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
-    bool_or = BooleanExpressionBlockLvl2(label="OR", min_num=2, max_num=MAX_BOOL_EXPR_OPERANDS)
+    bool_and = BooleanExpressionBlockLvl2(
+        label="AND",
+        min_num=2,
+        max_num=MAX_BOOL_EXPR_OPERANDS,
+    )
+    bool_or = BooleanExpressionBlockLvl2(
+        label="OR",
+        min_num=2,
+        max_num=MAX_BOOL_EXPR_OPERANDS,
+    )
 
 
 class FormFieldBlock(blocks.StructBlock):
-    label = blocks.CharBlock(help_text=_("Text describing the field."))
+    label = blocks.CharBlock(
+        label=_("Label"),
+        help_text=_("Short text describing the field.")
+    )
     help_text = blocks.CharBlock(
+        label=_("Help text"),
         required=False,
-        help_text=_(
-            "Text displayed below the label used to add more information, like this one."
-        ),
+        help_text=_("Text displayed below the label to add more information."),
     )
     required = blocks.BooleanBlock(
+        label=_("Required"),
         required=False,
         help_text=_("If checked, this field must be filled to validate the form."),
     )
@@ -118,8 +149,13 @@ register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
 
 
 class ChoiceBlock(blocks.StructBlock):
-    label = blocks.CharBlock(label=_("Label"))
-    initial = blocks.BooleanBlock(label=_("Selected"), required=False)
+    label = blocks.CharBlock(
+        label=_("Label"),
+    )
+    initial = blocks.BooleanBlock(
+        label=_("Selected"),
+        required=False,
+    )
 
     class Meta:
         label = _("Choice")
@@ -132,10 +168,12 @@ class SinglelineFormFieldBlock(FormFieldBlock):
         help_text=_("Text used to pre-fill the field."),
     )
     min_length = blocks.IntegerBlock(
+        label=_("Min length"),
         help_text=_("Minimum amount of characters allowed in the field."),
         default=0,
     )
     max_length = blocks.IntegerBlock(
+        label=_("Max length"),
         help_text=_("Maximum amount of characters allowed in the field."),
         default=255,
     )
@@ -152,10 +190,12 @@ class MultilineFormFieldBlock(FormFieldBlock):
         help_text=_("Multi-line text used to pre-fill the text area."),
     )
     min_length = blocks.IntegerBlock(
+        label=_("Min length"),
         help_text=_("Minimum amount of characters allowed in the text area."),
         default=0,
     )
     max_length = blocks.IntegerBlock(
+        label=_("Max length"),
         help_text=_("Maximum amount of characters allowed in the text area."),
         default=1024,
     )
@@ -174,7 +214,7 @@ class EmailFormFieldBlock(FormFieldBlock):
 
     class Meta:
         icon = "mail"
-        label = _("Email")
+        label = _("E-mail")
 
 
 class NumberFormFieldBlock(FormFieldBlock):
@@ -184,10 +224,12 @@ class NumberFormFieldBlock(FormFieldBlock):
         help_text=_("Number used to pre-fill the field."),
     )
     min_value = blocks.IntegerBlock(
+        label=_("Min value"),
         help_text=_("Minimum number allowed in the field."),
         required=False,
     )
     max_value = blocks.IntegerBlock(
+        label=_("Max value"),
         help_text=_("Maximum number allowed in the field."),
         required=False,
     )
@@ -223,9 +265,7 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
 
 class CheckBoxesFormFieldBlock(FormFieldBlock):
     choices = blocks.ListBlock(
-        ChoiceBlock(
-            [("initial", blocks.BooleanBlock(label=_("Checked"), required=False))]
-        ),
+        ChoiceBlock([("initial", blocks.BooleanBlock(label=_("Checked"), required=False))]),
         label=_("Choices"),
     )
 
@@ -235,7 +275,10 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
 
 
 class DropDownFormFieldBlock(FormFieldBlock):
-    choices = blocks.ListBlock(ChoiceBlock(), label=_("Choices"))
+    choices = blocks.ListBlock(
+        ChoiceBlock(),
+        label=_("Choices"),
+    )
 
     class Meta:
         icon = "list-ul"
@@ -243,7 +286,10 @@ class DropDownFormFieldBlock(FormFieldBlock):
 
 
 class MultiSelectFormFieldBlock(FormFieldBlock):
-    choices = blocks.ListBlock(ChoiceBlock(), label=_("Choices"))
+    choices = blocks.ListBlock(
+        ChoiceBlock(),
+        label=_("Choices"),
+    )
 
     class Meta:
         icon = "list-ul"
@@ -251,7 +297,10 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
 
 
 class RadioFormFieldBlock(FormFieldBlock):
-    choices = blocks.ListBlock(ChoiceBlock(), label=_("Choices"))
+    choices = blocks.ListBlock(
+        ChoiceBlock(),
+        label=_("Choices"),
+    )
 
     class Meta:
         icon = "radio-empty"
@@ -274,12 +323,12 @@ class DateTimeFormFieldBlock(FormFieldBlock):
     initial = blocks.DateTimeBlock(
         label=_("Default value"),
         required=False,
-        help_text=_("Date/time used to pre-fill the field."),
+        help_text=_("Date and time used to pre-fill the field."),
     )
 
     class Meta:
         icon = "time"
-        label = _("Date/time")
+        label = _("Date and time")
 
 
 class HiddenFormFieldBlock(FormFieldBlock):
@@ -338,13 +387,16 @@ class Email:
 class EmailsToSendBlock(blocks.StreamBlock):
     email_to_send = blocks.StructBlock([
         ('recipient_list', blocks.CharBlock(
+            label=_("Recipient list"),
             validators=[validate_emails],
-            help_text=_("The e-mail adress(es) to send the e-mail to, separated by comma."),
+            help_text=_("E-mail addresses of the recipients, separated by comma."),
         )),
         ('subject', blocks.CharBlock(
+            label=_("Subject"),
             help_text=_("The subject of the e-mail."),
         )),
         ('message', blocks.RichTextBlock(
+            label=_("Message"),
             help_text=_("The body of the e-mail."),
         )),
     ])

@@ -1,5 +1,3 @@
-from django.utils.translation import gettext_lazy as _
-
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
@@ -10,29 +8,24 @@ from wagtail_laas_forms.models import StreamFieldFormMixin, EmailsFormMixin
 
 
 DEFAULT_EMAIL_TO_AUTHOR = Email(
-    "{author_email}",
-    _('New form submission for "{title}"'),
-    _('''
-Hello,
-The form "{title}" received a new submission from user {user} with the following content:
-
+    recipient_list="{author_email}",
+    subject='Nouvelle entrée pour le formulaire "{title}"',
+    message='''
+Bonjour,
+Le formulaire "{title}" vient d'être complété par l'utilisateur {user}, avec le contenu suivant:
 {form_results}
-
-Have a nice day.'''),
+Bonne journée.''',
 ).format()
 
 DEFAULT_EMAIL_TO_USER = Email(
-    "{user_email}",
-    _('Submission confirmation to the form "{title}"'),
-    _('''
-Hello,
-You just sent a new submission to the form "{title}" with the following content:
-
+    recipient_list="{user_email}",
+    subject='Submission confirmation to the form "{title}"',
+    message='''
+Bonjour,
+Vous venez de compléter le formulaire "{title}", avec le contenu suivant:
 {form_results}
-
-The form author has been notified.
-
-Have a nice day.'''),
+L'auteur du formulaire en a été informé.
+Bonne journée.''',
 ).format()
 
 
@@ -44,21 +37,21 @@ class LAASFormPage(EmailsFormMixin, StreamFieldFormMixin, Page):
 class FormPage(LAASFormPage):
     intro = RichTextField(
         blank=True,
-        verbose_name=_("Texte d'introduction du formulaire"),
+        verbose_name="Texte d'introduction du formulaire",
     )
     thank_you_text = RichTextField(
         blank=True,
-        verbose_name=_("Texte affiché après soumission du formulaire"),
+        verbose_name="Texte affiché après soumission du formulaire",
     )
     form_fields = StreamField(
         FormFieldsBlock(),
-        verbose_name=_("Champs du formulaire"),
+        verbose_name="Champs du formulaire",
     )
     emails_to_send = StreamField(
         EmailsToSendBlock(),
         default=[DEFAULT_EMAIL_TO_AUTHOR, DEFAULT_EMAIL_TO_USER],
         blank=True,
-        verbose_name=_("E-mails à envoyer après soumission du formulaire"),
+        verbose_name="E-mails à envoyer après soumission du formulaire",
     )
 
     content_panels = [

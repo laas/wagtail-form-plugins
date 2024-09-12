@@ -1,7 +1,8 @@
 from pathlib import Path
 
-APP_DIR = Path(__file__).parent
-BASE_DIR = APP_DIR.parent
+EXAMPLE_APP_DIR = Path(__file__).parent
+BASE_DIR = EXAMPLE_APP_DIR.parent
+FORMS_APP_DIR = BASE_DIR / "wagtail_laas_forms"
 
 # Dev-specific
 
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -56,7 +58,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            APP_DIR / "templates",
+            EXAMPLE_APP_DIR / "templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -86,6 +88,15 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('fr', 'French'),
+]
+
+LOCALE_PATHS = [
+    FORMS_APP_DIR / "locale",
+]
+
 # Static files
 
 STATICFILES_FINDERS = [
@@ -94,7 +105,7 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
-    APP_DIR / "static",
+    EXAMPLE_APP_DIR / "static",
 ]
 
 STATIC_ROOT = BASE_DIR / "static"
@@ -121,5 +132,7 @@ DEFAULT_AUTO_FIELD =  "django.db.models.BigAutoField"
 WAGTAIL_SITE_NAME = "Another form builder example site"
 WAGTAILADMIN_BASE_URL = "http://localhost"
 WAGTAILDOCS_EXTENSIONS = ['csv', 'pdf', 'txt']
+
+# Forms app settings
 
 FORMS_FROM_EMAIL = "LAAS forms <pi2@laas.fr>"
