@@ -1,3 +1,5 @@
+const DEBOUNCE_DELAY = 300;
+
 const operators = {
     'eq': ['=', (a, b) => a === b],
     'neq': ['≠', (a, b) => a !== b],
@@ -40,6 +42,14 @@ function compute_visibility_condition(vc) {
     return {formula: '∅', str: '∅', result: true}
 }
 
+function debounce(callback) {
+    let timer;
+    return () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => callback(), DEBOUNCE_DELAY);
+    }
+}
+
 function update_fields_visibility() {
     for(const dom_field of document.querySelectorAll('input.form-control')) {
         const vc = JSON.parse(dom_field.getAttribute('data-vc'));
@@ -54,6 +64,6 @@ function update_fields_visibility() {
 document.addEventListener("DOMContentLoaded", () => {
     update_fields_visibility()
     Array.from(document.querySelectorAll('input.form-control')).forEach((dom_input) => {
-        dom_input.addEventListener('change', () => update_fields_visibility())
+        dom_input.addEventListener('input', debounce(() => update_fields_visibility()))
     });
 });
