@@ -1,6 +1,4 @@
-const DEBOUNCE_DELAY = 300;
-
-const operators = {
+const OPERATORS = {
     'eq': ['=', (a, b) => a === b],
     'neq': ['≠', (a, b) => a !== b],
     'lt': ['<', (a, b) => parseFloat(a) < parseFloat(b)],
@@ -8,7 +6,12 @@ const operators = {
     'ut': ['>', (a, b) => parseFloat(a) > parseFloat(b)],
     'ute': ['≥', (a, b) => parseFloat(a) >= parseFloat(b)],
     'in': ['∈', (a, b) => b.includes(a)],
+    'nin': ['∉', (a, b) => ! b.includes(a)],
+    'c': ['✔', (a, b) => a],
+    'nc': ['✖', (a, b) => !a],
 }
+const DEBOUNCE_DELAY = 300;
+
 
 function compute_visibility_condition(vc) {
     if (vc.field_id) {

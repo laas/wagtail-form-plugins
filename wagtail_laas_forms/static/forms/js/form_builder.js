@@ -1,7 +1,18 @@
-function update_vc_heading(dom_vc) {
-    const MAX_TITLE_LENGTH = 90
-    const OPERATORS = {'eq': '=', 'neq': '≠', 'lt': '<', 'lte': '≤', 'ut': '>', 'ute': '≥', 'in': '∈'}
+const OPERATORS = {
+    'eq': ['=', (a, b) => a === b],
+    'neq': ['≠', (a, b) => a !== b],
+    'lt': ['<', (a, b) => parseFloat(a) < parseFloat(b)],
+    'lte': ['≤', (a, b) => parseFloat(a) <= parseFloat(b)],
+    'ut': ['>', (a, b) => parseFloat(a) > parseFloat(b)],
+    'ute': ['≥', (a, b) => parseFloat(a) >= parseFloat(b)],
+    'in': ['∈', (a, b) => b.includes(a)],
+    'nin': ['∉', (a, b) => ! b.includes(a)],
+    'c': ['✔', (a, b) => a],
+    'nc': ['✖', (a, b) => !a],
+}
+const MAX_TITLE_LENGTH = 90
 
+function update_vc_heading(dom_vc) {
     setTimeout(() => {
         const dom_block = dom_vc.querySelector('div.w-panel__content').firstElementChild
         const dom_heading = dom_vc.querySelector('h2.w-panel__heading')
@@ -12,9 +23,9 @@ function update_vc_heading(dom_vc) {
             const dom_field_label = dom_block.querySelector('[data-contentpath="field_label"] input')
             const dom_operator = dom_block.querySelector('[data-contentpath="operator"] select')
             const dom_value = dom_block.querySelector('[data-contentpath="value"] input')
-    
-            dom_type.innerText = dom_field_label.value
-            dom_title.innerText = `${ dom_field_label.value } ${ OPERATORS[dom_operator.value] } "${ dom_value.value }"`
+
+            dom_title.innerText = `${ dom_field_label.value } ${ OPERATORS[dom_operator.value][0] } "${ dom_value.value }"`
+            dom_type.innerText = dom_title.innerText
         } else if (dom_block.classList.contains('formbuilder-boolean-expression-block')) {
             const dom_titles = dom_block.querySelectorAll(':scope > div > [data-contentpath]:not([aria-hidden]) > section > div > h2.w-panel__heading span.c-sf-block__title')
             str_title = Array.from(dom_titles).map((dom_title) => `(${ dom_title.innerText })`).join(` ${ dom_type.innerText } `)
@@ -23,22 +34,24 @@ function update_vc_heading(dom_vc) {
     }, 10)
 }
 
-class FormFieldBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
-    get_fields(dom_current_field) {
-        const dom_block_fields = dom_current_field.parentNode.querySelectorAll(':scope > [data-contentpath]:not([aria-hidden])');
+function get_fields() {
+    const dom_form_fields = document.querySelector('[data-contentpath="form_fields"] [data-streamfield-stream-container]')
+    const dom_block_fields = dom_form_fields.querySelectorAll(':scope > [data-contentpath]:not([aria-hidden])');
     
-        return Array.from(dom_block_fields).map((field_dom, index) => ({
-            'index': index,
-            'contentpath': field_dom.getAttribute('data-contentpath'),
-            'label': field_dom.querySelector('[data-contentpath="label"] input').value || `field n°${ index + 1}`,
-            'is_current': field_dom.getAttribute('data-contentpath') === dom_current_field.getAttribute('data-contentpath'),
-            'dom': field_dom,
-        }))
-    }
+    return Array.from(dom_block_fields).map((field_dom, index) => ({
+        'index': index,
+        'contentpath': field_dom.getAttribute('data-contentpath'),
+        'label': field_dom.querySelector('[data-contentpath="label"] input').value || `field n°${ index + 1}`,
+        'dom': field_dom,
+        'type': field_dom.getElementsByClassName('formbuilder-field-block')[0].className.replace('formbuilder-field-block', '').split('-')[1]
+    }))
+}
 
+class FormFieldBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
     on_add_condition(dom_tooltip) {
-        const fields = this.get_fields(dom_tooltip.closest('.formbuilder-field-block').parentNode.parentNode.parentNode);
-        const current_field = fields.find((field) => field.is_current)
+        const fields = get_fields();
+        const dom_current_field = dom_tooltip.closest('.formbuilder-field-block').parentNode.parentNode.parentNode;
+        const current_field = fields.find((field) => field.dom.getAttribute('data-contentpath') === dom_current_field.getAttribute('data-contentpath'))
         const dom_field_choices_group = dom_tooltip.querySelector('.w-combobox__optgroup')
         const dom_field_choices = dom_field_choices_group.getElementsByClassName('w-combobox__option')
 
@@ -139,6 +152,7 @@ class ConditionBlockDefinition extends window.wagtailStreamField.blocks.StructBl
         const dom_heading = dom_vc.querySelector('h2.w-panel__heading');
         const dom_button = dom_vc.querySelector('button.w-panel__toggle');
         const dom_value = dom_vc.querySelector('[data-contentpath="value"] input')
+        const dom_operator = dom_vc.querySelector('[data-contentpath="operator"] select')
 
         if (window.form_builder_selected_choice !== undefined) {
             this.update_vc_hidden_fields(block.container[0])
@@ -147,7 +161,9 @@ class ConditionBlockDefinition extends window.wagtailStreamField.blocks.StructBl
         dom_button.addEventListener('click', () => update_vc_heading(dom_vc));
         dom_heading.addEventListener('click', () => update_vc_heading(dom_vc));
         dom_value.addEventListener('change', () => update_vc_heading(dom_vc));
+        dom_operator.addEventListener('change', () => update_vc_heading(dom_vc));
 
+        console.log('fields:', get_fields())
         return block;
     }
 }

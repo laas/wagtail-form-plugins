@@ -25,8 +25,31 @@ class ConditionBlock(blocks.StructBlock):
         label=_("Operator"),
         default='eq',
         choices=[
-            ('eq', 'equals'),
-            ('neq', 'not equals'),
+            ('eq', _('equals')),
+            ('eq', _('is')),
+
+            ('neq', _('does not equal')),
+            ('neq', _('is not')),
+
+            ('lt', _('is lower than')),
+            ('lt', _('is before')),
+
+            ('lte', _('is lower or equal')),
+            ('lte', _('is before or equal to')),
+
+            ('ut', _('is upper than')),
+            ('ut', _('is after')),
+
+            ('ute', _('is upper or equal')),
+            ('ute', _('is after or equal to')),
+
+            ('in', _('contains')),
+
+            ('nin', _('does not contain')),
+
+            ('c', _('is checked')),
+
+            ('nc', _('is not checked')),
         ],
     )
     value = blocks.CharBlock(
@@ -34,7 +57,7 @@ class ConditionBlock(blocks.StructBlock):
     )
 
     class Meta:
-        icon = 'user'
+        icon = "view"
         form_classname = 'formbuilder-condition-block'
 
 
@@ -131,9 +154,6 @@ class FormFieldBlock(blocks.StructBlock):
         local_blocks += [('visibility_condition', BooleanExpressionBlockLvl1())]
         super().__init__(local_blocks, search_index, **kwargs)
 
-    class Meta:
-        form_classname = "formbuilder-field-block"
-
 
 class FormFieldBlockAdapter(blocks.struct_block.StructBlockAdapter):
     js_constructor = 'forms.blocks.FormFieldBlock'
@@ -181,6 +201,7 @@ class SinglelineFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "pilcrow"
         label = _("Single line text")
+        form_classname = "formbuilder-field-block formbuilder-singleline-field-block"
 
 
 class MultilineFormFieldBlock(FormFieldBlock):
@@ -203,6 +224,7 @@ class MultilineFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "pilcrow"
         label = _("Multi-line text")
+        form_classname = "formbuilder-field-block formbuilder-multiline-field-block"
 
 
 class EmailFormFieldBlock(FormFieldBlock):
@@ -215,6 +237,7 @@ class EmailFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "mail"
         label = _("E-mail")
+        form_classname = "formbuilder-field-block formbuilder-email-field-block"
 
 
 class NumberFormFieldBlock(FormFieldBlock):
@@ -237,6 +260,7 @@ class NumberFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "decimal"
         label = _("Number")
+        form_classname = "formbuilder-field-block formbuilder-number-field-block"
 
 
 class URLFormFieldBlock(FormFieldBlock):
@@ -249,6 +273,7 @@ class URLFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "link-external"
         label = _("URL")
+        form_classname = "formbuilder-field-block formbuilder-url-field-block"
 
 
 class CheckBoxFormFieldBlock(FormFieldBlock):
@@ -261,6 +286,7 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "tick-inverse"
         label = _("Checkbox")
+        form_classname = "formbuilder-field-block formbuilder-checkbox-field-block"
 
 
 class CheckBoxesFormFieldBlock(FormFieldBlock):
@@ -272,6 +298,7 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "tick-inverse"
         label = _("Checkboxes")
+        form_classname = "formbuilder-field-block formbuilder-checkboxes-field-block"
 
 
 class DropDownFormFieldBlock(FormFieldBlock):
@@ -283,6 +310,7 @@ class DropDownFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "list-ul"
         label = _("Drop down")
+        form_classname = "formbuilder-field-block formbuilder-dropdown-field-block"
 
 
 class MultiSelectFormFieldBlock(FormFieldBlock):
@@ -294,6 +322,7 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "list-ul"
         label = _("Multiple select")
+        form_classname = "formbuilder-field-block formbuilder-multiselect-field-block"
 
 
 class RadioFormFieldBlock(FormFieldBlock):
@@ -305,6 +334,7 @@ class RadioFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "radio-empty"
         label = _("Radio buttons")
+        form_classname = "formbuilder-field-block formbuilder-radio-field-block"
 
 
 class DateFormFieldBlock(FormFieldBlock):
@@ -317,6 +347,7 @@ class DateFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "date"
         label = _("Date")
+        form_classname = "formbuilder-field-block formbuilder-date-field-block"
 
 
 class DateTimeFormFieldBlock(FormFieldBlock):
@@ -329,6 +360,7 @@ class DateTimeFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "time"
         label = _("Date and time")
+        form_classname = "formbuilder-field-block formbuilder-datetime-field-block"
 
 
 class HiddenFormFieldBlock(FormFieldBlock):
@@ -341,6 +373,7 @@ class HiddenFormFieldBlock(FormFieldBlock):
     class Meta:
         icon = "no-view"
         label = _("Hidden field")
+        form_classname = "formbuilder-field-block formbuilder-hidden-field-block"
 
 
 class FormFieldsBlock(blocks.StreamBlock):
