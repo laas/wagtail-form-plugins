@@ -10,6 +10,21 @@ const OPERATORS = {
     'c': ['✔', (a, b) => a],
     'nc': ['✖', (a, b) => !a],
 }
+const FIELD_CUSTOMIZATION = {
+    'singleline': ['char'],
+    'multiline': ['char'],
+    'email': ['char'],
+    'number': ['number'],
+    'url': ['char'],
+    'checkbox': ['none'],
+    'checkboxes': ['dropdown'],
+    'dropdown': ['dropdown'],
+    'multiselect': ['dropdown'],
+    'radio': ['dropdown'],
+    'date': ['date'],
+    'datetime': ['date'],
+    'hidden': ['char'],
+}
 const MAX_TITLE_LENGTH = 90
 
 function update_vc_heading(dom_vc) {
@@ -22,7 +37,7 @@ function update_vc_heading(dom_vc) {
         if (dom_block.classList.contains('formbuilder-condition-block')) {
             const dom_field_label = dom_block.querySelector('[data-contentpath="field_label"] input')
             const dom_operator = dom_block.querySelector('[data-contentpath="operator"] select')
-            const dom_value = dom_block.querySelector('[data-contentpath="value"] input')
+            const dom_value = dom_block.querySelector('[data-contentpath="value_char"] input'); // TODO: handle all value types
 
             dom_title.innerText = `${ dom_field_label.value } ${ OPERATORS[dom_operator.value][0] } "${ dom_value.value }"`
             dom_type.innerText = dom_title.innerText
@@ -48,10 +63,10 @@ function get_fields() {
 }
 
 class FormFieldBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
-    on_add_condition(dom_tooltip) {
+    before_adding_condition(dom_tooltip) {
         const fields = get_fields();
-        const dom_current_field = dom_tooltip.closest('.formbuilder-field-block').parentNode.parentNode.parentNode;
-        const current_field = fields.find((field) => field.dom.getAttribute('data-contentpath') === dom_current_field.getAttribute('data-contentpath'))
+        const dom_current_block = dom_tooltip.closest('.formbuilder-field-block').parentNode.parentNode.parentNode;
+        const current_field = fields.find((field) => field.contentpath === dom_current_block.getAttribute('data-contentpath'))
         const dom_field_choices_group = dom_tooltip.querySelector('.w-combobox__optgroup')
         const dom_field_choices = dom_field_choices_group.getElementsByClassName('w-combobox__option')
 
@@ -88,7 +103,7 @@ class FormFieldBlockDefinition extends window.wagtailStreamField.blocks.StructBl
 
         const dom_tooltip = mutation_record.target.firstElementChild?.nextElementSibling
         if (dom_tooltip?.id?.startsWith('tippy-')) {
-            this.on_add_condition(dom_tooltip)
+            this.before_adding_condition(dom_tooltip)
         }
     }
 
@@ -135,13 +150,28 @@ window.telepath.register('forms.blocks.BooleanExpressionBlock', BooleanExpressio
 
 
 class ConditionBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
-    update_vc_hidden_fields(dom_block) {
+    on_field_choice_selected(dom_block) {
         const dom_field_id = dom_block.querySelector('[data-contentpath="field_id"] input')
         const dom_field_label = dom_block.querySelector('[data-contentpath="field_label"] input')
     
         dom_field_id.value = window.form_builder_selected_choice.contentpath
         dom_field_label.value = window.form_builder_selected_choice.label
     
+        const selected_field = get_fields().find((field) => field.contentpath === dom_field_id.value)
+        const [value_type] = FIELD_CUSTOMIZATION[selected_field.type];
+        // console.log('dom_block:', dom_block)
+        // console.log('selected_field:', selected_field)
+
+        const dom_value_char = dom_block.querySelector('[data-contentpath="value_char"] input');
+        const dom_value_number = dom_block.querySelector('[data-contentpath="value_number"] input');
+        const dom_value_dropdown = dom_block.querySelector('[data-contentpath="value_dropdown"] select');
+        const dom_value_date = dom_block.querySelector('[data-contentpath="value_date"] input');
+
+        dom_value_char.style.display = value_type === 'char' ? '' : 'none';
+        dom_value_number.style.display = value_type === 'number' ? '' : 'none';
+        dom_value_dropdown.style.display = value_type === 'dropdown' ? '' : 'none';
+        dom_value_date.style.display = value_type === 'date' ? '' : 'none';
+
         window.form_builder_selected_choice = undefined
     }
 
@@ -151,11 +181,11 @@ class ConditionBlockDefinition extends window.wagtailStreamField.blocks.StructBl
         const dom_vc = block.container[0].parentNode.parentNode.parentNode
         const dom_heading = dom_vc.querySelector('h2.w-panel__heading');
         const dom_button = dom_vc.querySelector('button.w-panel__toggle');
-        const dom_value = dom_vc.querySelector('[data-contentpath="value"] input')
+        const dom_value = dom_vc.querySelector('[data-contentpath="value_char"] input'); // TODO: handle all value types
         const dom_operator = dom_vc.querySelector('[data-contentpath="operator"] select')
 
         if (window.form_builder_selected_choice !== undefined) {
-            this.update_vc_hidden_fields(block.container[0])
+            this.on_field_choice_selected(block.container[0])
         }
         update_vc_heading(dom_vc)
         dom_button.addEventListener('click', () => update_vc_heading(dom_vc));
@@ -163,7 +193,6 @@ class ConditionBlockDefinition extends window.wagtailStreamField.blocks.StructBl
         dom_value.addEventListener('change', () => update_vc_heading(dom_vc));
         dom_operator.addEventListener('change', () => update_vc_heading(dom_vc));
 
-        console.log('fields:', get_fields())
         return block;
     }
 }

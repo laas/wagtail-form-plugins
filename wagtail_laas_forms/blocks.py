@@ -52,9 +52,10 @@ class ConditionBlock(blocks.StructBlock):
             ('nc', _('is not checked')),
         ],
     )
-    value = blocks.CharBlock(
-        label=_("Value"),
-    )
+    value_char = blocks.CharBlock(label=_("Value"))
+    value_number = blocks.DecimalBlock(label=_("Value"))
+    value_dropdown = blocks.ChoiceBlock([], label=_("Value"))
+    value_date = blocks.DateBlock(label=_("Value"))
 
     class Meta:
         icon = "view"
