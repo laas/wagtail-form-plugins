@@ -1,33 +1,5 @@
-.formbuilder-condition-block {
-    display: flex;
-}
-
-.formbuilder-condition-block .w-field__label, .condition-block .c-sf-help {
-    display: none;
-}
-
-.formbuilder-condition-block div {
-    margin-right: 5px;
-}
-
-.formbuilder-field-choice[disabled="true"] {
-    pointer-events: none;
-    cursor: default;
-    opacity: 0.5;
-}
-
-.formbuilder-field-choices-group .w-combobox__option {
-    display: none;
-}
-
-.formbuilder-field-choice {
-    display: inherit !important;
-}
-
-.formbuilder-block-hidden {
-    display: none;
-}
-
-.c-sf-add-button[disabled="disabled"] {
+/* hidden ui elements in listblocks with only one entry */
+.formbuilder-unique-listblock > div > .c-sf-add-button,
+.formbuilder-unique-listblock > div > div > section > div > .w-panel__controls {
     display: none;
 }

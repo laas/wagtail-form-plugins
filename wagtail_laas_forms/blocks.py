@@ -1,101 +1,28 @@
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
-from django.conf import settings
 from django import forms
 
 from wagtail import blocks
 from wagtail.telepath import register as register_adapter
 
 
-MAX_BOOL_EXPR_OPERANDS = 6
-MAX_FIELDS_DEFAULT = 50
-
-
-class ConditionBlock(blocks.StructBlock):
-    field_label = blocks.CharBlock(
-        required=False,
-        form_classname='formbuilder-block-hidden',
-    )
-    field_id = blocks.CharBlock(
-        required=False,
-        form_classname='formbuilder-block-hidden',
-    )
-    operator = blocks.ChoiceBlock(
-        label=_("Operator"),
-        default='eq',
-        choices=[
-            ('eq', _('equals')),
-            ('eq', _('is')),
-
-            ('neq', _('does not equal')),
-            ('neq', _('is not')),
-
-            ('lt', _('is lower than')),
-            ('lt', _('is before')),
-
-            ('lte', _('is lower or equal')),
-            ('lte', _('is before or equal to')),
-
-            ('ut', _('is upper than')),
-            ('ut', _('is after')),
-
-            ('ute', _('is upper or equal')),
-            ('ute', _('is after or equal to')),
-
-            ('in', _('contains')),
-
-            ('nin', _('does not contain')),
-
-            ('c', _('is checked')),
-
-            ('nc', _('is not checked')),
-        ],
-    )
-    value_char = blocks.CharBlock(label=_("Value"))
-    value_number = blocks.DecimalBlock(label=_("Value"))
-    value_dropdown = blocks.ChoiceBlock([], label=_("Value"))
-    value_date = blocks.DateBlock(label=_("Value"))
-
-    class Meta:
-        icon = "view"
-        form_classname = 'formbuilder-condition-block'
-
-
-class ConditionBlockAdapter(blocks.struct_block.StructBlockAdapter):
-    js_constructor = 'forms.blocks.ConditionBlock'
-
-    @cached_property
-    def media(self):
-        streamblock_media = super().media
-        return forms.Media(
-            js=streamblock_media._js + ['forms/js/form_builder.js'],
-            css=streamblock_media._css
-        )
-register_adapter(ConditionBlockAdapter(), ConditionBlock)
-
-
-class BooleanExpressionBlock(blocks.StreamBlock):
-    def __init__(self, local_blocks=None, search_index=True, **kwargs):
-        def build_block(i):
-            return f"cond_{ i + 1 }", ConditionBlock(group=" Fields")
-
-        local_blocks = local_blocks or []
-        max_fields = getattr(settings, "WAGTAILFORMS_MAX_FIELDS", MAX_FIELDS_DEFAULT)
-        local_blocks += [build_block(i) for i in range(max_fields)]
-        super().__init__(local_blocks, search_index, **kwargs)
+class BooleanExpressionBuilderBlock(blocks.StructBlock):
+    field = blocks.ChoiceBlock([])
+    operator = blocks.ChoiceBlock([])
+    value_char = blocks.CharBlock()
+    value_number = blocks.DecimalBlock()
+    value_dropdown = blocks.ChoiceBlock([])
+    value_date = blocks.DateBlock()
 
     class Meta:
         label = _('Visibility condition')
-        max_num = 1
         required = False
-        group = "Boolean group"
         collapsed = True
-        form_classname = 'formbuilder-boolean-expression-block'
 
 
-class BooleanExpressionBlockAdapter(blocks.stream_block.StreamBlockAdapter):
-    js_constructor = 'forms.blocks.BooleanExpressionBlock'
+class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapter):
+    js_constructor = 'forms.blocks.BooleanExpressionBuilderBlock'
 
     @cached_property
     def media(self):
@@ -104,69 +31,53 @@ class BooleanExpressionBlockAdapter(blocks.stream_block.StreamBlockAdapter):
             js=streamblock_media._js + ['forms/js/form_builder.js'],
             css=streamblock_media._css
         )
-register_adapter(BooleanExpressionBlockAdapter(), BooleanExpressionBlock)
+register_adapter(BooleanExpressionBuilderBlockAdapter(), BooleanExpressionBuilderBlock)
 
 
-class BooleanExpressionBlockLvl2(BooleanExpressionBlock):
-    bool_and = BooleanExpressionBlock(
-        label="AND",
+class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
+    rules = blocks.ListBlock(
+        BooleanExpressionBuilderBlock(),
+        label=("Conditions"),
         min_num=2,
-        max_num=MAX_BOOL_EXPR_OPERANDS,
-    )
-    bool_or = BooleanExpressionBlock(
-        label="OR",
-        min_num=2,
-        max_num=MAX_BOOL_EXPR_OPERANDS,
     )
 
 
-class BooleanExpressionBlockLvl1(BooleanExpressionBlock):
-    bool_and = BooleanExpressionBlockLvl2(
-        label="AND",
+class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
+    rules = blocks.ListBlock(
+        BooleanExpressionBuilderBlockLvl2(),
+        label=("Conditions"),
         min_num=2,
-        max_num=MAX_BOOL_EXPR_OPERANDS,
-    )
-    bool_or = BooleanExpressionBlockLvl2(
-        label="OR",
-        min_num=2,
-        max_num=MAX_BOOL_EXPR_OPERANDS,
     )
 
 
 class FormFieldBlock(blocks.StructBlock):
     label = blocks.CharBlock(
         label=_("Label"),
-        help_text=_("Short text describing the field.")
+        help_text=_("Short text describing the field."),
+        form_classname='formbuilder-field-block-label',
     )
     help_text = blocks.CharBlock(
         label=_("Help text"),
         required=False,
         help_text=_("Text displayed below the label to add more information."),
+        form_classname='formbuilder-field-block-help',
     )
     required = blocks.BooleanBlock(
         label=_("Required"),
         required=False,
         help_text=_("If checked, this field must be filled to validate the form."),
+        form_classname='formbuilder-field-block-required',
     )
-    # name = blocks.CharBlock(required=False, form_classname='formbuilder-block-hidden')
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
-        local_blocks = local_blocks or []
-        local_blocks += [('visibility_condition', BooleanExpressionBlockLvl1())]
-        super().__init__(local_blocks, search_index, **kwargs)
-
-
-class FormFieldBlockAdapter(blocks.struct_block.StructBlockAdapter):
-    js_constructor = 'forms.blocks.FormFieldBlock'
-
-    @cached_property
-    def media(self):
-        streamblock_media = super().media
-        return forms.Media(
-            js=streamblock_media._js + ['forms/js/form_builder.js'],
-            css=streamblock_media._css
+        rule = blocks.ListBlock(
+            BooleanExpressionBuilderBlockLvl1(),
+            label=_("Visibility condition"),
+            form_classname="formbuilder-unique-listblock",
+            collapsed=True,
         )
-register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
+        local_blocks = (local_blocks or []) + [('rule', rule)]
+        super().__init__(local_blocks, search_index, **kwargs)
 
 
 class ChoiceBlock(blocks.StructBlock):
@@ -391,6 +302,9 @@ class FormFieldsBlock(blocks.StreamBlock):
     date = DateFormFieldBlock()
     datetime = DateTimeFormFieldBlock()
     hidden = HiddenFormFieldBlock()
+
+    class Meta:
+        form_classname = "formbuilder-fields-block"
 
 
 def validate_emails(value):
