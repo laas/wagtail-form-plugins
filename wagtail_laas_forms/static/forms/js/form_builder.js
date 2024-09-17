@@ -1,21 +1,21 @@
 const OPERATORS = {
-    'eq': ['is equal to', '=', (a, b) => a === b],
-    'neq': ['is not equal to', '≠', (a, b) => a !== b],
+    'eq': ['is equal to', '=', ['char', 'number', 'dropdown', 'date'], (a, b) => a === b],
+    'neq': ['is not equal to', '≠', ['char', 'number', 'dropdown', 'date'], (a, b) => a !== b],
 
-    'lt': ['is lower than', '<', (a, b) => parseFloat(a) < parseFloat(b)],
-    'lte': ['is lower or equat to', '≤', (a, b) => parseFloat(a) <= parseFloat(b)],
+    'lt': ['is lower than', '<', ['number'], (a, b) => parseFloat(a) < parseFloat(b)],
+    'lte': ['is lower or equat to', '≤', ['number'], (a, b) => parseFloat(a) <= parseFloat(b)],
 
-    'ut': ['is upper than', '>', (a, b) => parseFloat(a) > parseFloat(b)],
-    'ute': ['is upper or equal to', '≥', (a, b) => parseFloat(a) >= parseFloat(b)],
+    'ut': ['is upper than', '>', ['number'], (a, b) => parseFloat(a) > parseFloat(b)],
+    'ute': ['is upper or equal to', '≥', ['number'], (a, b) => parseFloat(a) >= parseFloat(b)],
 
-    'in': ['is in', '∈', (a, b) => b.includes(a)],
-    'nin': ['is not in', '∉', (a, b) => ! b.includes(a)],
+    'in': ['is in', '∈', ['dropdown'], (a, b) => b.includes(a)],
+    'nin': ['is not in', '∉', ['dropdown'], (a, b) => ! b.includes(a)],
 
-    'ct': ['contains', '∋', (a, b) => a.includes(b)],
-    'nct': ['does not contain', '∌', (a, b) => ! a.includes(b)],
+    'ct': ['contains', '∋', ['char', 'dropdown'], (a, b) => a.includes(b)],
+    'nct': ['does not contain', '∌', ['char', 'dropdown'], (a, b) => ! a.includes(b)],
 
-    'c': ['is', '✔', (a, b) => a],
-    'nc': ['is not', '✖', (a, b) => !a],
+    'c': ['is', '✔', [], (a, b) => a],
+    'nc': ['is not', '✖', [], (a, b) => !a],
 }
 
 const FIELD_CUSTOMIZATION = {
@@ -91,6 +91,14 @@ function on_rule_subject_selected(dom_dropdown) {
         dom_val_list.style.display = value_type === 'dropdown' ? '' : 'none';
         dom_val_date.style.display = value_type === 'date' ? '' : 'none';
         dom_rules.style.display = 'none';
+
+        if (dom_operator.style.display !== 'none') {
+            const dom_operator_select = dom_operator.querySelector('select')
+            const operator_choices = Object.entries(OPERATORS)
+                .filter(([k, v]) => v[2].includes(value_type))
+                .map(([k, v]) => [k, v[0], false])
+            fill_dropdown(dom_operator_select, operator_choices)
+        }
     }
 }
 
