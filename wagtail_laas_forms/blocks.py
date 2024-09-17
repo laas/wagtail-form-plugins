@@ -8,16 +8,32 @@ from wagtail.telepath import register as register_adapter
 
 
 class BooleanExpressionBuilderBlock(blocks.StructBlock):
-    field = blocks.ChoiceBlock([])
-    operator = blocks.ChoiceBlock([])
-    value_char = blocks.CharBlock()
-    value_number = blocks.DecimalBlock()
-    value_dropdown = blocks.ChoiceBlock([])
-    value_date = blocks.DateBlock()
+    field = blocks.ChoiceBlock(
+        [],
+        form_classname='formbuilder-beb-field'
+    )
+    operator = blocks.ChoiceBlock(
+        [],
+        form_classname='formbuilder-beb-operator'
+    )
+    value_char = blocks.CharBlock(
+        form_classname='formbuilder-beb-val-char'
+    )
+    value_number = blocks.DecimalBlock(
+        form_classname='formbuilder-beb-val-num'
+    )
+    value_dropdown = blocks.ChoiceBlock(
+        [],
+        form_classname='formbuilder-beb-val-list'
+    )
+    value_date = blocks.DateBlock(
+        form_classname='formbuilder-beb-val-date'
+    )
 
     class Meta:
         label = _('Visibility condition')
         required = False
+        form_classname = 'formbuilder-beb'
         collapsed = True
 
 
@@ -38,6 +54,7 @@ class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
     rules = blocks.ListBlock(
         BooleanExpressionBuilderBlock(),
         label=("Conditions"),
+        form_classname='formbuilder-beb-rules',
         min_num=2,
     )
 
@@ -46,6 +63,7 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
     rules = blocks.ListBlock(
         BooleanExpressionBuilderBlockLvl2(),
         label=("Conditions"),
+        form_classname='formbuilder-beb-rules',
         min_num=2,
     )
 

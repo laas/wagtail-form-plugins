@@ -1,14 +1,21 @@
 const OPERATORS = {
-    'eq': ['=', (a, b) => a === b],
-    'neq': ['≠', (a, b) => a !== b],
-    'lt': ['<', (a, b) => parseFloat(a) < parseFloat(b)],
-    'lte': ['≤', (a, b) => parseFloat(a) <= parseFloat(b)],
-    'ut': ['>', (a, b) => parseFloat(a) > parseFloat(b)],
-    'ute': ['≥', (a, b) => parseFloat(a) >= parseFloat(b)],
-    'in': ['∈', (a, b) => b.includes(a)],
-    'nin': ['∉', (a, b) => ! b.includes(a)],
-    'c': ['✔', (a, b) => a],
-    'nc': ['✖', (a, b) => !a],
+    'eq': ['is equal to', '=', (a, b) => a === b],
+    'neq': ['is not equal to', '≠', (a, b) => a !== b],
+
+    'lt': ['is lower than', '<', (a, b) => parseFloat(a) < parseFloat(b)],
+    'lte': ['is lower or equat to', '≤', (a, b) => parseFloat(a) <= parseFloat(b)],
+
+    'ut': ['is upper than', '>', (a, b) => parseFloat(a) > parseFloat(b)],
+    'ute': ['is upper or equal to', '≥', (a, b) => parseFloat(a) >= parseFloat(b)],
+
+    'in': ['is in', '∈', (a, b) => b.includes(a)],
+    'nin': ['is not in', '∉', (a, b) => ! b.includes(a)],
+
+    'ct': ['contains', '∋', (a, b) => a.includes(b)],
+    'nct': ['does not contain', '∌', (a, b) => ! a.includes(b)],
+
+    'c': ['is', '✔', (a, b) => a],
+    'nc': ['is not', '✖', (a, b) => !a],
 }
 
 const FIELD_CUSTOMIZATION = {
@@ -56,6 +63,37 @@ function fill_dropdown(dom_dropdown, choices) {
     }
 }
 
+function on_rule_subject_selected(dom_dropdown) {
+    const dom_field_block = dom_dropdown.closest('.formbuilder-field-block').parentNode.parentNode.parentNode
+    const get_field_block = (class_name) => dom_field_block.getElementsByClassName(class_name)[0].parentNode;
+
+    const dom_operator = get_field_block('formbuilder-beb-operator').parentNode;
+    const dom_val_char = get_field_block('formbuilder-beb-val-char').parentNode;
+    const dom_val_num = get_field_block('formbuilder-beb-val-num').parentNode;
+    const dom_val_list = get_field_block('formbuilder-beb-val-list').parentNode;
+    const dom_val_date = get_field_block('formbuilder-beb-val-date').parentNode;
+    const dom_rules = get_field_block('formbuilder-beb-rules');
+
+    if (['and', 'or'].includes(dom_dropdown.value)) {
+        dom_operator.style.display = 'none';
+        dom_val_char.style.display = 'none';
+        dom_val_num.style.display = 'none';
+        dom_val_list.style.display = 'none';
+        dom_val_date.style.display = 'none';
+        dom_rules.style.display = ''
+    } else {
+        const selected_field = get_fields()[dom_dropdown.value]
+        const [value_type] = FIELD_CUSTOMIZATION[selected_field.type];
+
+        dom_operator.style.display = value_type === 'none' ? 'none' : '';
+        dom_val_char.style.display = value_type === 'char' ? '' : 'none';
+        dom_val_num.style.display = value_type === 'number' ? '' : 'none';
+        dom_val_list.style.display = value_type === 'dropdown' ? '' : 'none';
+        dom_val_date.style.display = value_type === 'date' ? '' : 'none';
+        dom_rules.style.display = 'none';
+    }
+}
+
 
 class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
     get_rule_subjects_choices() {
@@ -94,6 +132,9 @@ class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDef
 
         const dom_rule_subject_dropdown = this.dom_rule_block.querySelector('[data-contentpath="field"] select')
         fill_dropdown(dom_rule_subject_dropdown, this.get_rule_subjects_choices())
+
+        dom_rule_subject_dropdown.addEventListener('change', (event) => on_rule_subject_selected(event.target))
+        on_rule_subject_selected(dom_rule_subject_dropdown)
 
         return block;
     }
