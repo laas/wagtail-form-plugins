@@ -64,7 +64,8 @@ function fill_dropdown(dom_dropdown, choices) {
 }
 
 function on_rule_subject_selected(dom_dropdown) {
-    const dom_field_block = dom_dropdown.closest('.formbuilder-field-block').parentNode.parentNode.parentNode
+    const dom_beb = dom_dropdown.closest('.formbuilder-beb')
+    const dom_field_block = dom_beb.parentNode.parentNode.parentNode
     const get_field_block = (class_name) => dom_field_block.getElementsByClassName(class_name)[0].parentNode;
 
     const dom_operator = get_field_block('formbuilder-beb-operator').parentNode;
@@ -75,13 +76,17 @@ function on_rule_subject_selected(dom_dropdown) {
     const dom_rules = get_field_block('formbuilder-beb-rules');
 
     if (['and', 'or'].includes(dom_dropdown.value)) {
+        dom_beb.classList.toggle('formbuilder-beb-inline', false);
+
         dom_operator.style.display = 'none';
         dom_val_char.style.display = 'none';
         dom_val_num.style.display = 'none';
         dom_val_list.style.display = 'none';
         dom_val_date.style.display = 'none';
-        dom_rules.style.display = ''
+        dom_rules.style.display = '';
     } else {
+        dom_beb.classList.toggle('formbuilder-beb-inline', true);
+
         const selected_field = get_fields()[dom_dropdown.value]
         const [value_type] = FIELD_CUSTOMIZATION[selected_field.type];
 
