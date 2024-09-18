@@ -33,8 +33,8 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
     class Meta:
         label = _('Visibility condition')
         required = False
-        form_classname = 'formbuilder-beb'
         collapsed = True
+        icon = "view"
 
 
 class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapter):
@@ -50,13 +50,22 @@ class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapte
 register_adapter(BooleanExpressionBuilderBlockAdapter(), BooleanExpressionBuilderBlock)
 
 
+class BooleanExpressionBuilderBlockLvl3(BooleanExpressionBuilderBlock):
+    class Meta:
+        form_classname = 'formbuilder-beb formbuilder-beb-lvl3'
+
+
 class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
     rules = blocks.ListBlock(
-        BooleanExpressionBuilderBlock(),
+        BooleanExpressionBuilderBlockLvl3(),
         label=("Conditions"),
         form_classname='formbuilder-beb-rules',
         min_num=2,
+        default=[],
     )
+
+    class Meta:
+        form_classname = 'formbuilder-beb formbuilder-beb-lvl2'
 
 
 class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
@@ -65,7 +74,11 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
         label=("Conditions"),
         form_classname='formbuilder-beb-rules',
         min_num=2,
+        default=[],
     )
+
+    class Meta:
+        form_classname = 'formbuilder-beb formbuilder-beb-lvl1'
 
 
 class FormFieldBlock(blocks.StructBlock):
@@ -88,13 +101,14 @@ class FormFieldBlock(blocks.StructBlock):
     )
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
-        rule = blocks.ListBlock(
+        rules = blocks.ListBlock(
             BooleanExpressionBuilderBlockLvl1(),
             label=_("Visibility condition"),
-            form_classname="formbuilder-unique-listblock",
-            collapsed=True,
+            form_classname="formbuilder-field-block-rules",
+            default=[],
+            max_num=1,
         )
-        local_blocks = (local_blocks or []) + [('rule', rule)]
+        local_blocks = (local_blocks or []) + [('rules', rules)]
         super().__init__(local_blocks, search_index, **kwargs)
 
 
@@ -350,19 +364,23 @@ class Email:
         }
 
 
+class EmailsToSendStructBlock(blocks.StructBlock):
+    recipient_list = blocks.CharBlock(
+        label=_("Recipient list"),
+        validators=[validate_emails],
+        help_text=_("E-mail addresses of the recipients, separated by comma."),
+    )
+
+    subject = blocks.CharBlock(
+        label=_("Subject"),
+        help_text=_("The subject of the e-mail."),
+    )
+
+    message = blocks.RichTextBlock(
+        label=_("Message"),
+        help_text=_("The body of the e-mail."),
+    )
+
+
 class EmailsToSendBlock(blocks.StreamBlock):
-    email_to_send = blocks.StructBlock([
-        ('recipient_list', blocks.CharBlock(
-            label=_("Recipient list"),
-            validators=[validate_emails],
-            help_text=_("E-mail addresses of the recipients, separated by comma."),
-        )),
-        ('subject', blocks.CharBlock(
-            label=_("Subject"),
-            help_text=_("The subject of the e-mail."),
-        )),
-        ('message', blocks.RichTextBlock(
-            label=_("Message"),
-            help_text=_("The body of the e-mail."),
-        )),
-    ])
+    email_to_send = EmailsToSendStructBlock()

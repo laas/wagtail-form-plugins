@@ -36,7 +36,7 @@ const FIELD_CUSTOMIZATION = {
 
 
 function get_fields() {
-    const dom_form_fields = document.querySelector('.formbuilder-fields-block > div[data-streamfield-stream-container]')
+    const dom_form_fields = document.querySelector('.formbuilder-fields-block > div')
     const dom_block_fields = dom_form_fields.querySelectorAll(':scope > [data-contentpath]:not([aria-hidden])');
 
     return Object.fromEntries(Array.from(dom_block_fields).map((dom_block, index) => [
@@ -46,7 +46,7 @@ function get_fields() {
             'contentpath': dom_block.getAttribute('data-contentpath'),
             'label': dom_block.querySelector('.formbuilder-field-block-label input').value || `field n°${ index + 1}`,
             'dom_block': dom_block,
-            'type': dom_block.getElementsByClassName('formbuilder-field-block')[0].className.replace('formbuilder-field-block', '').split('-')[1]
+            'type': dom_block.querySelector('.formbuilder-field-block').className.replace('formbuilder-field-block', '').split('-')[1]
         }
     ]));
 }
@@ -76,26 +76,22 @@ function on_rule_subject_selected(dom_dropdown) {
     const dom_rules = get_field_block('formbuilder-beb-rules');
 
     if (['and', 'or'].includes(dom_dropdown.value)) {
-        dom_beb.classList.toggle('formbuilder-beb-inline', false);
-
-        dom_operator.style.display = 'none';
-        dom_val_char.style.display = 'none';
-        dom_val_num.style.display = 'none';
-        dom_val_list.style.display = 'none';
-        dom_val_date.style.display = 'none';
-        dom_rules.style.display = '';
+        dom_operator.classList.toggle('formbuilder-hide', true);
+        dom_val_char.classList.toggle('formbuilder-hide', true);
+        dom_val_num.classList.toggle('formbuilder-hide', true);
+        dom_val_list.classList.toggle('formbuilder-hide', true);
+        dom_val_date.classList.toggle('formbuilder-hide', true);
+        dom_rules.classList.toggle('formbuilder-hide', false);
     } else {
-        dom_beb.classList.toggle('formbuilder-beb-inline', true);
-
         const selected_field = get_fields()[dom_dropdown.value]
         const [value_type] = FIELD_CUSTOMIZATION[selected_field.type];
 
-        dom_operator.style.display = value_type === 'none' ? 'none' : '';
-        dom_val_char.style.display = value_type === 'char' ? '' : 'none';
-        dom_val_num.style.display = value_type === 'number' ? '' : 'none';
-        dom_val_list.style.display = value_type === 'dropdown' ? '' : 'none';
-        dom_val_date.style.display = value_type === 'date' ? '' : 'none';
-        dom_rules.style.display = 'none';
+        dom_operator.classList.toggle('formbuilder-hide', value_type === 'none');
+        dom_val_char.classList.toggle('formbuilder-hide', value_type !== 'char');
+        dom_val_num.classList.toggle('formbuilder-hide', value_type !== 'number');
+        dom_val_list.classList.toggle('formbuilder-hide', value_type !== 'dropdown');
+        dom_val_date.classList.toggle('formbuilder-hide', value_type !== 'date');
+        dom_rules.classList.toggle('formbuilder-hide', true);
 
         if (dom_operator.style.display !== 'none') {
             const dom_operator_select = dom_operator.querySelector('select')
@@ -107,47 +103,40 @@ function on_rule_subject_selected(dom_dropdown) {
     }
 }
 
-
-class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
-    get_rule_subjects_choices() {
-        const fields_choices = Object.values(this.fields)
-            .filter((f) => this.current_field.index > f.index)
-            .map(f => [f.contentpath, f.label, false])
-
-        return [
-            ['', 'Fields:', true],
-            ...fields_choices,
-            ['', 'Expression:', true],
-            ['or', 'one of...', false],
-            ['and', 'all of...', false],
-        ]
+function update_rule_subjects_dropdown(dom_beb, fields, field_index) {
+    if (field_index === 0) {
+        return
     }
 
+    const dom_rule_subject_dropdown = dom_beb.querySelector('.formbuilder-beb-field select')
+    const fields_choices = Object.values(fields)
+        .filter((f) => field_index > f.index)
+        .map(f => [f.contentpath, f.label, false])
+
+    fill_dropdown(dom_rule_subject_dropdown, [
+        ['', 'Fields:', true],
+        ...fields_choices,
+        ['', 'Expression:', true],
+        ['or', 'one of...', false],
+        ['and', 'all of...', false],
+    ])
+
+    dom_rule_subject_dropdown.addEventListener('change', (event) => on_rule_subject_selected(event.target))
+    on_rule_subject_selected(dom_rule_subject_dropdown)
+}
+
+
+class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
     render(placeholder, prefix, initialState, initialError) {
         const block = super.render(placeholder, prefix, initialState, initialError);
-        this.dom_struct_block = block.container[0];
 
-        if (this.dom_struct_block.closest('[data-contentpath="rules"] > div.formbuilder-block-hidden') !== null) {
-            return block
-        }
+        const dom_beb = block.container[0];
+        const dom_field_block_container = dom_beb.closest('.formbuilder-field-block').parentNode.parentNode.parentNode;
 
-        this.dom_rule_block = block.container[0].closest('[data-contentpath="rule"]')
-        this.dom_field_block = this.dom_rule_block.closest('.formbuilder-field-block');
-        this.dom_field_block_container = this.dom_field_block.parentNode.parentNode.parentNode;
+        const fields = get_fields()
+        const current_field = fields[dom_field_block_container.getAttribute('data-contentpath')];
 
-        this.fields = get_fields()
-        this.current_field = this.fields[this.dom_field_block_container.getAttribute('data-contentpath')];
-
-        if (this.current_field.index === 0) {
-            this.dom_rule_block.style.display = 'none'
-            return block;
-        }
-
-        const dom_rule_subject_dropdown = this.dom_rule_block.querySelector('[data-contentpath="field"] select')
-        fill_dropdown(dom_rule_subject_dropdown, this.get_rule_subjects_choices())
-
-        dom_rule_subject_dropdown.addEventListener('change', (event) => on_rule_subject_selected(event.target))
-        on_rule_subject_selected(dom_rule_subject_dropdown)
+        update_rule_subjects_dropdown(dom_beb, fields, current_field.index);
 
         return block;
     }

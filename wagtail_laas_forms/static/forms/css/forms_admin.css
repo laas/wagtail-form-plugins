@@ -1,16 +1,32 @@
-/* boolean expressions builder */
-.formbuilder-beb-inline {
+/* common */
+.formbuilder-hide {
+    display: none;
+}
+
+/* boolean expressions builder without a rule field */
+.formbuilder-beb:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
     display: flex;
+
+    > div {
+        margin-right: 32px;
+    }   
 }
-.formbuilder-beb-inline > div {
-    margin-right: 32px;
-}
+
 .formbuilder-beb > div > label {
     display: none;
 }
 
-/* buttons of listblocks with only one entry */
-.formbuilder-unique-listblock > div > .c-sf-add-button,
-.formbuilder-unique-listblock > div > div > section > div > .w-panel__controls {
-    display: none;
+/* root rules block containing a boolean expressions builder */
+div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
+    > button.c-sf-add-button {
+        display: none !important;
+    }
+
+    > div > section > div.w-panel__header > div.w-panel__controls {
+        button:has(> svg.icon-arrow-up),
+        button:has(> svg.icon-arrow-down),
+        button:has(> svg.icon-copy) {
+            display: none;
+        }
+    }
 }
