@@ -16,6 +16,19 @@
     display: none;
 }
 
+.formbuilder-fields-block > div {
+    > div[data-contentpath]:not([aria-hidden]) {
+        > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rules) {
+            display: none;
+        }
+    }
+    > div[data-contentpath]:not([aria-hidden]) ~ div[data-contentpath]:not([aria-hidden]) {
+        > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rules) {
+            display: inherit;
+        }
+    }
+}
+
 /* root rules block containing a boolean expressions builder */
 div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
     > button.c-sf-add-button {
