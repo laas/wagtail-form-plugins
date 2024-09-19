@@ -3,7 +3,7 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.models import Page
 
-from wagtail_laas_forms.blocks import FormFieldsBlock, EmailsToSendBlock, Email
+from wagtail_laas_forms.blocks import FormFieldsBlock, EmailsToSendBlock, Email, RulesBlockMixin
 from wagtail_laas_forms.models import StreamFieldFormMixin, EmailsFormMixin
 
 
@@ -34,6 +34,11 @@ class LAASFormPage(EmailsFormMixin, StreamFieldFormMixin, Page):
         abstract = True
 
 
+class ConditionalFormFieldsBlock(RulesBlockMixin, FormFieldsBlock):
+    def get_block_class(self):
+        return FormFieldsBlock
+
+
 class FormPage(LAASFormPage):
     intro = RichTextField(
         blank=True,
@@ -44,7 +49,7 @@ class FormPage(LAASFormPage):
         verbose_name="Texte affiché après soumission du formulaire",
     )
     form_fields = StreamField(
-        FormFieldsBlock(),
+        ConditionalFormFieldsBlock(),
         verbose_name="Champs du formulaire",
     )
     emails_to_send = StreamField(
