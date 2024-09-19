@@ -3,8 +3,11 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.models import Page
 
-from wagtail_laas_forms.blocks import FormFieldsBlock, EmailsToSendBlock, Email, RulesBlockMixin
-from wagtail_laas_forms.models import StreamFieldFormMixin, EmailsFormMixin
+from conditional_fields.blocks import RulesBlockMixin
+from streamfield_forms.models import StreamFieldFormMixin
+from streamfield_forms.blocks import FormFieldsBlock
+from emails_forms.models import EmailsFormMixin
+from emails_forms.blocks import Email, EmailsToSendBlock
 
 
 DEFAULT_EMAIL_TO_AUTHOR = Email(

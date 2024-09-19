@@ -2,7 +2,6 @@ from pathlib import Path
 
 EXAMPLE_APP_DIR = Path(__file__).parent
 BASE_DIR = EXAMPLE_APP_DIR.parent
-FORMS_APP_DIR = BASE_DIR / "wagtail_laas_forms"
 
 # Dev-specific
 
@@ -33,7 +32,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "wagtail_laas_forms",
+    "conditional_fields",
+    "streamfield_forms",
+    "emails_forms",
     "example",
 ]
 
@@ -94,7 +95,9 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [
-    FORMS_APP_DIR / "locale",
+    BASE_DIR / "conditional_fields",
+    BASE_DIR / "streamfield_forms",
+    BASE_DIR / "emails_forms",
 ]
 
 # Static files

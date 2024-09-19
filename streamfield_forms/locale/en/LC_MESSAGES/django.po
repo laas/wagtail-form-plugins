@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-12 16:41+0000\n"
+"POT-Creation-Date: 2024-09-19 16:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,214 +17,178 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: wagtail_laas_forms/blocks.py:25
-msgid "Operator"
-msgstr "Operator"
-
-#: wagtail_laas_forms/blocks.py:33
-msgid "Value"
-msgstr "Value"
-
-#: wagtail_laas_forms/blocks.py:65
-msgid "Visibility condition"
-msgstr "Visibility condition"
-
-#: wagtail_laas_forms/blocks.py:114 wagtail_laas_forms/blocks.py:153
+#: streamfield_forms/blocks.py:8 streamfield_forms/blocks.py:28
 msgid "Label"
 msgstr "Label"
 
-#: wagtail_laas_forms/blocks.py:115
+#: streamfield_forms/blocks.py:9
 msgid "Short text describing the field."
 msgstr "Short text describing the field."
 
-#: wagtail_laas_forms/blocks.py:118
+#: streamfield_forms/blocks.py:13
 msgid "Help text"
 msgstr "Help text"
 
-#: wagtail_laas_forms/blocks.py:120
+#: streamfield_forms/blocks.py:15
 msgid "Text displayed below the label to add more information."
 msgstr "Text displayed below the label to add more information."
 
-#: wagtail_laas_forms/blocks.py:123
+#: streamfield_forms/blocks.py:19
 msgid "Required"
 msgstr "Required"
 
-#: wagtail_laas_forms/blocks.py:125
+#: streamfield_forms/blocks.py:21
 msgid "If checked, this field must be filled to validate the form."
 msgstr "If checked, this field must be filled to validate the form."
 
-#: wagtail_laas_forms/blocks.py:156
+#: streamfield_forms/blocks.py:31
 msgid "Selected"
 msgstr "Selected"
 
-#: wagtail_laas_forms/blocks.py:161
+#: streamfield_forms/blocks.py:36
 msgid "Choice"
 msgstr "Choice"
 
-#: wagtail_laas_forms/blocks.py:166 wagtail_laas_forms/blocks.py:188
-#: wagtail_laas_forms/blocks.py:210 wagtail_laas_forms/blocks.py:222
-#: wagtail_laas_forms/blocks.py:244 wagtail_laas_forms/blocks.py:312
-#: wagtail_laas_forms/blocks.py:324 wagtail_laas_forms/blocks.py:336
+#: streamfield_forms/blocks.py:41 streamfield_forms/blocks.py:64
+#: streamfield_forms/blocks.py:87 streamfield_forms/blocks.py:100
+#: streamfield_forms/blocks.py:123 streamfield_forms/blocks.py:197
+#: streamfield_forms/blocks.py:210 streamfield_forms/blocks.py:223
 msgid "Default value"
 msgstr "Default value"
 
-#: wagtail_laas_forms/blocks.py:168 wagtail_laas_forms/blocks.py:338
+#: streamfield_forms/blocks.py:43 streamfield_forms/blocks.py:225
 msgid "Text used to pre-fill the field."
 msgstr "Text used to pre-fill the field."
 
-#: wagtail_laas_forms/blocks.py:171 wagtail_laas_forms/blocks.py:193
+#: streamfield_forms/blocks.py:46 streamfield_forms/blocks.py:69
 msgid "Min length"
 msgstr "Min length"
 
-#: wagtail_laas_forms/blocks.py:172
+#: streamfield_forms/blocks.py:47
 msgid "Minimum amount of characters allowed in the field."
 msgstr "Minimum amount of characters allowed in the field."
 
-#: wagtail_laas_forms/blocks.py:176 wagtail_laas_forms/blocks.py:198
+#: streamfield_forms/blocks.py:51 streamfield_forms/blocks.py:74
 msgid "Max length"
 msgstr "Max length"
 
-#: wagtail_laas_forms/blocks.py:177
+#: streamfield_forms/blocks.py:52
 msgid "Maximum amount of characters allowed in the field."
 msgstr "Maximum amount of characters allowed in the field."
 
-#: wagtail_laas_forms/blocks.py:183
+#: streamfield_forms/blocks.py:58
 msgid "Single line text"
 msgstr "Single line text"
 
-#: wagtail_laas_forms/blocks.py:190
+#: streamfield_forms/blocks.py:66
 msgid "Multi-line text used to pre-fill the text area."
 msgstr "Multi-line text used to pre-fill the text area."
 
-#: wagtail_laas_forms/blocks.py:194
+#: streamfield_forms/blocks.py:70
 msgid "Minimum amount of characters allowed in the text area."
 msgstr "Minimum amount of characters allowed in the text area."
 
-#: wagtail_laas_forms/blocks.py:199
+#: streamfield_forms/blocks.py:75
 msgid "Maximum amount of characters allowed in the text area."
 msgstr "Maximum amount of characters allowed in the text area."
 
-#: wagtail_laas_forms/blocks.py:205
+#: streamfield_forms/blocks.py:81
 msgid "Multi-line text"
 msgstr "Multi-line text"
 
-#: wagtail_laas_forms/blocks.py:212
+#: streamfield_forms/blocks.py:89
 msgid "E-mail used to pre-fill the field."
 msgstr "E-mail used to pre-fill the field."
 
-#: wagtail_laas_forms/blocks.py:217
+#: streamfield_forms/blocks.py:94
 msgid "E-mail"
 msgstr "E-mail"
 
-#: wagtail_laas_forms/blocks.py:224
+#: streamfield_forms/blocks.py:102
 msgid "Number used to pre-fill the field."
 msgstr "Number used to pre-fill the field."
 
-#: wagtail_laas_forms/blocks.py:227
+#: streamfield_forms/blocks.py:105
 msgid "Min value"
 msgstr "Min value"
 
-#: wagtail_laas_forms/blocks.py:228
+#: streamfield_forms/blocks.py:106
 msgid "Minimum number allowed in the field."
 msgstr "Minimum number allowed in the field."
 
-#: wagtail_laas_forms/blocks.py:232
+#: streamfield_forms/blocks.py:110
 msgid "Max value"
 msgstr "Max value"
 
-#: wagtail_laas_forms/blocks.py:233
+#: streamfield_forms/blocks.py:111
 msgid "Maximum number allowed in the field."
 msgstr "Maximum number allowed in the field."
 
-#: wagtail_laas_forms/blocks.py:239
+#: streamfield_forms/blocks.py:117
 msgid "Number"
 msgstr "Number"
 
-#: wagtail_laas_forms/blocks.py:246
+#: streamfield_forms/blocks.py:125
 msgid "URL used to pre-fill the field."
 msgstr "URL used to pre-fill the field."
 
-#: wagtail_laas_forms/blocks.py:251
+#: streamfield_forms/blocks.py:130
 msgid "URL"
 msgstr "URL"
 
-#: wagtail_laas_forms/blocks.py:256 wagtail_laas_forms/blocks.py:268
+#: streamfield_forms/blocks.py:136 streamfield_forms/blocks.py:149
 msgid "Checked"
 msgstr "Checked"
 
-#: wagtail_laas_forms/blocks.py:258
+#: streamfield_forms/blocks.py:138
 msgid "If checked, the checkbox will be checked by default."
 msgstr "If checked, the checkbox will be checked by default."
 
-#: wagtail_laas_forms/blocks.py:263
+#: streamfield_forms/blocks.py:143
 msgid "Checkbox"
 msgstr "Checkbox"
 
-#: wagtail_laas_forms/blocks.py:269 wagtail_laas_forms/blocks.py:280
-#: wagtail_laas_forms/blocks.py:291 wagtail_laas_forms/blocks.py:302
+#: streamfield_forms/blocks.py:150 streamfield_forms/blocks.py:162
+#: streamfield_forms/blocks.py:174 streamfield_forms/blocks.py:186
 msgid "Choices"
 msgstr "Choices"
 
-#: wagtail_laas_forms/blocks.py:274
+#: streamfield_forms/blocks.py:155
 msgid "Checkboxes"
 msgstr "Checkboxes"
 
-#: wagtail_laas_forms/blocks.py:285
+#: streamfield_forms/blocks.py:167
 msgid "Drop down"
 msgstr "Drop down"
 
-#: wagtail_laas_forms/blocks.py:296
+#: streamfield_forms/blocks.py:179
 msgid "Multiple select"
 msgstr "Multiple select"
 
-#: wagtail_laas_forms/blocks.py:307
+#: streamfield_forms/blocks.py:191
 msgid "Radio buttons"
 msgstr "Radio buttons"
 
-#: wagtail_laas_forms/blocks.py:314
+#: streamfield_forms/blocks.py:199
 msgid "Date used to pre-fill the field."
 msgstr "Date used to pre-fill the field."
 
-#: wagtail_laas_forms/blocks.py:319
+#: streamfield_forms/blocks.py:204
 msgid "Date"
 msgstr "Date"
 
-#: wagtail_laas_forms/blocks.py:326
+#: streamfield_forms/blocks.py:212
 msgid "Date and time used to pre-fill the field."
 msgstr "Date and time used to pre-fill the field."
 
-#: wagtail_laas_forms/blocks.py:331
+#: streamfield_forms/blocks.py:217
 msgid "Date and time"
 msgstr "Date and time"
 
-#: wagtail_laas_forms/blocks.py:343
+#: streamfield_forms/blocks.py:230
 msgid "Hidden field"
 msgstr "Hidden field"
 
-#: wagtail_laas_forms/blocks.py:390
-msgid "Recipient list"
-msgstr "Recipient list"
-
-#: wagtail_laas_forms/blocks.py:392
-msgid "E-mail addresses of the recipients, separated by comma."
-msgstr "E-mail addresses of the recipients, separated by comma."
-
-#: wagtail_laas_forms/blocks.py:395
-msgid "Subject"
-msgstr "Subject"
-
-#: wagtail_laas_forms/blocks.py:396
-msgid "The subject of the e-mail."
-msgstr "The subject of the e-mail."
-
-#: wagtail_laas_forms/blocks.py:399
-msgid "Message"
-msgstr "Message"
-
-#: wagtail_laas_forms/blocks.py:400
-msgid "The body of the e-mail."
-msgstr "The body of the e-mail."
-
-#: wagtail_laas_forms/models.py:24
+#: streamfield_forms/models.py:21
 msgid "Submission date"
 msgstr "Submission date"
