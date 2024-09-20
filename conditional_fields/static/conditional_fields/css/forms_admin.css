@@ -1,36 +1,61 @@
-/* common */
+/* elements to hide programmatically */
 .formbuilder-hide {
     display: none;
 }
 
-/* boolean expressions builder without a rule field */
-.formbuilder-beb:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
-    display: flex;
-
-    > div {
-        margin-right: 32px;
-    }   
-}
-
-.formbuilder-beb > div > label {
-    display: none;
-}
-
-.formbuilder-fields-block > div {
-    > div[data-contentpath]:not([aria-hidden]) {
-        > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rules) {
-            display: none;
-        }
+/* boolean expressions builder */
+.formbuilder-beb {
+    > div > label {
+        display: none;
     }
-    > div[data-contentpath]:not([aria-hidden]) ~ div[data-contentpath]:not([aria-hidden]) {
-        > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rules) {
-            display: inherit;
-        }
+
+    /* make boolean expressions builders without a rule field inline */
+    &:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
+        margin-bottom: -25px;
+        display: flex;
+    
+        > div {
+            margin-right: 32px;
+        }   
     }
 }
 
-/* root rules block containing a boolean expressions builder */
-div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
+/* boolean expressions builder rules */
+.formbuilder-beb-rules > div {
+    /* only display the last "add rule" button */
+    > button:has(+ div) {
+        display: none;
+    }
+
+    /* make rules buttons inline */
+    > div > section {
+        position: relative;
+        > .w-panel__header {
+            position: absolute;
+            top: 13px;
+            right: 0;
+            > *:not(.w-panel__controls) {
+                display: none;
+            }
+        }
+        > .w-panel__content {
+            width: 88%;
+        }
+    }
+}
+
+/* hide the rules of the first displayed field block */
+.formbuilder-fields-block > div > div[data-contentpath]:not([aria-hidden]) {
+    > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rules) {
+        display: none;
+    }
+    ~ & > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rules) {
+        display: inherit;
+    }
+}
+
+/* hide unnecessary buttons in the root rules block that contains a boolean expressions builder */
+.formbuilder-field-block-rules > div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
     > button.c-sf-add-button {
         display: none !important;
     }
