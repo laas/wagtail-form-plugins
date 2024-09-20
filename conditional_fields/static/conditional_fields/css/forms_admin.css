@@ -9,7 +9,8 @@
         display: none;
     }
 
-    /* make boolean expressions builders without a rule field inline */
+    /* make inline boolean expressions builders with last deep level or without a rule field */
+    .formbuilder-beb-lvl3,
     &:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
         margin-bottom: -25px;
         display: flex;

@@ -66,7 +66,7 @@ function fill_dropdown(dom_dropdown, choices) {
 function on_rule_subject_selected(dom_dropdown) {
     const dom_beb = dom_dropdown.closest('.formbuilder-beb')
     const dom_field_block = dom_beb.parentNode.parentNode.parentNode
-    const get_field_block = (class_name) => dom_field_block.getElementsByClassName(class_name)[0].parentNode;
+    const get_field_block = (class_name) => dom_field_block.getElementsByClassName(class_name)[0]?.parentNode;
 
     const dom_operator = get_field_block('formbuilder-beb-operator').parentNode;
     const dom_val_char = get_field_block('formbuilder-beb-val-char').parentNode;
@@ -91,7 +91,9 @@ function on_rule_subject_selected(dom_dropdown) {
         dom_val_num.classList.toggle('formbuilder-hide', value_type !== 'number');
         dom_val_list.classList.toggle('formbuilder-hide', value_type !== 'dropdown');
         dom_val_date.classList.toggle('formbuilder-hide', value_type !== 'date');
-        dom_rules.classList.toggle('formbuilder-hide', true);
+        if (dom_rules !== undefined) {
+            dom_rules.classList.toggle('formbuilder-hide', true);
+        }
 
         if (dom_operator.style.display !== 'none') {
             const dom_operator_select = dom_operator.querySelector('select')
