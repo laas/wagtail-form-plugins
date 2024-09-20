@@ -4,6 +4,7 @@ from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.models import Page
 
 from conditional_fields.blocks import RulesBlockMixin
+from conditional_fields.models import ConditionalFieldsMixin
 from streamfield_forms.models import StreamFieldFormMixin
 from streamfield_forms.blocks import FormFieldsBlock
 from emails_forms.models import EmailsFormMixin
@@ -32,7 +33,7 @@ Bonne journée.''',
 ).format()
 
 
-class LAASFormPage(EmailsFormMixin, StreamFieldFormMixin, Page):
+class LAASFormPage(EmailsFormMixin, ConditionalFieldsMixin, StreamFieldFormMixin, Page):
     class Meta:
         abstract = True
 
