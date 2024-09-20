@@ -1,4 +1,7 @@
+from uuid import UUID
+
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
 
@@ -6,27 +9,71 @@ from wagtail import blocks
 from wagtail.telepath import register as register_adapter
 
 
+class ChoiceError(ValidationError):
+    def __init__(self, choice) -> None:
+        super().__init__(
+            _("Select a valid choice. %(value)s is not one of the available choices."),
+            "invalid_choice",
+            {"value": choice}
+        )
+
+
+def field_validator(choice):
+    if choice in ['and', 'or']:
+        return
+
+    try:
+        UUID(str(choice))
+    except ValueError as err:
+        raise ChoiceError(choice) from err
+
+
+def operator_validator(choice):
+    valid_operators = ['eq', 'neq', 'lt', 'lte', 'ut', 'ute', 'in', 'nin', 'ct', 'nct', 'c', 'nc']
+
+    if choice not in valid_operators:
+        raise ChoiceError(choice)
+
+
+class FreeChoiceField(forms.ChoiceField):
+    def validate(self, value):
+        for validate in self.validators:
+            validate(value)
+
+
+class FreeChoiceBlock(blocks.ChoiceBlock):
+    def get_field(self, **kwargs):
+        return FreeChoiceField(**kwargs)
+
+
 class BooleanExpressionBuilderBlock(blocks.StructBlock):
-    field = blocks.ChoiceBlock(
+    field = FreeChoiceBlock(
         [],
-        form_classname='formbuilder-beb-field'
+        validators=[field_validator],
+        form_classname='formbuilder-beb-field',
     )
-    operator = blocks.ChoiceBlock(
-        [],
-        form_classname='formbuilder-beb-operator'
+    operator = FreeChoiceBlock(
+        [("eq", "Equals")],
+        validators=[operator_validator],
+        form_classname='formbuilder-beb-operator',
     )
     value_char = blocks.CharBlock(
-        form_classname='formbuilder-beb-val-char'
+        required=False,
+        form_classname='formbuilder-beb-val-char',
     )
     value_number = blocks.DecimalBlock(
-        form_classname='formbuilder-beb-val-num'
+        required=False,
+        form_classname='formbuilder-beb-val-num',
     )
-    value_dropdown = blocks.ChoiceBlock(
+    value_dropdown = FreeChoiceBlock(
         [],
-        form_classname='formbuilder-beb-val-list'
+        required=False,
+        validators=[],
+        form_classname='formbuilder-beb-val-list',
     )
     value_date = blocks.DateBlock(
-        form_classname='formbuilder-beb-val-date'
+        required=False,
+        form_classname='formbuilder-beb-val-date',
     )
 
     class Meta:
@@ -59,7 +106,6 @@ class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
         BooleanExpressionBuilderBlockLvl3(),
         label=("Conditions"),
         form_classname='formbuilder-beb-rules',
-        min_num=2,
         default=[],
     )
 
@@ -72,7 +118,6 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
         BooleanExpressionBuilderBlockLvl2(),
         label=("Conditions"),
         form_classname='formbuilder-beb-rules',
-        min_num=2,
         default=[],
     )
 
