@@ -11,6 +11,8 @@ from wagtail.contrib.forms.utils import get_field_clean_name
 
 
 class StreamFieldFormBuilder(FormBuilder):
+    extra_field_options = []
+
     def create_dropdown_field(self, field_value, options):
         _options = self.format_field_options(options, field_value["choices"], True)
         return forms.ChoiceField(**_options)
@@ -45,10 +47,7 @@ class StreamFieldFormBuilder(FormBuilder):
             options = self.get_field_options(field_data)
             create_field = self.get_create_field_function(field_data["type"])
             clean_name = get_field_clean_name(field_data["value"]["label"])
-            try:
-                formfields[clean_name] = create_field(field_data["value"], options)
-            except TypeError as err:
-                raise TypeError("Form mixins might not be ordered correctly.") from err
+            formfields[clean_name] = create_field(field_data["value"], options)
 
         return formfields
 
@@ -56,6 +55,10 @@ class StreamFieldFormBuilder(FormBuilder):
         options = {**field_data["value"]}
         if not getattr(settings, "WAGTAILFORMS_HELP_TEXT_ALLOW_HTML", False):
             options["help_text"] = conditional_escape(options["help_text"])
+
+        if hasattr(self, "extra_field_options"):
+            for option in self.extra_field_options:
+                options.pop(option)
 
         return options
 

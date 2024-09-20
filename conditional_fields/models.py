@@ -7,6 +7,10 @@ from wagtail.contrib.forms.utils import get_field_clean_name
 
 
 class ConditionalFieldsMixin(FormMixin):
+    def __init__(self, *args, **kwargs):
+        self.form_builder.extra_field_options = ["rules"]
+        super().__init__(*args, **kwargs)
+
     @classmethod
     def get_visibility_conditions(cls, fields_id, visibility_conditions):
         conditions = []
@@ -46,9 +50,3 @@ class ConditionalFieldsMixin(FormMixin):
             )
 
         return form
-
-    def get_form_fields(self):
-        for ff in self.form_fields.raw_data:
-            del ff["value"]["rules"]
-
-        return self.form_fields
