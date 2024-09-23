@@ -146,7 +146,7 @@ msgstr "Si coché, la case sera cochée par défaut."
 
 #: streamfield_forms/blocks.py:143
 msgid "Checkbox"
-msgstr "Cases à cocher"
+msgstr "Case à cocher"
 
 #: streamfield_forms/blocks.py:150 streamfield_forms/blocks.py:162
 #: streamfield_forms/blocks.py:174 streamfield_forms/blocks.py:186

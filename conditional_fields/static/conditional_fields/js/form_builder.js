@@ -1,37 +1,45 @@
+// [label, char, widgets, processing function]
 const OPERATORS = {
-    'eq': ['is equal to', '=', ['char', 'number', 'dropdown', 'date'], (a, b) => a === b],
-    'neq': ['is not equal to', '≠', ['char', 'number', 'dropdown', 'date'], (a, b) => a !== b],
+    'eq': ['is equal to', '=', 'senu', (dom_input, value) => dom_input.value === value],
+    'neq': ['is not equal to', '≠', 'senu', (dom_input, value) => dom_input.value !== value],
 
-    'lt': ['is lower than', '<', ['number'], (a, b) => parseFloat(a) < parseFloat(b)],
-    'lte': ['is lower or equat to', '≤', ['number'], (a, b) => parseFloat(a) <= parseFloat(b)],
+    'is': ['is', '=', 'lrdt', (dom_input, value) => dom_input.value === value],
+    'nis': ['is not', '≠', 'lrdt', (dom_input, value) => dom_input.value !== value],
 
-    'ut': ['is upper than', '>', ['number'], (a, b) => parseFloat(a) > parseFloat(b)],
-    'ute': ['is upper or equal to', '≥', ['number'], (a, b) => parseFloat(a) >= parseFloat(b)],
+    'lt': ['is lower than', '<', 'n', (dom_input, value) => parseFloat(dom_input.value) < parseFloat(value)],
+    'lte': ['is lower or equal to', '≤', 'n', (dom_input, value) => parseFloat(dom_input.value) <= parseFloat(value)],
 
-    'in': ['is in', '∈', ['dropdown'], (a, b) => b.includes(a)],
-    'nin': ['is not in', '∉', ['dropdown'], (a, b) => ! b.includes(a)],
+    'ut': ['is upper than', '>', 'n', (dom_input, value) => parseFloat(dom_input.value) > parseFloat(value)],
+    'ute': ['is upper or equal to', '≥', 'n', (dom_input, value) => parseFloat(dom_input.value) >= parseFloat(value)],
 
-    'ct': ['contains', '∋', ['char', 'dropdown'], (a, b) => a.includes(b)],
-    'nct': ['does not contain', '∌', ['char', 'dropdown'], (a, b) => ! a.includes(b)],
+    'bt': ['is before than', '<', 'dt', (dom_input, value) => Date.parse(dom_input.value) < Date.parse(value)],
+    'bte': ['is before or equal to', '≤', 'dt', (dom_input, value) => Date.parse(dom_input.value) <= Date.parse(value)],
 
-    'c': ['is', '✔', [], (a, b) => a],
-    'nc': ['is not', '✖', [], (a, b) => !a],
+    'at': ['is after than', '>', 'dt', (dom_input, value) => Date.parse(dom_input.value) > Date.parse(value)],
+    'ate': ['is after or equal to', '≥', 'dt', (dom_input, value) => Date.parse(dom_input.value) >= Date.parse(value)],
+
+    'ct': ['contains', '∋', 'mCL', (dom_input, value) => dom_input.value.includes(value)],
+    'nct': ['does not contain', '∌', 'mCL', (dom_input, value) => ! dom_input.value.includes(value)],
+
+    'c': ['is checked', '✔', 'c', (dom_input, value) => dom_input.checked],
+    'nc': ['is not checked', '✖', 'c', (dom_input, value) => !dom_input.checked],
 }
 
+// [field type identifier, widget type]
 const FIELD_CUSTOMIZATION = {
-    'singleline': ['char'],
-    'multiline': ['char'],
-    'email': ['char'],
-    'number': ['number'],
-    'url': ['char'],
-    'checkbox': ['none'],
-    'checkboxes': ['dropdown'],
-    'dropdown': ['dropdown'],
-    'multiselect': ['dropdown'],
-    'radio': ['dropdown'],
-    'date': ['date'],
-    'datetime': ['date'],
-    'hidden': ['char'],
+    'singleline': ['s', 'char'],
+    'multiline': ['m', 'char'],
+    'email': ['e', 'char'],
+    'number': ['n', 'number'],
+    'url': ['u', 'char'],
+    'checkbox': ['c', 'none'],
+    'checkboxes': ['C', 'dropdown'],
+    'dropdown': ['l', 'dropdown'],
+    'multiselect': ['L', 'dropdown'],
+    'radio': ['r', 'dropdown'],
+    'date': ['d', 'date'],
+    'datetime': ['t', 'date'],
+    'hidden': ['h', 'char'],
 }
 
 
@@ -84,24 +92,22 @@ function on_rule_subject_selected(dom_dropdown) {
         dom_rules.classList.toggle('formbuilder-hide', false);
     } else {
         const selected_field = get_fields()[dom_dropdown.value]
-        const [value_type] = FIELD_CUSTOMIZATION[selected_field.type];
+        const [field_type_id, widget_type] = FIELD_CUSTOMIZATION[selected_field.type];
 
-        dom_operator.classList.toggle('formbuilder-hide', value_type === 'none');
-        dom_val_char.classList.toggle('formbuilder-hide', value_type !== 'char');
-        dom_val_num.classList.toggle('formbuilder-hide', value_type !== 'number');
-        dom_val_list.classList.toggle('formbuilder-hide', value_type !== 'dropdown');
-        dom_val_date.classList.toggle('formbuilder-hide', value_type !== 'date');
+        dom_operator.classList.toggle('formbuilder-hide', false);
+        dom_val_char.classList.toggle('formbuilder-hide', widget_type !== 'char');
+        dom_val_num.classList.toggle('formbuilder-hide', widget_type !== 'number');
+        dom_val_list.classList.toggle('formbuilder-hide', widget_type !== 'dropdown');
+        dom_val_date.classList.toggle('formbuilder-hide', widget_type !== 'date');
         if (dom_rules !== undefined) {
             dom_rules.classList.toggle('formbuilder-hide', true);
         }
 
-        if (dom_operator.style.display !== 'none') {
-            const dom_operator_select = dom_operator.querySelector('select')
-            const operator_choices = Object.entries(OPERATORS)
-                .filter(([k, v]) => v[2].includes(value_type))
-                .map(([k, v]) => [k, v[0], false])
-            fill_dropdown(dom_operator_select, operator_choices)
-        }
+        const dom_operator_select = dom_operator.querySelector('select')
+        const operator_choices = Object.entries(OPERATORS)
+            .filter(([opr_id, [s, c, opr_widgets, f]]) => opr_widgets.includes(field_type_id))
+            .map(([opr_id, [opr_str, c, w, f]]) => [opr_id, opr_str, false])
+        fill_dropdown(dom_operator_select, operator_choices)
     }
 }
 
@@ -113,6 +119,7 @@ function update_rule_subjects_dropdown(dom_beb, fields, field_index) {
     const dom_rule_subject_dropdown = dom_beb.querySelector('.formbuilder-beb-field select')
     const fields_choices = Object.values(fields)
         .filter((f) => field_index > f.index)
+        .filter((f) => f.type !== 'hidden')
         .map(f => [f.contentpath, f.label, false])
 
     fill_dropdown(dom_rule_subject_dropdown, [

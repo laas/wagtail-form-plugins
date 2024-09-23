@@ -29,8 +29,8 @@ def field_validator(choice):
 
 
 def operator_validator(choice):
-    valid_operators = ['eq', 'neq', 'lt', 'lte', 'ut', 'ute', 'in', 'nin', 'ct', 'nct', 'c', 'nc']
-
+    valid_operators = ['eq', 'neq', 'is', 'nis', 'lt', 'lte', 'ut', 'ute', 'bt', 'bte', 'bt', 'bte',
+                       'ct', 'nct', 'c', 'nc']
     if choice not in valid_operators:
         raise ChoiceError(choice)
 
