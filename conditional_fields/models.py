@@ -8,19 +8,19 @@ from wagtail.contrib.forms.utils import get_field_clean_name
 
 class ConditionalFieldsMixin(FormMixin):
     def __init__(self, *args, **kwargs):
-        self.form_builder.extra_field_options = ["rules"]
+        self.form_builder.extra_field_options = ["rule"]
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def get_visibility_conditions(cls, fields_id, visibility_conditions):
+    def format_rule(cls, fields_id, rule):
         conditions = []
-        for vc in visibility_conditions:
-            if vc["type"] in ("bool_and", "bool_or"):
-                vc_block = cls.get_visibility_conditions(fields_id, vc["value"])
-                conditions.append({vc["type"][5:]: vc_block})
+        for rule_entry in rule:
+            if rule_entry["type"] in ("bool_and", "bool_or"):
+                rule_block = cls.format_rule(fields_id, rule_entry["value"])
+                conditions.append({rule_entry["type"][5:]: rule_block})
             else:
-                vc["value"]["field_id"] = fields_id[vc["value"]["field_id"]]
-                conditions.append(vc["value"])
+                rule_entry["value"]["field_id"] = fields_id[rule_entry["value"]["field_id"]]
+                conditions.append(rule_entry["value"])
 
         return [{}] if not conditions else conditions
 
@@ -40,11 +40,11 @@ class ConditionalFieldsMixin(FormMixin):
         dom_ids = {fields_data[id]["id"]: f"id_{id}" for id in form.fields.keys()}
 
         for name, field in form.fields.items():
-            raw_vc = fields_data[name]["value"]["rules"]
-            vc = self.get_visibility_conditions(dom_ids, raw_vc)[0]
+            raw_rule = fields_data[name]["value"]["rule"]
+            rule = self.format_rule(dom_ids, raw_rule)[0]
             field.widget.attrs.update(
                 {
-                    "data-vc": json.dumps(vc),
+                    "data-rule": json.dumps(rule),
                     "class": "form-control",
                 }
             )

@@ -13,32 +13,32 @@ const OPERATORS = {
 const DEBOUNCE_DELAY = 300;
 
 
-function compute_visibility_condition(vc) {
-    if (vc.field_id) {
-        const dom_field = document.getElementById(vc.field_id)
-        const [operator_str, operator_func] = operators[vc.operator]
+function compute_rule(rule) {
+    if (rule.field_id) {
+        const dom_field = document.getElementById(rule.field_id)
+        const [operator_str, operator_func] = operators[rule.operator]
         return {
-            formula: `${ vc.field_label } ${ operator_str } "${ vc.value }"`,
-            str: `"${ dom_field.value }" ${ operator_str } "${ vc.value }"`,
-            result: operator_func(dom_field.value, vc.value),
+            formula: `${ rule.field_label } ${ operator_str } "${ rule.value }"`,
+            str: `"${ dom_field.value }" ${ operator_str } "${ rule.value }"`,
+            result: operator_func(dom_field.value, rule.value),
         }
     }
 
-    if (vc.and) {
-        const computed_expr = vc.and.map((_vc) => compute_visibility_condition(_vc))
+    if (rule.and) {
+        const computed_expr = rule.and.map((_rule) => compute_rule(_rule))
         return {
-            formula: `(${ computed_expr.map((_vc) => _vc.formula).join(') AND (') })`,
-            str: `(${ computed_expr.map((_vc) => _vc.str).join(') AND (') })`,
-            result: computed_expr.every((_vc) => _vc.result),
+            formula: `(${ computed_expr.map((_rule) => _rule.formula).join(') AND (') })`,
+            str: `(${ computed_expr.map((_rule) => _rule.str).join(') AND (') })`,
+            result: computed_expr.every((_rule) => _rule.result),
         }
     }
 
-    if (vc.or) {
-        const computed_expr = vc.or.map((_vc) => compute_visibility_condition(_vc))
+    if (rule.or) {
+        const computed_expr = rule.or.map((_rule) => compute_rule(_rule))
         return {
-            formula: `(${ computed_expr.map((_vc) => _vc.formula).join(') OR (') })`,
-            str: `(${ computed_expr.map((_vc) => _vc.str).join(') OR (') })`,
-            result: computed_expr.some((_vc) => _vc.result),
+            formula: `(${ computed_expr.map((_rule) => _rule.formula).join(') OR (') })`,
+            str: `(${ computed_expr.map((_rule) => _rule.str).join(') OR (') })`,
+            result: computed_expr.some((_rule) => _rule.result),
         }
     }
 
@@ -55,12 +55,12 @@ function debounce(callback) {
 
 function update_fields_visibility() {
     for(const dom_field of document.querySelectorAll('input.form-control')) {
-        const vc = JSON.parse(dom_field.getAttribute('data-vc'));
-        const cvc = compute_visibility_condition(vc)
-        console.log(`${vc.field_label}: ${ cvc.formula }  ⇒  ${ cvc.str }  ⇒  ${ cvc.result }`)
+        const rule = JSON.parse(dom_field.getAttribute('data-rule'));
+        const cmp_rule = compute_rule(rule)
+        console.log(`${rule.field_label}: ${ cmp_rule.formula }  ⇒  ${ cmp_rule.str }  ⇒  ${ cmp_rule.result }`)
 
-        dom_field.parentNode.style.display = cvc.result ? '' : 'none';
-        // dom_field.style.backgroundColor = cvc.result ? '' : 'lightGrey';
+        dom_field.parentNode.style.display = cmp_rule.result ? '' : 'none';
+        // dom_field.style.backgroundColor = cmp_rule.result ? '' : 'lightGrey';
     }
 }
 

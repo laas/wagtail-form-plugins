@@ -131,18 +131,16 @@ class RulesBlockMixin(blocks.StreamBlock):
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         local_blocks = local_blocks or []
-        rules = blocks.ListBlock(
+        rule = blocks.ListBlock(
             BooleanExpressionBuilderBlockLvl1(),
             label="Visibility condition",
-            form_classname='formbuilder-field-block-rules',
+            form_classname='formbuilder-field-block-rule',
             default=[],
             max_num=1,
         )
 
         for child_block_id, child_block in self.get_block_class().declared_blocks.items():
-            new_child_block = child_block.__class__(local_blocks=[
-                ('rules', rules)
-            ])
+            new_child_block = child_block.__class__(local_blocks=[('rule', rule)])
             local_blocks += [(child_block_id, new_child_block)]
 
         super().__init__(local_blocks, search_index, **kwargs)
