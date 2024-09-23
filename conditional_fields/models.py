@@ -1,7 +1,5 @@
 import json
 
-from django.utils.translation import gettext_lazy as _
-
 from wagtail.contrib.forms.models import FormMixin
 from wagtail.contrib.forms.utils import get_field_clean_name
 
@@ -12,17 +10,24 @@ class ConditionalFieldsMixin(FormMixin):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def format_rule(cls, fields_id, rule):
-        conditions = []
-        for rule_entry in rule:
-            if rule_entry["type"] in ("bool_and", "bool_or"):
-                rule_block = cls.format_rule(fields_id, rule_entry["value"])
-                conditions.append({rule_entry["type"][5:]: rule_block})
-            else:
-                rule_entry["value"]["field_id"] = fields_id[rule_entry["value"]["field_id"]]
-                conditions.append(rule_entry["value"])
+    def format_rule(cls, raw_rule):
+        value = raw_rule["value"]
 
-        return [{}] if not conditions else conditions
+        if value["field"] in ["and", "or"]:
+            return {
+                value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]
+            }
+
+        return {
+            "entry": {
+                "target": value["field"],
+                "val": value["value_date"]
+                    or value["value_dropdown"]
+                    or value["value_number"]
+                    or value["value_char"],
+                "opr": value["operator"],
+            }
+        }
 
     def get_form(self, *args, **kwargs):
         form_class = self.get_form_class()
@@ -30,23 +35,18 @@ class ConditionalFieldsMixin(FormMixin):
         form_params.update(kwargs)
         form = form_class(*args, **form_params)
 
-        # --- WIP ---
-
-        raw_data = form_params["page"].form_fields.raw_data
-        fields_data = {
-            get_field_clean_name(fd["value"]["label"]): fd for fd in raw_data
+        fields_raw_data = {
+            get_field_clean_name(fd["value"]["label"]): fd
+            for fd in form_params["page"].form_fields.raw_data
         }
 
-        dom_ids = {fields_data[id]["id"]: f"id_{id}" for id in form.fields.keys()}
-
-        for name, field in form.fields.items():
-            raw_rule = fields_data[name]["value"]["rule"]
-            rule = self.format_rule(dom_ids, raw_rule)[0]
-            field.widget.attrs.update(
-                {
-                    "data-rule": json.dumps(rule),
-                    "class": "form-control",
-                }
-            )
+        for field in form.fields.values():
+            raw_data = fields_raw_data[get_field_clean_name(field.label)]
+            rule = raw_data["value"]["rule"]
+            field.widget.attrs.update({
+                "id": raw_data["id"],
+                "class": "form-control",
+                "data-rule": json.dumps(self.format_rule(rule[0])) if rule else '{}'
+            })
 
         return form
