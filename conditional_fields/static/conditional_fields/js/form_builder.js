@@ -3,8 +3,8 @@ const OPERATORS = {
     'eq': ['is equal to', '=', 'senu', (dom_input, value) => dom_input.value === value],
     'neq': ['is not equal to', '≠', 'senu', (dom_input, value) => dom_input.value !== value],
 
-    'is': ['is', '=', 'lrdt', (dom_input, value) => dom_input.value === value],
-    'nis': ['is not', '≠', 'lrdt', (dom_input, value) => dom_input.value !== value],
+    'is': ['is', '=', 'lrd', (dom_input, value) => dom_input.value === value],
+    'nis': ['is not', '≠', 'lrd', (dom_input, value) => dom_input.value !== value],
 
     'lt': ['is lower than', '<', 'n', (dom_input, value) => parseFloat(dom_input.value) < parseFloat(value)],
     'lte': ['is lower or equal to', '≤', 'n', (dom_input, value) => parseFloat(dom_input.value) <= parseFloat(value)],
@@ -13,10 +13,10 @@ const OPERATORS = {
     'ute': ['is upper or equal to', '≥', 'n', (dom_input, value) => parseFloat(dom_input.value) >= parseFloat(value)],
 
     'bt': ['is before than', '<', 'dt', (dom_input, value) => Date.parse(dom_input.value) < Date.parse(value)],
-    'bte': ['is before or equal to', '≤', 'dt', (dom_input, value) => Date.parse(dom_input.value) <= Date.parse(value)],
+    'bte': ['is before or equal to', '≤', 'd', (dom_input, value) => Date.parse(dom_input.value) <= Date.parse(value)],
 
     'at': ['is after than', '>', 'dt', (dom_input, value) => Date.parse(dom_input.value) > Date.parse(value)],
-    'ate': ['is after or equal to', '≥', 'dt', (dom_input, value) => Date.parse(dom_input.value) >= Date.parse(value)],
+    'ate': ['is after or equal to', '≥', 'd', (dom_input, value) => Date.parse(dom_input.value) >= Date.parse(value)],
 
     'ct': ['contains', '∋', 'mCL', (dom_input, value) => dom_input.value.includes(value)],
     'nct': ['does not contain', '∌', 'mCL', (dom_input, value) => ! dom_input.value.includes(value)],
@@ -108,6 +108,18 @@ function on_rule_subject_selected(dom_dropdown) {
             .filter(([opr_id, [s, c, opr_widgets, f]]) => opr_widgets.includes(field_type_id))
             .map(([opr_id, [opr_str, c, w, f]]) => [opr_id, opr_str, false])
         fill_dropdown(dom_operator_select, operator_choices)
+
+        if (widget_type === 'dropdown') {
+            const dom_select = dom_val_list.querySelector('div > div > .w-field__input > select')
+            const dom_choices = selected_field.dom_block.querySelectorAll(
+                '.formbuilder-field-block .formbuilder-choices > div > div:not([aria-hidden])'
+            )
+            const value_choices = Array.from(dom_choices)
+                .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
+                .map((dom_label) => [dom_label.value, dom_label.value])
+            fill_dropdown(dom_select, value_choices)
+        }
+
     }
 }
 

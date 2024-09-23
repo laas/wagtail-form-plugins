@@ -26,6 +26,7 @@ class FormFieldBlock(blocks.StructBlock):
 class ChoiceBlock(blocks.StructBlock):
     label = blocks.CharBlock(
         label=_("Label"),
+        form_classname='formbuilder-choice-label',
     )
     initial = blocks.BooleanBlock(
         label=_("Selected"),
@@ -148,6 +149,7 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
     choices = blocks.ListBlock(
         ChoiceBlock([("initial", blocks.BooleanBlock(label=_("Checked"), required=False))]),
         label=_("Choices"),
+        form_classname='formbuilder-choices',
     )
 
     class Meta:
@@ -160,6 +162,7 @@ class DropDownFormFieldBlock(FormFieldBlock):
     choices = blocks.ListBlock(
         ChoiceBlock(),
         label=_("Choices"),
+        form_classname='formbuilder-choices',
     )
 
     class Meta:
@@ -172,6 +175,7 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
     choices = blocks.ListBlock(
         ChoiceBlock(),
         label=_("Choices"),
+        form_classname='formbuilder-choices',
     )
 
     class Meta:
@@ -184,6 +188,7 @@ class RadioFormFieldBlock(FormFieldBlock):
     choices = blocks.ListBlock(
         ChoiceBlock(),
         label=_("Choices"),
+        form_classname='formbuilder-choices',
     )
 
     class Meta:
