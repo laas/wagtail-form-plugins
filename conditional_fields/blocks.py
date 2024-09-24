@@ -28,13 +28,6 @@ def field_validator(choice):
         raise ChoiceError(choice) from err
 
 
-def operator_validator(choice):
-    valid_operators = ['eq', 'neq', 'is', 'nis', 'lt', 'lte', 'ut', 'ute', 'bt', 'bte', 'at', 'ate',
-                       'ct', 'nct', 'c', 'nc']
-    if choice not in valid_operators:
-        raise ChoiceError(choice)
-
-
 class FreeChoiceField(forms.ChoiceField):
     def validate(self, value):
         for validate in self.validators:
@@ -49,12 +42,29 @@ class FreeChoiceBlock(blocks.ChoiceBlock):
 class BooleanExpressionBuilderBlock(blocks.StructBlock):
     field = FreeChoiceBlock(
         [],
+        # TODO: use Char field with Select widget
         validators=[field_validator],
         form_classname='formbuilder-beb-field',
     )
-    operator = FreeChoiceBlock(
-        [("eq", "Equals")],
-        validators=[operator_validator],
+    operator = blocks.ChoiceBlock(
+        [
+            ('eq', 'is equal to'),
+            ('neq', 'is not equal to'),
+            ('is', 'is'),
+            ('nis', 'is not'),
+            ('lt', 'is lower than'),
+            ('lte', 'is lower or equal to'),
+            ('ut', 'is upper than'),
+            ('ute', 'is upper or equal to'),
+            ('bt', 'is before than'),
+            ('bte', 'is before or equal to'),
+            ('at', 'is after than'),
+            ('ate', 'is after or equal to'),
+            ('ct', 'contains'),
+            ('nct', 'does not contain'),
+            ('c', 'is checked'),
+            ('nc', 'is not checked'),
+        ],
         form_classname='formbuilder-beb-operator',
     )
     value_char = blocks.CharBlock(

@@ -1,28 +1,28 @@
 // [label, char, widgets, processing function]
 const OPERATORS = {
-    'eq': ['is equal to', '=', 'senu', (a, b) => a.value === b],
-    'neq': ['is not equal to', '≠', 'senu', (a, b) => a.value !== b],
+    'eq': ['=', 'senu', (a, b) => a.value === b],
+    'neq': ['≠', 'senu', (a, b) => a.value !== b],
 
-    'is': ['is', '=', 'lrd', (a, b) => a === b],
-    'nis': ['is not', '≠', 'lrd', (a, b) => a !== b],
+    'is': ['=', 'lrd', (a, b) => a === b],
+    'nis': ['≠', 'lrd', (a, b) => a !== b],
 
-    'lt': ['is lower than', '<', 'n', (a, b) => a < parseFloat(b)],
-    'lte': ['is lower or equal to', '≤', 'n', (a, b) => a <= parseFloat(b)],
+    'lt': ['<', 'n', (a, b) => a < parseFloat(b)],
+    'lte': ['≤', 'n', (a, b) => a <= parseFloat(b)],
 
-    'ut': ['is upper than', '>', 'n', (a, b) => a > parseFloat(b)],
-    'ute': ['is upper or equal to', '≥', 'n', (a, b) => a >= parseFloat(b)],
+    'ut': ['>', 'n', (a, b) => a > parseFloat(b)],
+    'ute': ['≥', 'n', (a, b) => a >= parseFloat(b)],
 
-    'bt': ['is before than', '<', 'dt', (a, b) => a < Date.parse(b)],
-    'bte': ['is before or equal to', '≤', 'd', (a, b) => a <= Date.parse(b)],
+    'bt': ['<', 'dt', (a, b) => a < Date.parse(b)],
+    'bte': ['≤', 'd', (a, b) => a <= Date.parse(b)],
 
-    'at': ['is after than', '>', 'dt', (a, b) => a > Date.parse(b)],
-    'ate': ['is after or equal to', '≥', 'd', (a, b) => a >= Date.parse(b)],
+    'at': ['>', 'dt', (a, b) => a > Date.parse(b)],
+    'ate': ['≥', 'd', (a, b) => a >= Date.parse(b)],
 
-    'ct': ['contains', '∋', 'mCL', (a, b) => a.includes(b)],
-    'nct': ['does not contain', '∌', 'mCL', (a, b) => ! a.includes(b)],
+    'ct': ['∋', 'mCL', (a, b) => a.includes(b)],
+    'nct': ['∌', 'mCL', (a, b) => ! a.includes(b)],
 
-    'c': ['is checked', '✔', 'c', (a, b) => a],
-    'nc': ['is not checked', '✖', 'c', (a, b) => !a],
+    'c': ['✔', 'c', (a, b) => a],
+    'nc': ['✖', 'c', (a, b) => !a],
 }
 
 // [field type identifier, widget type]
@@ -103,11 +103,13 @@ function on_rule_subject_selected(dom_dropdown) {
             dom_rules.classList.toggle('formbuilder-hide', true);
         }
 
-        const dom_operator_select = dom_operator.querySelector('select')
-        const operator_choices = Object.entries(OPERATORS)
-            .filter(([opr_id, [s, c, opr_widgets, f]]) => opr_widgets.includes(field_type_id))
-            .map(([opr_id, [opr_str, c, w, f]]) => [opr_id, opr_str, false])
-        fill_dropdown(dom_operator_select, operator_choices)
+        const operators = Object.entries(OPERATORS)
+            .filter(([i, [c, opr_widgets, f]]) => opr_widgets.includes(field_type_id))
+            .map(([opr_id, cwf]) => opr_id)
+
+        for (dom_option of dom_operator.querySelectorAll('select > option')) {
+            dom_option.classList.toggle('formbuilder-hide', ! operators.includes(dom_option.value))
+        }
 
         if (widget_type === 'dropdown') {
             const dom_select = dom_val_list.querySelector('div > div > .w-field__input > select')
