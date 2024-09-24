@@ -1,28 +1,28 @@
 // [label, char, widgets, processing function]
 const OPERATORS = {
-    'eq': ['is equal to', '=', 'senu', (dom_input, value) => dom_input.value === value],
-    'neq': ['is not equal to', '≠', 'senu', (dom_input, value) => dom_input.value !== value],
+    'eq': ['is equal to', '=', 'senu', (a, b) => a.value === b],
+    'neq': ['is not equal to', '≠', 'senu', (a, b) => a.value !== b],
 
-    'is': ['is', '=', 'lrd', (dom_input, value) => dom_input.value === value],
-    'nis': ['is not', '≠', 'lrd', (dom_input, value) => dom_input.value !== value],
+    'is': ['is', '=', 'lrd', (a, b) => a === b],
+    'nis': ['is not', '≠', 'lrd', (a, b) => a !== b],
 
-    'lt': ['is lower than', '<', 'n', (dom_input, value) => parseFloat(dom_input.value) < parseFloat(value)],
-    'lte': ['is lower or equal to', '≤', 'n', (dom_input, value) => parseFloat(dom_input.value) <= parseFloat(value)],
+    'lt': ['is lower than', '<', 'n', (a, b) => a < parseFloat(b)],
+    'lte': ['is lower or equal to', '≤', 'n', (a, b) => a <= parseFloat(b)],
 
-    'ut': ['is upper than', '>', 'n', (dom_input, value) => parseFloat(dom_input.value) > parseFloat(value)],
-    'ute': ['is upper or equal to', '≥', 'n', (dom_input, value) => parseFloat(dom_input.value) >= parseFloat(value)],
+    'ut': ['is upper than', '>', 'n', (a, b) => a > parseFloat(b)],
+    'ute': ['is upper or equal to', '≥', 'n', (a, b) => a >= parseFloat(b)],
 
-    'bt': ['is before than', '<', 'dt', (dom_input, value) => Date.parse(dom_input.value) < Date.parse(value)],
-    'bte': ['is before or equal to', '≤', 'd', (dom_input, value) => Date.parse(dom_input.value) <= Date.parse(value)],
+    'bt': ['is before than', '<', 'dt', (a, b) => a < Date.parse(b)],
+    'bte': ['is before or equal to', '≤', 'd', (a, b) => a <= Date.parse(b)],
 
-    'at': ['is after than', '>', 'dt', (dom_input, value) => Date.parse(dom_input.value) > Date.parse(value)],
-    'ate': ['is after or equal to', '≥', 'd', (dom_input, value) => Date.parse(dom_input.value) >= Date.parse(value)],
+    'at': ['is after than', '>', 'dt', (a, b) => a > Date.parse(b)],
+    'ate': ['is after or equal to', '≥', 'd', (a, b) => a >= Date.parse(b)],
 
-    'ct': ['contains', '∋', 'mCL', (dom_input, value) => dom_input.value.includes(value)],
-    'nct': ['does not contain', '∌', 'mCL', (dom_input, value) => ! dom_input.value.includes(value)],
+    'ct': ['contains', '∋', 'mCL', (a, b) => a.includes(b)],
+    'nct': ['does not contain', '∌', 'mCL', (a, b) => ! a.includes(b)],
 
-    'c': ['is checked', '✔', 'c', (dom_input, value) => dom_input.checked],
-    'nc': ['is not checked', '✖', 'c', (dom_input, value) => !dom_input.checked],
+    'c': ['is checked', '✔', 'c', (a, b) => a],
+    'nc': ['is not checked', '✖', 'c', (a, b) => !a],
 }
 
 // [field type identifier, widget type]
