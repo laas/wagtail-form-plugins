@@ -60,6 +60,7 @@ function get_fields() {
 }
 
 function fill_dropdown(dom_dropdown, choices) {
+    const previous_selected = Array.from(dom_dropdown.children).find((dom) => dom.value[0] === "_").value.substring(1)
     dom_dropdown.innerHTML = "";
 
     for (const [choice_key, choice_label, disabled] of choices) {
@@ -67,6 +68,7 @@ function fill_dropdown(dom_dropdown, choices) {
         option.value = choice_key;
         option.text = choice_label;
         option.disabled = disabled;
+        option.selected = previous_selected === choice_key;
         dom_dropdown.appendChild(option);    
     }
 }

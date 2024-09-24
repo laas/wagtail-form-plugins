@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from django import forms
+from django.forms.widgets import Select
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
@@ -28,21 +29,28 @@ def field_validator(choice):
         raise ChoiceError(choice) from err
 
 
-class FreeChoiceField(forms.ChoiceField):
+class ValueChoiceField(forms.ChoiceField):
     def validate(self, value):
         for validate in self.validators:
             validate(value)
 
 
-class FreeChoiceBlock(blocks.ChoiceBlock):
+class ValueChoiceBlock(blocks.ChoiceBlock):
     def get_field(self, **kwargs):
-        return FreeChoiceField(**kwargs)
+        return ValueChoiceField(**kwargs)
+
+
+class FieldChoiceBlock(blocks.ChoiceBlock):
+    def get_field(self, **kwargs):
+        return forms.CharField(widget=Select)
+
+    def clean(self, value):
+        self.field.widget.choices = [('_' + value, '')]
+        return super().clean(value)
 
 
 class BooleanExpressionBuilderBlock(blocks.StructBlock):
-    field = FreeChoiceBlock(
-        [],
-        # TODO: use Char field with Select widget
+    field = FieldChoiceBlock(
         validators=[field_validator],
         form_classname='formbuilder-beb-field',
     )
@@ -75,7 +83,7 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
         required=False,
         form_classname='formbuilder-beb-val-num',
     )
-    value_dropdown = FreeChoiceBlock(
+    value_dropdown = ValueChoiceBlock(
         [],
         required=False,
         validators=[],
