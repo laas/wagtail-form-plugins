@@ -3,8 +3,8 @@ const OPERATORS = {
     'eq': ['is equal to', '=', 'senu', (dom_input, value) => dom_input.value === value],
     'neq': ['is not equal to', '≠', 'senu', (dom_input, value) => dom_input.value !== value],
 
-    'is': ['is', '=', 'lrdt', (dom_input, value) => dom_input.value === value],
-    'nis': ['is not', '≠', 'lrdt', (dom_input, value) => dom_input.value !== value],
+    'is': ['is', '=', 'lrd', (dom_input, value) => dom_input.value === value],
+    'nis': ['is not', '≠', 'lrd', (dom_input, value) => dom_input.value !== value],
 
     'lt': ['is lower than', '<', 'n', (dom_input, value) => parseFloat(dom_input.value) < parseFloat(value)],
     'lte': ['is lower or equal to', '≤', 'n', (dom_input, value) => parseFloat(dom_input.value) <= parseFloat(value)],
@@ -13,10 +13,10 @@ const OPERATORS = {
     'ute': ['is upper or equal to', '≥', 'n', (dom_input, value) => parseFloat(dom_input.value) >= parseFloat(value)],
 
     'bt': ['is before than', '<', 'dt', (dom_input, value) => Date.parse(dom_input.value) < Date.parse(value)],
-    'bte': ['is before or equal to', '≤', 'dt', (dom_input, value) => Date.parse(dom_input.value) <= Date.parse(value)],
+    'bte': ['is before or equal to', '≤', 'd', (dom_input, value) => Date.parse(dom_input.value) <= Date.parse(value)],
 
-    'bt': ['is after than', '>', 'dt', (dom_input, value) => Date.parse(dom_input.value) > Date.parse(value)],
-    'bte': ['is after or equal to', '≥', 'dt', (dom_input, value) => Date.parse(dom_input.value) >= Date.parse(value)],
+    'at': ['is after than', '>', 'dt', (dom_input, value) => Date.parse(dom_input.value) > Date.parse(value)],
+    'ate': ['is after or equal to', '≥', 'd', (dom_input, value) => Date.parse(dom_input.value) >= Date.parse(value)],
 
     'ct': ['contains', '∋', 'mCL', (dom_input, value) => dom_input.value.includes(value)],
     'nct': ['does not contain', '∌', 'mCL', (dom_input, value) => ! dom_input.value.includes(value)],
@@ -29,11 +29,15 @@ const DEBOUNCE_DELAY = 300;
 
 function compute_rule(rule) {
     if (rule.entry) {
-        const dom_field = document.getElementById(rule.entry.target)
+        let dom_field = document.getElementById(rule.entry.target)
         const [opr_str, c, w, opr_func] = OPERATORS[rule.entry.opr]
-        console.log('dom_field:', dom_field)
+
+        if (dom_field.nodeName === 'DIV') {
+            dom_field = dom_field.querySelector('input')
+        }
+
         return {
-            formula: `${ dom_field.labels[0].innerText } ${ opr_str } "${ rule.entry.val }"`,
+            formula: `${ dom_field.getAttribute('data-label') } ${ opr_str } "${ rule.entry.val }"`,
             str: `"${ dom_field.value }" ${ opr_str } "${ rule.entry.val }"`,
             result: opr_func(dom_field, rule.entry.val),
         }
@@ -70,7 +74,7 @@ function debounce(callback) {
 
 function update_fields_visibility() {
     for(const dom_field of document.querySelectorAll('form > p > input.form-control')) {
-        const label = dom_field.labels[0].innerText
+        const label = dom_field.getAttribute('data-label')
         const rule = JSON.parse(dom_field.getAttribute('data-rule'))
         const cmp_rule = compute_rule(rule)
         console.log(`${label}: ${ cmp_rule.formula }  ⇒  ${ cmp_rule.str }  ⇒  ${ cmp_rule.result }`)

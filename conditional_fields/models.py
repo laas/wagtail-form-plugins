@@ -46,7 +46,9 @@ class ConditionalFieldsMixin(FormMixin):
             field.widget.attrs.update({
                 "id": raw_data["id"],
                 "class": "form-control",
-                "data-rule": json.dumps(self.format_rule(rule[0])) if rule else '{}'
+                "data-rule": json.dumps(self.format_rule(rule[0])) if rule else '{}',
+                "data-widget": field.widget.__class__.__name__,
+                "data-label": field.label,
             })
 
         return form
