@@ -114,14 +114,20 @@ function on_rule_subject_selected(dom_dropdown) {
         }
 
         if (widget_type === 'dropdown') {
-            const dom_select = dom_val_list.querySelector('div > div > .w-field__input > select')
             const dom_choices = selected_field.dom_block.querySelectorAll(
                 '.formbuilder-field-block .formbuilder-choices > div > div:not([aria-hidden])'
             )
             const value_choices = Array.from(dom_choices)
                 .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
                 .map((dom_label) => [dom_label.value, dom_label.value])
-            fill_dropdown(dom_select, value_choices)
+
+            const dom_val_list_input = dom_val_list.querySelector('input')
+            const dom_select = document.createElement('select');
+            dom_select.classList.add('formbuilder-beb-val-list-select');
+            dom_select.addEventListener('change', (event) => dom_val_list_input.value = event.target.value)
+            dom_val_list_input.parentNode.insertBefore(dom_select, dom_val_list_input);
+    
+            fill_dropdown(dom_select, value_choices, dom_val_list_input.value, 0)
         }
 
     }
@@ -132,26 +138,24 @@ function update_rule_subjects_dropdown(dom_beb, fields, field_index) {
         return
     }
 
-    const dom_field = dom_beb.querySelector('.formbuilder-beb-field')
-    const dom_field_container = dom_field.parentNode.parentNode
-
-    const field = dom_field.querySelector('input').value
     const fields_choices = Object.values(fields)
         .filter((f) => field_index > f.index)
         .filter((f) => f.type !== 'hidden')
         .map(f => [f.contentpath, f.label, false])
-
-    const dom_rule_subject_dropdown = document.createElement('select');
-    dom_rule_subject_dropdown.classList.add('formbuilder-beb-field-select');
-    dom_field_container.parentNode.insertBefore(dom_rule_subject_dropdown, dom_field_container);
-
-    fill_dropdown(dom_rule_subject_dropdown, [
+    const dropdown_choices = [
         ['', 'Fields:', true],
         ...fields_choices,
         ['', 'Expression:', true],
         ['or', 'one of...', false],
         ['and', 'all of...', false],
-    ], field, 1)
+    ]
+
+    const dom_field = dom_beb.querySelector('.formbuilder-beb-field input')
+    const dom_rule_subject_dropdown = document.createElement('select');
+    dom_rule_subject_dropdown.classList.add('formbuilder-beb-field-select');
+    dom_field.parentNode.insertBefore(dom_rule_subject_dropdown, dom_field);
+
+    fill_dropdown(dom_rule_subject_dropdown, dropdown_choices, dom_field.value, 1)
 
     dom_rule_subject_dropdown.addEventListener('change', (event) => on_rule_subject_selected(event.target))
     on_rule_subject_selected(dom_rule_subject_dropdown)

@@ -28,15 +28,6 @@ def validate_field(value):
         raise ChoiceError(value) from err
 
 
-class ValueChoiceBlock(blocks.ChoiceBlock):
-    class ValueChoiceField(forms.ChoiceField):
-        def validate(self, value):
-            pass
-
-    def get_field(self, **kwargs):
-        return self.ValueChoiceField(**kwargs)
-
-
 class BooleanExpressionBuilderBlock(blocks.StructBlock):
     field = blocks.CharBlock(
         validators=[validate_field],
@@ -71,10 +62,8 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
         required=False,
         form_classname='formbuilder-beb-val-num',
     )
-    value_dropdown = ValueChoiceBlock(
-        [],
+    value_dropdown = blocks.CharBlock(
         required=False,
-        validators=[],
         form_classname='formbuilder-beb-val-list',
     )
     value_date = blocks.DateBlock(
