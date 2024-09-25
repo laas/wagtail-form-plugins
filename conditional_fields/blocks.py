@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from django import forms
-from django.forms.widgets import Select
+from django.forms.widgets import TextInput
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
@@ -40,13 +40,14 @@ class ValueChoiceBlock(blocks.ChoiceBlock):
         return ValueChoiceField(**kwargs)
 
 
+class FieldSelect(TextInput):
+    # input_type = "select"
+    template_name = "conditional_fields/field_select.html"
+
+
 class FieldChoiceBlock(blocks.ChoiceBlock):
     def get_field(self, **kwargs):
-        return forms.CharField(widget=Select)
-
-    def clean(self, value):
-        self.field.widget.choices = [('_' + value, '')]
-        return super().clean(value)
+        return forms.CharField(widget=FieldSelect)
 
 
 class BooleanExpressionBuilderBlock(blocks.StructBlock):

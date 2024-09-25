@@ -161,7 +161,20 @@ class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDef
         const fields = get_fields()
         const current_field = fields[dom_field_block_container.getAttribute('data-contentpath')];
 
-        update_rule_subjects_dropdown(dom_beb, fields, current_field.index);
+        setTimeout(() => {
+            console.log("===", current_field.label, "===")
+            for(const dom_input of dom_beb.querySelectorAll('.formbuilder-beb-field input')) {
+                console.log("input html:", dom_input.outerHTML)
+                console.log("input value:", dom_input.value)
+                console.log("input:", dom_input)
+            }
+            for(const dom_input of dom_beb.querySelectorAll('.formbuilder-beb-field select')) {
+                console.log("select html:", dom_input.outerHTML)
+                console.log("select value:", dom_input.value)
+                console.log("select:", dom_input)
+            }
+        }, 500);
+        // update_rule_subjects_dropdown(dom_beb, fields, current_field.index);
 
         return block;
     }
