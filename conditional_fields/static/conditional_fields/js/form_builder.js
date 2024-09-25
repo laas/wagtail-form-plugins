@@ -59,17 +59,25 @@ function get_fields() {
     ]));
 }
 
-function fill_dropdown(dom_dropdown, choices, selected = "", default_selection = 0) {
-    dom_dropdown.innerHTML = "";
+function get_value_choices(selected_field) {
+    return Array.from(selected_field.dom_block.querySelectorAll(
+        '.formbuilder-field-block .formbuilder-choices > div > div:not([aria-hidden])'
+    ))
+    .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
+    .map((dom_label) => [dom_label.value, dom_label.value])
+}
 
-    for (const [index, [choice_key, choice_label, disabled]] of choices.entries()) {
-        const dom_option = document.createElement('option');
-        dom_option.value = choice_key;
-        dom_option.text = choice_label;
-        dom_option.disabled = disabled;
-        dom_option.selected = selected === "" ? index === default_selection : selected === choice_key;
-        dom_dropdown.appendChild(dom_option);
-    }
+function get_field_choices(fields, field_index) {
+    return [
+        ['', 'Fields:', true],
+        ...Object.values(fields)
+            .filter((f) => field_index > f.index)
+            .filter((f) => f.type !== 'hidden')
+            .map(f => [f.contentpath, f.label, false]),
+        ['', 'Expression:', true],
+        ['or', 'one of...', false],
+        ['and', 'all of...', false],
+    ]
 }
 
 function on_rule_subject_selected(dom_dropdown) {
@@ -114,53 +122,32 @@ function on_rule_subject_selected(dom_dropdown) {
         }
 
         if (widget_type === 'dropdown') {
-            const dom_choices = selected_field.dom_block.querySelectorAll(
-                '.formbuilder-field-block .formbuilder-choices > div > div:not([aria-hidden])'
-            )
-            const value_choices = Array.from(dom_choices)
-                .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
-                .map((dom_label) => [dom_label.value, dom_label.value])
-
-            const dom_val_list_input = dom_val_list.querySelector('input')
-            const dom_select = document.createElement('select');
-            dom_select.classList.add('formbuilder-beb-val-list-select');
-            dom_select.addEventListener('change', (event) => dom_val_list_input.value = event.target.value)
-            dom_val_list_input.parentNode.insertBefore(dom_select, dom_val_list_input);
-    
-            fill_dropdown(dom_select, value_choices, dom_val_list_input.value, 0)
+            build_virtual_dropdown(dom_val_list.querySelector('input'), get_value_choices(selected_field))
         }
-
     }
 }
 
-function update_rule_subjects_dropdown(dom_beb, fields, field_index) {
-    if (field_index === 0) {
-        return
+function build_virtual_dropdown(dom_input, choices) {
+    let dom_dropdown = dom_input.parentNode.querySelector('select')
+    const selection = dom_input.value || choices.find(([k, s, disabled]) => ! disabled)[0]
+
+    if (dom_dropdown === null) {
+        dom_dropdown = document.createElement('select');
+        dom_dropdown.addEventListener('change', (event) => dom_input.value = event.target.value)
+        dom_input.parentNode.insertBefore(dom_dropdown, dom_input);
     }
 
-    const fields_choices = Object.values(fields)
-        .filter((f) => field_index > f.index)
-        .filter((f) => f.type !== 'hidden')
-        .map(f => [f.contentpath, f.label, false])
-    const dropdown_choices = [
-        ['', 'Fields:', true],
-        ...fields_choices,
-        ['', 'Expression:', true],
-        ['or', 'one of...', false],
-        ['and', 'all of...', false],
-    ]
+    for (const [choice_key, choice_label, disabled] of choices) {
+        const dom_option = document.createElement('option');
+        dom_option.value = choice_key;
+        dom_option.text = choice_label;
+        dom_option.disabled = disabled;
+        dom_option.selected = choice_key === selection;
+        dom_dropdown.appendChild(dom_option);
+    }
 
-    const dom_field = dom_beb.querySelector('.formbuilder-beb-field input')
-    const dom_rule_subject_dropdown = document.createElement('select');
-    dom_rule_subject_dropdown.classList.add('formbuilder-beb-field-select');
-    dom_field.parentNode.insertBefore(dom_rule_subject_dropdown, dom_field);
-
-    fill_dropdown(dom_rule_subject_dropdown, dropdown_choices, dom_field.value, 1)
-
-    dom_rule_subject_dropdown.addEventListener('change', (event) => on_rule_subject_selected(event.target))
-    on_rule_subject_selected(dom_rule_subject_dropdown)
+    return dom_dropdown
 }
-
 
 class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDefinition {
     render(placeholder, prefix, initialState, initialError) {
@@ -170,9 +157,18 @@ class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDef
         const dom_field_block_container = dom_beb.closest('.formbuilder-field-block').parentNode.parentNode.parentNode;
 
         const fields = get_fields()
-        const current_field = fields[dom_field_block_container.getAttribute('data-contentpath')];
+        const field_index = fields[dom_field_block_container.getAttribute('data-contentpath')].index;
 
-        update_rule_subjects_dropdown(dom_beb, fields, current_field.index);
+        if (field_index === 0) {
+            return block
+        }
+
+        const dom_rules = build_virtual_dropdown(
+            dom_beb.querySelector('.formbuilder-beb-field input'),
+            get_field_choices(fields, field_index),
+        )
+        dom_rules.addEventListener('change', (event) => on_rule_subject_selected(event.target))
+        on_rule_subject_selected(dom_rules)
 
         return block;
     }
