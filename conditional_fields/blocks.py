@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from django import forms
-from django.forms.widgets import TextInput
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
@@ -19,40 +18,28 @@ class ChoiceError(ValidationError):
         )
 
 
-def field_validator(choice):
-    if choice in ['and', 'or']:
+def validate_field(value):
+    if value in ['and', 'or']:
         return
 
     try:
-        UUID(str(choice))
+        UUID(str(value))
     except ValueError as err:
-        raise ChoiceError(choice) from err
-
-
-class ValueChoiceField(forms.ChoiceField):
-    def validate(self, value):
-        for validate in self.validators:
-            validate(value)
+        raise ChoiceError(value) from err
 
 
 class ValueChoiceBlock(blocks.ChoiceBlock):
+    class ValueChoiceField(forms.ChoiceField):
+        def validate(self, value):
+            pass
+
     def get_field(self, **kwargs):
-        return ValueChoiceField(**kwargs)
-
-
-class FieldSelect(TextInput):
-    # input_type = "select"
-    template_name = "conditional_fields/field_select.html"
-
-
-class FieldChoiceBlock(blocks.ChoiceBlock):
-    def get_field(self, **kwargs):
-        return forms.CharField(widget=FieldSelect)
+        return self.ValueChoiceField(**kwargs)
 
 
 class BooleanExpressionBuilderBlock(blocks.StructBlock):
-    field = FieldChoiceBlock(
-        validators=[field_validator],
+    field = blocks.CharBlock(
+        validators=[validate_field],
         form_classname='formbuilder-beb-field',
     )
     operator = blocks.ChoiceBlock(

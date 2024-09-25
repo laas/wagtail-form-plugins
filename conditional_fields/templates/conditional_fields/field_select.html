@@ -1,7 +1,0 @@
-<!-- <select name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
-    {% if widget.value != None %}<option value="{{ widget.value|stringformat:'s' }}"></option>{% endif %}
-</select> -->
-
-<input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
-
-<!-- <pre>{% debug %}</pre> -->

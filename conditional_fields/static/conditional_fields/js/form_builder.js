@@ -59,31 +59,31 @@ function get_fields() {
     ]));
 }
 
-function fill_dropdown(dom_dropdown, choices) {
-    const previous_selected = Array.from(dom_dropdown.children).find((dom) => dom.value[0] === "_").value.substring(1)
+function fill_dropdown(dom_dropdown, choices, selected = "", default_selection = 0) {
     dom_dropdown.innerHTML = "";
 
-    for (const [choice_key, choice_label, disabled] of choices) {
-        const option = document.createElement('option');
-        option.value = choice_key;
-        option.text = choice_label;
-        option.disabled = disabled;
-        option.selected = previous_selected === choice_key;
-        dom_dropdown.appendChild(option);    
+    for (const [index, [choice_key, choice_label, disabled]] of choices.entries()) {
+        const dom_option = document.createElement('option');
+        dom_option.value = choice_key;
+        dom_option.text = choice_label;
+        dom_option.disabled = disabled;
+        dom_option.selected = selected === "" ? index === default_selection : selected === choice_key;
+        dom_dropdown.appendChild(dom_option);
     }
 }
 
 function on_rule_subject_selected(dom_dropdown) {
     const dom_beb = dom_dropdown.closest('.formbuilder-beb')
-    const dom_field_block = dom_beb.parentNode.parentNode.parentNode
-    const get_field_block = (class_name) => dom_field_block.getElementsByClassName(class_name)[0]?.parentNode;
 
-    const dom_operator = get_field_block('formbuilder-beb-operator').parentNode;
-    const dom_val_char = get_field_block('formbuilder-beb-val-char').parentNode;
-    const dom_val_num = get_field_block('formbuilder-beb-val-num').parentNode;
-    const dom_val_list = get_field_block('formbuilder-beb-val-list').parentNode;
-    const dom_val_date = get_field_block('formbuilder-beb-val-date').parentNode;
-    const dom_rules = get_field_block('formbuilder-beb-rules');
+    const dom_input_field_id = dom_beb.querySelector('.formbuilder-beb-field > div > input')
+    dom_input_field_id.value = dom_dropdown.value
+
+    const dom_operator = dom_beb.querySelector('div:has(> div > .formbuilder-beb-operator)');
+    const dom_val_char = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-char)');
+    const dom_val_num = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-num)');
+    const dom_val_list = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-list)');
+    const dom_val_date = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-date)');
+    const dom_rules = dom_beb.querySelector('div:has(> .formbuilder-beb-rules)');
 
     if (['and', 'or'].includes(dom_dropdown.value)) {
         dom_operator.classList.toggle('formbuilder-hide', true);
@@ -132,11 +132,18 @@ function update_rule_subjects_dropdown(dom_beb, fields, field_index) {
         return
     }
 
-    const dom_rule_subject_dropdown = dom_beb.querySelector('.formbuilder-beb-field select')
+    const dom_field = dom_beb.querySelector('.formbuilder-beb-field')
+    const dom_field_container = dom_field.parentNode.parentNode
+
+    const field = dom_field.querySelector('input').value
     const fields_choices = Object.values(fields)
         .filter((f) => field_index > f.index)
         .filter((f) => f.type !== 'hidden')
         .map(f => [f.contentpath, f.label, false])
+
+    const dom_rule_subject_dropdown = document.createElement('select');
+    dom_rule_subject_dropdown.classList.add('formbuilder-beb-field-select');
+    dom_field_container.parentNode.insertBefore(dom_rule_subject_dropdown, dom_field_container);
 
     fill_dropdown(dom_rule_subject_dropdown, [
         ['', 'Fields:', true],
@@ -144,7 +151,7 @@ function update_rule_subjects_dropdown(dom_beb, fields, field_index) {
         ['', 'Expression:', true],
         ['or', 'one of...', false],
         ['and', 'all of...', false],
-    ])
+    ], field, 1)
 
     dom_rule_subject_dropdown.addEventListener('change', (event) => on_rule_subject_selected(event.target))
     on_rule_subject_selected(dom_rule_subject_dropdown)
@@ -161,20 +168,7 @@ class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDef
         const fields = get_fields()
         const current_field = fields[dom_field_block_container.getAttribute('data-contentpath')];
 
-        setTimeout(() => {
-            console.log("===", current_field.label, "===")
-            for(const dom_input of dom_beb.querySelectorAll('.formbuilder-beb-field input')) {
-                console.log("input html:", dom_input.outerHTML)
-                console.log("input value:", dom_input.value)
-                console.log("input:", dom_input)
-            }
-            for(const dom_input of dom_beb.querySelectorAll('.formbuilder-beb-field select')) {
-                console.log("select html:", dom_input.outerHTML)
-                console.log("select value:", dom_input.value)
-                console.log("select:", dom_input)
-            }
-        }, 500);
-        // update_rule_subjects_dropdown(dom_beb, fields, current_field.index);
+        update_rule_subjects_dropdown(dom_beb, fields, current_field.index);
 
         return block;
     }

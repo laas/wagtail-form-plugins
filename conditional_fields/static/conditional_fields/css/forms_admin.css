@@ -21,6 +21,15 @@
     }
 }
 
+.formbuilder-beb > div:has(> div > .formbuilder-beb-field) {
+    display: none;
+}
+
+.formbuilder-beb-field-select {
+    height: 45px;
+    margin: 10px 30px 0 0;
+}
+
 /* boolean expressions builder rules */
 .formbuilder-beb-rules > div {
     /* only display the last "add rule" button */
