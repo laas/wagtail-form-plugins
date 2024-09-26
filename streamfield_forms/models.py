@@ -58,7 +58,8 @@ class StreamFieldFormBuilder(FormBuilder):
 
         if hasattr(self, "extra_field_options"):
             for option in self.extra_field_options:
-                options.pop(option)
+                if option in options:
+                    options.pop(option)
 
         return options
 

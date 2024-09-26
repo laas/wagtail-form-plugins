@@ -64,7 +64,7 @@ function get_value_choices(selected_field) {
         '.formbuilder-field-block .formbuilder-choices > div > div:not([aria-hidden])'
     ))
     .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
-    .map((dom_label) => [dom_label.value, dom_label.value])
+    .map((dom_label, index) => [`c${index + 1}`, dom_label.value])
 }
 
 function get_field_choices(fields, field_index) {
@@ -135,6 +135,8 @@ function build_virtual_dropdown(dom_input, choices) {
         dom_dropdown = document.createElement('select');
         dom_dropdown.addEventListener('change', (event) => dom_input.value = event.target.value)
         dom_input.parentNode.insertBefore(dom_dropdown, dom_input);
+    } else {
+        dom_dropdown.innerHTML = ""
     }
 
     for (const [choice_key, choice_label, disabled] of choices) {
