@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-27 08:58+0000\n"
+"POT-Creation-Date: 2024-09-27 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,197 +18,163 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: streamfield_forms/blocks.py:8 streamfield_forms/blocks.py:34
+#: streamfield_forms/blocks.py:9 streamfield_forms/blocks.py:37
 msgid "Label"
 msgstr "Label"
 
-#: streamfield_forms/blocks.py:9
+#: streamfield_forms/blocks.py:10
 msgid "Short text describing the field."
 msgstr "Short text describing the field."
 
-#: streamfield_forms/blocks.py:13
+#: streamfield_forms/blocks.py:14
 msgid "Help text"
 msgstr "Help text"
 
-#: streamfield_forms/blocks.py:15
+#: streamfield_forms/blocks.py:16
 msgid "Text displayed below the label to add more information."
 msgstr "Text displayed below the label to add more information."
 
-#: streamfield_forms/blocks.py:24
-msgid "If checked, this field must be filled to validate the form."
-msgstr "If checked, this field must be filled to validate the form."
-
 #: streamfield_forms/blocks.py:28
+#, python-brace-format
+msgid "If checked, {condition} to validate the form."
+msgstr "If checked, {condition} to validate the form."
+
+#: streamfield_forms/blocks.py:29
+msgid "this field must be filled"
+msgstr "this field must be filled"
+
+#: streamfield_forms/blocks.py:31
 msgid "Required"
 msgstr "Required"
 
-#: streamfield_forms/blocks.py:38
+#: streamfield_forms/blocks.py:41
 msgid "Selected"
 msgstr "Selected"
 
-#: streamfield_forms/blocks.py:43
+#: streamfield_forms/blocks.py:46
 msgid "Choice"
 msgstr "Choice"
 
-#: streamfield_forms/blocks.py:49 streamfield_forms/blocks.py:73
-#: streamfield_forms/blocks.py:97 streamfield_forms/blocks.py:111
-#: streamfield_forms/blocks.py:135 streamfield_forms/blocks.py:219
-#: streamfield_forms/blocks.py:233 streamfield_forms/blocks.py:247
-msgid "Default value"
-msgstr "Default value"
-
-#: streamfield_forms/blocks.py:51 streamfield_forms/blocks.py:249
-msgid "Text used to pre-fill the field."
-msgstr "Text used to pre-fill the field."
-
-#: streamfield_forms/blocks.py:54 streamfield_forms/blocks.py:78
-msgid "Min length"
-msgstr "Min length"
-
-#: streamfield_forms/blocks.py:55
-msgid "Minimum amount of characters allowed in the field."
-msgstr "Minimum amount of characters allowed in the field."
-
-#: streamfield_forms/blocks.py:59 streamfield_forms/blocks.py:83
-msgid "Max length"
-msgstr "Max length"
-
-#: streamfield_forms/blocks.py:60
-msgid "Maximum amount of characters allowed in the field."
-msgstr "Maximum amount of characters allowed in the field."
-
-#: streamfield_forms/blocks.py:66
-msgid "Single line text"
-msgstr "Single line text"
-
-#: streamfield_forms/blocks.py:75
-msgid "Multi-line text used to pre-fill the text area."
-msgstr "Multi-line text used to pre-fill the text area."
-
-#: streamfield_forms/blocks.py:79
-msgid "Minimum amount of characters allowed in the text area."
-msgstr "Minimum amount of characters allowed in the text area."
-
-#: streamfield_forms/blocks.py:84
-msgid "Maximum amount of characters allowed in the text area."
-msgstr "Maximum amount of characters allowed in the text area."
-
-#: streamfield_forms/blocks.py:90
-msgid "Multi-line text"
-msgstr "Multi-line text"
-
-#: streamfield_forms/blocks.py:99
-msgid "E-mail used to pre-fill the field."
-msgstr "E-mail used to pre-fill the field."
-
-#: streamfield_forms/blocks.py:104
-msgid "E-mail"
-msgstr "E-mail"
-
-#: streamfield_forms/blocks.py:113
-msgid "Number used to pre-fill the field."
-msgstr "Number used to pre-fill the field."
-
-#: streamfield_forms/blocks.py:116
-msgid "Min value"
-msgstr "Min value"
-
-#: streamfield_forms/blocks.py:117
-msgid "Minimum number allowed in the field."
-msgstr "Minimum number allowed in the field."
-
-#: streamfield_forms/blocks.py:121
-msgid "Max value"
-msgstr "Max value"
-
-#: streamfield_forms/blocks.py:122
-msgid "Maximum number allowed in the field."
-msgstr "Maximum number allowed in the field."
-
-#: streamfield_forms/blocks.py:128
-msgid "Number"
-msgstr "Number"
-
-#: streamfield_forms/blocks.py:137
-msgid "URL used to pre-fill the field."
-msgstr "URL used to pre-fill the field."
-
-#: streamfield_forms/blocks.py:142
-msgid "URL"
-msgstr "URL"
-
-#: streamfield_forms/blocks.py:147
-msgid "If checked, the box must be checked to validate the form."
-msgstr "If checked, the box must be checked to validate the form."
-
-#: streamfield_forms/blocks.py:149 streamfield_forms/blocks.py:163
-msgid "Checked"
-msgstr "Checked"
-
-#: streamfield_forms/blocks.py:151
-msgid "If checked, the checkbox will be checked by default."
-msgstr "If checked, the checkbox will be checked by default."
-
-#: streamfield_forms/blocks.py:156
-msgid "Checkbox"
-msgstr "Checkbox"
-
-#: streamfield_forms/blocks.py:161
-msgid "If checked, at least one box must be checked to validate the form."
-msgstr "If checked, at least one box must be checked to validate the form."
-
-#: streamfield_forms/blocks.py:164 streamfield_forms/blocks.py:178
-#: streamfield_forms/blocks.py:192 streamfield_forms/blocks.py:206
+#: streamfield_forms/blocks.py:53
 msgid "Choices"
 msgstr "Choices"
 
-#: streamfield_forms/blocks.py:170
+#: streamfield_forms/blocks.py:59
+msgid "Default value"
+msgstr "Default value"
+
+#: streamfield_forms/blocks.py:62
+#, python-brace-format
+msgid "{field_type} used to pre-fill the field."
+msgstr "{field_type} used to pre-fill the field."
+
+#: streamfield_forms/blocks.py:70 streamfield_forms/blocks.py:84
+msgid "Single line text"
+msgstr "Single line text"
+
+#: streamfield_forms/blocks.py:72 streamfield_forms/blocks.py:91
+msgid "Min length"
+msgstr "Min length"
+
+#: streamfield_forms/blocks.py:73 streamfield_forms/blocks.py:92
+msgid "Minimum amount of characters allowed in the field."
+msgstr "Minimum amount of characters allowed in the field."
+
+#: streamfield_forms/blocks.py:77 streamfield_forms/blocks.py:96
+msgid "Max length"
+msgstr "Max length"
+
+#: streamfield_forms/blocks.py:78 streamfield_forms/blocks.py:97
+msgid "Maximum amount of characters allowed in the field."
+msgstr "Maximum amount of characters allowed in the field."
+
+#: streamfield_forms/blocks.py:89 streamfield_forms/blocks.py:103
+msgid "Multi-line text"
+msgstr "Multi-line text"
+
+#: streamfield_forms/blocks.py:108 streamfield_forms/blocks.py:112
+msgid "E-mail"
+msgstr "E-mail"
+
+#: streamfield_forms/blocks.py:117 streamfield_forms/blocks.py:131
+msgid "Number"
+msgstr "Number"
+
+#: streamfield_forms/blocks.py:119
+msgid "Min value"
+msgstr "Min value"
+
+#: streamfield_forms/blocks.py:120
+msgid "Minimum number allowed in the field."
+msgstr "Minimum number allowed in the field."
+
+#: streamfield_forms/blocks.py:124
+msgid "Max value"
+msgstr "Max value"
+
+#: streamfield_forms/blocks.py:125
+msgid "Maximum number allowed in the field."
+msgstr "Maximum number allowed in the field."
+
+#: streamfield_forms/blocks.py:136 streamfield_forms/blocks.py:140
+msgid "URL"
+msgstr "URL"
+
+#: streamfield_forms/blocks.py:144
+msgid "the box must be checked"
+msgstr "the box must be checked"
+
+#: streamfield_forms/blocks.py:146 streamfield_forms/blocks.py:159
+msgid "Checked"
+msgstr "Checked"
+
+#: streamfield_forms/blocks.py:148
+msgid "If checked, the box will be checked by default."
+msgstr "If checked, the box will be checked by default."
+
+#: streamfield_forms/blocks.py:153
+msgid "Checkbox"
+msgstr "Checkbox"
+
+#: streamfield_forms/blocks.py:157
+msgid "at least one box must be checked"
+msgstr "at least one box must be checked"
+
+#: streamfield_forms/blocks.py:164
 msgid "Checkboxes"
 msgstr "Checkboxes"
 
-#: streamfield_forms/blocks.py:175
-msgid "If checked, an item must be selected to validate the form."
-msgstr "If checked, an item must be selected to validate the form."
+#: streamfield_forms/blocks.py:168 streamfield_forms/blocks.py:186
+msgid "an item must be selected"
+msgstr "an item must be selected"
 
-#: streamfield_forms/blocks.py:184
+#: streamfield_forms/blocks.py:173
 msgid "Drop down"
 msgstr "Drop down"
 
-#: streamfield_forms/blocks.py:189
-msgid "If checked, at least one item must be selected to validate the form."
-msgstr "If checked, at least one item must be selected to validate the form."
+#: streamfield_forms/blocks.py:177
+msgid "at least one item must be selected"
+msgstr "at least one item must be selected"
 
-#: streamfield_forms/blocks.py:198
+#: streamfield_forms/blocks.py:182
 msgid "Multiple select"
 msgstr "Multiple select"
 
-#: streamfield_forms/blocks.py:203
-msgid "If checked, a button must be selected to validate the form."
-msgstr "If checked, a button must be selected to validate the form."
-
-#: streamfield_forms/blocks.py:212
+#: streamfield_forms/blocks.py:191
 msgid "Radio buttons"
 msgstr "Radio buttons"
 
-#: streamfield_forms/blocks.py:221
-msgid "Date used to pre-fill the field."
-msgstr "Date used to pre-fill the field."
-
-#: streamfield_forms/blocks.py:226
+#: streamfield_forms/blocks.py:196 streamfield_forms/blocks.py:200
 msgid "Date"
 msgstr "Date"
 
-#: streamfield_forms/blocks.py:235
-msgid "Date and time used to pre-fill the field."
-msgstr "Date and time used to pre-fill the field."
-
-#: streamfield_forms/blocks.py:240
+#: streamfield_forms/blocks.py:205 streamfield_forms/blocks.py:209
 msgid "Date and time"
 msgstr "Date and time"
 
-#: streamfield_forms/blocks.py:254
-msgid "Hidden field"
-msgstr "Hidden field"
+#: streamfield_forms/blocks.py:214 streamfield_forms/blocks.py:218
+msgid "Hidden text"
+msgstr "Hidden text"
 
 #: streamfield_forms/models.py:82
 msgid "Submission date"

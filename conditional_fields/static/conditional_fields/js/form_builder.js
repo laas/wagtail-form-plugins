@@ -54,7 +54,9 @@ function get_fields() {
             'contentpath': dom_block.getAttribute('data-contentpath'),
             'label': dom_block.querySelector('.formbuilder-field-block-label input').value || `field n°${ index + 1}`,
             'dom_block': dom_block,
-            'type': dom_block.querySelector('.formbuilder-field-block').className.replace('formbuilder-field-block', '').split('-')[1]
+            'type': Array.from(dom_block.querySelector('.formbuilder-field-block').classList)
+                .find((classname) => classname.startsWith('formbuilder-field-block-'))
+                .split('-')[3]
         }
     ]));
 }
