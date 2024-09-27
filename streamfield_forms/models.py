@@ -14,7 +14,7 @@ class StreamFieldFormBuilder(FormBuilder):
     extra_field_options = []
 
     def create_dropdown_field(self, field_value, options):
-        _options = self.format_field_options(options, field_value["choices"], True)
+        _options = self.format_field_options(options, field_value["choices"])
         return forms.ChoiceField(**_options)
 
     def create_multiselect_field(self, field_value, options):
@@ -22,21 +22,28 @@ class StreamFieldFormBuilder(FormBuilder):
         return forms.MultipleChoiceField(**_options)
 
     def create_radio_field(self, field_value, options):
-        _options = self.format_field_options(options, field_value["choices"], True)
+        _options = self.format_field_options(options, field_value["choices"])
         return forms.ChoiceField(widget=forms.RadioSelect, **_options)
 
     def create_checkboxes_field(self, field_value, options):
         _options = self.format_field_options(options, field_value["choices"])
         return forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, **_options)
 
-    def format_field_options(self, options, choices, unique=False):
-        def format_choice(choice_label):
-            return get_field_clean_name(choice_label.strip()), choice_label
+    def format_field_options(self, options, choices):
+        formatted_choices = []
+        formatted_initial = []
+
+        for choice in choices:
+            label = choice["value"]["label"].strip()
+            slug = get_field_clean_name(label)
+            formatted_choices.append((slug, label))
+            if choice["value"]["initial"]:
+                formatted_initial.append(slug)
 
         return {
             **options,
-            "choices": [ format_choice(c["value"]["label"]) for c in choices ],
-            "initial": [ c["value"]["label"] for c in choices if c["value"]["initial"] ],
+            "choices": formatted_choices,
+            "initial": formatted_initial,
         }
 
     @property
