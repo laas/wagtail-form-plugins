@@ -15,12 +15,18 @@ class FormFieldBlock(blocks.StructBlock):
         help_text=_("Text displayed below the label to add more information."),
         form_classname='formbuilder-field-block-help',
     )
-    required = blocks.BooleanBlock(
-        label=_("Required"),
-        required=False,
-        help_text=_("If checked, this field must be filled to validate the form."),
-        form_classname='formbuilder-field-block-required',
-    )
+
+
+class RequiredBlock(blocks.BooleanBlock):
+    def __init__(self, help_text=None, **kwargs):
+        super().__init__(
+            False,
+            help_text or _("If checked, this field must be filled to validate the form."),
+            **kwargs,
+        )
+
+    label = _("Required")
+    form_classname='formbuilder-field-block-required'
 
 
 class ChoiceBlock(blocks.StructBlock):
@@ -38,6 +44,7 @@ class ChoiceBlock(blocks.StructBlock):
 
 
 class SinglelineFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.CharBlock(
         label=_("Default value"),
         required=False,
@@ -61,6 +68,7 @@ class SinglelineFormFieldBlock(FormFieldBlock):
 
 
 class MultilineFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.TextBlock(
         label=_("Default value"),
         required=False,
@@ -84,6 +92,7 @@ class MultilineFormFieldBlock(FormFieldBlock):
 
 
 class EmailFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.EmailBlock(
         label=_("Default value"),
         required=False,
@@ -97,6 +106,7 @@ class EmailFormFieldBlock(FormFieldBlock):
 
 
 class NumberFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.DecimalBlock(
         label=_("Default value"),
         required=False,
@@ -120,6 +130,7 @@ class NumberFormFieldBlock(FormFieldBlock):
 
 
 class URLFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.URLBlock(
         label=_("Default value"),
         required=False,
@@ -133,6 +144,7 @@ class URLFormFieldBlock(FormFieldBlock):
 
 
 class CheckBoxFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock(_("If checked, the box must be checked to validate the form."))
     initial = blocks.BooleanBlock(
         label=_("Checked"),
         required=False,
@@ -146,6 +158,7 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
 
 
 class CheckBoxesFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock(_("If checked, at least one box must be checked to validate the form."))
     choices = blocks.ListBlock(
         ChoiceBlock([("initial", blocks.BooleanBlock(label=_("Checked"), required=False))]),
         label=_("Choices"),
@@ -159,6 +172,7 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
 
 
 class DropDownFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock(_("If checked, an item must be selected to validate the form."))
     choices = blocks.ListBlock(
         ChoiceBlock(),
         label=_("Choices"),
@@ -172,6 +186,7 @@ class DropDownFormFieldBlock(FormFieldBlock):
 
 
 class MultiSelectFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock(_("If checked, at least one item must be selected to validate the form."))
     choices = blocks.ListBlock(
         ChoiceBlock(),
         label=_("Choices"),
@@ -185,6 +200,7 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
 
 
 class RadioFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock(_("If checked, a button must be selected to validate the form."))
     choices = blocks.ListBlock(
         ChoiceBlock(),
         label=_("Choices"),
@@ -198,6 +214,7 @@ class RadioFormFieldBlock(FormFieldBlock):
 
 
 class DateFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.DateBlock(
         label=_("Default value"),
         required=False,
@@ -211,6 +228,7 @@ class DateFormFieldBlock(FormFieldBlock):
 
 
 class DateTimeFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.DateTimeBlock(
         label=_("Default value"),
         required=False,
@@ -224,6 +242,7 @@ class DateTimeFormFieldBlock(FormFieldBlock):
 
 
 class HiddenFormFieldBlock(FormFieldBlock):
+    required = RequiredBlock()
     initial = blocks.CharBlock(
         label=_("Default value"),
         required=False,
