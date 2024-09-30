@@ -85,7 +85,7 @@ class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapte
     def media(self):
         streamblock_media = super().media
         return forms.Media(
-            js=streamblock_media._js + ['conditional_fields/js/form_builder.js'],
+            js=streamblock_media._js + ['wagtail_form_mixins/conditions/js/form_builder.js'],
             css=streamblock_media._css
         )
 register_adapter(BooleanExpressionBuilderBlockAdapter(), BooleanExpressionBuilderBlock)
