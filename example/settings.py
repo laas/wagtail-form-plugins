@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "wagtail_form_mixins.conditions",
     "wagtail_form_mixins.emails",
     "wagtail_form_mixins.streamfield",
+    "wagtail_form_mixins.templating",
     "example",
 ]
 
@@ -99,6 +100,7 @@ LOCALE_PATHS = [
     APP_DIR / "conditions",
     APP_DIR / "emails",
     APP_DIR / "streamfield",
+    APP_DIR / "templating",
 ]
 
 # Static files

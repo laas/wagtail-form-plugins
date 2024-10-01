@@ -9,6 +9,7 @@ from wagtail_form_mixins.streamfield.models import StreamFieldFormMixin
 from wagtail_form_mixins.streamfield.blocks import FormFieldsBlock
 from wagtail_form_mixins.emails.models import EmailsFormMixin
 from wagtail_form_mixins.emails.blocks import Email, EmailsToSendBlock
+from wagtail_form_mixins.templating.models import TemplatingMixin
 
 
 DEFAULT_EMAIL_TO_AUTHOR = Email(
@@ -16,24 +17,24 @@ DEFAULT_EMAIL_TO_AUTHOR = Email(
     subject='Nouvelle entrée pour le formulaire "{title}"',
     message='''
 Bonjour,
-Le formulaire "{title}" vient d'être complété par l'utilisateur {user}, avec le contenu suivant:
+Le formulaire "{title}" vient d'être complété par l’utilisateur {user}, avec le contenu suivant:
 {form_results}
 Bonne journée.''',
 ).format()
 
 DEFAULT_EMAIL_TO_USER = Email(
     recipient_list="{user_email}",
-    subject='Submission confirmation to the form "{title}"',
+    subject='Confirmation de l’envoi du formulaire "{title}"',
     message='''
 Bonjour,
 Vous venez de compléter le formulaire "{title}", avec le contenu suivant:
 {form_results}
-L'auteur du formulaire en a été informé.
+L’auteur du formulaire en a été informé.
 Bonne journée.''',
 ).format()
 
 
-class LAASFormPage(EmailsFormMixin, ConditionalFieldsMixin, StreamFieldFormMixin, Page):
+class LAASFormPage(TemplatingMixin, EmailsFormMixin, ConditionalFieldsMixin, StreamFieldFormMixin, Page):
     class Meta:
         abstract = True
 
