@@ -8,5 +8,5 @@ from wagtail import hooks
 def global_admin_css():
     return format_html(
         '<link rel="stylesheet" href="{}">',
-        static('wagtail_form_mixins/conditions/css/form_builder.css')
+        static('wagtail_form_mixins/conditional_fields/css/form_builder.css')
     )

@@ -28,7 +28,7 @@ class FormContext(LazyContext):
         )
 
 
-class TemplatingMixin:
+class TemplatingFormMixin:
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
 

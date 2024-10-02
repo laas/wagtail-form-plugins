@@ -228,7 +228,7 @@ class HiddenFormFieldBlock(FormFieldBlock):
         form_classname = "formbuilder-field-block formbuilder-field-block-hidden"
 
 
-class FormFieldsBlock(blocks.StreamBlock):
+class StreamFieldFormBlock(blocks.StreamBlock):
     singleline = SinglelineFormFieldBlock()
     multiline = MultilineFormFieldBlock()
     email = EmailFormFieldBlock()

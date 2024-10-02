@@ -13,7 +13,7 @@ def validate_emails(value):
 
 
 class Email:
-    def __init__(self, recipient_list: str, subject: str, message: str, ):
+    def __init__(self, recipient_list: str, subject: str, message: str):
         self.subject = subject
         self.message = message
         self.recipient_list = recipient_list
@@ -47,5 +47,5 @@ class EmailsToSendStructBlock(blocks.StructBlock):
     )
 
 
-class EmailsToSendBlock(blocks.StreamBlock):
+class EmailActionsFormBlock(blocks.StreamBlock):
     email_to_send = EmailsToSendStructBlock()

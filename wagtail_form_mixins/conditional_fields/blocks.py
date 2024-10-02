@@ -85,7 +85,7 @@ class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapte
     def media(self):
         streamblock_media = super().media
         return forms.Media(
-            js=streamblock_media._js + ['wagtail_form_mixins/conditions/js/form_builder.js'],
+            js=streamblock_media._js + ['wagtail_form_mixins/conditional_fields/js/form_builder.js'],
             css=streamblock_media._css
         )
 register_adapter(BooleanExpressionBuilderBlockAdapter(), BooleanExpressionBuilderBlock)
@@ -120,7 +120,7 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
         form_classname = 'formbuilder-beb formbuilder-beb-lvl1'
 
 
-class RulesBlockMixin(blocks.StreamBlock):
+class ConditionalFieldsFormBlock(blocks.StreamBlock):
     def get_block_class(self):
         raise NotImplementedError('Missing get_block_class() in the RulesBlockMixin super class.')
 

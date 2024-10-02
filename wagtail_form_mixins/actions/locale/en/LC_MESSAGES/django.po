@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-30 09:37+0000\n"
+"POT-Creation-Date: 2024-10-02 13:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,26 +18,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: wagtail_form_mixins/emails/blocks.py:34
+#: wagtail_form_mixins/actions/blocks.py:34
 msgid "Recipient list"
 msgstr "Recipient list"
 
-#: wagtail_form_mixins/emails/blocks.py:36
+#: wagtail_form_mixins/actions/blocks.py:36
 msgid "E-mail addresses of the recipients, separated by comma."
 msgstr "E-mail addresses of the recipients, separated by comma."
 
-#: wagtail_form_mixins/emails/blocks.py:40
+#: wagtail_form_mixins/actions/blocks.py:40
 msgid "Subject"
 msgstr "Subject"
 
-#: wagtail_form_mixins/emails/blocks.py:41
+#: wagtail_form_mixins/actions/blocks.py:41
 msgid "The subject of the e-mail."
 msgstr "The subject of the e-mail."
 
-#: wagtail_form_mixins/emails/blocks.py:45
+#: wagtail_form_mixins/actions/blocks.py:45
 msgid "Message"
 msgstr "Message"
 
-#: wagtail_form_mixins/emails/blocks.py:46
+#: wagtail_form_mixins/actions/blocks.py:46
 msgid "The body of the e-mail."
 msgstr "The body of the e-mail."

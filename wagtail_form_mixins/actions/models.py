@@ -3,7 +3,7 @@ from django.conf import settings
 from wagtail.admin.mail import send_mail
 
 
-class EmailsFormMixin:
+class EmailActionsFormMixin:
     def process_form_submission(self, form):
         submission = super().process_form_submission(form)
         for email_block in self.emails_to_send:

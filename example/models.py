@@ -3,13 +3,13 @@ from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.models import Page
 
-from wagtail_form_mixins.conditions.blocks import RulesBlockMixin
-from wagtail_form_mixins.conditions.models import ConditionalFieldsMixin
+from wagtail_form_mixins.conditional_fields.blocks import ConditionalFieldsFormBlock
+from wagtail_form_mixins.conditional_fields.models import ConditionalFieldsFormMixin
 from wagtail_form_mixins.streamfield.models import StreamFieldFormMixin
-from wagtail_form_mixins.streamfield.blocks import FormFieldsBlock
-from wagtail_form_mixins.emails.models import EmailsFormMixin
-from wagtail_form_mixins.emails.blocks import Email, EmailsToSendBlock
-from wagtail_form_mixins.templating.models import TemplatingMixin
+from wagtail_form_mixins.streamfield.blocks import StreamFieldFormBlock
+from wagtail_form_mixins.actions.models import EmailActionsFormMixin
+from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, Email
+from wagtail_form_mixins.templating.models import TemplatingFormMixin
 
 
 DEFAULT_EMAIL_TO_AUTHOR = Email(
@@ -34,14 +34,14 @@ Bonne journée.''',
 ).format()
 
 
-class LAASFormPage(TemplatingMixin, EmailsFormMixin, ConditionalFieldsMixin, StreamFieldFormMixin, Page):
+class LAASFormPage(TemplatingFormMixin, EmailActionsFormMixin, ConditionalFieldsFormMixin, StreamFieldFormMixin, Page):
     class Meta:
         abstract = True
 
 
-class ConditionalFormFieldsBlock(RulesBlockMixin, FormFieldsBlock):
+class StreamFieldConditionsFormBlock(ConditionalFieldsFormBlock, StreamFieldFormBlock):
     def get_block_class(self):
-        return FormFieldsBlock
+        return StreamFieldFormBlock
 
 
 class FormPage(LAASFormPage):
@@ -54,11 +54,11 @@ class FormPage(LAASFormPage):
         verbose_name="Texte affiché après soumission du formulaire",
     )
     form_fields = StreamField(
-        ConditionalFormFieldsBlock(),
+        StreamFieldConditionsFormBlock(),
         verbose_name="Champs du formulaire",
     )
     emails_to_send = StreamField(
-        EmailsToSendBlock(),
+        EmailActionsFormBlock(),
         default=[DEFAULT_EMAIL_TO_AUTHOR, DEFAULT_EMAIL_TO_USER],
         blank=True,
         verbose_name="E-mails à envoyer après soumission du formulaire",

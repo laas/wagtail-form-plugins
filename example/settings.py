@@ -33,8 +33,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "wagtail_form_mixins.conditions",
-    "wagtail_form_mixins.emails",
+    "wagtail_form_mixins.actions",
+    "wagtail_form_mixins.conditional_fields",
     "wagtail_form_mixins.streamfield",
     "wagtail_form_mixins.templating",
     "example",
@@ -97,8 +97,8 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [
-    APP_DIR / "conditions",
-    APP_DIR / "emails",
+    APP_DIR / "actions",
+    APP_DIR / "conditional_fields",
     APP_DIR / "streamfield",
     APP_DIR / "templating",
 ]
