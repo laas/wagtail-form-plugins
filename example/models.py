@@ -14,25 +14,29 @@ from wagtail_form_mixins.templating.models import TemplatingFormMixin
 
 DEFAULT_EMAILS = [
     {
-        "recipient_list": "{author_email}",
-        "subject": 'Nouvelle entrée pour le formulaire "{title}"',
-        "message": '''Bonjour,
-Le formulaire "{title}" vient d'être complété par l’utilisateur {user.full_name}, avec le contenu suivant:
-{form_results}
+        "recipient_list": "{author.email}",
+        "subject": 'Nouvelle entrée pour le formulaire "{form.title}"',
+        "message": '''Bonjour {author.full_name},
+Le {result.publish_date} à {result.publish_time}, l’utilisateur {user.full_name} a complété le formulaire "{form.title}", avec le contenu suivant:
+
+{result.data}
+
 Bonne journée.''',
     },
     {
-        "recipient_list": "{user_email}",
-        "subject": 'Confirmation de l’envoi du formulaire "{title}"',
-        "message": '''Bonjour,
-Vous venez de compléter le formulaire "{title}", avec le contenu suivant:
-{form_results}
+        "recipient_list": "{user.email}",
+        "subject": 'Confirmation de l’envoi du formulaire "{form.title}"',
+        "message": '''Bonjour {user.full_name},
+Vous venez de compléter le formulaire "{form.title}", avec le contenu suivant:
+
+{result.data}
+
 L’auteur du formulaire en a été informé.
 Bonne journée.''',
     }
 ]
 
-class LAASFormPage(TemplatingFormMixin, EmailActionsFormMixin, ConditionalFieldsFormMixin, StreamFieldFormMixin, Page):
+class LAASFormPage(EmailActionsFormMixin, TemplatingFormMixin, ConditionalFieldsFormMixin, StreamFieldFormMixin, Page):
     class Meta:
         abstract = True
 

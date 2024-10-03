@@ -5,7 +5,7 @@ from wagtail import blocks
 
 
 def validate_emails(value):
-    email_variables = ['{author_email}', '{user_email}']
+    email_variables = ['{author.email}', '{user.email}']
 
     for address in value.split(","):
         if address.strip() not in email_variables:
