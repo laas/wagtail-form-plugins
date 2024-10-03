@@ -10,14 +10,11 @@ class ConditionalFieldsFormMixin(FormMixin):
         super().__init__(*args, **kwargs)
 
     def get_form(self, *args, **kwargs):
-        form_class = self.get_form_class()
-        form_params = self.get_form_parameters()
-        form_params.update(kwargs)
-        form = form_class(*args, **form_params)
+        form = super().get_form(*args, **kwargs)
 
         fields_raw_data = {
             get_field_clean_name(fd["value"]["label"]): fd
-            for fd in form_params["page"].form_fields.raw_data
+            for fd in form.page.form_fields.raw_data
         }
 
         for field in form.fields.values():

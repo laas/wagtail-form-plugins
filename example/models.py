@@ -8,31 +8,29 @@ from wagtail_form_mixins.conditional_fields.models import ConditionalFieldsFormM
 from wagtail_form_mixins.streamfield.models import StreamFieldFormMixin
 from wagtail_form_mixins.streamfield.blocks import StreamFieldFormBlock
 from wagtail_form_mixins.actions.models import EmailActionsFormMixin
-from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, Email
+from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, email_to_block
 from wagtail_form_mixins.templating.models import TemplatingFormMixin
 
 
-DEFAULT_EMAIL_TO_AUTHOR = Email(
-    recipient_list="{author_email}",
-    subject='Nouvelle entrée pour le formulaire "{title}"',
-    message='''
-Bonjour,
+DEFAULT_EMAILS = [
+    {
+        "recipient_list": "{author_email}",
+        "subject": 'Nouvelle entrée pour le formulaire "{title}"',
+        "message": '''Bonjour,
 Le formulaire "{title}" vient d'être complété par l’utilisateur {user}, avec le contenu suivant:
 {form_results}
 Bonne journée.''',
-).format()
-
-DEFAULT_EMAIL_TO_USER = Email(
-    recipient_list="{user_email}",
-    subject='Confirmation de l’envoi du formulaire "{title}"',
-    message='''
-Bonjour,
+    },
+    {
+        "recipient_list": "{user_email}",
+        "subject": 'Confirmation de l’envoi du formulaire "{title}"',
+        "message": '''Bonjour,
 Vous venez de compléter le formulaire "{title}", avec le contenu suivant:
 {form_results}
 L’auteur du formulaire en a été informé.
 Bonne journée.''',
-).format()
-
+    }
+]
 
 class LAASFormPage(TemplatingFormMixin, EmailActionsFormMixin, ConditionalFieldsFormMixin, StreamFieldFormMixin, Page):
     class Meta:
@@ -59,9 +57,7 @@ class FormPage(LAASFormPage):
     )
     emails_to_send = StreamField(
         EmailActionsFormBlock(),
-        default=[DEFAULT_EMAIL_TO_AUTHOR, DEFAULT_EMAIL_TO_USER],
-        blank=True,
-        verbose_name="E-mails à envoyer après soumission du formulaire",
+        default=[email_to_block(email) for email in DEFAULT_EMAILS]
     )
 
     content_panels = [

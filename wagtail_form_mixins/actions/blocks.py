@@ -12,21 +12,12 @@ def validate_emails(value):
             validate_email(address.strip())
 
 
-class Email:
-    def __init__(self, recipient_list: str, subject: str, message: str):
-        self.subject = subject
-        self.message = message
-        self.recipient_list = recipient_list
-
-    def format(self):
-        return {
-            "type": "email_to_send",
-            "value": {
-                "recipient_list": self.recipient_list,
-                "subject": self.subject,
-                "message": self.message.replace('\n','</p><p>'),
-            }
-        }
+def email_to_block(email_dict):
+    email_dict["message"] = email_dict["message"].replace('\n','</p><p>')
+    return {
+        "type": "email_to_send",
+        "value": email_dict,
+    }
 
 
 class EmailsToSendStructBlock(blocks.StructBlock):
@@ -49,3 +40,7 @@ class EmailsToSendStructBlock(blocks.StructBlock):
 
 class EmailActionsFormBlock(blocks.StreamBlock):
     email_to_send = EmailsToSendStructBlock()
+
+    class Meta:
+        blank = True
+        verbose_name = _("E-mails à envoyer après soumission du formulaire")
