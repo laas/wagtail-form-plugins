@@ -17,7 +17,7 @@ DEFAULT_EMAILS = [
         "recipient_list": "{author_email}",
         "subject": 'Nouvelle entrée pour le formulaire "{title}"',
         "message": '''Bonjour,
-Le formulaire "{title}" vient d'être complété par l’utilisateur {user}, avec le contenu suivant:
+Le formulaire "{title}" vient d'être complété par l’utilisateur {user.full_name}, avec le contenu suivant:
 {form_results}
 Bonne journée.''',
     },
