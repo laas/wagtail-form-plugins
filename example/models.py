@@ -36,7 +36,7 @@ Bonne journée.''',
     }
 ]
 
-class LAASFormPage(EmailActionsFormMixin, TemplatingFormMixin, ConditionalFieldsFormMixin, StreamFieldFormMixin, Page):
+class AbstractFormPage(EmailActionsFormMixin, TemplatingFormMixin, ConditionalFieldsFormMixin, StreamFieldFormMixin, Page):
     class Meta:
         abstract = True
 
@@ -46,7 +46,7 @@ class StreamFieldConditionsFormBlock(ConditionalFieldsFormBlock, StreamFieldForm
         return StreamFieldFormBlock
 
 
-class FormPage(LAASFormPage):
+class FormPage(AbstractFormPage):
     intro = RichTextField(
         blank=True,
         verbose_name="Texte d'introduction du formulaire",
@@ -65,7 +65,7 @@ class FormPage(LAASFormPage):
     )
 
     content_panels = [
-        *LAASFormPage.content_panels,
+        *AbstractFormPage.content_panels,
         FormSubmissionsPanel(),
         FieldPanel("intro"),
         FieldPanel("form_fields"),

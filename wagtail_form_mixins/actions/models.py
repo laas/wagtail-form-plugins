@@ -21,5 +21,5 @@ class EmailActionsFormMixin:
             "from_email": settings.FORMS_FROM_EMAIL,
         }
 
-        print('sending email:', email)
-        # send_mail(**email)
+        # print('sending email:', email)
+        send_mail(**email)

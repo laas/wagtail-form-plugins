@@ -667,13 +667,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "wagtail"
-version = "6.2.1"
+version = "6.2.2"
 description = "A Django content management system."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "wagtail-6.2.1-py3-none-any.whl", hash = "sha256:31d073ea8acdc973ef45c5719977a1bb122ad0fc3f01348f37e922128200b42a"},
-    {file = "wagtail-6.2.1.tar.gz", hash = "sha256:0f136ef23b157997a44fa46543a320a31437350951cf13add8ea8b69cc5e8385"},
+    {file = "wagtail-6.2.2-py3-none-any.whl", hash = "sha256:d0382603aef5d7e4a46529aa125857774a317c2870c9b6836767932969829429"},
+    {file = "wagtail-6.2.2.tar.gz", hash = "sha256:506ac2b59dae85069ae754b45bc13b91cbd86e92d4f5d663658773b0ed7a16b9"},
 ]
 
 [package.dependencies]
@@ -728,4 +728,4 @@ wand = ["Wand (>=0.6,<1.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0e84b03c6df1c4fa680719973295c91819b77651befa46200150f46abb525207"
+content-hash = "9fdc6f979f3b967436a0f742bbf96f73d99465fba6617200094f5fe32c3788cd"

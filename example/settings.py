@@ -141,4 +141,4 @@ WAGTAILDOCS_EXTENSIONS = ['csv', 'pdf', 'txt']
 
 # Forms app settings
 
-FORMS_FROM_EMAIL = "LAAS forms <pi2@laas.fr>"
+FORMS_FROM_EMAIL = "Wagtail forms <contact@example.com>"
