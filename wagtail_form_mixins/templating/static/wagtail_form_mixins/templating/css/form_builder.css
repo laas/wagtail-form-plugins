@@ -1,0 +1,14 @@
+.formbuilder-templating-help_suffix {
+    color: blue;
+    font-weight: bold;
+
+    &::after {
+        content: attr(data-message);
+    }
+
+    &:hover::after {
+        content: attr(data-title);
+        font-weight: normal;
+        font-style: italic;
+    }
+}

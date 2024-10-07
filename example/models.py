@@ -10,7 +10,7 @@ from wagtail_form_mixins.streamfield.blocks import StreamFieldFormBlock
 from wagtail_form_mixins.actions.models import EmailActionsFormMixin
 from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, email_to_block
 from wagtail_form_mixins.templating.models import TemplatingFormMixin
-
+from wagtail_form_mixins.templating.blocks import TemplatingFormBlock, TemplatingEmailFormBlock
 
 DEFAULT_EMAILS = [
     {
@@ -41,9 +41,14 @@ class AbstractFormPage(EmailActionsFormMixin, TemplatingFormMixin, ConditionalFi
         abstract = True
 
 
-class StreamFieldConditionsFormBlock(ConditionalFieldsFormBlock, StreamFieldFormBlock):
+class FormFieldsBlock(ConditionalFieldsFormBlock, TemplatingFormBlock, StreamFieldFormBlock):
     def get_block_class(self):
         return StreamFieldFormBlock
+
+
+class EmailsToSendBlock(TemplatingEmailFormBlock, EmailActionsFormBlock):
+    def get_block_class(self):
+        return EmailActionsFormBlock
 
 
 class FormPage(AbstractFormPage):
@@ -56,11 +61,11 @@ class FormPage(AbstractFormPage):
         verbose_name="Texte affiché après soumission du formulaire",
     )
     form_fields = StreamField(
-        StreamFieldConditionsFormBlock(),
+        FormFieldsBlock(),
         verbose_name="Champs du formulaire",
     )
     emails_to_send = StreamField(
-        EmailActionsFormBlock(),
+        EmailsToSendBlock(),
         default=[email_to_block(email) for email in DEFAULT_EMAILS]
     )
 
