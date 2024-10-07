@@ -43,4 +43,4 @@ class EmailActionsFormBlock(blocks.StreamBlock):
 
     class Meta:
         blank = True
-        verbose_name = _("E-mails à envoyer après soumission du formulaire")
+        verbose_name = _("E-mails to send after form submission")
