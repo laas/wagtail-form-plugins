@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-02 13:38+0000\n"
+"POT-Creation-Date: 2024-10-08 09:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,8 +21,73 @@ msgstr ""
 #: wagtail_form_mixins/conditional_fields/blocks.py:15
 #, python-format
 msgid "Select a valid choice. %(value)s is not one of the available choices."
-msgstr "Sélectionnez une option valide. %(value)s ne fait pas partie des options disponibles."
+msgstr "Select a valid choice. %(value)s is not one of the available choices."
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:38
+msgid "is equal to"
+msgstr "is equal to"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:39
+msgid "is not equal to"
+msgstr "is not equal to"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:40
+msgid "is"
+msgstr "is"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:41
+msgid "is not"
+msgstr "is not"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:42
+msgid "is lower than"
+msgstr "is lower than"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:43
+msgid "is lower or equal to"
+msgstr "is lower or equal to"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:44
+msgid "is upper than"
+msgstr "is upper than"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:45
+msgid "is upper or equal to"
+msgstr "is upper or equal to"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:46
+msgid "is before than"
+msgstr "is before than"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:47
+msgid "is before or equal to"
+msgstr "is before or equal to"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:48
+msgid "is after than"
+msgstr "is after than"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:49
+msgid "is after or equal to"
+msgstr "is after or equal to"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:50
+msgid "contains"
+msgstr "contains"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:51
+msgid "does not contain"
+msgstr "does not contain"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:52
+msgid "is checked"
+msgstr "is checked"
+
+#: wagtail_form_mixins/conditional_fields/blocks.py:53
+msgid "is not checked"
+msgstr "is not checked"
 
 #: wagtail_form_mixins/conditional_fields/blocks.py:75
+#: wagtail_form_mixins/conditional_fields/blocks.py:131
 msgid "Visibility condition"
 msgstr "Visibility condition"

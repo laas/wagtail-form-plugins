@@ -37,10 +37,12 @@ class EmailsToSendStructBlock(blocks.StructBlock):
         help_text=_("The body of the e-mail."),
     )
 
+    class Meta:
+        label = _("E-mail to send")
+
 
 class EmailActionsFormBlock(blocks.StreamBlock):
     email_to_send = EmailsToSendStructBlock()
 
     class Meta:
         blank = True
-        verbose_name = _("E-mails to send after form submission")

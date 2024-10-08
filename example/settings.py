@@ -2,7 +2,6 @@ from pathlib import Path
 
 EXAMPLE_APP_DIR = Path(__file__).parent
 BASE_DIR = EXAMPLE_APP_DIR.parent
-APP_DIR = BASE_DIR / "wagtail_form_mixins"
 
 # Dev-specific
 
@@ -86,7 +85,7 @@ DATABASES = {
 
 # Internationalization
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "fr"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
@@ -97,10 +96,7 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [
-    APP_DIR / "actions",
-    APP_DIR / "conditional_fields",
-    APP_DIR / "streamfield",
-    APP_DIR / "templating",
+    EXAMPLE_APP_DIR / "locale",
 ]
 
 # Static files

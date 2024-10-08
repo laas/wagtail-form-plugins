@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _
+
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
@@ -12,31 +14,39 @@ from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, email_to_b
 from wagtail_form_mixins.templating.models import TemplatingFormMixin
 from wagtail_form_mixins.templating.blocks import TemplatingFormBlock, TemplatingEmailFormBlock
 
+
 DEFAULT_EMAILS = [
     {
         "recipient_list": "{author.email}",
         "subject": 'Nouvelle entrée pour le formulaire "{form.title}"',
-        "message": '''Bonjour {author.full_name},
+        "message": """Bonjour {author.full_name},
 Le {result.publish_date} à {result.publish_time}, l’utilisateur {user.full_name} a complété le formulaire "{form.title}", avec le contenu suivant:
 
 {result.data}
 
-Bonne journée.''',
+Bonne journée.""",
     },
     {
         "recipient_list": "{user.email}",
         "subject": 'Confirmation de l’envoi du formulaire "{form.title}"',
-        "message": '''Bonjour {user.full_name},
+        "message": """Bonjour {user.full_name},
 Vous venez de compléter le formulaire "{form.title}", avec le contenu suivant:
 
 {result.data}
 
 L’auteur du formulaire en a été informé.
-Bonne journée.''',
+Bonne journée.""",
     }
 ]
 
-class AbstractFormPage(EmailActionsFormMixin, TemplatingFormMixin, ConditionalFieldsFormMixin, StreamFieldFormMixin, Page):
+
+class AbstractFormPage(
+    EmailActionsFormMixin,
+    TemplatingFormMixin,
+    ConditionalFieldsFormMixin,
+    StreamFieldFormMixin,
+    Page,
+):
     class Meta:
         abstract = True
 
@@ -54,18 +64,19 @@ class EmailsToSendBlock(TemplatingEmailFormBlock, EmailActionsFormBlock):
 class FormPage(AbstractFormPage):
     intro = RichTextField(
         blank=True,
-        verbose_name="Texte d'introduction du formulaire",
+        verbose_name=_("Form introduction text"),
     )
     thank_you_text = RichTextField(
         blank=True,
-        verbose_name="Texte affiché après soumission du formulaire",
+        verbose_name=_("Text displayed after form submission"),
     )
     form_fields = StreamField(
         FormFieldsBlock(),
-        verbose_name="Champs du formulaire",
+        verbose_name=_("Form fields"),
     )
     emails_to_send = StreamField(
         EmailsToSendBlock(),
+        verbose_name = _("E-mails to send after form submission"),
         default=[email_to_block(email) for email in DEFAULT_EMAILS]
     )
 
