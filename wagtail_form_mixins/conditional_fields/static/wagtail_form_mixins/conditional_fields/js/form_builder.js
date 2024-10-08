@@ -65,8 +65,8 @@ function get_value_choices(selected_field) {
     return Array.from(selected_field.dom_block.querySelectorAll(
         '.formbuilder-field-block .formbuilder-choices > div > div:not([aria-hidden])'
     ))
-    .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
-    .map((dom_label, index) => [`c${index + 1}`, dom_label.value])
+        .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
+        .map((dom_label, index) => [`c${index + 1}`, dom_label.value])
 }
 
 function get_field_choices(fields, field_index) {
@@ -127,11 +127,12 @@ function on_rule_subject_selected(dom_dropdown) {
             build_virtual_dropdown(dom_val_list.querySelector('input'), get_value_choices(selected_field))
         }
     }
+    dom_beb.querySelector('.formbuilder-beb-operator select option:not(.formbuilder-hide)').selected = true
 }
 
 function build_virtual_dropdown(dom_input, choices) {
     let dom_dropdown = dom_input.parentNode.querySelector('select')
-    const selection = dom_input.value || choices.find(([k, s, disabled]) => ! disabled)[0]
+    const selection = dom_input.value || choices.find(([k, s, disabled]) => ! disabled)
 
     if (dom_dropdown === null) {
         dom_dropdown = document.createElement('select');
@@ -146,7 +147,7 @@ function build_virtual_dropdown(dom_input, choices) {
         dom_option.value = choice_key;
         dom_option.text = choice_label;
         dom_option.disabled = disabled;
-        dom_option.selected = choice_key === selection;
+        dom_option.selected = selection === undefined ? false : (choice_key === selection[0]);
         dom_dropdown.appendChild(dom_option);
     }
 

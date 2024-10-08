@@ -47,8 +47,9 @@ class ChoicesList(blocks.ListBlock):
     def __init__(self, child_block=None, **kwargs):
         super().__init__(child_block or ChoiceBlock(), search_index=True, **kwargs)
 
-    label=_("Choices")
-    form_classname='formbuilder-choices'
+    class Meta:
+        label=_("Choices")
+        form_classname='formbuilder-choices'
 
 
 def init_options(field_type):
