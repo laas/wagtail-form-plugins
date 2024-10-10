@@ -1,0 +1,20 @@
+{% extends "example/base.html" %}
+{% load wagtailcore_tags static %}
+
+{% block title %}
+    {{ page.title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ page.title }}</h1>
+
+    {% if page.intro %}
+        <div id="forms-index-page-intro">{{page.intro|richtext}}</div>
+    {% endif %}
+
+    <ul>
+        {% for form in self.get_children.specific %}
+            <li><a href="{{ form.url }}">{{ form.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

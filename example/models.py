@@ -72,6 +72,18 @@ class Service(models.Model):
         return str(self.name)
 
 
+class FormIndexPage(Page):
+    PAGINATION = 15
+
+    intro = RichTextField(blank=True, default="Forms list")
+
+    content_panels = [*Page.content_panels, FieldPanel("intro")]
+    parent_page_type = ["example.HomePage"]
+    subpage_types = ["example.FormPage"]
+    max_count = 1
+    admin_default_ordering = "ord"
+
+
 class MyFormContext(FormContext):
     def format_user(self, user: User):
         user_dict = super().format_user(user)
