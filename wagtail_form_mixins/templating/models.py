@@ -81,9 +81,11 @@ class FormContext(Context):
 
 
 class TemplatingFormMixin:
+    template_context_class = FormContext
+
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
-        form_context = FormContext(response.context_data)
+        form_context = self.template_context_class(response.context_data)
 
         if request.method == 'GET':
             for field in response.context_data['form'].fields.values():

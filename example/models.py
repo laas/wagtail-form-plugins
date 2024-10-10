@@ -1,9 +1,13 @@
 from django.utils.translation import gettext_lazy as _
+from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import User
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.models import Page
+from wagtail.snippets.models import register_snippet
 
 from wagtail_form_mixins.conditional_fields.blocks import ConditionalFieldsFormBlock
 from wagtail_form_mixins.conditional_fields.models import ConditionalFieldsFormMixin
@@ -11,7 +15,7 @@ from wagtail_form_mixins.streamfield.models import StreamFieldFormMixin
 from wagtail_form_mixins.streamfield.blocks import StreamFieldFormBlock
 from wagtail_form_mixins.actions.models import EmailActionsFormMixin
 from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, email_to_block
-from wagtail_form_mixins.templating.models import TemplatingFormMixin
+from wagtail_form_mixins.templating.models import TemplatingFormMixin, FormContext
 from wagtail_form_mixins.templating.blocks import TemplatingFormBlock, TemplatingEmailFormBlock
 
 
@@ -40,6 +44,42 @@ Bonne journée.""",
 ]
 
 
+@register_snippet
+class Team(models.Model):
+    name = models.CharField(max_length=255)
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("members"),
+    ]
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+
+@register_snippet
+class Service(models.Model):
+    name = models.CharField(max_length=255)
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
+
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("members"),
+    ]
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+
+class MyFormContext(FormContext):
+    def format_user(self, user: User):
+        user_dict = super().format_user(user)
+        user_dict["team"] = ", ".join([service.name for service in Team.objects.filter(members__pk=user.pk)])
+        user_dict["service"] = ", ".join([service.name for service in Service.objects.filter(members__pk=user.pk)])
+        return user_dict
+
+
 class AbstractFormPage(
     EmailActionsFormMixin,
     TemplatingFormMixin,
@@ -47,6 +87,8 @@ class AbstractFormPage(
     StreamFieldFormMixin,
     Page,
 ):
+    template_context_class = MyFormContext
+
     class Meta:
         abstract = True
 
