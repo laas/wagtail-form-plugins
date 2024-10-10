@@ -5,7 +5,7 @@ from wagtail import blocks
 
 
 def validate_emails(value):
-    email_variables = ['{author.email}', '{user.email}']
+    email_variables = ["{author.email}", "{user.email}"]
 
     for address in value.split(","):
         if address.strip() not in email_variables:
@@ -13,7 +13,7 @@ def validate_emails(value):
 
 
 def email_to_block(email_dict):
-    email_dict["message"] = email_dict["message"].replace('\n','</p><p>')
+    email_dict["message"] = email_dict["message"].replace("\n", "</p><p>")
     return {
         "type": "email_to_send",
         "value": email_dict,

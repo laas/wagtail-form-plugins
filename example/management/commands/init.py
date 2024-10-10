@@ -54,13 +54,13 @@ class Command(BaseCommand):
             self.logger.info("  user %s", user_names)
             user = user_model.objects.create_user(
                 username=slugify(user_names),
-                email=f'{slugify(user_names)}@example.com',
-                password='1234',
+                email=f"{slugify(user_names)}@example.com",
+                password="1234",
                 first_name=first_name,
                 last_name=last_name,
             )
             users.append(user)
-        
+
         return users
 
     def init_teams(self, *teams_name):
@@ -75,7 +75,6 @@ class Command(BaseCommand):
 
         return teams
 
-
     def init_services(self, *services_name):
         self.logger.info("\ninitializing services...")
         Service.objects.all().delete()
@@ -87,7 +86,6 @@ class Command(BaseCommand):
             services.append(service)
 
         return services
-
 
     def init_form_index_page(self, title):
         self.logger.info("\ninitializing form index page...")

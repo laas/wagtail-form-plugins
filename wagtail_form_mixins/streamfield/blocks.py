@@ -8,7 +8,7 @@ class FormFieldBlock(blocks.StructBlock):
     label = blocks.CharBlock(
         label=_("Label"),
         help_text=_("Short text describing the field."),
-        form_classname='formbuilder-field-block-label',
+        form_classname="formbuilder-field-block-label",
     )
     help_text = blocks.CharBlock(
         label=_("Help text"),
@@ -23,16 +23,16 @@ class RequiredBlock(blocks.BooleanBlock):
             required=False,
             help_text=format_lazy(
                 _("If checked, {condition} to validate the form."),
-                condition=condition or _("this field must be filled")
+                condition=condition or _("this field must be filled"),
             ),
-            label=_("Required")
+            label=_("Required"),
         )
 
 
 class ChoiceBlock(blocks.StructBlock):
     label = blocks.CharBlock(
         label=_("Label"),
-        form_classname='formbuilder-choice-label',
+        form_classname="formbuilder-choice-label",
     )
     initial = blocks.BooleanBlock(
         label=_("Selected"),
@@ -48,8 +48,8 @@ class ChoicesList(blocks.ListBlock):
         super().__init__(child_block or ChoiceBlock(), search_index=True, **kwargs)
 
     class Meta:
-        label=_("Choices")
-        form_classname='formbuilder-choices'
+        label = _("Choices")
+        form_classname = "formbuilder-choices"
 
 
 def init_options(field_type):
@@ -59,7 +59,7 @@ def init_options(field_type):
         "help_text": format_lazy(
             _("{field_type} used to pre-fill the field."),
             field_type=field_type,
-        )
+        ),
     }
 
 
@@ -159,9 +159,9 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
 
 class CheckBoxesFormFieldBlock(FormFieldBlock):
     required = RequiredBlock(_("at least one box must be checked"))
-    choices = ChoicesList(ChoiceBlock([
-        ("initial", blocks.BooleanBlock(label=_("Checked"), required=False))
-    ]))
+    choices = ChoicesList(
+        ChoiceBlock([("initial", blocks.BooleanBlock(label=_("Checked"), required=False))])
+    )
 
     class Meta:
         icon = "tick-inverse"

@@ -13,21 +13,22 @@ class ConditionalFieldsFormMixin(FormMixin):
         form = super().get_form(*args, **kwargs)
 
         fields_raw_data = {
-            get_field_clean_name(fd["value"]["label"]): fd
-            for fd in form.page.form_fields.raw_data
+            get_field_clean_name(fd["value"]["label"]): fd for fd in form.page.form_fields.raw_data
         }
 
         for field in form.fields.values():
             raw_data = fields_raw_data[get_field_clean_name(field.label)]
             raw_rule = raw_data["value"]["rule"]
 
-            field.widget.attrs.update({
+            new_attributes = {
                 "id": raw_data["id"],
                 # "class": "form-control", # boostrap forms
                 "data-label": field.label,
                 "data-widget": field.widget.__class__.__name__,
-                "data-rule": json.dumps(self.format_rule(raw_rule[0])) if raw_rule else '{}',
-            })
+                "data-rule": json.dumps(self.format_rule(raw_rule[0])) if raw_rule else "{}",
+            }
+
+            field.widget.attrs.update(new_attributes)
 
         return form
 
@@ -36,17 +37,15 @@ class ConditionalFieldsFormMixin(FormMixin):
         value = raw_rule["value"]
 
         if value["field"] in ["and", "or"]:
-            return {
-                value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]
-            }
+            return {value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]}
 
         return {
             "entry": {
                 "target": value["field"],
                 "val": value["value_date"]
-                    or value["value_dropdown"]
-                    or value["value_number"]
-                    or value["value_char"],
+                or value["value_dropdown"]
+                or value["value_number"]
+                or value["value_char"],
                 "opr": value["operator"],
             }
         }

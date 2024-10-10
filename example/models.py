@@ -40,7 +40,7 @@ Vous venez de compléter le formulaire "{form.title}", avec le contenu suivant:
 
 L’auteur du formulaire en a été informé.
 Bonne journée.""",
-    }
+    },
 ]
 
 
@@ -87,8 +87,12 @@ class FormIndexPage(Page):
 class MyFormContext(FormContext):
     def format_user(self, user: User):
         user_dict = super().format_user(user)
-        user_dict["team"] = ", ".join([service.name for service in Team.objects.filter(members__pk=user.pk)])
-        user_dict["service"] = ", ".join([service.name for service in Service.objects.filter(members__pk=user.pk)])
+
+        teams = [service.name for service in Team.objects.filter(members__pk=user.pk)]
+        services = [service.name for service in Service.objects.filter(members__pk=user.pk)]
+
+        user_dict["team"] = ", ".join(teams)
+        user_dict["service"] = ", ".join(services)
         return user_dict
 
 
@@ -130,8 +134,8 @@ class FormPage(AbstractFormPage):
     )
     emails_to_send = StreamField(
         EmailsToSendBlock(),
-        verbose_name = _("E-mails to send after form submission"),
-        default=[email_to_block(email) for email in DEFAULT_EMAILS]
+        verbose_name=_("E-mails to send after form submission"),
+        default=[email_to_block(email) for email in DEFAULT_EMAILS],
     )
 
     content_panels = [

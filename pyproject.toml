@@ -18,3 +18,8 @@ wagtail = "^6.2.2"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6.9"
 pre-commit = "^4.0.1"
+
+[tool.ruff]
+extend-exclude = ["migrations"]
+line-length = 100
+target-version = "py310"
