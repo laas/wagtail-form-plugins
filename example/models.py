@@ -75,9 +75,25 @@ class Service(models.Model):
 class FormIndexPage(Page):
     PAGINATION = 15
 
-    intro = RichTextField(blank=True, default="Forms list")
+    intro = RichTextField(
+        verbose_name=_("Form index page introduction"),
+        help_text=_("A rich text introduction to be displayed before the list of forms."),
+        blank=True,
+        default=_("Forms list"),
+    )
+    form_title = models.CharField(
+        max_length=255,
+        verbose_name=_("Form title"),
+        help_text=_("A generic title displayed on all form pages."),
+        default=_("Wagtail forms"),
+    )
 
-    content_panels = [*Page.content_panels, FieldPanel("intro")]
+    content_panels = [
+        *Page.content_panels,
+        FieldPanel("intro"),
+        FieldPanel("form_title"),
+    ]
+
     parent_page_type = ["example.HomePage"]
     subpage_types = ["example.FormPage"]
     max_count = 1
@@ -104,6 +120,11 @@ class AbstractFormPage(
     Page,
 ):
     template_context_class = MyFormContext
+
+    def serve(self, request, *args, **kwargs):
+        response = super().serve(request, *args, **kwargs)
+        response.context_data["page"].super_title = self.get_parent().form_title
+        return response
 
     class Meta:
         abstract = True
