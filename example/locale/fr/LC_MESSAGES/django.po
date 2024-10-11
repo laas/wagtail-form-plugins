@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-08 11:51+0000\n"
+"POT-Creation-Date: 2024-10-11 12:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: example/models.py:65
+#: example/models.py:125
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: example/models.py:69
+#: example/models.py:129
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: example/models.py:73
+#: example/models.py:133
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: example/models.py:77
+#: example/models.py:137
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"

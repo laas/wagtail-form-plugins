@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-08 08:46+0000\n"
+"POT-Creation-Date: 2024-10-11 12:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: wagtail_form_mixins/streamfield/blocks.py:9
-#: wagtail_form_mixins/streamfield/blocks.py:34
+#: wagtail_form_mixins/streamfield/blocks.py:39
 msgid "Label"
 msgstr "Label"
 
@@ -35,159 +35,167 @@ msgstr "Texte d'aide"
 msgid "Text displayed below the label to add more information."
 msgstr "Texte affiché sous le label pour ajouter plus d'information."
 
-#: wagtail_form_mixins/streamfield/blocks.py:25
+#: wagtail_form_mixins/streamfield/blocks.py:19
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: wagtail_form_mixins/streamfield/blocks.py:21
+msgid "Check to make the field not editable by the user."
+msgstr "Cochez pour rendre le champ non éditable par l'utilisateur."
+
+#: wagtail_form_mixins/streamfield/blocks.py:30
 #, python-brace-format
 msgid "If checked, {condition} to validate the form."
 msgstr "Si coché, {condition} pour valider le formulaire."
 
-#: wagtail_form_mixins/streamfield/blocks.py:26
+#: wagtail_form_mixins/streamfield/blocks.py:31
 msgid "this field must be filled"
 msgstr "ce champ doit être rempli"
 
-#: wagtail_form_mixins/streamfield/blocks.py:28
+#: wagtail_form_mixins/streamfield/blocks.py:33
 msgid "Required"
 msgstr "Obligatoire"
 
-#: wagtail_form_mixins/streamfield/blocks.py:38
+#: wagtail_form_mixins/streamfield/blocks.py:43
 msgid "Selected"
 msgstr "Sélectionné"
 
-#: wagtail_form_mixins/streamfield/blocks.py:43
+#: wagtail_form_mixins/streamfield/blocks.py:48
 msgid "Choice"
 msgstr "Choix"
 
-#: wagtail_form_mixins/streamfield/blocks.py:51
+#: wagtail_form_mixins/streamfield/blocks.py:56
 msgid "Choices"
 msgstr "Choix"
 
-#: wagtail_form_mixins/streamfield/blocks.py:57
+#: wagtail_form_mixins/streamfield/blocks.py:62
 msgid "Default value"
 msgstr "Valeur par défaut"
 
-#: wagtail_form_mixins/streamfield/blocks.py:60
+#: wagtail_form_mixins/streamfield/blocks.py:65
 #, python-brace-format
 msgid "{field_type} used to pre-fill the field."
 msgstr "{field_type} utilisé pour pré-remplir le champ."
 
-#: wagtail_form_mixins/streamfield/blocks.py:68
-#: wagtail_form_mixins/streamfield/blocks.py:82
+#: wagtail_form_mixins/streamfield/blocks.py:73
+#: wagtail_form_mixins/streamfield/blocks.py:87
 msgid "Single line text"
 msgstr "Texte simple"
 
-#: wagtail_form_mixins/streamfield/blocks.py:70
-#: wagtail_form_mixins/streamfield/blocks.py:90
+#: wagtail_form_mixins/streamfield/blocks.py:75
+#: wagtail_form_mixins/streamfield/blocks.py:95
 msgid "Min length"
 msgstr "Longueur min"
 
-#: wagtail_form_mixins/streamfield/blocks.py:71
-#: wagtail_form_mixins/streamfield/blocks.py:91
+#: wagtail_form_mixins/streamfield/blocks.py:76
+#: wagtail_form_mixins/streamfield/blocks.py:96
 msgid "Minimum amount of characters allowed in the field."
 msgstr "Nombre minimum de caractères autorisé dans le champ."
 
-#: wagtail_form_mixins/streamfield/blocks.py:75
-#: wagtail_form_mixins/streamfield/blocks.py:95
+#: wagtail_form_mixins/streamfield/blocks.py:80
+#: wagtail_form_mixins/streamfield/blocks.py:100
 msgid "Max length"
 msgstr "Longueur max"
 
-#: wagtail_form_mixins/streamfield/blocks.py:76
-#: wagtail_form_mixins/streamfield/blocks.py:96
+#: wagtail_form_mixins/streamfield/blocks.py:81
+#: wagtail_form_mixins/streamfield/blocks.py:101
 msgid "Maximum amount of characters allowed in the field."
 msgstr "Nombre maximum de caractères autorisé dans le champ."
 
-#: wagtail_form_mixins/streamfield/blocks.py:88
-#: wagtail_form_mixins/streamfield/blocks.py:102
+#: wagtail_form_mixins/streamfield/blocks.py:93
+#: wagtail_form_mixins/streamfield/blocks.py:107
 msgid "Multi-line text"
 msgstr "Texte multi-ligne"
 
-#: wagtail_form_mixins/streamfield/blocks.py:108
-#: wagtail_form_mixins/streamfield/blocks.py:112
+#: wagtail_form_mixins/streamfield/blocks.py:113
+#: wagtail_form_mixins/streamfield/blocks.py:117
 msgid "E-mail"
 msgstr "E-mail"
 
-#: wagtail_form_mixins/streamfield/blocks.py:118
-#: wagtail_form_mixins/streamfield/blocks.py:132
+#: wagtail_form_mixins/streamfield/blocks.py:123
+#: wagtail_form_mixins/streamfield/blocks.py:137
 msgid "Number"
 msgstr "Nombre"
 
-#: wagtail_form_mixins/streamfield/blocks.py:120
+#: wagtail_form_mixins/streamfield/blocks.py:125
 msgid "Min value"
 msgstr "Valeur min"
 
-#: wagtail_form_mixins/streamfield/blocks.py:121
+#: wagtail_form_mixins/streamfield/blocks.py:126
 msgid "Minimum number allowed in the field."
 msgstr "Nombre minimum autorisé dans le champ."
 
-#: wagtail_form_mixins/streamfield/blocks.py:125
+#: wagtail_form_mixins/streamfield/blocks.py:130
 msgid "Max value"
 msgstr "Valeur max"
 
-#: wagtail_form_mixins/streamfield/blocks.py:126
+#: wagtail_form_mixins/streamfield/blocks.py:131
 msgid "Maximum number allowed in the field."
 msgstr "Nombre maximum autorisé dans le champ."
 
-#: wagtail_form_mixins/streamfield/blocks.py:138
-#: wagtail_form_mixins/streamfield/blocks.py:142
+#: wagtail_form_mixins/streamfield/blocks.py:143
+#: wagtail_form_mixins/streamfield/blocks.py:147
 msgid "URL"
 msgstr "URL"
 
-#: wagtail_form_mixins/streamfield/blocks.py:147
+#: wagtail_form_mixins/streamfield/blocks.py:152
 msgid "the box must be checked"
 msgstr "la case doit être cochée"
 
-#: wagtail_form_mixins/streamfield/blocks.py:149
-#: wagtail_form_mixins/streamfield/blocks.py:163
+#: wagtail_form_mixins/streamfield/blocks.py:154
+#: wagtail_form_mixins/streamfield/blocks.py:168
 msgid "Checked"
 msgstr "Coché"
 
-#: wagtail_form_mixins/streamfield/blocks.py:151
+#: wagtail_form_mixins/streamfield/blocks.py:156
 msgid "If checked, the box will be checked by default."
 msgstr "Si coché, la case sera cochée par défaut."
 
-#: wagtail_form_mixins/streamfield/blocks.py:156
+#: wagtail_form_mixins/streamfield/blocks.py:161
 msgid "Checkbox"
 msgstr "Case à cocher"
 
-#: wagtail_form_mixins/streamfield/blocks.py:161
+#: wagtail_form_mixins/streamfield/blocks.py:166
 msgid "at least one box must be checked"
 msgstr "au moins une case doit être cochée"
 
-#: wagtail_form_mixins/streamfield/blocks.py:168
+#: wagtail_form_mixins/streamfield/blocks.py:173
 msgid "Checkboxes"
 msgstr "Cases à cocher"
 
-#: wagtail_form_mixins/streamfield/blocks.py:173
-#: wagtail_form_mixins/streamfield/blocks.py:193
+#: wagtail_form_mixins/streamfield/blocks.py:178
+#: wagtail_form_mixins/streamfield/blocks.py:198
 msgid "an item must be selected"
 msgstr "une option doit être sélectionnée"
 
-#: wagtail_form_mixins/streamfield/blocks.py:178
+#: wagtail_form_mixins/streamfield/blocks.py:183
 msgid "Drop down"
 msgstr "Liste déroulante"
 
-#: wagtail_form_mixins/streamfield/blocks.py:183
+#: wagtail_form_mixins/streamfield/blocks.py:188
 msgid "at least one item must be selected"
 msgstr "au moins une option doit être sélectionnée"
 
-#: wagtail_form_mixins/streamfield/blocks.py:188
+#: wagtail_form_mixins/streamfield/blocks.py:193
 msgid "Multiple select"
 msgstr "Sélection multiple"
 
-#: wagtail_form_mixins/streamfield/blocks.py:198
+#: wagtail_form_mixins/streamfield/blocks.py:203
 msgid "Radio buttons"
 msgstr "Boutons radio"
 
-#: wagtail_form_mixins/streamfield/blocks.py:204
-#: wagtail_form_mixins/streamfield/blocks.py:208
+#: wagtail_form_mixins/streamfield/blocks.py:209
+#: wagtail_form_mixins/streamfield/blocks.py:213
 msgid "Date"
 msgstr "Date"
 
-#: wagtail_form_mixins/streamfield/blocks.py:214
-#: wagtail_form_mixins/streamfield/blocks.py:218
+#: wagtail_form_mixins/streamfield/blocks.py:219
+#: wagtail_form_mixins/streamfield/blocks.py:223
 msgid "Date and time"
 msgstr "Date et heure"
 
-#: wagtail_form_mixins/streamfield/blocks.py:224
-#: wagtail_form_mixins/streamfield/blocks.py:228
+#: wagtail_form_mixins/streamfield/blocks.py:229
+#: wagtail_form_mixins/streamfield/blocks.py:233
 msgid "Hidden text"
 msgstr "Texte caché"
 

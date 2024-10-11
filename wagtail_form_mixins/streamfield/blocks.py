@@ -15,6 +15,11 @@ class FormFieldBlock(blocks.StructBlock):
         required=False,
         help_text=_("Text displayed below the label to add more information."),
     )
+    disabled = blocks.BooleanBlock(
+        label=_("Disabled"),
+        required=False,
+        help_text=_("Check to make the field not editable by the user."),
+    )
 
 
 class RequiredBlock(blocks.BooleanBlock):
