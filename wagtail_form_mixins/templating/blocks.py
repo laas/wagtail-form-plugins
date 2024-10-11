@@ -2,7 +2,7 @@
 
 from wagtail import blocks
 from django.utils.translation import gettext_lazy as _
-
+from wagtail.blocks.field_block import RichTextBlock
 
 HELP_TEXT_SUFFIX = """<span
     class="formbuilder-templating-help_suffix"
@@ -23,7 +23,6 @@ class TemplatingFormBlock(blocks.StreamBlock):
         super().__init__(local_blocks, search_index, **kwargs)
 
 
-# TODO: generalize
 class TemplatingEmailFormBlock(blocks.StreamBlock):
     def get_block_class(self):
         raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
@@ -31,7 +30,10 @@ class TemplatingEmailFormBlock(blocks.StreamBlock):
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         for child_block in self.get_block_class().declared_blocks.values():
             for field_name in ["subject", "message", "recipient_list"]:
-                # child_block.child_blocks[field_name].field.help_text += HELP_TEXT_SUFFIX
-                pass
+                if not isinstance(child_block.child_blocks[field_name], RichTextBlock):
+                    child_block.child_blocks[field_name].field.help_text += HELP_TEXT_SUFFIX
 
         super().__init__(local_blocks, search_index, **kwargs)
+
+    class Meta:
+        collapsed = True
