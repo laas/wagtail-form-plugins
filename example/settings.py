@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     "wagtail_form_mixins.conditional_fields",
     "wagtail_form_mixins.streamfield",
     "wagtail_form_mixins.templating",
-    "wagtail_form_mixins.named",
     "example",
 ]
 

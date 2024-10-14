@@ -2,10 +2,12 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
+from wagtail.contrib.forms.models import AbstractFormSubmission
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
@@ -17,7 +19,6 @@ from wagtail_form_mixins.actions.models import EmailActionsFormMixin
 from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, email_to_block
 from wagtail_form_mixins.templating.models import TemplatingFormMixin, FormContext
 from wagtail_form_mixins.templating.blocks import TemplatingFormBlock, TemplatingEmailFormBlock
-from wagtail_form_mixins.named.models import NamedFormMixin
 
 
 DEFAULT_EMAILS = [
@@ -111,6 +112,34 @@ class MyFormContext(FormContext):
         user_dict["team"] = ", ".join(teams)
         user_dict["service"] = ", ".join(services)
         return user_dict
+
+
+class MyFormSubmission(AbstractFormSubmission):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+    def get_data(self):
+        return {
+            **super().get_data(),
+            "user": self.user,
+        }
+
+
+class NamedFormMixin:
+    def get_submission_class(self):
+        return MyFormSubmission
+
+    def get_data_fields(self):
+        return [
+            ("user", _("Form user")),
+            *super().get_data_fields(),
+        ]
+
+    def process_form_submission(self, form):
+        return self.get_submission_class().objects.create(
+            form_data=form.cleaned_data,
+            page=self,
+            user=form.user,
+        )
 
 
 class AbstractFormPage(
