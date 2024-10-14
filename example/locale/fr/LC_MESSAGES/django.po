@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-11 13:44+0000\n"
+"POT-Creation-Date: 2024-10-14 10:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,42 +18,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: example/models.py:79
+#: example/models.py:80
 msgid "Form index page introduction"
 msgstr "Texte d'introduction de la page d'index des formulaire"
 
-#: example/models.py:80
+#: example/models.py:81
 msgid "A rich text introduction to be displayed before the list of forms."
-msgstr "Une introduction en RichText à afficher avant la liste des formulaires."
+msgstr ""
+"Une introduction en RichText à afficher avant la liste des formulaires."
 
-#: example/models.py:82
+#: example/models.py:83
 msgid "Forms list"
 msgstr "Liste des formulaires"
 
-#: example/models.py:86
+#: example/models.py:87
 msgid "Form title"
 msgstr "Titre du formulaire"
 
-#: example/models.py:87
+#: example/models.py:88
 msgid "A generic title displayed on all form pages."
 msgstr "Un titre générique à afficher sur toutes les pages de formulaire."
 
-#: example/models.py:88
+#: example/models.py:89
 msgid "Wagtail forms"
 msgstr "Formulaires wagtail"
 
-#: example/models.py:146
+#: example/models.py:148
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: example/models.py:150
+#: example/models.py:152
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: example/models.py:154
+#: example/models.py:156
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: example/models.py:158
+#: example/models.py:160
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"

@@ -17,6 +17,7 @@ from wagtail_form_mixins.actions.models import EmailActionsFormMixin
 from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, email_to_block
 from wagtail_form_mixins.templating.models import TemplatingFormMixin, FormContext
 from wagtail_form_mixins.templating.blocks import TemplatingFormBlock, TemplatingEmailFormBlock
+from wagtail_form_mixins.named.models import NamedFormMixin
 
 
 DEFAULT_EMAILS = [
@@ -116,6 +117,7 @@ class AbstractFormPage(
     EmailActionsFormMixin,
     TemplatingFormMixin,
     ConditionalFieldsFormMixin,
+    NamedFormMixin,
     StreamFieldFormMixin,
     Page,
 ):
