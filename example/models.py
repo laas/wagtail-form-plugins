@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
+from django.shortcuts import render
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
@@ -152,7 +153,13 @@ class AbstractFormPage(
 ):
     template_context_class = MyFormContext
 
+    def get_user_submissions_qs(self, user):
+        return self.get_submission_class().objects.filter(page=self).filter(user=user)
+
     def serve(self, request, *args, **kwargs):
+        if self.unique_response and self.get_user_submissions_qs(request.user).exists():
+            return render(request, "example/form_already_submitted.html")
+
         response = super().serve(request, *args, **kwargs)
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
@@ -189,6 +196,10 @@ class FormPage(AbstractFormPage):
         verbose_name=_("E-mails to send after form submission"),
         default=[email_to_block(email) for email in DEFAULT_EMAILS],
     )
+    unique_response = models.BooleanField(
+        verbose_name=_("Unique response"),
+        help_text=_("If checked, the user may fill in the form only once."),
+    )
 
     content_panels = [
         *AbstractFormPage.content_panels,
@@ -197,4 +208,5 @@ class FormPage(AbstractFormPage):
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
         FieldPanel("emails_to_send"),
+        FieldPanel("unique_response"),
     ]

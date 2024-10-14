@@ -1,0 +1,14 @@
+{% extends "example/base.html" %}
+{% load wagtailcore_tags static i18n %}
+
+{% block title %}
+    {{ page.title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ page.super_title }}</h1>
+
+    <h2>{{ page.title }}</h2>
+
+    <p>{% trans "You have already filled in this form." %}</p>
+{% endblock %}

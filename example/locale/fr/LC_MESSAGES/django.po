@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 14:40+0000\n"
+"POT-Creation-Date: 2024-10-14 15:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,47 +18,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: example/models.py:81
+#: example/models.py:82
 msgid "Form index page introduction"
 msgstr "Texte d'introduction de la page d'index des formulaire"
 
-#: example/models.py:82
+#: example/models.py:83
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr ""
 "Une introduction en RichText à afficher avant la liste des formulaires."
 
-#: example/models.py:84
+#: example/models.py:85
 msgid "Forms list"
 msgstr "Liste des formulaires"
 
-#: example/models.py:88
+#: example/models.py:89
 msgid "Form title"
 msgstr "Titre du formulaire"
 
-#: example/models.py:89
+#: example/models.py:90
 msgid "A generic title displayed on all form pages."
 msgstr "Un titre générique à afficher sur toutes les pages de formulaire."
 
-#: example/models.py:90
+#: example/models.py:91
 msgid "Wagtail forms"
 msgstr "Formulaires wagtail"
 
-#: example/models.py:133
+#: example/models.py:134
 msgid "Form user"
 msgstr "Utilisateur"
 
-#: example/models.py:177
+#: example/models.py:184
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: example/models.py:181
+#: example/models.py:188
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: example/models.py:185
+#: example/models.py:192
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: example/models.py:189
+#: example/models.py:196
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"
+
+#: example/models.py:200
+msgid "Unique response"
+msgstr "Réponse unique"
+
+#: example/models.py:201
+msgid "If checked, the user may fill in the form only once."
+msgstr "Si coché, l'utilisateur ne pourra remplir le formulaire qu'une seule fois."
+
+#: example/templates/example/form_already_submitted.html:13
+msgid "You have already filled in this form."
+msgstr "Vous avez déjà rempli ce formulaire."
