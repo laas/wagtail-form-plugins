@@ -2,25 +2,25 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
-from django.shortcuts import render
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
-from wagtail.contrib.forms.models import AbstractFormSubmission
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 from wagtail_form_mixins import models as wfm_models
 from wagtail_form_mixins import blocks as wfm_blocks
+from wagtail_form_mixins import panels as wfm_panels
+
 
 DEFAULT_EMAILS = [
     {
         "recipient_list": "{author.email}",
         "subject": 'Nouvelle entrée pour le formulaire "{form.title}"',
         "message": """Bonjour {author.full_name},
-Le {result.publish_date} à {result.publish_time}, l’utilisateur {user.full_name} a complété le formulaire "{form.title}", avec le contenu suivant:
+Le {result.publish_date} à {result.publish_time}, l’utilisateur {user.full_name} a complété le \
+formulaire "{form.title}", avec le contenu suivant:
 
 {result.data}
 
@@ -108,51 +108,24 @@ class MyFormContext(wfm_models.FormContext):
         return user_dict
 
 
-class MyFormSubmission(AbstractFormSubmission):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-
-    def get_data(self):
-        return {
-            **super().get_data(),
-            "user": self.user,
-        }
-
-
-class NamedFormMixin:
-    def get_submission_class(self):
-        return MyFormSubmission
-
-    def get_data_fields(self):
-        return [
-            ("user", _("Form user")),
-            *super().get_data_fields(),
-        ]
-
-    def process_form_submission(self, form):
-        return self.get_submission_class().objects.create(
-            form_data=form.cleaned_data,
-            page=self,
-            user=form.user,
-        )
+class MyFormSubmission(wfm_models.AbstractNamedFormSubmission):
+    pass
 
 
 class AbstractFormPage(
     wfm_models.EmailActionsFormMixin,
     wfm_models.TemplatingFormMixin,
     wfm_models.ConditionalFieldsFormMixin,
-    NamedFormMixin,
+    wfm_models.NamedFormMixin,
     wfm_models.StreamFieldFormMixin,
     Page,
 ):
     template_context_class = MyFormContext
 
-    def get_user_submissions_qs(self, user):
-        return self.get_submission_class().objects.filter(page=self).filter(user=user)
+    def get_submission_class(self):
+        return MyFormSubmission
 
     def serve(self, request, *args, **kwargs):
-        if self.unique_response and self.get_user_submissions_qs(request.user).exists():
-            return render(request, "example/form_already_submitted.html")
-
         response = super().serve(request, *args, **kwargs)
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
@@ -193,10 +166,6 @@ class FormPage(AbstractFormPage):
         verbose_name=_("E-mails to send after form submission"),
         default=[wfm_blocks.email_to_block(email) for email in DEFAULT_EMAILS],
     )
-    unique_response = models.BooleanField(
-        verbose_name=_("Unique response"),
-        help_text=_("If checked, the user may fill in the form only once."),
-    )
 
     content_panels = [
         *AbstractFormPage.content_panels,
@@ -205,5 +174,5 @@ class FormPage(AbstractFormPage):
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
         FieldPanel("emails_to_send"),
-        FieldPanel("unique_response"),
+        wfm_panels.UniqueResponseFieldPanel(),
     ]

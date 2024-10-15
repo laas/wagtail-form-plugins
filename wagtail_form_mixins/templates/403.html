@@ -1,0 +1,13 @@
+{% load wagtailcore_tags i18n %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% trans "Unauthorized" %}</title>
+    </head>
+
+    <body style="text-align: center; margin-top: 10em; font-family: sans-serif;">
+        <h1>{% trans "Unauthorized" %}</h1>
+        <p>{{ exception }}</p>
+    </body>
+</html>
