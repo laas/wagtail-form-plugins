@@ -32,10 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "wagtail_form_mixins.actions",
-    "wagtail_form_mixins.conditional_fields",
-    "wagtail_form_mixins.streamfield",
-    "wagtail_form_mixins.templating",
+    "wagtail_form_mixins",
     "example",
 ]
 

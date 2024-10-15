@@ -12,15 +12,8 @@ from wagtail.contrib.forms.models import AbstractFormSubmission
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
-from wagtail_form_mixins.conditional_fields.blocks import ConditionalFieldsFormBlock
-from wagtail_form_mixins.conditional_fields.models import ConditionalFieldsFormMixin
-from wagtail_form_mixins.streamfield.models import StreamFieldFormMixin
-from wagtail_form_mixins.streamfield.blocks import StreamFieldFormBlock
-from wagtail_form_mixins.actions.models import EmailActionsFormMixin
-from wagtail_form_mixins.actions.blocks import EmailActionsFormBlock, email_to_block
-from wagtail_form_mixins.templating.models import TemplatingFormMixin, FormContext
-from wagtail_form_mixins.templating.blocks import TemplatingFormBlock, TemplatingEmailFormBlock
-
+from wagtail_form_mixins import models as wfm_models
+from wagtail_form_mixins import blocks as wfm_blocks
 
 DEFAULT_EMAILS = [
     {
@@ -103,7 +96,7 @@ class FormIndexPage(Page):
     admin_default_ordering = "ord"
 
 
-class MyFormContext(FormContext):
+class MyFormContext(wfm_models.FormContext):
     def format_user(self, user: User):
         user_dict = super().format_user(user)
 
@@ -144,11 +137,11 @@ class NamedFormMixin:
 
 
 class AbstractFormPage(
-    EmailActionsFormMixin,
-    TemplatingFormMixin,
-    ConditionalFieldsFormMixin,
+    wfm_models.EmailActionsFormMixin,
+    wfm_models.TemplatingFormMixin,
+    wfm_models.ConditionalFieldsFormMixin,
     NamedFormMixin,
-    StreamFieldFormMixin,
+    wfm_models.StreamFieldFormMixin,
     Page,
 ):
     template_context_class = MyFormContext
@@ -168,14 +161,18 @@ class AbstractFormPage(
         abstract = True
 
 
-class FormFieldsBlock(ConditionalFieldsFormBlock, TemplatingFormBlock, StreamFieldFormBlock):
+class FormFieldsBlock(
+    wfm_blocks.ConditionalFieldsFormBlock,
+    wfm_blocks.TemplatingFormBlock,
+    wfm_blocks.StreamFieldFormBlock,
+):
     def get_block_class(self):
-        return StreamFieldFormBlock
+        return wfm_blocks.StreamFieldFormBlock
 
 
-class EmailsToSendBlock(TemplatingEmailFormBlock, EmailActionsFormBlock):
+class EmailsToSendBlock(wfm_blocks.TemplatingEmailFormBlock, wfm_blocks.EmailActionsFormBlock):
     def get_block_class(self):
-        return EmailActionsFormBlock
+        return wfm_blocks.EmailActionsFormBlock
 
 
 class FormPage(AbstractFormPage):
@@ -194,7 +191,7 @@ class FormPage(AbstractFormPage):
     emails_to_send = StreamField(
         EmailsToSendBlock(),
         verbose_name=_("E-mails to send after form submission"),
-        default=[email_to_block(email) for email in DEFAULT_EMAILS],
+        default=[wfm_blocks.email_to_block(email) for email in DEFAULT_EMAILS],
     )
     unique_response = models.BooleanField(
         verbose_name=_("Unique response"),

@@ -14,7 +14,7 @@
     &:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
         margin-bottom: -25px;
         display: flex;
-    
+
         > div:not(:first-child) {
             margin-left: 32px;
         }

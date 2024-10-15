@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-14 15:58+0000\n"
+"POT-Creation-Date: 2024-10-15 09:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,57 +18,57 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: example/models.py:82
+#: example/models.py:75
 msgid "Form index page introduction"
 msgstr "Form index page introduction"
 
-#: example/models.py:83
+#: example/models.py:76
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr "A rich text introduction to be displayed before the list of forms."
 
-#: example/models.py:85
+#: example/models.py:78
 msgid "Forms list"
 msgstr "Forms list"
 
-#: example/models.py:89
+#: example/models.py:82
 msgid "Form title"
 msgstr "Form title"
 
-#: example/models.py:90
+#: example/models.py:83
 msgid "A generic title displayed on all form pages."
 msgstr "A generic title displayed on all form pages."
 
-#: example/models.py:91
+#: example/models.py:84
 msgid "Wagtail forms"
 msgstr "Wagtail forms"
 
-#: example/models.py:134
-msgid "Form user"
-msgstr "Form user"
-
-#: example/models.py:184
-msgid "Form introduction text"
-msgstr "Form introduction text"
-
-#: example/models.py:188
-msgid "Text displayed after form submission"
-msgstr "Text displayed after form submission"
-
-#: example/models.py:192
-msgid "Form fields"
-msgstr "Form fields"
-
-#: example/models.py:196
-msgid "E-mails to send after form submission"
-msgstr "E-mails to send after form submission"
-
-#: example/models.py:200
+#: example/models.py:123
 msgid "Unique response"
 msgstr "Unique response"
 
-#: example/models.py:201
+#: example/models.py:124
 msgid "If checked, the user may fill in the form only once."
 msgstr "If checked, the user may fill in the form only once."
+
+#: example/models.py:132
+msgid "Form user"
+msgstr "Form user"
+
+#: example/models.py:191
+msgid "Form introduction text"
+msgstr "Form introduction text"
+
+#: example/models.py:195
+msgid "Text displayed after form submission"
+msgstr "Text displayed after form submission"
+
+#: example/models.py:199
+msgid "Form fields"
+msgstr "Form fields"
+
+#: example/models.py:203
+msgid "E-mails to send after form submission"
+msgstr "E-mails to send after form submission"
 
 #: example/templates/example/form_already_submitted.html:13
 msgid "You have already filled in this form."
