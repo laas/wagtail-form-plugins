@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 09:24+0000\n"
+"POT-Creation-Date: 2024-10-15 13:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,34 +42,18 @@ msgstr "A generic title displayed on all form pages."
 msgid "Wagtail forms"
 msgstr "Wagtail forms"
 
-#: example/models.py:123
-msgid "Unique response"
-msgstr "Unique response"
-
-#: example/models.py:124
-msgid "If checked, the user may fill in the form only once."
-msgstr "If checked, the user may fill in the form only once."
-
-#: example/models.py:132
-msgid "Form user"
-msgstr "Form user"
-
-#: example/models.py:191
+#: example/models.py:155
 msgid "Form introduction text"
 msgstr "Form introduction text"
 
-#: example/models.py:195
+#: example/models.py:159
 msgid "Text displayed after form submission"
 msgstr "Text displayed after form submission"
 
-#: example/models.py:199
+#: example/models.py:163
 msgid "Form fields"
 msgstr "Form fields"
 
-#: example/models.py:203
+#: example/models.py:167
 msgid "E-mails to send after form submission"
 msgstr "E-mails to send after form submission"
-
-#: example/templates/example/form_already_submitted.html:13
-msgid "You have already filled in this form."
-msgstr "You have already filled in this form."

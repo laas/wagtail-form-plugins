@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 09:58+0000\n"
+"POT-Creation-Date: 2024-10-15 13:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,10 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-
 # === actions ===
-
-
 #: wagtail_form_mixins/actions/blocks.py:25
 msgid "Recipient list"
 msgstr "Recipient list"
@@ -50,10 +47,7 @@ msgstr "The body of the e-mail."
 msgid "E-mail to send"
 msgstr "E-mail to send"
 
-
 # === conditional fields ===
-
-
 #: wagtail_form_mixins/conditional_fields/blocks.py:15
 #, python-format
 msgid "Select a valid choice. %(value)s is not one of the available choices."
@@ -128,10 +122,23 @@ msgstr "is not checked"
 msgid "Visibility condition"
 msgstr "Visibility condition"
 
+#: wagtail_form_mixins/named_form/models.py:24
+msgid "Unique response"
+msgstr "Unique response"
+
+#: wagtail_form_mixins/named_form/models.py:25
+msgid "If checked, the user may fill in the form only once."
+msgstr "If checked, the user may fill in the form only once."
+
+#: wagtail_form_mixins/named_form/models.py:33
+msgid "Form user"
+msgstr "Form user"
+
+#: wagtail_form_mixins/named_form/models.py:46
+msgid "You have already filled in this form."
+msgstr "You have already filled in this form."
 
 # === streamfield ===
-
-
 #: wagtail_form_mixins/streamfield/blocks.py:9
 #: wagtail_form_mixins/streamfield/blocks.py:39
 msgid "Label"
@@ -317,10 +324,12 @@ msgstr "Hidden text"
 msgid "Submission date"
 msgstr "Submission date"
 
+#: wagtail_form_mixins/templates/403.html:6
+#: wagtail_form_mixins/templates/403.html:10
+msgid "Unauthorized"
+msgstr "Unauthorized"
 
 # === templating ===
-
-
 #: wagtail_form_mixins/templating/blocks.py:11
 #, python-brace-format
 msgid "this field supports templating syntax, such as {user.full_name}"
