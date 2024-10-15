@@ -2,9 +2,10 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 
 from wagtail.fields import RichTextField, StreamField
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
@@ -126,6 +127,12 @@ class AbstractFormPage(
         return MyFormSubmission
 
     def serve(self, request, *args, **kwargs):
+        is_team_ok = self.team and Team.objects.filter(members=request.user).exists()
+        is_service_ok = self.service and Service.objects.filter(members=request.user).exists()
+
+        if not is_team_ok or not is_service_ok:
+            raise PermissionDenied(_("You are not invited to fill in this form."))
+
         response = super().serve(request, *args, **kwargs)
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
@@ -166,6 +173,20 @@ class FormPage(AbstractFormPage):
         verbose_name=_("E-mails to send after form submission"),
         default=[wfm_blocks.email_to_block(email) for email in DEFAULT_EMAILS],
     )
+    team = models.ForeignKey(
+        to=Team,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name=_("Team"),
+    )
+    service = models.ForeignKey(
+        Service,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name=_("Service"),
+    )
 
     content_panels = [
         *AbstractFormPage.content_panels,
@@ -174,5 +195,12 @@ class FormPage(AbstractFormPage):
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
         FieldPanel("emails_to_send"),
+        MultiFieldPanel(
+            [
+                FieldPanel("team"),
+                FieldPanel("service"),
+            ],
+            _("Scope"),
+        ),
         wfm_panels.UniqueResponseFieldPanel(),
     ]

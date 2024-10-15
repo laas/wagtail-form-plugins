@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 13:24+0000\n"
+"POT-Creation-Date: 2024-10-15 13:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,42 +18,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: example/models.py:75
+#: example/models.py:76
 msgid "Form index page introduction"
 msgstr "Form index page introduction"
 
-#: example/models.py:76
+#: example/models.py:77
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr "A rich text introduction to be displayed before the list of forms."
 
-#: example/models.py:78
+#: example/models.py:79
 msgid "Forms list"
 msgstr "Forms list"
 
-#: example/models.py:82
+#: example/models.py:83
 msgid "Form title"
 msgstr "Form title"
 
-#: example/models.py:83
+#: example/models.py:84
 msgid "A generic title displayed on all form pages."
 msgstr "A generic title displayed on all form pages."
 
-#: example/models.py:84
+#: example/models.py:85
 msgid "Wagtail forms"
 msgstr "Wagtail forms"
 
-#: example/models.py:155
+#: example/models.py:134
+msgid "You are not invited to fill in this form."
+msgstr "You are not invited to fill in this form."
+
+#: example/models.py:161
 msgid "Form introduction text"
 msgstr "Form introduction text"
 
-#: example/models.py:159
+#: example/models.py:165
 msgid "Text displayed after form submission"
 msgstr "Text displayed after form submission"
 
-#: example/models.py:163
+#: example/models.py:169
 msgid "Form fields"
 msgstr "Form fields"
 
-#: example/models.py:167
+#: example/models.py:173
 msgid "E-mails to send after form submission"
 msgstr "E-mails to send after form submission"
+
+#: example/models.py:181
+msgid "Team"
+msgstr "Team"
+
+#: example/models.py:188
+msgid "Service"
+msgstr "Service"
+
+#: example/models.py:201
+msgid "Scope"
+msgstr "Scope"
