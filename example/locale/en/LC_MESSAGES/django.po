@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 13:55+0000\n"
+"POT-Creation-Date: 2024-10-15 16:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,30 +46,30 @@ msgstr "Wagtail forms"
 msgid "You are not invited to fill in this form."
 msgstr "You are not invited to fill in this form."
 
-#: example/models.py:161
+#: example/models.py:172
 msgid "Form introduction text"
 msgstr "Form introduction text"
 
-#: example/models.py:165
+#: example/models.py:176
 msgid "Text displayed after form submission"
 msgstr "Text displayed after form submission"
 
-#: example/models.py:169
+#: example/models.py:180
 msgid "Form fields"
 msgstr "Form fields"
 
-#: example/models.py:173
+#: example/models.py:184
 msgid "E-mails to send after form submission"
 msgstr "E-mails to send after form submission"
 
-#: example/models.py:181
+#: example/models.py:192
 msgid "Team"
 msgstr "Team"
 
-#: example/models.py:188
+#: example/models.py:199
 msgid "Service"
 msgstr "Service"
 
-#: example/models.py:201
+#: example/models.py:214
 msgid "Scope"
 msgstr "Scope"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 13:18+0000\n"
+"POT-Creation-Date: 2024-10-15 16:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -330,7 +330,6 @@ msgid "Unauthorized"
 msgstr "Unauthorized"
 
 # === templating ===
-#: wagtail_form_mixins/templating/blocks.py:11
-#, python-brace-format
-msgid "this field supports templating syntax, such as {user.full_name}"
-msgstr "this field supports templating syntax, such as {user.full_name}"
+#: wagtail_form_mixins/templating/blocks.py:7
+msgid "This field supports the following templating syntax:"
+msgstr "This field supports the following templating syntax:"

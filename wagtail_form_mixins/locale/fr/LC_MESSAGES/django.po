@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 13:18+0000\n"
+"POT-Creation-Date: 2024-10-15 16:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -128,7 +128,8 @@ msgstr "Réponse unique"
 
 #: wagtail_form_mixins/named_form/models.py:25
 msgid "If checked, the user may fill in the form only once."
-msgstr "Si coché, l'utilisateur ne pourra remplir le formulaire qu'une seule fois."
+msgstr ""
+"Si coché, l'utilisateur ne pourra remplir le formulaire qu'une seule fois."
 
 #: wagtail_form_mixins/named_form/models.py:33
 msgid "Form user"
@@ -330,7 +331,6 @@ msgid "Unauthorized"
 msgstr "Non autorisé"
 
 # === templating ===
-#: wagtail_form_mixins/templating/blocks.py:11
-#, python-brace-format
-msgid "this field supports templating syntax, such as {user.full_name}"
-msgstr "ce champ supporte la syntaxe par template, telle que {user.full_name}"
+#: wagtail_form_mixins/templating/blocks.py:7
+msgid "This field supports the following templating syntax:"
+msgstr "Ce champ supporte la syntaxe par template suivante:"

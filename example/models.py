@@ -141,16 +141,28 @@ class AbstractFormPage(
         abstract = True
 
 
+templating_doc = wfm_blocks.DEFAULT_TEMPLATING_DOC
+templating_doc["user"]["service"] = "the form user login (ex: “idea”)"
+templating_doc["user"]["team"] = "the form user login (ex: “gepetto”)"
+templating_doc["author"]["service"] = "the form author login (ex: “idea”)"
+templating_doc["author"]["team"] = "the form author login (ex: “gepetto”)"
+templating_doc["form"]["url"] = "the form url (ex: “https://intranet.laas.fr/form/my-form”)"
+
+
 class FormFieldsBlock(
     wfm_blocks.ConditionalFieldsFormBlock,
     wfm_blocks.TemplatingFormBlock,
     wfm_blocks.StreamFieldFormBlock,
 ):
+    templating_doc = templating_doc
+
     def get_block_class(self):
         return wfm_blocks.StreamFieldFormBlock
 
 
 class EmailsToSendBlock(wfm_blocks.TemplatingEmailFormBlock, wfm_blocks.EmailActionsFormBlock):
+    templating_doc = templating_doc
+
     def get_block_class(self):
         return wfm_blocks.EmailActionsFormBlock
 
