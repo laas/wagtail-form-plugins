@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "wagtail_form_mixins"
-version = "0.2.1"
+version = "0.3.0"
 description = ""
 authors = ["Nathanaël Jourdane <njourdane@laas.fr>"]
 license = "MIT"

@@ -142,11 +142,11 @@ class AbstractFormPage(
 
 
 templating_doc = wfm_blocks.DEFAULT_TEMPLATING_DOC
-templating_doc["user"]["service"] = "the form user login (ex: “idea”)"
-templating_doc["user"]["team"] = "the form user login (ex: “gepetto”)"
-templating_doc["author"]["service"] = "the form author login (ex: “idea”)"
-templating_doc["author"]["team"] = "the form author login (ex: “gepetto”)"
-templating_doc["form"]["url"] = "the form url (ex: “https://intranet.laas.fr/form/my-form”)"
+templating_doc["user"]["service"] = _("the form user service (ex: “idea”)")
+templating_doc["user"]["team"] = _("the form user team (ex: “gepetto”)")
+templating_doc["author"]["service"] = _("the form author service (ex: “idea”)")
+templating_doc["author"]["team"] = _("the form author team (ex: “gepetto”)")
+templating_doc["form"]["url"] = _("the form url (ex: “https://intranet.laas.fr/form/my-form”)")
 
 
 class FormFieldsBlock(

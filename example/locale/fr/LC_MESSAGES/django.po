@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 16:02+0000\n"
+"POT-Creation-Date: 2024-10-16 06:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,30 +47,50 @@ msgstr "Formulaires wagtail"
 msgid "You are not invited to fill in this form."
 msgstr "Vous n'êtes pas invité à remplir ce formulaire."
 
-#: example/models.py:172
+#: example/models.py:145
+msgid "the form user service (ex: “idea”)"
+msgstr "le service de l'utilisateur du formulaire (ex: “idea”)"
+
+#: example/models.py:146
+msgid "the form user team (ex: “gepetto”)"
+msgstr "l'équipe de l'utilisateur du formulaire (ex: ““gepetto”)"
+
+#: example/models.py:147
+msgid "the form author service (ex: “idea”)"
+msgstr "le service de l'auteur du formulaire (ex: “idea”)"
+
+#: example/models.py:148
+msgid "the form author team (ex: “gepetto”)"
+msgstr "l'équipe de l'auteur du formulaire (ex: ““gepetto”)"
+
+#: example/models.py:149
+msgid "the form url (ex: “https://intranet.laas.fr/form/my-form”)"
+msgstr "l'url du formulaire (ex: “https://intranet.laas.fr/form/mon-formulaire”)"
+
+#: example/models.py:173
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: example/models.py:176
+#: example/models.py:177
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: example/models.py:180
+#: example/models.py:181
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: example/models.py:184
+#: example/models.py:185
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"
 
-#: example/models.py:192
+#: example/models.py:193
 msgid "Team"
 msgstr "Équipe"
 
-#: example/models.py:199
+#: example/models.py:200
 msgid "Service"
 msgstr "Service"
 
-#: example/models.py:214
+#: example/models.py:215
 msgid "Scope"
 msgstr "Portée"
