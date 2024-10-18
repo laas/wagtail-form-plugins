@@ -1,3 +1,5 @@
+from django.contrib.auth.models import AnonymousUser
+
 from wagtail.contrib.forms.utils import get_field_clean_name
 
 
@@ -50,12 +52,13 @@ class FormContext(Context):
         return fields
 
     def format_user(self, user):
+        is_anonymous = isinstance(user, AnonymousUser)
         return {
             "login": user.username,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "full_name": f"{user.first_name} {user.last_name}",
-            "email": user.email,
+            "first_name": "" if is_anonymous else user.first_name,
+            "last_name": "" if is_anonymous else user.last_name,
+            "full_name": "" if is_anonymous else f"{ user.first_name } {user.last_name }",
+            "email": "" if is_anonymous else user.email,
         }
 
     def format_form(self, form, request):
