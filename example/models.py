@@ -127,8 +127,8 @@ class AbstractFormPage(
         return MyFormSubmission
 
     def serve(self, request, *args, **kwargs):
-        is_team_ok = self.team and Team.objects.filter(members=request.user).exists()
-        is_service_ok = self.service and Service.objects.filter(members=request.user).exists()
+        is_team_ok = not self.team or Team.objects.filter(members=request.user).exists()
+        is_service_ok = not self.service or Service.objects.filter(members=request.user).exists()
 
         if not is_team_ok or not is_service_ok:
             raise PermissionDenied(_("You are not invited to fill in this form."))

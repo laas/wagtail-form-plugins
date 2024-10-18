@@ -92,7 +92,8 @@ class TemplatingFormMixin:
 
         if request.method == "GET":
             for field in response.context_data["form"].fields.values():
-                field.initial = form_context.format(field.initial)
+                if field.initial:
+                    field.initial = form_context.format(field.initial)
 
         if "form_submission" in response.context_data:
             for email in response.context_data["page"].emails_to_send:

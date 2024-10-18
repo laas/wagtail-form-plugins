@@ -24,6 +24,7 @@ class NamedFormMixin(models.Model):
     unique_response = models.BooleanField(
         verbose_name=_("Unique response"),
         help_text=_("If checked, the user may fill in the form only once."),
+        default=False,
     )
 
     def get_user_submissions_qs(self, user):
