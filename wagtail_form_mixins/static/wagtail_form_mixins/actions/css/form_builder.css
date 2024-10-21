@@ -1,0 +1,7 @@
+div [data-contentpath="emails_to_send"] span.c-sf-block__title::before {
+    content: 'to "';
+}
+
+div [data-contentpath="emails_to_send"] span.c-sf-block__title::after {
+    content: '"';
+}
