@@ -34,10 +34,14 @@ class FileInputSubmissionsListView(SubmissionsListView):
                     if field_type == "file" and value:
                         file = self.form_page.file_input_model.objects.get(pk=value)
 
-                        fields[idx] = format_html(
-                            "<a href='{}' target='_blank'>{}</a>",
-                            file.file.url,
-                            Path(file.file.name).name,
+                        fields[idx] = (
+                            format_html(
+                                "<a href='{url}' target='_blank'>{name}</a>",
+                                url=file.file.url,
+                                name=Path(file.file.name).name,
+                            )
+                            if file.file
+                            else "-"
                         )
 
         return context

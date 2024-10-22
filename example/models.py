@@ -133,6 +133,9 @@ class FormUploadedFile(models.Model):
     file = models.FileField(upload_to="example_forms/%Y/%m/%d")
     field_name = models.CharField(blank=True, max_length=254)
 
+    def __str__(self) -> str:
+        return f"{self.field_name}: {self.file.name if self.file else '-'}"
+
 
 class AbstractFormPage(
     wfm_models.EmailActionsFormMixin,
