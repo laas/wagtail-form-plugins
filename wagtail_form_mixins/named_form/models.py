@@ -4,6 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.db import models
 from django.core.exceptions import PermissionDenied
 
+from wagtail.contrib.forms.views import SubmissionsListView
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
 from wagtail_form_mixins.base.models import PluginBase
@@ -20,6 +21,10 @@ class NamedFormSubmission(AbstractFormSubmission):
 
     class Meta:
         abstract = True
+
+
+class NamedSubmissionsListView(SubmissionsListView):
+    pass
 
 
 class NamedFormMixin(PluginBase):

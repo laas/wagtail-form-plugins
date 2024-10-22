@@ -14,6 +14,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail_form_mixins import models as wfm_models
 from wagtail_form_mixins import blocks as wfm_blocks
 from wagtail_form_mixins import panels as wfm_panels
+from wagtail_form_mixins import views as wfm_views
 
 
 DEFAULT_EMAILS = [
@@ -114,13 +115,29 @@ class CustomFormSubmission(wfm_models.NamedFormSubmission):
     pass
 
 
-class CustomFormBuilder(wfm_models.StreamFieldFormBuilder):
+class CustomFormBuilder(
+    wfm_models.FileInputFormBuilder,
+    wfm_models.StreamFieldFormBuilder,
+):
     pass
+
+
+class CustomSubmissionListView(
+    wfm_views.NamedSubmissionsListView,
+    wfm_views.FileInputSubmissionsListView,
+):
+    pass
+
+
+class FormUploadedFile(models.Model):
+    file = models.FileField(upload_to="example_forms/%Y/%m/%d")
+    field_name = models.CharField(blank=True, max_length=254)
 
 
 class AbstractFormPage(
     wfm_models.EmailActionsFormMixin,
     wfm_models.TemplatingFormMixin,
+    wfm_models.FileInputFormMixin,
     wfm_models.ConditionalFieldsFormMixin,
     wfm_models.NamedFormMixin,
     wfm_models.StreamFieldFormMixin,
@@ -129,6 +146,8 @@ class AbstractFormPage(
 ):
     template_context_class = CustomFormContext
     form_builder = CustomFormBuilder
+    file_input_model = FormUploadedFile
+    submissions_list_view_class = CustomSubmissionListView
 
     def get_submission_class(self):
         return CustomFormSubmission
@@ -157,6 +176,7 @@ templating_doc["form"]["url"] = _("the form url (ex: “https://intranet.laas.fr
 
 
 class FormFieldsBlock(
+    wfm_blocks.FileInputFormBlock,
     wfm_blocks.ConditionalFieldsFormBlock,
     wfm_blocks.TemplatingFormBlock,
     wfm_blocks.StreamFieldFormBlock,
