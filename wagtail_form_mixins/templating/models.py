@@ -2,6 +2,8 @@ from django.contrib.auth.models import AnonymousUser
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 
+from wagtail_form_mixins.base.models import PluginBase
+
 
 TEMPLATE_VAR_LEFT = "{"
 TEMPLATE_VAR_RIGHT = "}"
@@ -83,7 +85,7 @@ class FormContext(Context):
         }
 
 
-class TemplatingFormMixin:
+class TemplatingFormMixin(PluginBase):
     template_context_class = FormContext
 
     def serve(self, request, *args, **kwargs):
@@ -101,3 +103,6 @@ class TemplatingFormMixin:
                     email.value[field_name] = form_context.format(str(email.value[field_name]))
 
         return response
+
+    class Meta:
+        abstract = True

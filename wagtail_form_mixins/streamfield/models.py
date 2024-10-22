@@ -5,9 +5,10 @@ from django.conf import settings
 from django.utils.html import conditional_escape
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.contrib.forms.models import FormMixin
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
+
+from wagtail_form_mixins.base.models import PluginBase
 
 
 class StreamFieldFormBuilder(FormBuilder):
@@ -71,7 +72,7 @@ class StreamFieldFormBuilder(FormBuilder):
         return options
 
 
-class StreamFieldFormMixin(FormMixin):
+class StreamFieldFormMixin(PluginBase):
     form_builder = StreamFieldFormBuilder
 
     def get_form_fields(self):
@@ -88,3 +89,6 @@ class StreamFieldFormMixin(FormMixin):
         ]
 
         return data_fields
+
+    class Meta:
+        abstract = True

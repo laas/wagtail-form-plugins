@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
+from wagtail.contrib.forms.models import FormMixin
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
@@ -97,7 +98,7 @@ class FormIndexPage(Page):
     admin_default_ordering = "ord"
 
 
-class MyFormContext(wfm_models.FormContext):
+class CustomFormContext(wfm_models.FormContext):
     def format_user(self, user: User):
         user_dict = super().format_user(user)
 
@@ -109,7 +110,11 @@ class MyFormContext(wfm_models.FormContext):
         return user_dict
 
 
-class MyFormSubmission(wfm_models.AbstractNamedFormSubmission):
+class CustomFormSubmission(wfm_models.NamedFormSubmission):
+    pass
+
+
+class CustomFormBuilder(wfm_models.StreamFieldFormBuilder):
     pass
 
 
@@ -119,12 +124,14 @@ class AbstractFormPage(
     wfm_models.ConditionalFieldsFormMixin,
     wfm_models.NamedFormMixin,
     wfm_models.StreamFieldFormMixin,
+    FormMixin,
     Page,
 ):
-    template_context_class = MyFormContext
+    template_context_class = CustomFormContext
+    form_builder = CustomFormBuilder
 
     def get_submission_class(self):
-        return MyFormSubmission
+        return CustomFormSubmission
 
     def serve(self, request, *args, **kwargs):
         is_team_ok = not self.team or Team.objects.filter(members=request.user).exists()

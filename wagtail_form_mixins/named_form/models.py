@@ -6,8 +6,10 @@ from django.core.exceptions import PermissionDenied
 
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
+from wagtail_form_mixins.base.models import PluginBase
 
-class AbstractNamedFormSubmission(AbstractFormSubmission):
+
+class NamedFormSubmission(AbstractFormSubmission):
     user = models.ForeignKey(get_user_model(), blank=True, null=True, on_delete=models.SET_NULL)
 
     def get_data(self):
@@ -20,7 +22,7 @@ class AbstractNamedFormSubmission(AbstractFormSubmission):
         abstract = True
 
 
-class NamedFormMixin(models.Model):
+class NamedFormMixin(PluginBase):
     unique_response = models.BooleanField(
         verbose_name=_("Unique response"),
         help_text=_("If checked, the user may fill in the form only once."),
@@ -36,12 +38,11 @@ class NamedFormMixin(models.Model):
             *super().get_data_fields(),
         ]
 
-    def process_form_submission(self, form):
-        return self.get_submission_class().objects.create(
-            form_data=form.cleaned_data,
-            page=self,
-            user=None if isinstance(form.user, AnonymousUser) else form.user,
-        )
+    def get_submission_options(self, form):
+        return {
+            **super().get_submission_options(form),
+            "user": None if isinstance(form.user, AnonymousUser) else form.user,
+        }
 
     def serve(self, request, *args, **kwargs):
         if self.unique_response and self.get_user_submissions_qs(request.user).exists():

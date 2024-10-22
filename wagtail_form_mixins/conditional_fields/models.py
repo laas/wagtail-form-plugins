@@ -1,10 +1,11 @@
 import json
 
-from wagtail.contrib.forms.models import FormMixin
 from wagtail.contrib.forms.utils import get_field_clean_name
 
+from wagtail_form_mixins.base.models import PluginBase
 
-class ConditionalFieldsFormMixin(FormMixin):
+
+class ConditionalFieldsFormMixin(PluginBase):
     def __init__(self, *args, **kwargs):
         self.form_builder.extra_field_options = ["rule"]
         super().__init__(*args, **kwargs)
@@ -18,6 +19,8 @@ class ConditionalFieldsFormMixin(FormMixin):
 
         for field in form.fields.values():
             raw_data = fields_raw_data[get_field_clean_name(field.label)]
+            if "rule" not in raw_data["value"]:
+                continue
             raw_rule = raw_data["value"]["rule"]
 
             new_attributes = {
@@ -49,3 +52,6 @@ class ConditionalFieldsFormMixin(FormMixin):
                 "opr": value["operator"],
             }
         }
+
+    class Meta:
+        abstract = True

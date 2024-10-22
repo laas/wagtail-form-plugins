@@ -3,8 +3,10 @@ from django.utils.html import strip_tags
 
 from wagtail.admin.mail import send_mail
 
+from wagtail_form_mixins.base.models import PluginBase
 
-class EmailActionsFormMixin:
+
+class EmailActionsFormMixin(PluginBase):
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
 
@@ -22,3 +24,6 @@ class EmailActionsFormMixin:
             from_email=settings.FORMS_FROM_EMAIL,
             html_message=email["message"],
         )
+
+    class Meta:
+        abstract = True
