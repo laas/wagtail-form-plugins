@@ -127,12 +127,15 @@ function on_rule_subject_selected(dom_dropdown) {
             build_virtual_dropdown(dom_val_list.querySelector('input'), get_value_choices(selected_field))
         }
     }
-    dom_beb.querySelector('.formbuilder-beb-operator select option:not(.formbuilder-hide)').selected = true
+
+    if (dom_operator.querySelector('select option:not(.formbuilder-hide):checked') === null) {
+        dom_operator.querySelector('select option:not(.formbuilder-hide)').selected = true
+    }
 }
 
 function build_virtual_dropdown(dom_input, choices) {
     let dom_dropdown = dom_input.parentNode.querySelector('select')
-    const selection = dom_input.value || choices.find(([k, s, disabled]) => ! disabled)
+    const selection = dom_input.value || choices.find(([k, s, disabled]) => ! disabled)[0]
 
     if (dom_dropdown === null) {
         dom_dropdown = document.createElement('select');
@@ -147,7 +150,7 @@ function build_virtual_dropdown(dom_input, choices) {
         dom_option.value = choice_key;
         dom_option.text = choice_label;
         dom_option.disabled = disabled;
-        dom_option.selected = selection === undefined ? false : (choice_key === selection[0]);
+        dom_option.selected = selection === undefined ? false : (choice_key === selection);
         dom_dropdown.appendChild(dom_option);
     }
 
