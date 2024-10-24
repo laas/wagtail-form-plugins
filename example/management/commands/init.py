@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib.auth.models import Permission, Group
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.utils.text import slugify
@@ -23,6 +24,7 @@ class Command(BaseCommand):
             return
 
         users = self.init_users("Myra Webster", "Shawn Hobbs", "Lacey Andrade", "Abdiel Rosales")
+        form_moderators = self.init_group()
         teams = self.init_teams("Team A", "Team B", "Team C")
         services = self.init_services("Service n°1", "Service n°2", "Service n°3")
         self.init_form_index_page("Forms")
@@ -32,6 +34,10 @@ class Command(BaseCommand):
         teams[1].members.add(users[2])
         services[0].members.add(users[2], users[3])
         services[1].members.add(users[4])
+
+        self.logger.info("\naffecting users to groups...")
+        users[1].groups.add(form_moderators)
+        users[2].groups.add(form_moderators)
 
     def init_users(self, *users_names):
         self.logger.info("\ninitializing users...")
@@ -62,6 +68,19 @@ class Command(BaseCommand):
             users.append(user)
 
         return users
+
+    def init_group(self):
+        self.logger.info("\ninitializing permissions...")
+        form_moderators, _ = Group.objects.get_or_create(name="Forms moderators")
+
+        for model in ["formpage", "formindexpage", "customformsubmission"]:
+            self.logger.info("  on %s", model)
+            for permission_verb in ["view", "change", "add", "delete"]:
+                permission = Permission.objects.get(codename=f"{permission_verb}_{model}")
+                print(permission)
+                form_moderators.permissions.add(permission)
+
+        return form_moderators
 
     def init_teams(self, *teams_name):
         self.logger.info("\ninitializing teams...")
