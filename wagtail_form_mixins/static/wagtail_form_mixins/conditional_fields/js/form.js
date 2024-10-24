@@ -15,6 +15,15 @@ function get_value(dom_input) {
 
         return widget === "RadioSelect" ? values[0] : values
     }
+    if (["Select", "SelectMultiple"].includes(widget)) {
+        const values = Array
+            .from(dom_input.querySelectorAll('option'))
+            .map((dom, index) => [`c${index + 1}`, dom.selected])
+            .filter(([i, selected]) => selected)
+            .map(([val_id, c]) => val_id);
+
+        return widget === "Select" ? values[0] : values
+        }
     if (["DateInput", "DateTimeInput"].includes(widget)) {
         return Date.parse(dom_input.value)
     }
@@ -53,16 +62,17 @@ const DEBOUNCE_DELAY = 300;
 function compute_rule(rule) {
     if (rule.entry) {
         let dom_field = document.getElementById(rule.entry.target)
-        const [char, w, opr_func] = OPERATORS[rule.entry.opr]
+        const [opr_char, w, opr_func] = OPERATORS[rule.entry.opr]
 
         if (dom_field.nodeName === 'DIV') {
             dom_field = dom_field.querySelector('input')
         }
 
+        const value = get_value(dom_field)
         return {
-            formula: `${ dom_field.getAttribute('data-label') } ${ char } "${ rule.entry.val }"`,
-            str: `"${ dom_field.value }" ${ char } "${ rule.entry.val }"`,
-            result: opr_func(get_value(dom_field), rule.entry.val),
+            formula: `${ dom_field.getAttribute('data-label') } ${ opr_char } "${ rule.entry.val }"`,
+            str: `"${ value }" ${ opr_char } "${ rule.entry.val }"`,
+            result: opr_func(value, rule.entry.val),
         }
     }
 
@@ -96,7 +106,7 @@ function debounce(callback) {
 }
 
 function update_fields_visibility() {
-    console.clear()
+    console.log('\n===== updating fields visibility =====\n\n')
     for(const dom_field of document.querySelectorAll('form [data-label]')) {
         const rule = JSON.parse(dom_field.getAttribute('data-rule'))
         const cmp_rule = compute_rule(rule)
@@ -105,7 +115,7 @@ function update_fields_visibility() {
             console.log(`\n=== ${ dom_field.getAttribute('data-label') } ===`)
             // console.log('dom_field:', dom_field)
             console.log('rule:', rule)
-            console.log(`${cmp_rule.formula}  ⇒  ${cmp_rule.str}  ⇒  ${cmp_rule.result}`)
+            console.log(`${cmp_rule.formula}   ⇒   ${cmp_rule.str}   ⇒   ${cmp_rule.result}`)
         }
 
         dom_field.parentNode.style.display = cmp_rule.result ? '' : 'none';
