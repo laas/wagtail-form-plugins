@@ -1,10 +1,14 @@
 from django.contrib.auth.models import Permission
+from django.urls import reverse
 
 from wagtail import hooks
+from wagtail.admin.widgets import PageListingButton
 
 from wagtail_form_mixins.templating.wagtail_hooks import templating_admin_css
 from wagtail_form_mixins.conditional_fields.wagtail_hooks import conditional_fields_admin_css
 from wagtail_form_mixins.actions.wagtail_hooks import actions_admin_css
+
+from example.models import FormPage, CustomFormSubmission
 
 
 hooks.register("insert_global_admin_css", templating_admin_css)
@@ -40,3 +44,15 @@ def construct_forms_for_user(user, queryset):
         queryset = queryset.none()
 
     return queryset
+
+
+@hooks.register("register_page_listing_buttons")
+def page_listing_buttons(page, user, next_url=None):
+    if isinstance(page, FormPage):
+        nb_results = CustomFormSubmission.objects.filter(page=page).count()
+        yield PageListingButton(
+            "no result" if nb_results == 0 else f"{ nb_results } results",
+            reverse("wagtailforms:list_submissions", args=[page.pk]),
+            priority=10,
+            attrs={"disabled": "true"} if nb_results == 0 else {},
+        )
