@@ -5,6 +5,7 @@ from django.templatetags.static import static
 
 from wagtail import hooks
 from wagtail.admin.widgets import PageListingButton
+from wagtail.contrib.forms.wagtail_hooks import FormsMenuItem
 
 from wagtail_form_mixins.templating.wagtail_hooks import templating_admin_css
 from wagtail_form_mixins.conditional_fields.wagtail_hooks import conditional_fields_admin_css
@@ -66,3 +67,8 @@ def page_listing_buttons(page, user, next_url=None):
             priority=10,
             attrs={"disabled": "true"} if nb_results == 0 else {},
         )
+
+
+@hooks.register("construct_main_menu")
+def hide_old_form_menu_item(request, menu_items):
+    menu_items[:] = [mi for mi in menu_items if not isinstance(mi, FormsMenuItem)]
