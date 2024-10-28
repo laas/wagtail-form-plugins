@@ -1,5 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.urls import reverse
+from django.utils.html import format_html
+from django.templatetags.static import static
 
 from wagtail import hooks
 from wagtail.admin.widgets import PageListingButton
@@ -11,9 +13,17 @@ from wagtail_form_mixins.actions.wagtail_hooks import actions_admin_css
 from example.models import FormPage, CustomFormSubmission
 
 
+def custom_admin_css():
+    return format_html(
+        '<link rel="stylesheet" href="{}">',
+        static("css/form_admin.css"),
+    )
+
+
 hooks.register("insert_global_admin_css", templating_admin_css)
 hooks.register("insert_global_admin_css", conditional_fields_admin_css)
 hooks.register("insert_global_admin_css", actions_admin_css)
+hooks.register("insert_global_admin_css", custom_admin_css)
 
 
 def permissions(app, model):

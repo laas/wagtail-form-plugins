@@ -1,0 +1,8 @@
+.forms-submissions-back {
+    border: solid 1px inherit;
+}
+
+.forms-submissions-edit {
+    background-color: var(--w-color-text-button-outline-default);
+    color: var(--w-color-surface-button-outline-hover);
+}

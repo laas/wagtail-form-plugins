@@ -6,6 +6,8 @@ from django.core.exceptions import PermissionDenied
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.widgets.button import HeaderButton
+from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.contrib.forms.models import FormMixin
 from wagtail.models import Page
@@ -22,8 +24,8 @@ DEFAULT_EMAILS = [
         "recipient_list": "{author.email}",
         "subject": 'Nouvelle entrée pour le formulaire "{form.title}"',
         "message": """Bonjour {author.full_name},
-Le {result.publish_date} à {result.publish_time}, l’utilisateur {user.full_name} a complété le \
-formulaire "{form.title}", avec le contenu suivant:
+Le {result.publish_date} à {result.publish_time}, l’utilisateur.ice {user.full_name} a complété.e \
+le formulaire "{form.title}", avec le contenu suivant:
 
 {result.data}
 
@@ -37,7 +39,7 @@ Vous venez de compléter le formulaire "{form.title}", avec le contenu suivant:
 
 {result.data}
 
-L’auteur du formulaire en a été informé.
+L’auteur.ice du formulaire en a été informé.
 Bonne journée.""",
     },
 ]
@@ -126,7 +128,27 @@ class CustomSubmissionListView(
     wfm_views.NamedSubmissionsListView,
     wfm_views.FileInputSubmissionsListView,
 ):
-    pass
+    def get_context_data(self, **kwargs):
+        finder = AdminURLFinder()
+        context_data = super().get_context_data(**kwargs)
+        context_data["header_buttons"] += [
+            HeaderButton(
+                label=_("Go back to forms list"),
+                url="/".join(finder.get_edit_url(FormIndexPage.objects.first()).split("/")[:-2]),
+                classname="forms-submissions-back",
+                icon_name="arrow-up",
+                priority=10,
+            ),
+            HeaderButton(
+                label=_("Edit form"),
+                url=finder.get_edit_url(context_data["form_page"]),
+                classname="forms-submissions-edit",
+                icon_name="edit",
+                priority=20,
+            ),
+        ]
+
+        return context_data
 
 
 class FormUploadedFile(models.Model):
@@ -151,6 +173,8 @@ class AbstractFormPage(
     form_builder = CustomFormBuilder
     file_input_model = FormUploadedFile
     submissions_list_view_class = CustomSubmissionListView
+    parent_page_type = ["example.FormIndexPage"]
+    subpage_types = []
 
     def get_submission_class(self):
         return CustomFormSubmission
