@@ -9,7 +9,7 @@ from wagtail.contrib.forms.wagtail_hooks import FormsMenuItem
 
 from wagtail_form_mixins.templating.wagtail_hooks import templating_admin_css
 from wagtail_form_mixins.conditional_fields.wagtail_hooks import conditional_fields_admin_css
-from wagtail_form_mixins.actions.wagtail_hooks import actions_admin_css
+from wagtail_form_mixins.emails.wagtail_hooks import emails_admin_css
 
 from example.models import FormPage, CustomFormSubmission
 
@@ -23,7 +23,7 @@ def custom_admin_css():
 
 hooks.register("insert_global_admin_css", templating_admin_css)
 hooks.register("insert_global_admin_css", conditional_fields_admin_css)
-hooks.register("insert_global_admin_css", actions_admin_css)
+hooks.register("insert_global_admin_css", emails_admin_css)
 hooks.register("insert_global_admin_css", custom_admin_css)
 
 
