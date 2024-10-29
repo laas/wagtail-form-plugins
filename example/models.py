@@ -121,7 +121,7 @@ class CustomFormBuilder(
     wfm_models.FileInputFormBuilder,
     wfm_models.StreamFieldFormBuilder,
 ):
-    pass
+    file_input_allowed_extensions = ["pdf", "jpg", "jpeg", "png"]
 
 
 class CustomSubmissionListView(
