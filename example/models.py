@@ -133,10 +133,10 @@ class CustomSubmissionListView(
         context_data = super().get_context_data(**kwargs)
         context_data["header_buttons"] += [
             HeaderButton(
-                label=_("Go back to forms list"),
+                label=_("Forms list"),
                 url="/".join(finder.get_edit_url(FormIndexPage.objects.first()).split("/")[:-2]),
                 classname="forms-submissions-back",
-                icon_name="arrow-up",
+                icon_name="list-ul",
                 priority=10,
             ),
             HeaderButton(
@@ -234,6 +234,13 @@ class FormPage(AbstractFormPage):
         FormFieldsBlock(),
         verbose_name=_("Form fields"),
     )
+    outro = RichTextField(
+        blank=True,
+        verbose_name=_("Form conclusion text"),
+        default=_(
+            "Data collected in this form are saved by the LAAS lab in order to process your request."
+        ),
+    )
     emails_to_send = StreamField(
         EmailsToSendBlock(),
         verbose_name=_("E-mails to send after form submission"),
@@ -259,6 +266,7 @@ class FormPage(AbstractFormPage):
         FormSubmissionsPanel(),
         FieldPanel("intro"),
         FieldPanel("form_fields"),
+        FieldPanel("outro"),
         FieldPanel("thank_you_text"),
         FieldPanel("emails_to_send"),
         MultiFieldPanel(

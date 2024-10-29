@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-16 07:00+0000\n"
+"POT-Creation-Date: 2024-10-29 09:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,35 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-# === actions ===
-#: wagtail_form_mixins/actions/blocks.py:25
-msgid "Recipient list"
-msgstr "Recipient list"
-
-#: wagtail_form_mixins/actions/blocks.py:27
-msgid "E-mail addresses of the recipients, separated by comma."
-msgstr "E-mail addresses of the recipients, separated by comma."
-
-#: wagtail_form_mixins/actions/blocks.py:31
-msgid "Subject"
-msgstr "Subject"
-
-#: wagtail_form_mixins/actions/blocks.py:32
-msgid "The subject of the e-mail."
-msgstr "The subject of the e-mail."
-
-#: wagtail_form_mixins/actions/blocks.py:36
-msgid "Message"
-msgstr "Message"
-
-#: wagtail_form_mixins/actions/blocks.py:37
-msgid "The body of the e-mail."
-msgstr "The body of the e-mail."
-
-#: wagtail_form_mixins/actions/blocks.py:41
-msgid "E-mail to send"
-msgstr "E-mail to send"
 
 # === conditional fields ===
 #: wagtail_form_mixins/conditional_fields/blocks.py:15
@@ -122,19 +93,52 @@ msgstr "is not checked"
 msgid "Visibility condition"
 msgstr "Visibility condition"
 
-#: wagtail_form_mixins/named_form/models.py:24
+# === emails ===
+#: wagtail_form_mixins/emails/blocks.py:25
+msgid "Recipient list"
+msgstr "Recipient list"
+
+#: wagtail_form_mixins/emails/blocks.py:27
+msgid "E-mail addresses of the recipients, separated by comma."
+msgstr "E-mail addresses of the recipients, separated by comma."
+
+#: wagtail_form_mixins/emails/blocks.py:31
+msgid "Subject"
+msgstr "Subject"
+
+#: wagtail_form_mixins/emails/blocks.py:32
+msgid "The subject of the e-mail."
+msgstr "The subject of the e-mail."
+
+#: wagtail_form_mixins/emails/blocks.py:36
+msgid "Message"
+msgstr "Message"
+
+#: wagtail_form_mixins/emails/blocks.py:37
+msgid "The body of the e-mail."
+msgstr "The body of the e-mail."
+
+#: wagtail_form_mixins/emails/blocks.py:41
+msgid "E-mail to send"
+msgstr "E-mail to send"
+
+#: wagtail_form_mixins/file_input/blocks.py:13
+msgid "File"
+msgstr "File"
+
+#: wagtail_form_mixins/named_form/models.py:40
 msgid "Unique response"
 msgstr "Unique response"
 
-#: wagtail_form_mixins/named_form/models.py:25
+#: wagtail_form_mixins/named_form/models.py:41
 msgid "If checked, the user may fill in the form only once."
 msgstr "If checked, the user may fill in the form only once."
 
-#: wagtail_form_mixins/named_form/models.py:33
+#: wagtail_form_mixins/named_form/models.py:50
 msgid "Form user"
 msgstr "Form user"
 
-#: wagtail_form_mixins/named_form/models.py:46
+#: wagtail_form_mixins/named_form/models.py:62
 msgid "You have already filled in this form."
 msgstr "You have already filled in this form."
 
@@ -320,7 +324,7 @@ msgstr "Date and time"
 msgid "Hidden text"
 msgstr "Hidden text"
 
-#: wagtail_form_mixins/streamfield/models.py:82
+#: wagtail_form_mixins/streamfield/models.py:83
 msgid "Submission date"
 msgstr "Submission date"
 

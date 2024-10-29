@@ -19,6 +19,7 @@
     <form action="{% pageurl page %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+        <div id="form-outro">{{ page.outro|richtext }}</div>
         <input type="submit"/>
     </form>
 {% endblock %}
