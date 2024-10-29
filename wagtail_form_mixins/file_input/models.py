@@ -3,12 +3,25 @@ from django.utils.html import format_html
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError
+from django.db import models
+
 
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
 from wagtail.contrib.forms.views import SubmissionsListView
 
 from wagtail_form_mixins.base.models import FormMixin
+
+
+class AbstractFileInput(models.Model):
+    file = models.FileField(upload_to="form_file_input/%Y/%m/%d")
+    field_name = models.CharField(blank=True, max_length=254)
+
+    def __str__(self) -> str:
+        return f"{self.field_name}: {self.file.name if self.file else '-'}"
+
+    class Meta:
+        abstract = True
 
 
 class FileInputFormBuilder(FormBuilder):

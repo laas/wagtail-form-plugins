@@ -151,12 +151,8 @@ class CustomSubmissionListView(
         return context_data
 
 
-class FormUploadedFile(models.Model):
+class FileInput(wfm_models.AbstractFileInput):
     file = models.FileField(upload_to="example_forms/%Y/%m/%d")
-    field_name = models.CharField(blank=True, max_length=254)
-
-    def __str__(self) -> str:
-        return f"{self.field_name}: {self.file.name if self.file else '-'}"
 
 
 class AbstractFormPage(
@@ -171,7 +167,7 @@ class AbstractFormPage(
 ):
     template_context_class = CustomFormContext
     form_builder = CustomFormBuilder
-    file_input_model = FormUploadedFile
+    file_input_model = FileInput
     submissions_list_view_class = CustomSubmissionListView
     parent_page_type = ["example.FormIndexPage"]
     subpage_types = []
