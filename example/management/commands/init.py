@@ -77,7 +77,6 @@ class Command(BaseCommand):
             self.logger.info("  on %s", model)
             for permission_verb in ["view", "change", "add", "delete"]:
                 permission = Permission.objects.get(codename=f"{permission_verb}_{model}")
-                print(permission)
                 form_moderators.permissions.add(permission)
 
         return form_moderators

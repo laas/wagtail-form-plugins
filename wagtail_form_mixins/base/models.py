@@ -24,8 +24,10 @@ class PluginBase(models.Model):
 
     def process_form_submission(self, form):
         options = self.get_submission_options(form)
-        print("options:", options)
         return self.get_submission_class().objects.create(**options)
+
+    def format_field_value(self, field_type, field_value):
+        return field_value
 
     class Meta:
         abstract = True

@@ -30,27 +30,32 @@ class Context:
 
 class FormContext(Context):
     def __init__(self, context):
+        self.submission = context.get("form_submission", None)
+        self.form = context["page"]
+        self.request = context["request"]
+        self.fields_data = self.get_fields_data() if self.submission else None
+
         data = {
-            "user": self.format_user(context["request"].user),
-            "author": self.format_user(context["page"].owner),
-            "form": self.format_form(context["page"], context["request"]),
+            "user": self.format_user(self.request.user),
+            "author": self.format_user(self.form.owner),
+            "form": self.format_form(),
         }
 
-        if "form_submission" in context:
-            fields = self.get_fields(context["form_submission"], context["page"].form_fields)
-            data["result"] = self.format_result(context["form_submission"], fields)
-            data["field_label"] = self.format_label(fields)
-            data["field_value"] = self.format_value(fields)
+        if self.submission:
+            data["result"] = self.format_result()
+            data["field_label"] = self.format_label()
+            data["field_value"] = self.format_value()
 
         super().__init__(data)
 
-    def get_fields(self, submission, form_fields):
+    def get_fields_data(self):
         fields = {}
-        for field in form_fields:
+        for field in self.form.form_fields:
             field_label = field.value["label"]
-            field_id = get_field_clean_name(field_label)
-            field_value = submission.form_data[field_id]
-            fields[field_id] = (field_label, field_value)
+            field_slug = get_field_clean_name(field_label)
+            value = self.submission.form_data[field_slug]
+            fmt_value = self.form.format_field_value(field.block.name, value)
+            fields[field_slug] = (field_label, fmt_value)
         return fields
 
     def format_user(self, user):
@@ -63,25 +68,27 @@ class FormContext(Context):
             "email": "" if is_anonymous else user.email,
         }
 
-    def format_form(self, form, request):
+    def format_form(self):
         return {
-            "title": form.title,
-            "url": request.build_absolute_uri(form.url),
-            "publish_date": form.first_published_at.strftime("%d/%m/%Y"),
-            "publish_time": form.first_published_at.strftime("%H:%M"),
+            "title": self.form.title,
+            "url": self.request.build_absolute_uri(self.form.url),
+            "publish_date": self.form.first_published_at.strftime("%d/%m/%Y"),
+            "publish_time": self.form.first_published_at.strftime("%H:%M"),
         }
 
-    def format_label(self, fields):
-        return {id: label for id, [label, value] in fields.items()}
+    def format_label(self):
+        return {id: label for id, [label, value] in self.fields_data.items()}
 
-    def format_value(self, fields):
-        return {id: value for id, [label, value] in fields.items()}
+    def format_value(self):
+        return {id: value for id, [label, value] in self.fields_data.items()}
 
-    def format_result(self, submission, fields):
+    def format_result(self):
         return {
-            "data": "\n".join([f"{label}: {value}" for label, value in fields.values()]),
-            "publish_date": submission.submit_time.strftime("%d/%m/%Y"),
-            "publish_time": submission.submit_time.strftime("%H:%M"),
+            "data": "<br/>\n".join(
+                [f"{label}: {value}" for label, value in self.fields_data.values()]
+            ),
+            "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
+            "publish_time": self.submission.submit_time.strftime("%H:%M"),
         }
 
 

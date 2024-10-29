@@ -145,7 +145,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "Another form builder example site"
-WAGTAILADMIN_BASE_URL = "http://localhost"
+WAGTAILADMIN_BASE_URL = "http://localhost:8000"
 WAGTAILDOCS_EXTENSIONS = ["csv", "pdf", "txt"]
 
 # Forms app settings
