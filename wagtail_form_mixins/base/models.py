@@ -9,7 +9,7 @@ from django.db import models
 # - hooks
 
 
-class PluginBase(models.Model):
+class FormMixin(models.Model):
     subclasses = []
 
     def __init_subclass__(cls, **kwargs):

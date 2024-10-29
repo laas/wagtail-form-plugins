@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
 
-from wagtail_form_mixins.base.models import PluginBase
+from wagtail_form_mixins.base.models import FormMixin
 
 
 class StreamFieldFormBuilder(FormBuilder):
@@ -72,7 +72,7 @@ class StreamFieldFormBuilder(FormBuilder):
         return options
 
 
-class StreamFieldFormMixin(PluginBase):
+class StreamFieldFormMixin(FormMixin):
     form_builder = StreamFieldFormBuilder
 
     def get_form_fields(self):

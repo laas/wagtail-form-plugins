@@ -6,7 +6,7 @@ from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
 from wagtail.contrib.forms.views import SubmissionsListView
 
-from wagtail_form_mixins.base.models import PluginBase
+from wagtail_form_mixins.base.models import FormMixin
 
 
 class FileInputFormBuilder(FormBuilder):
@@ -45,7 +45,7 @@ class FileInputSubmissionsListView(SubmissionsListView):
         return format_html(html_template, url=full_url) if to_html else full_url
 
 
-class FileInputFormMixin(PluginBase):
+class FileInputFormMixin(FormMixin):
     submissions_list_view_class = FileInputSubmissionsListView
 
     def get_submission_options(self, form):

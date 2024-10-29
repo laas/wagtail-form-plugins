@@ -3,6 +3,8 @@ from django.utils.text import format_lazy
 
 from wagtail import blocks
 
+from wagtail_form_mixins.base.blocks import FormFieldsBlockMixin
+
 
 class FormFieldBlock(blocks.StructBlock):
     label = blocks.CharBlock(
@@ -234,7 +236,7 @@ class HiddenFormFieldBlock(FormFieldBlock):
         form_classname = "formbuilder-field-block formbuilder-field-block-hidden"
 
 
-class StreamFieldFormBlock(blocks.StreamBlock):
+class StreamFieldFormBlock(FormFieldsBlockMixin):
     singleline = SinglelineFormFieldBlock()
     multiline = MultilineFormFieldBlock()
     email = EmailFormFieldBlock()

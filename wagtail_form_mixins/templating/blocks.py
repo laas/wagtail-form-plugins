@@ -1,8 +1,8 @@
-# from django.utils.text import format_lazy
-
 from wagtail import blocks
 from django.utils.translation import gettext_lazy as _
 from wagtail.blocks.field_block import RichTextBlock
+
+from wagtail_form_mixins.base.blocks import FormFieldsBlockMixin
 
 TEMPLATING_HELP_INTRO = _("This field supports the following templating syntax:")
 
@@ -56,14 +56,11 @@ def build_templating_help(help):
     return help_message
 
 
-class TemplatingFormBlock(blocks.StreamBlock):
+class TemplatingFormBlock(FormFieldsBlockMixin):
     templating_doc = DEFAULT_TEMPLATING_DOC
 
-    def get_block_class(self):
-        raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
-
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
-        for child_block in self.get_block_class().declared_blocks.values():
+        for child_block in self.get_blocks().values():
             if "initial" in child_block.child_blocks:
                 help_text = HELP_TEXT_SUFFIX % build_templating_help(self.templating_doc)
                 child_block.child_blocks["initial"].field.help_text += help_text

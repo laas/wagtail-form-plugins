@@ -2,7 +2,7 @@ from django.contrib.auth.models import AnonymousUser
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 
-from wagtail_form_mixins.base.models import PluginBase
+from wagtail_form_mixins.base.models import FormMixin
 
 
 TEMPLATE_VAR_LEFT = "{"
@@ -92,7 +92,7 @@ class FormContext(Context):
         }
 
 
-class TemplatingFormMixin(PluginBase):
+class TemplatingFormMixin(FormMixin):
     template_context_class = FormContext
 
     def serve(self, request, *args, **kwargs):

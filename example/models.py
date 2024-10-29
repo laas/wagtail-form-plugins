@@ -203,22 +203,22 @@ templating_doc["form"]["url"] = _("the form url (ex: “https://intranet.laas.fr
 
 
 class FormFieldsBlock(
-    wfm_blocks.FileInputFormBlock,
     wfm_blocks.ConditionalFieldsFormBlock,
+    wfm_blocks.FileInputFormBlock,
     wfm_blocks.TemplatingFormBlock,
     wfm_blocks.StreamFieldFormBlock,
 ):
     templating_doc = templating_doc
 
-    def get_block_class(self):
-        return wfm_blocks.StreamFieldFormBlock
 
-
-class EmailsToSendBlock(wfm_blocks.TemplatingEmailFormBlock, wfm_blocks.EmailActionsFormBlock):
+class EmailsToSendBlock(
+    wfm_blocks.TemplatingEmailFormBlock,
+    wfm_blocks.EmailsFormBlock,
+):
     templating_doc = templating_doc
 
     def get_block_class(self):
-        return wfm_blocks.EmailActionsFormBlock
+        return wfm_blocks.EmailsFormBlock
 
 
 class FormPage(AbstractFormPage):

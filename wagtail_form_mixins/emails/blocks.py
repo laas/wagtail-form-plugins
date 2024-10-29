@@ -41,7 +41,7 @@ class EmailsToSendStructBlock(blocks.StructBlock):
         label = _("E-mail to send")
 
 
-class EmailActionsFormBlock(blocks.StreamBlock):
+class EmailsFormBlock(blocks.StreamBlock):
     email_to_send = EmailsToSendStructBlock()
 
     class Meta:

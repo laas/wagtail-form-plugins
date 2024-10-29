@@ -1,8 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 
-from wagtail import blocks
-
 from wagtail_form_mixins.streamfield.blocks import FormFieldBlock, RequiredBlock
+from wagtail_form_mixins.base.blocks import FormFieldsBlockMixin
 
 
 class FileInputFormFieldBlock(FormFieldBlock):
@@ -14,5 +13,5 @@ class FileInputFormFieldBlock(FormFieldBlock):
         form_classname = "formbuilder-field-block formbuilder-field-block-file"
 
 
-class FileInputFormBlock(blocks.StreamBlock):
+class FileInputFormBlock(FormFieldsBlockMixin):
     file = FileInputFormFieldBlock()

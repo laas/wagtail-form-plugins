@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from wagtail.contrib.forms.views import SubmissionsListView
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
-from wagtail_form_mixins.base.models import PluginBase
+from wagtail_form_mixins.base.models import FormMixin
 
 
 class NamedFormSubmission(AbstractFormSubmission):
@@ -35,7 +35,7 @@ class NamedSubmissionsListView(SubmissionsListView):
         return context
 
 
-class NamedFormMixin(PluginBase):
+class NamedFormMixin(FormMixin):
     unique_response = models.BooleanField(
         verbose_name=_("Unique response"),
         help_text=_("If checked, the user may fill in the form only once."),

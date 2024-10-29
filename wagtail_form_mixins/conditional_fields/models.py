@@ -2,10 +2,10 @@ import json
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 
-from wagtail_form_mixins.base.models import PluginBase
+from wagtail_form_mixins.base.models import FormMixin
 
 
-class ConditionalFieldsFormMixin(PluginBase):
+class ConditionalFieldsFormMixin(FormMixin):
     def __init__(self, *args, **kwargs):
         self.form_builder.extra_field_options = ["rule"]
         super().__init__(*args, **kwargs)

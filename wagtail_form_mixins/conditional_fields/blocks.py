@@ -8,6 +8,8 @@ from django.utils.functional import cached_property
 from wagtail import blocks
 from wagtail.telepath import register as register_adapter
 
+from wagtail_form_mixins.base.blocks import FormFieldsBlockMixin
+
 
 class ChoiceError(ValidationError):
     def __init__(self, choice) -> None:
@@ -124,10 +126,7 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
         form_classname = "formbuilder-beb formbuilder-beb-lvl1"
 
 
-class ConditionalFieldsFormBlock(blocks.StreamBlock):
-    def get_block_class(self):
-        raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
-
+class ConditionalFieldsFormBlock(FormFieldsBlockMixin):
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         local_blocks = local_blocks or []
         rule = blocks.ListBlock(
@@ -138,7 +137,7 @@ class ConditionalFieldsFormBlock(blocks.StreamBlock):
             max_num=1,
         )
 
-        for child_block_id, child_block in self.get_block_class().declared_blocks.items():
+        for child_block_id, child_block in self.get_blocks().items():
             new_child_block = child_block.__class__(local_blocks=[("rule", rule)])
             local_blocks += [(child_block_id, new_child_block)]
 
