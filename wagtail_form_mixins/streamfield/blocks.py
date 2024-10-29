@@ -251,3 +251,4 @@ class StreamFieldFormBlock(blocks.StreamBlock):
 
     class Meta:
         form_classname = "formbuilder-fields-block"
+        collapsed = True
