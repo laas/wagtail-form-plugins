@@ -135,14 +135,14 @@ class CustomSubmissionListView(
             HeaderButton(
                 label=_("Forms list"),
                 url="/".join(finder.get_edit_url(FormIndexPage.objects.first()).split("/")[:-2]),
-                classname="forms-submissions-back",
+                classname="forms-btn-secondary",
                 icon_name="list-ul",
                 priority=10,
             ),
             HeaderButton(
                 label=_("Edit form"),
                 url=finder.get_edit_url(context_data["form_page"]),
-                classname="forms-submissions-edit",
+                classname="forms-btn-primary",
                 icon_name="edit",
                 priority=20,
             ),
@@ -171,6 +171,9 @@ class AbstractFormPage(
     submissions_list_view_class = CustomSubmissionListView
     parent_page_type = ["example.FormIndexPage"]
     subpage_types = []
+
+    def submissions_amount(self):
+        return self.get_submission_class().objects.filter(page=self).count()
 
     def get_submission_class(self):
         return CustomFormSubmission

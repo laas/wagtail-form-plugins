@@ -1,8 +1,8 @@
-.forms-submissions-back {
+.forms-btn-secondary {
     border: solid 1px inherit;
 }
 
-.forms-submissions-edit {
+.forms-btn-primary {
     background-color: var(--w-color-text-button-outline-default);
     color: var(--w-color-surface-button-outline-hover);
 }

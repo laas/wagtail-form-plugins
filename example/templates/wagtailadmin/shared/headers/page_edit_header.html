@@ -1,0 +1,13 @@
+{% extends "wagtailadmin/shared/headers/page_edit_header.html" %}
+{% load wagtailadmin_tags %}
+
+{% block toggles %}
+    <a
+        {% if page.submissions_amount == 0 %} disabled="true" {% endif %}
+        href="{% url 'wagtailforms:list_submissions' page.pk %}"
+        class="forms-btn-secondary w-header-button button">
+        <svg class="icon icon-list-ul icon" aria-hidden="true"><use href="#icon-list-ul"></use></svg>
+        {{ page.submissions_amount }} submissions
+    </a>
+    {{ block.super }}
+{% endblock %}
