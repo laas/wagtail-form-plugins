@@ -16,6 +16,9 @@ class FormMixin(models.Model):
         super().__init_subclass__(**kwargs)
         cls.subclasses.append(cls)
 
+    def get_mixins(self):
+        return [subclass.__name__ for subclass in self.subclasses]
+
     def get_submission_options(self, form):
         return {
             "form_data": form.cleaned_data,
