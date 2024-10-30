@@ -2,7 +2,7 @@
 {% load wagtailadmin_tags %}
 
 {% block toggles %}
-    {% if 'FormPage' in page.get_mixins %}
+    {% if 'NavButtonsFormMixin' in page.get_mixins %}
         <a
             {% if page.submissions_amount == 0 %} disabled="true" {% endif %}
             href="{% url 'wagtailforms:list_submissions' page.pk %}"

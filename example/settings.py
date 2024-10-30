@@ -14,6 +14,7 @@ AUTH_PASSWORD_VALIDATORS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "wagtail_form_mixins",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
@@ -32,7 +33,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "wagtail_form_mixins",
     "example",
 ]
 

@@ -6,9 +6,6 @@ from django.core.exceptions import PermissionDenied
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
-from wagtail.admin.widgets.button import HeaderButton
-from wagtail.admin.admin_url_finder import AdminURLFinder
-from wagtail.contrib.forms.panels import FormSubmissionsPanel
 from wagtail.contrib.forms.models import FormMixin
 from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
@@ -127,28 +124,9 @@ class CustomFormBuilder(
 class CustomSubmissionListView(
     wfm_views.NamedSubmissionsListView,
     wfm_views.FileInputSubmissionsListView,
+    wfm_views.NavButtonsSubmissionsListView,
 ):
-    def get_context_data(self, **kwargs):
-        finder = AdminURLFinder()
-        context_data = super().get_context_data(**kwargs)
-        context_data["header_buttons"] += [
-            HeaderButton(
-                label=_("Forms list"),
-                url="/".join(finder.get_edit_url(FormIndexPage.objects.first()).split("/")[:-2]),
-                classname="forms-btn-secondary",
-                icon_name="list-ul",
-                priority=10,
-            ),
-            HeaderButton(
-                label=_("Edit form"),
-                url=finder.get_edit_url(context_data["form_page"]),
-                classname="forms-btn-primary",
-                icon_name="edit",
-                priority=20,
-            ),
-        ]
-
-        return context_data
+    form_parent_page_model = FormIndexPage
 
 
 class FileInput(wfm_models.AbstractFileInput):
@@ -162,6 +140,7 @@ class AbstractFormPage(
     wfm_models.ConditionalFieldsFormMixin,
     wfm_models.NamedFormMixin,
     wfm_models.StreamFieldFormMixin,
+    wfm_models.NavButtonsFormMixin,
     FormMixin,
     Page,
 ):
@@ -171,9 +150,6 @@ class AbstractFormPage(
     submissions_list_view_class = CustomSubmissionListView
     parent_page_type = ["example.FormIndexPage"]
     subpage_types = []
-
-    def submissions_amount(self):
-        return self.get_submission_class().objects.filter(page=self).count()
 
     def get_submission_class(self):
         return CustomFormSubmission
@@ -262,7 +238,6 @@ class FormPage(AbstractFormPage):
 
     content_panels = [
         *AbstractFormPage.content_panels,
-        FormSubmissionsPanel(),
         FieldPanel("intro"),
         FieldPanel("form_fields"),
         FieldPanel("outro"),

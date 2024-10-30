@@ -6,3 +6,4 @@ from .named_form.models import NamedFormMixin, NamedFormSubmission
 from .streamfield.models import StreamFieldFormMixin, StreamFieldFormBuilder
 from .templating.models import TemplatingFormMixin, FormContext
 from .file_input.models import FileInputFormMixin, FileInputFormBuilder, AbstractFileInput
+from .nav_buttons.models import NavButtonsFormMixin
