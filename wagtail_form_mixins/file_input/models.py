@@ -1,5 +1,4 @@
 from django import forms
-from django.utils.html import format_html
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError
@@ -8,9 +7,9 @@ from django.db import models
 
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
-from wagtail.contrib.forms.views import SubmissionsListView
 
 from wagtail_form_mixins.base.models import FormMixin
+from wagtail_form_mixins.file_input.views import FileInputSubmissionsListView
 
 
 class AbstractFileInput(models.Model):
@@ -39,37 +38,6 @@ class FileInputFormBuilder(FormBuilder):
             self.file_input_size_validator,
         ]
         return forms.FileField(**options, validators=validators)
-
-
-class FileInputSubmissionsListView(SubmissionsListView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        if not self.is_export:
-            field_types = [
-                "user",
-                "submission_date",
-                *(field_data["type"] for field_data in self.form_page.get_form_fields().raw_data),
-            ]
-            data_rows = context["data_rows"]
-
-            for data_row in data_rows:
-                fields = data_row["fields"]
-
-                for idx, (value, field_type) in enumerate(zip(fields, field_types)):
-                    if field_type == "file":
-                        fields[idx] = FileInputSubmissionsListView.get_file_link(value, True)
-
-        return context
-
-    @staticmethod
-    def get_file_link(file_url, to_html):
-        if not file_url:
-            return "-"
-
-        full_url = settings.WAGTAILADMIN_BASE_URL + file_url
-        html_template = "<a href='{url}' target='_blank'>download</a>"
-        return format_html(html_template, url=full_url) if to_html else full_url
 
 
 class FileInputFormMixin(FormMixin):
