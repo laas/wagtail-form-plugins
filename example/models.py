@@ -118,6 +118,7 @@ class CustomFormSubmission(wfm_models.NamedFormSubmission):
 class CustomFormBuilder(
     wfm_forms.FileInputFormBuilder,
     wfm_forms.StreamFieldFormBuilder,
+    wfm_forms.DatePickersFormBuilder,
 ):
     file_input_allowed_extensions = ["pdf", "jpg", "jpeg", "png"]
 
