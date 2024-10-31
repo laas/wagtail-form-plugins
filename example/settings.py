@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_bootstrap5",
     "example",
 ]
 
@@ -141,6 +142,7 @@ LOGGING = {
 # Other Django settings
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Wagtail settings
 
