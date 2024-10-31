@@ -2,8 +2,8 @@ from django.utils.html import format_html
 from django.templatetags.static import static
 
 
-def templating_admin_css():
+def nav_buttons_admin_css():
     return format_html(
         '<link rel="stylesheet" href="{}">',
-        static("wagtail_form_mixins/templating/css/form_admin.css"),
+        static("wagtail_form_mixins/nav_buttons/css/form_admin.css"),
     )

@@ -86,7 +86,7 @@ class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapte
     @cached_property
     def media(self):
         streamblock_media = super().media
-        js_file_path = "wagtail_form_mixins/conditional_fields/js/form_builder.js"
+        js_file_path = "wagtail_form_mixins/conditional_fields/js/form_admin.js"
 
         return forms.Media(
             js=streamblock_media._js + [js_file_path],

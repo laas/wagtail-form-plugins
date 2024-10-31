@@ -22,6 +22,7 @@ def custom_admin_css():
 hooks.register("insert_global_admin_css", wfm_hooks.templating_admin_css)
 hooks.register("insert_global_admin_css", wfm_hooks.conditional_fields_admin_css)
 hooks.register("insert_global_admin_css", wfm_hooks.emails_admin_css)
+hooks.register("insert_global_admin_css", wfm_hooks.nav_buttons_admin_css)
 hooks.register("insert_global_admin_css", custom_admin_css)
 
 
