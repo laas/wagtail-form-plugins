@@ -1,5 +1,5 @@
 {% extends "example/base.html" %}
-{% load wagtailcore_tags static django_bootstrap5 %}
+{% load wagtailcore_tags static django_bootstrap5 i18n %}
 
 {% block extra_js %}
     {% bootstrap_javascript %}
@@ -28,6 +28,7 @@
         {% csrf_token %}
         <div id="form-outro">{{ page.outro|richtext }}</div>
         {% bootstrap_form form %}
-        {% bootstrap_button button_type="submit" content="OK" %}
+        {% trans "Submit" as submit %}
+        {% bootstrap_button button_type="submit" content=submit %}
     </form>
 {% endblock %}

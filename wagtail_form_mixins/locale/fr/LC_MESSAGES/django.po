@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-30 14:55+0000\n"
+"POT-Creation-Date: 2024-10-31 14:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -333,10 +333,6 @@ msgstr "Date et heure"
 msgid "Hidden text"
 msgstr "Texte caché"
 
-#: wagtail_form_mixins/streamfield/models.py:83
-msgid "Submission date"
-msgstr "Date de soumission"
-
 # === templating ===
 #: wagtail_form_mixins/templating/blocks.py:7
 msgid "This field supports the following templating syntax:"
@@ -410,3 +406,6 @@ msgstr "le label de la question correspondante (ex: “Ma première question”)
 #: wagtail_form_mixins/templating/blocks.py:43
 msgid "the value of the related question (ex: “42”)"
 msgstr "la valeur de la question correspondante (ex: “42”)"
+
+#~ msgid "Submission date"
+#~ msgstr "Date de soumission"
