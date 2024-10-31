@@ -206,6 +206,7 @@ class FormPage(AbstractFormPage):
     thank_you_text = RichTextField(
         blank=True,
         verbose_name=_("Text displayed after form submission"),
+        default=_("Thank you!"),
     )
     form_fields = StreamField(
         FormFieldsBlock(),
@@ -231,7 +232,7 @@ class FormPage(AbstractFormPage):
         verbose_name=_("Team"),
     )
     service = models.ForeignKey(
-        Service,
+        to=Service,
         blank=True,
         null=True,
         on_delete=models.SET_NULL,

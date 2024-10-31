@@ -1,7 +1,5 @@
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-from django.utils.html import format_html
-from django.templatetags.static import static
 
 from wagtail import hooks
 from wagtail.admin.widgets import PageListingButton
@@ -9,21 +7,13 @@ from wagtail.contrib.forms.wagtail_hooks import FormsMenuItem
 
 from wagtail_form_mixins import hooks as wfm_hooks
 
-from example.models import FormPage, CustomFormSubmission
-
-
-def custom_admin_css():
-    return format_html(
-        '<link rel="stylesheet" href="{}">',
-        static("css/form_admin.css"),
-    )
+from .models import FormPage, CustomFormSubmission
 
 
 hooks.register("insert_global_admin_css", wfm_hooks.templating_admin_css)
 hooks.register("insert_global_admin_css", wfm_hooks.conditional_fields_admin_css)
 hooks.register("insert_global_admin_css", wfm_hooks.emails_admin_css)
 hooks.register("insert_global_admin_css", wfm_hooks.nav_buttons_admin_css)
-hooks.register("insert_global_admin_css", custom_admin_css)
 
 
 def permissions(app, model):
