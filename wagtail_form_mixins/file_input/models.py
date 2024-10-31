@@ -6,7 +6,6 @@ from django.db import models
 
 
 from wagtail.contrib.forms.forms import FormBuilder
-from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_mixins.base.models import FormMixin
 from wagtail_form_mixins.file_input.views import FileInputSubmissionsListView
@@ -44,11 +43,7 @@ class FileInputFormMixin(FormMixin):
     submissions_list_view_class = FileInputSubmissionsListView
 
     def get_submission_options(self, form):
-        file_form_fields = [
-            get_field_clean_name(field_data["value"]["label"])
-            for field_data in self.get_form_fields().raw_data
-            if field_data["type"] == "file"
-        ]
+        file_form_fields = [f.clean_name for f in self.get_form_fields() if f.field_type == "file"]
 
         for field_name, field_value in form.cleaned_data.items():
             if field_name in file_form_fields:

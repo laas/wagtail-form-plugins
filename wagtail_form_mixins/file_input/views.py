@@ -12,7 +12,7 @@ class FileInputSubmissionsListView(SubmissionsListView):
             field_types = [
                 "user",
                 "submission_date",
-                *(field_data["type"] for field_data in self.form_page.get_form_fields().raw_data),
+                *(field.field_type for field in self.form_page.get_form_fields()),
             ]
             data_rows = context["data_rows"]
 
