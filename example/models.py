@@ -14,6 +14,7 @@ from wagtail_form_mixins import models as wfm_models
 from wagtail_form_mixins import blocks as wfm_blocks
 from wagtail_form_mixins import panels as wfm_panels
 from wagtail_form_mixins import views as wfm_views
+from wagtail_form_mixins import forms as wfm_forms
 
 
 DEFAULT_EMAILS = [
@@ -115,8 +116,8 @@ class CustomFormSubmission(wfm_models.NamedFormSubmission):
 
 
 class CustomFormBuilder(
-    wfm_models.FileInputFormBuilder,
-    wfm_models.StreamFieldFormBuilder,
+    wfm_forms.FileInputFormBuilder,
+    wfm_forms.StreamFieldFormBuilder,
 ):
     file_input_allowed_extensions = ["pdf", "jpg", "jpeg", "png"]
 
