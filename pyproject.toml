@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "wagtail_form_mixins"
-version = "0.3.0"
+version = "0.4.0"
 description = ""
 authors = ["Nathanaël Jourdane <njourdane@laas.fr>"]
 license = "MIT"
@@ -12,13 +12,18 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-django = "^5.1.2"
-wagtail = "^6.2.2"
-django-bootstrap5 = "^24.3"
+django = "^5"
+wagtail = "^6"
+
+[tool.poetry.group.demo]
+optional = true
+
+[tool.poetry.group.demo.dependencies]
+django-bootstrap5 = "^23"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.6.9"
-pre-commit = "^4.0.1"
+ruff = "^0.6"
+pre-commit = "^4.0"
 
 [tool.ruff]
 extend-exclude = ["migrations"]
