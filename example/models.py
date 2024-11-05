@@ -1,14 +1,11 @@
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
 
 from wagtail.fields import RichTextField, StreamField
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.models import FormMixin
 from wagtail.models import Page
-from wagtail.snippets.models import register_snippet
 
 from wagtail_form_mixins import models as wfm_models
 from wagtail_form_mixins import blocks as wfm_blocks
@@ -20,55 +17,31 @@ from wagtail_form_mixins import forms as wfm_forms
 DEFAULT_EMAILS = [
     {
         "recipient_list": "{author.email}",
-        "subject": 'Nouvelle entrée pour le formulaire "{form.title}"',
-        "message": """Bonjour {author.full_name},
-Le {result.publish_date} à {result.publish_time}, l’utilisateur.ice {user.full_name} a complété.e \
-le formulaire "{form.title}", avec le contenu suivant:
+        "subject": 'New entry for form "{form.title}"',
+        "message": """Hello {author.full_name},
+On {result.publish_date} at {result.publish_time}, the user {user.full_name} has submitted \
+the form "{form.title}", with the following content:
 
 {result.data}
 
-Bonne journée.""",
+Have a nice day.""",
     },
     {
         "recipient_list": "{user.email}",
-        "subject": 'Confirmation de l’envoi du formulaire "{form.title}"',
-        "message": """Bonjour {user.full_name},
-Vous venez de compléter le formulaire "{form.title}", avec le contenu suivant:
+        "subject": 'Confirmation of the submission of the form "{form.title}"',
+        "message": """Hello {user.full_name},
+You just submitted the form "{form.title}", with the following content:
 
 {result.data}
 
-L’auteur.ice du formulaire en a été informé.
-Bonne journée.""",
+The form author has been informed.
+Have a nice day.""",
     },
 ]
 
 
-@register_snippet
-class Team(models.Model):
-    name = models.CharField(max_length=255)
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
-
-    panels = [
-        FieldPanel("name"),
-        FieldPanel("members"),
-    ]
-
-    def __str__(self) -> str:
-        return str(self.name)
-
-
-@register_snippet
-class Service(models.Model):
-    name = models.CharField(max_length=255)
-    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
-
-    panels = [
-        FieldPanel("name"),
-        FieldPanel("members"),
-    ]
-
-    def __str__(self) -> str:
-        return str(self.name)
+class CustomUser(User):
+    city = models.CharField(max_length=255, verbose_name=_("City"))
 
 
 class FormIndexPage(Page):
@@ -100,15 +73,11 @@ class FormIndexPage(Page):
 
 
 class CustomFormContext(wfm_models.FormContext):
-    def format_user(self, user: User):
-        user_dict = super().format_user(user)
-
-        teams = [service.name for service in Team.objects.filter(members__pk=user.pk)]
-        services = [service.name for service in Service.objects.filter(members__pk=user.pk)]
-
-        user_dict["team"] = ", ".join(teams)
-        user_dict["service"] = ", ".join(services)
-        return user_dict
+    def format_user(self, user: CustomUser):
+        return {
+            **super().format_user(user),
+            "city": user.city.lower(),
+        }
 
 
 class CustomFormSubmission(wfm_models.NamedFormSubmission):
@@ -157,12 +126,6 @@ class AbstractFormPage(
         return CustomFormSubmission
 
     def serve(self, request, *args, **kwargs):
-        is_team_ok = not self.team or Team.objects.filter(members=request.user).exists()
-        is_service_ok = not self.service or Service.objects.filter(members=request.user).exists()
-
-        if not is_team_ok or not is_service_ok:
-            raise PermissionDenied(_("You are not invited to fill in this form."))
-
         response = super().serve(request, *args, **kwargs)
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
@@ -172,11 +135,7 @@ class AbstractFormPage(
 
 
 templating_doc = wfm_blocks.DEFAULT_TEMPLATING_DOC
-templating_doc["user"]["service"] = _("the form user service (ex: “idea”)")
-templating_doc["user"]["team"] = _("the form user team (ex: “gepetto”)")
-templating_doc["author"]["service"] = _("the form author service (ex: “idea”)")
-templating_doc["author"]["team"] = _("the form author team (ex: “gepetto”)")
-templating_doc["form"]["url"] = _("the form url (ex: “https://intranet.laas.fr/form/my-form”)")
+templating_doc["user"]["city"] = _("the form user city (ex: “Paris”)")
 
 
 class FormFieldsBlock(
@@ -216,27 +175,13 @@ class FormPage(AbstractFormPage):
         blank=True,
         verbose_name=_("Form conclusion text"),
         default=_(
-            "Data collected in this form are saved by the LAAS lab in order to process your request."
+            "Data collected in this form is stored by the IT team in order to process your request."
         ),
     )
     emails_to_send = StreamField(
         EmailsToSendBlock(),
         verbose_name=_("E-mails to send after form submission"),
         default=[wfm_blocks.email_to_block(email) for email in DEFAULT_EMAILS],
-    )
-    team = models.ForeignKey(
-        to=Team,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        verbose_name=_("Team"),
-    )
-    service = models.ForeignKey(
-        to=Service,
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        verbose_name=_("Service"),
     )
 
     content_panels = [
@@ -246,12 +191,5 @@ class FormPage(AbstractFormPage):
         FieldPanel("outro"),
         FieldPanel("thank_you_text"),
         FieldPanel("emails_to_send"),
-        MultiFieldPanel(
-            [
-                FieldPanel("team"),
-                FieldPanel("service"),
-            ],
-            _("Scope"),
-        ),
         wfm_panels.UniqueResponseFieldPanel(),
     ]
