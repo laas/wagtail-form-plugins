@@ -8,7 +8,7 @@ function get_value(dom_input) {
     }
     if (["CheckboxSelectMultiple", "RadioSelect"].includes(widget)) {
         const values = Array
-            .from(dom_input.closest('div[id]').querySelectorAll('input'))
+            .from(dom_input.querySelectorAll('input'))
             .map((dom, index) => [`c${index + 1}`, dom.checked])
             .filter(([i, checked]) => checked)
             .map(([val_id, c]) => val_id);
@@ -64,10 +64,6 @@ function compute_rule(rule) {
         let dom_field = document.getElementById(rule.entry.target)
         const [opr_char, w, opr_func] = OPERATORS[rule.entry.opr]
 
-        if (dom_field.nodeName === 'DIV') {
-            dom_field = dom_field.querySelector('input')
-        }
-
         const value = get_value(dom_field)
         return {
             formula: `${ dom_field.getAttribute('data-label') } ${ opr_char } "${ rule.entry.val }"`,
@@ -109,16 +105,16 @@ function update_fields_visibility() {
     console.log('\n===== updating fields visibility =====\n\n')
     for(const dom_field of document.querySelectorAll('form [data-label]')) {
         const rule = JSON.parse(dom_field.getAttribute('data-rule'))
-        const cmp_rule = compute_rule(rule)
+        const computed_rule = compute_rule(rule)
 
         if (Object.keys(rule).length !== 0) {
             console.log(`\n=== ${ dom_field.getAttribute('data-label') } ===`)
             // console.log('dom_field:', dom_field)
             console.log('rule:', rule)
-            console.log(`${cmp_rule.formula}   ⇒   ${cmp_rule.str}   ⇒   ${cmp_rule.result}`)
+            console.log(`${computed_rule.formula}   ⇒   ${computed_rule.str}   ⇒   ${computed_rule.result}`)
         }
 
-        dom_field.parentNode.style.display = cmp_rule.result ? '' : 'none';
+        dom_field.parentNode.style.display = computed_rule.result ? '' : 'none';
     }
 }
 
