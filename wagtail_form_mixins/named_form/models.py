@@ -1,8 +1,8 @@
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.db import models
 from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
@@ -10,7 +10,12 @@ from wagtail_form_mixins.base.models import FormMixin
 
 
 class NamedFormSubmission(AbstractFormSubmission):
-    user = models.ForeignKey(get_user_model(), blank=True, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+    )
 
     def get_data(self):
         return {

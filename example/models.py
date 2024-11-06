@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
@@ -40,7 +40,7 @@ Have a nice day.""",
 ]
 
 
-class CustomUser(User):
+class CustomUser(AbstractUser):
     city = models.CharField(max_length=255, verbose_name=_("City"))
 
 
