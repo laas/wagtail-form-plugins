@@ -1,5 +1,18 @@
+# Compiled Python bytecode files
 *.pyc
-*db.sqlite3
+*.pyo
+
+# Compiled locales
 example/**/*.mo
+
+# SQlite databases
+*db.sqlite3
+
+# Files generated when packaging the app
 dist/
+
+# Example website media folder
 media/
+
+# Files used for development purpose
+___*
