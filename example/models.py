@@ -72,7 +72,7 @@ class FormIndexPage(Page):
     admin_default_ordering = "ord"
 
 
-class CustomFormContext(wfm_models.FormContext):
+class CustomTemplatingFormatter(wfm_models.TemplatingFormatter):
     def format_user(self, user: CustomUser):
         return {
             **super().format_user(user),
@@ -115,7 +115,7 @@ class AbstractFormPage(
     FormMixin,
     Page,
 ):
-    template_context_class = CustomFormContext
+    template_context_class = CustomTemplatingFormatter
     form_builder = CustomFormBuilder
     file_input_model = FileInput
     submissions_list_view_class = CustomSubmissionListView
@@ -155,6 +155,9 @@ class EmailsToSendBlock(
 
     def get_block_class(self):
         return wfm_blocks.EmailsFormBlock
+
+    def validate_email(self, field_value):
+        super().validate_email(field_value)
 
 
 class FormPage(AbstractFormPage):

@@ -4,6 +4,6 @@ from .emails.models import EmailActionsFormMixin
 from .conditional_fields.models import ConditionalFieldsFormMixin
 from .named_form.models import NamedFormMixin, NamedFormSubmission
 from .streamfield.models import StreamFieldFormMixin
-from .templating.models import TemplatingFormMixin, FormContext
+from .templating.models import TemplatingFormMixin, TemplatingFormatter
 from .file_input.models import FileInputFormMixin, AbstractFileInput
 from .nav_buttons.models import NavButtonsFormMixin

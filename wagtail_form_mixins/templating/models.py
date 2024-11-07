@@ -9,7 +9,7 @@ TEMPLATE_VAR_LEFT = "{"
 TEMPLATE_VAR_RIGHT = "}"
 
 
-class Context:
+class BaseFormatter:
     def __init__(self, data):
         self.values = {}
 
@@ -28,7 +28,7 @@ class Context:
         return message
 
 
-class FormContext(Context):
+class TemplatingFormatter(BaseFormatter):
     def __init__(self, context):
         self.submission = context.get("form_submission", None)
         self.form = context["page"]
@@ -93,21 +93,21 @@ class FormContext(Context):
 
 
 class TemplatingFormMixin(FormMixin):
-    template_context_class = FormContext
+    formatter_class = TemplatingFormatter
 
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
-        form_context = self.template_context_class(response.context_data)
+        formatter = self.formatter_class(response.context_data)
 
         if request.method == "GET":
             for field in response.context_data["form"].fields.values():
                 if field.initial:
-                    field.initial = form_context.format(field.initial)
+                    field.initial = formatter.format(field.initial)
 
         if "form_submission" in response.context_data:
             for email in response.context_data["page"].emails_to_send:
                 for field_name in ["subject", "message", "recipient_list"]:
-                    email.value[field_name] = form_context.format(str(email.value[field_name]))
+                    email.value[field_name] = formatter.format(str(email.value[field_name]))
 
         return response
 

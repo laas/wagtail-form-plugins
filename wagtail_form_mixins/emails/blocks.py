@@ -4,14 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 
 
-def validate_emails(value):
-    email_variables = ["{author.email}", "{user.email}"]
-
-    for address in value.split(","):
-        if address.strip() not in email_variables:
-            validate_email(address.strip())
-
-
 def email_to_block(email_dict):
     email_dict["message"] = email_dict["message"].replace("\n", "</p><p>")
     return {
@@ -23,7 +15,6 @@ def email_to_block(email_dict):
 class EmailsToSendStructBlock(blocks.StructBlock):
     recipient_list = blocks.CharBlock(
         label=_("Recipient list"),
-        validators=[validate_emails],
         help_text=_("E-mail addresses of the recipients, separated by comma."),
     )
 
@@ -43,6 +34,21 @@ class EmailsToSendStructBlock(blocks.StructBlock):
 
 class EmailsFormBlock(blocks.StreamBlock):
     email_to_send = EmailsToSendStructBlock()
+
+    def validate_email(self, field_value):
+        pass
+
+    def get_block_class(self):
+        raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
+
+    def __init__(self, local_blocks=None, search_index=True, **kwargs):
+        for child_block in self.get_block_class().declared_blocks.values():
+            child_block.child_blocks["recipient_list"].field.validators = [
+                validate_email,
+                self.validate_email,
+            ]
+
+        super().__init__(local_blocks, search_index, **kwargs)
 
     class Meta:
         blank = True
