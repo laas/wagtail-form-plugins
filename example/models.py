@@ -82,7 +82,7 @@ class CustomTemplatingFormatter(wfm_models.TemplatingFormatter):
     @classmethod
     def doc(cls):
         doc = super().doc()
-        doc["user"]["city"] = _("the form user city (ex: “Paris”)")
+        doc["user"]["city"] = (_("the form user city"), "Paris")
         return doc
 
 

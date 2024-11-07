@@ -96,32 +96,46 @@ class TemplatingFormatter:
     def doc(cls):
         return {
             "user": {
-                "login": _("the form user login (ex: “alovelace”)"),
-                "first_name": _("the form user first name (ex: “Ada”)"),
-                "last_name": _("the form user last name (ex: “Lovelace”)"),
-                "full_name": _("the form user first name and last name (ex: “Ada Lovelace”)"),
+                "login": (_("the form user login"), "alovelace"),
+                "first_name": (_("the form user first name"), "Ada"),
+                "last_name": (_("the form user last name"), "Lovelace"),
+                "full_name": (_("the form user first name and last name"), "Ada Lovelace"),
             },
             "author": {
-                "login": _("the form author login (ex: “shawking”)"),
-                "first_name": _("the form author first name (ex: “Stephen”)"),
-                "last_name": _("the form user last name (ex: “Hawking”)"),
-                "full_name": _("the form user first name and last name (ex: “Stephen Hawking”)"),
+                "login": (_("the form author login"), "shawking"),
+                "first_name": (_("the form author first name"), "Stephen"),
+                "last_name": (_("the form user last name"), "Hawking"),
+                "full_name": (_("the form user first name and last name"), "Stephen Hawking"),
             },
             "form": {
-                "title": _("the form title (ex: “My form”)"),
-                "url": _("the form url (ex: “https://example.com/form/my-form”)"),
-                "publish_date": _("the date on which the form was published (ex: “15/10/2024”)"),
-                "publish_time": _("the time on which the form was published (ex: “13h37”)"),
+                "title": (_("the form title"), "My form"),
+                "url": (_("the form url"), "https://example.com/form/my-form"),
+                "publish_date": (_("the date on which the form was published"), "15/10/2024"),
+                "publish_time": (_("the time on which the form was published"), "13h37"),
             },
             "result": {
-                "data": _("the form data as a list (ex: “- my_first_question: 42”)"),
-                "publish_date": _("the date on which the form was completed (ex: “16/10/2024”)"),
-                "publish_time": _("the time on which the form was completed (ex: “12h06”)"),
+                "data": (_("the form data as a list"), "- my_first_question: 42"),
+                "publish_date": (_("the date on which the form was completed"), "16/10/2024"),
+                "publish_time": (_("the time on which the form was completed"), "12h06"),
             },
             "field_label": {
-                "my_first_question": _("the label of the related field (ex: “My first question”)"),
+                "my_first_question": (_("the label of the related field"), "My first question"),
             },
             "field_value": {
-                "my_first_question": _("the value of the related field (ex: “42”)"),
+                "my_first_question": (_("the value of the related field"), "42"),
             },
         }
+
+    @classmethod
+    def help(cls):
+        doc = cls.doc()
+        help_message = ""
+
+        for var_prefix, item in doc.items():
+            help_message += "\n"
+            for var_suffix, (help_text, example) in item.items():
+                key = f"{{{ var_prefix }.{ var_suffix }}}"
+                value = f"{ help_text } (ex: “{ example }”)"
+                help_message += f"• { key }: { value }\n"
+
+        return help_message

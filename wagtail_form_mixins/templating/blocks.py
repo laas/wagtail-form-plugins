@@ -9,20 +9,13 @@ TEMPLATING_HELP_INTRO = _("This field supports the following templating syntax:"
 
 HELP_TEXT_SUFFIX = """<span
     class="formbuilder-templating-help_suffix"
-    data-message=" {}"
-    data-title=" %s"
-></span>"""
+    data-message="{}"
+    data-title="%s"
+></span>"""  # "{}" are the actual characters to display
 
 
-def build_templating_help(help):
-    help_message = TEMPLATING_HELP_INTRO + "\n"
-
-    for var_prefix, item in help.items():
-        help_message += "\n"
-        for var_suffix, help_text in item.items():
-            help_message += f"• {{{ var_prefix }.{ var_suffix }}}: { help_text }\n"
-
-    return help_message
+def build_help_html(help_text):
+    return HELP_TEXT_SUFFIX % f"{ TEMPLATING_HELP_INTRO }\n{ help_text }"
 
 
 class TemplatingFormBlock(FormFieldsBlockMixin):
@@ -31,9 +24,8 @@ class TemplatingFormBlock(FormFieldsBlockMixin):
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         for child_block in self.get_blocks().values():
             if "initial" in child_block.child_blocks:
-                doc = self.templating_formatter.doc()
-                help_text = HELP_TEXT_SUFFIX % build_templating_help(doc)
-                child_block.child_blocks["initial"].field.help_text += help_text
+                help_html = build_help_html(self.templating_formatter.help())
+                child_block.child_blocks["initial"].field.help_text += help_html
 
         super().__init__(local_blocks, search_index, **kwargs)
 
@@ -48,8 +40,7 @@ class TemplatingEmailFormBlock(blocks.StreamBlock):
         for child_block in self.get_block_class().declared_blocks.values():
             for field_name in ["subject", "message", "recipient_list"]:
                 if not isinstance(child_block.child_blocks[field_name], RichTextBlock):
-                    doc = self.templating_formatter.doc()
-                    help_text = HELP_TEXT_SUFFIX % build_templating_help(doc)
+                    help_text = build_help_html(self.templating_formatter.help())
                     child_block.child_blocks[field_name].field.help_text += help_text
 
         super().__init__(local_blocks, search_index, **kwargs)
