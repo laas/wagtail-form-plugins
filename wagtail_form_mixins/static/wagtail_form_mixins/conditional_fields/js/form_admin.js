@@ -124,7 +124,9 @@ function on_rule_subject_selected(dom_dropdown) {
         }
 
         if (widget_type === 'dropdown') {
-            build_virtual_dropdown(dom_val_list.querySelector('input'), get_value_choices(selected_field))
+            const dom_val_list_input = dom_val_list.querySelector('input')
+            const dom_dropdown = build_virtual_dropdown(dom_val_list_input, get_value_choices(selected_field))
+            dom_val_list_input.value = dom_dropdown.value
         }
     }
 
@@ -154,6 +156,7 @@ function build_virtual_dropdown(dom_input, choices) {
         dom_dropdown.appendChild(dom_option);
     }
 
+    // console.log(dom_dropdown)
     return dom_dropdown
 }
 
@@ -171,6 +174,7 @@ class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDef
             return block
         }
 
+        // console.log('yay')
         const dom_rules = build_virtual_dropdown(
             dom_beb.querySelector('.formbuilder-beb-field input'),
             get_field_choices(fields, field_index),
