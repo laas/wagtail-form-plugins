@@ -7,44 +7,40 @@ TEMPLATE_VAR_LEFT = "{"
 TEMPLATE_VAR_RIGHT = "}"
 
 
-class BaseFormatter:
-    def __init__(self, data):
-        self.values = {}
-
-        for val_name, value in data.items():
-            if isinstance(value, dict):
-                for sub_val_name, sub_value in value.items():
-                    self.values[f"{val_name}.{sub_val_name}"] = str(sub_value)
-            else:
-                self.values[val_name] = str(value)
-
-    def format(self, message):
-        for val_key, value in self.values.items():
-            look_for = TEMPLATE_VAR_LEFT + val_key + TEMPLATE_VAR_RIGHT
-            if look_for in message:
-                message = message.replace(look_for, value)
-        return message
-
-
-class TemplatingFormatter(BaseFormatter):
+class TemplatingFormatter:
     def __init__(self, context):
         self.submission = context.get("form_submission", None)
         self.form = context["page"]
         self.request = context["request"]
         self.fields_data = self.get_fields_data() if self.submission else None
+        self.data = self.load_data()
+        self.values = self.load_values()
 
+    def load_data(self):
         data = {
-            "user": self.format_user(self.request.user),
-            "author": self.format_user(self.form.owner),
-            "form": self.format_form(),
+            "user": self.load_user_data(self.request.user),
+            "author": self.load_user_data(self.form.owner),
+            "form": self.load_form_data(),
         }
 
         if self.submission:
-            data["result"] = self.format_result()
-            data["field_label"] = self.format_label()
-            data["field_value"] = self.format_value()
+            data["result"] = self.load_result_data()
+            data["field_label"] = self.load_label_data()
+            data["field_value"] = self.load_value_data()
 
-        super().__init__(data)
+        return data
+
+    def load_values(self):
+        values = {}
+
+        for val_name, value in self.data.items():
+            if isinstance(value, dict):
+                for sub_val_name, sub_value in value.items():
+                    values[f"{val_name}.{sub_val_name}"] = str(sub_value)
+            else:
+                values[val_name] = str(value)
+
+        return values
 
     def get_fields_data(self):
         fields = {}
@@ -56,7 +52,7 @@ class TemplatingFormatter(BaseFormatter):
             fields[field_slug] = (field_label, fmt_value)
         return fields
 
-    def format_user(self, user):
+    def load_user_data(self, user):
         is_anonymous = isinstance(user, AnonymousUser)
         return {
             "login": user.username,
@@ -66,7 +62,7 @@ class TemplatingFormatter(BaseFormatter):
             "email": "" if is_anonymous else user.email,
         }
 
-    def format_form(self):
+    def load_form_data(self):
         return {
             "title": self.form.title,
             "url": self.request.build_absolute_uri(self.form.url),
@@ -74,13 +70,13 @@ class TemplatingFormatter(BaseFormatter):
             "publish_time": self.form.first_published_at.strftime("%H:%M"),
         }
 
-    def format_label(self):
+    def load_label_data(self):
         return {id: label for id, [label, value] in self.fields_data.items()}
 
-    def format_value(self):
+    def load_value_data(self):
         return {id: value for id, [label, value] in self.fields_data.items()}
 
-    def format_result(self):
+    def load_result_data(self):
         return {
             "data": "<br/>\n".join(
                 [f"{label}: {value}" for label, value in self.fields_data.values()]
@@ -88,6 +84,13 @@ class TemplatingFormatter(BaseFormatter):
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
         }
+
+    def format(self, message):
+        for val_key, value in self.values.items():
+            look_for = TEMPLATE_VAR_LEFT + val_key + TEMPLATE_VAR_RIGHT
+            if look_for in message:
+                message = message.replace(look_for, value)
+        return message
 
     @classmethod
     def doc(cls):

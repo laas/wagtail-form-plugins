@@ -73,9 +73,9 @@ class FormIndexPage(Page):
 
 
 class CustomTemplatingFormatter(wfm_models.TemplatingFormatter):
-    def format_user(self, user: CustomUser):
+    def load_user_data(self, user: CustomUser):
         return {
-            **super().format_user(user),
+            **super().load_user_data(user),
             "city": user.city.lower(),
         }
 
