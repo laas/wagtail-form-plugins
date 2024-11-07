@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AnonymousUser
+from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 
@@ -86,4 +87,38 @@ class TemplatingFormatter(BaseFormatter):
             ),
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
+        }
+
+    @classmethod
+    def doc(cls):
+        return {
+            "user": {
+                "login": _("the form user login (ex: “alovelace”)"),
+                "first_name": _("the form user first name (ex: “Ada”)"),
+                "last_name": _("the form user last name (ex: “Lovelace”)"),
+                "full_name": _("the form user first name and last name (ex: “Ada Lovelace”)"),
+            },
+            "author": {
+                "login": _("the form author login (ex: “shawking”)"),
+                "first_name": _("the form author first name (ex: “Stephen”)"),
+                "last_name": _("the form user last name (ex: “Hawking”)"),
+                "full_name": _("the form user first name and last name (ex: “Stephen Hawking”)"),
+            },
+            "form": {
+                "title": _("the form title (ex: “My form”)"),
+                "url": _("the form url (ex: “https://example.com/form/my-form”)"),
+                "publish_date": _("the date on which the form was published (ex: “15/10/2024”)"),
+                "publish_time": _("the time on which the form was published (ex: “13h37”)"),
+            },
+            "result": {
+                "data": _("the form data as a list (ex: “- my_first_question: 42”)"),
+                "publish_date": _("the date on which the form was completed (ex: “16/10/2024”)"),
+                "publish_time": _("the time on which the form was completed (ex: “12h06”)"),
+            },
+            "field_label": {
+                "my_first_question": _("the label of the related field (ex: “My first question”)"),
+            },
+            "field_value": {
+                "my_first_question": _("the value of the related field (ex: “42”)"),
+            },
         }

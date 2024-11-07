@@ -79,6 +79,12 @@ class CustomTemplatingFormatter(wfm_models.TemplatingFormatter):
             "city": user.city.lower(),
         }
 
+    @classmethod
+    def doc(cls):
+        doc = super().doc()
+        doc["user"]["city"] = _("the form user city (ex: “Paris”)")
+        return doc
+
 
 class CustomFormSubmission(wfm_models.NamedFormSubmission):
     pass
@@ -134,24 +140,20 @@ class AbstractFormPage(
         abstract = True
 
 
-templating_doc = wfm_blocks.DEFAULT_TEMPLATING_DOC
-templating_doc["user"]["city"] = _("the form user city (ex: “Paris”)")
-
-
 class FormFieldsBlock(
     wfm_blocks.ConditionalFieldsFormBlock,
     wfm_blocks.FileInputFormBlock,
     wfm_blocks.TemplatingFormBlock,
     wfm_blocks.StreamFieldFormBlock,
 ):
-    templating_doc = templating_doc
+    templating_formatter = CustomTemplatingFormatter
 
 
 class EmailsToSendBlock(
     wfm_blocks.TemplatingEmailFormBlock,
     wfm_blocks.EmailsFormBlock,
 ):
-    templating_doc = templating_doc
+    templating_formatter = CustomTemplatingFormatter
 
     def get_block_class(self):
         return wfm_blocks.EmailsFormBlock
