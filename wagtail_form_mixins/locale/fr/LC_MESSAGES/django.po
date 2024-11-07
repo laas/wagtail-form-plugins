@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-31 14:18+0000\n"
+"POT-Creation-Date: 2024-11-07 10:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,31 +94,31 @@ msgid "Visibility condition"
 msgstr "Condition de visibilité"
 
 # === emails ===
-#: wagtail_form_mixins/emails/blocks.py:25
+#: wagtail_form_mixins/emails/blocks.py:17
 msgid "Recipient list"
 msgstr "Liste des destinataires"
 
-#: wagtail_form_mixins/emails/blocks.py:27
+#: wagtail_form_mixins/emails/blocks.py:18
 msgid "E-mail addresses of the recipients, separated by comma."
 msgstr "Adresses e-mail des destinataires, séparés par une virgule."
 
-#: wagtail_form_mixins/emails/blocks.py:31
+#: wagtail_form_mixins/emails/blocks.py:22
 msgid "Subject"
 msgstr "Sujet"
 
-#: wagtail_form_mixins/emails/blocks.py:32
+#: wagtail_form_mixins/emails/blocks.py:23
 msgid "The subject of the e-mail."
 msgstr "Le sujet de l'e-mail."
 
-#: wagtail_form_mixins/emails/blocks.py:36
+#: wagtail_form_mixins/emails/blocks.py:27
 msgid "Message"
 msgstr "Message"
 
-#: wagtail_form_mixins/emails/blocks.py:37
+#: wagtail_form_mixins/emails/blocks.py:28
 msgid "The body of the e-mail."
 msgstr "Le corps de l'e-mail."
 
-#: wagtail_form_mixins/emails/blocks.py:41
+#: wagtail_form_mixins/emails/blocks.py:32
 msgid "E-mail to send"
 msgstr "E-mail à envoyer"
 
@@ -126,20 +126,20 @@ msgstr "E-mail à envoyer"
 msgid "File"
 msgstr "Fichier"
 
-#: wagtail_form_mixins/named_form/models.py:27
+#: wagtail_form_mixins/named_form/models.py:32
 msgid "Unique response"
 msgstr "Réponse unique"
 
-#: wagtail_form_mixins/named_form/models.py:28
+#: wagtail_form_mixins/named_form/models.py:33
 msgid "If checked, the user may fill in the form only once."
 msgstr ""
 "Si coché, l'utilisateur ne pourra remplir le formulaire qu'une seule fois."
 
-#: wagtail_form_mixins/named_form/models.py:37
+#: wagtail_form_mixins/named_form/models.py:42
 msgid "Form user"
 msgstr "Utilisateur"
 
-#: wagtail_form_mixins/named_form/models.py:49
+#: wagtail_form_mixins/named_form/models.py:54
 msgid "You have already filled in this form."
 msgstr "Vous avez déjà rempli ce formulaire."
 
@@ -334,78 +334,74 @@ msgid "Hidden text"
 msgstr "Texte caché"
 
 # === templating ===
-#: wagtail_form_mixins/templating/blocks.py:7
+#: wagtail_form_mixins/templating/blocks.py:8
 msgid "This field supports the following templating syntax:"
 msgstr "Ce champ supporte la syntaxe par template suivante:"
 
-#: wagtail_form_mixins/templating/blocks.py:17
-msgid "the form user login (ex: “alovelace”)"
-msgstr "le login de l'utilisateur du formulaire (ex: “alovelace”)"
+#: wagtail_form_mixins/templating/formatter.py:99
+msgid "the form user login"
+msgstr "le login de l'utilisateur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:18
-msgid "the form user first name (ex: “Ada”)"
-msgstr "le prénom de l'utilisateur du formulaire (ex: “Ada”)"
+#: wagtail_form_mixins/templating/formatter.py:100
+msgid "the form user first name"
+msgstr "le prénom de l'utilisateur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:19
-msgid "the form user last name (ex: “Lovelace”)"
-msgstr "le nom de famille l'utilisateur du formulaire (ex: “Lovelace”)"
+#: wagtail_form_mixins/templating/formatter.py:101
+msgid "the form user last name"
+msgstr "le nom de famille l'utilisateur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:20
-msgid "the form user first name and last name (ex: “Ada Lovelace”)"
-msgstr ""
-"le prénom et le nom de l'utilisateur du formulaire (ex: “Ada Lovelace”)"
+#: wagtail_form_mixins/templating/formatter.py:102
+msgid "the form user first name and last name"
+msgstr "le prénom et le nom de l'utilisateur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:23
-msgid "the form author login (ex: “shawking”)"
-msgstr "le login de l'auteur du formulaire (ex: “shawking”)"
+#: wagtail_form_mixins/templating/formatter.py:105
+msgid "the form author login"
+msgstr "le login de l'auteur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:24
-msgid "the form author first name (ex: “Stephen”)"
-msgstr "le prénom de l'auteur du formulaire (ex: “Stephen”)"
+#: wagtail_form_mixins/templating/formatter.py:106
+msgid "the form author first name"
+msgstr "le prénom de l'auteur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:25
-msgid "the form user last name (ex: “Hawking”)"
-msgstr "le nom de famille l'auteur du formulaire (ex: “Hawking”)"
+#: wagtail_form_mixins/templating/formatter.py:107
+msgid "the form author last name"
+msgstr "le nom de famille l'auteur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:26
-msgid "the form user first name and last name (ex: “Stephen Hawking”)"
-msgstr "le prénom et le nom de l'auteur du formulaire (ex: “Stephen Hawking”)"
+#: wagtail_form_mixins/templating/formatter.py:108
+msgid "the form author first name and last name"
+msgstr "le prénom et le nom de l'auteur du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:29
-msgid "the form title (ex: “My form”)"
-msgstr "le titre du formulaire (ex: “Mon formulaire”)"
+#: wagtail_form_mixins/templating/formatter.py:111
+msgid "the form title"
+msgstr "le titre du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:30
-msgid "the form url (ex: “https://example.com/form/my-form”)"
-msgstr "l'url du formulaire (ex: “https://example.com/form/mon-formulaire”)"
+#: wagtail_form_mixins/templating/formatter.py:112
+msgid "the form url"
+msgstr "l'url du formulaire"
 
-#: wagtail_form_mixins/templating/blocks.py:31
-msgid "the date on which the form was published (ex: “15/10/2024”)"
-msgstr "la date à laquelle le formulaire a été publié (ex: “15/10/2024”)"
+#: wagtail_form_mixins/templating/formatter.py:113
+msgid "the date on which the form was published"
+msgstr "la date à laquelle le formulaire a été publié"
 
-#: wagtail_form_mixins/templating/blocks.py:32
-msgid "the time on which the form was published (ex: “13h37”)"
-msgstr "l'heure à laquelle le formulaire a été publié (ex: “13h37”)"
+#: wagtail_form_mixins/templating/formatter.py:114
+msgid "the time on which the form was published"
+msgstr "l'heure à laquelle le formulaire a été publié"
 
-#: wagtail_form_mixins/templating/blocks.py:35
-msgid "the form data as a list (ex: “- my_first_question: 42”)"
-msgstr "the form data as a list (ex: “- ma_premiere_question: 42”)"
+#: wagtail_form_mixins/templating/formatter.py:117
+msgid "the form data as a list"
+msgstr "les données du formulaire sous forme de liste"
 
-#: wagtail_form_mixins/templating/blocks.py:36
-msgid "the date on which the form was completed (ex: “16/10/2024”)"
-msgstr "la date à laquelle le formulaire a été complété (ex: “16/10/2024”)"
+#: wagtail_form_mixins/templating/formatter.py:118
+msgid "the date on which the form was completed"
+msgstr "la date à laquelle le formulaire a été complété"
 
-#: wagtail_form_mixins/templating/blocks.py:37
-msgid "the time on which the form was completed (ex: “12h06”)"
-msgstr "l'heure à laquelle le formulaire a été complété (ex: “12h06”)"
+#: wagtail_form_mixins/templating/formatter.py:119
+msgid "the time on which the form was completed"
+msgstr "l'heure à laquelle le formulaire a été complété"
 
-#: wagtail_form_mixins/templating/blocks.py:40
-msgid "the label of the related question (ex: “My first question”)"
-msgstr "le label de la question correspondante (ex: “Ma première question”)"
+#: wagtail_form_mixins/templating/formatter.py:122
+msgid "the label of the related field"
+msgstr "le label du champ correspondant"
 
-#: wagtail_form_mixins/templating/blocks.py:43
-msgid "the value of the related question (ex: “42”)"
-msgstr "la valeur de la question correspondante (ex: “42”)"
-
-#~ msgid "Submission date"
-#~ msgstr "Date de soumission"
+#: wagtail_form_mixins/templating/formatter.py:125
+msgid "the value of the related field"
+msgstr "la valeur du champ correspondant"

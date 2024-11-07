@@ -104,8 +104,8 @@ class TemplatingFormatter:
             "author": {
                 "login": (_("the form author login"), "shawking"),
                 "first_name": (_("the form author first name"), "Stephen"),
-                "last_name": (_("the form user last name"), "Hawking"),
-                "full_name": (_("the form user first name and last name"), "Stephen Hawking"),
+                "last_name": (_("the form author last name"), "Hawking"),
+                "full_name": (_("the form author first name and last name"), "Stephen Hawking"),
             },
             "form": {
                 "title": (_("the form title"), "My form"),

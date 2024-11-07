@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-05 14:47+0000\n"
+"POT-Creation-Date: 2024-11-07 10:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,68 +18,73 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: example/models.py:44
+#: example/models.py:46
 msgid "City"
 msgstr "Ville"
 
-#: example/models.py:51
+#: example/models.py:53
 msgid "Form index page introduction"
 msgstr "Texte d'introduction de la page d'index des formulaire"
 
-#: example/models.py:52
+#: example/models.py:54
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr ""
 "Une introduction en RichText à afficher avant la liste des formulaires."
 
-#: example/models.py:54
+#: example/models.py:56
 msgid "Forms list"
 msgstr "Liste des formulaires"
 
-#: example/models.py:58
+#: example/models.py:60
 msgid "Form title"
 msgstr "Titre du formulaire"
 
-#: example/models.py:59
+#: example/models.py:61
 msgid "A generic title displayed on all form pages."
 msgstr "Un titre générique à afficher sur toutes les pages de formulaire."
 
-#: example/models.py:60
+#: example/models.py:62
 msgid "Wagtail forms"
 msgstr "Formulaires wagtail"
 
-#: example/models.py:138
-msgid "the form user city (ex: “Paris”)"
-msgstr "la ville de l'utilisateur du formulaire (ex: “Paris”)"
+#: example/models.py:87
+msgid "the form user city"
+msgstr "la ville de l'utilisateur du formulaire"
 
-#: example/models.py:163
+#: example/models.py:169
+msgid ""
+"Unrecognized template keyword. See tooltip for a list of available keywords."
+msgstr "Mot-clé de template non reconnu. Voir l'infobulle pour la liste des mot-clés disponibles."
+
+#: example/models.py:178
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: example/models.py:167
+#: example/models.py:182
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: example/models.py:168
+#: example/models.py:183
 msgid "Thank you!"
 msgstr "Merci !"
 
-#: example/models.py:172
+#: example/models.py:187
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: example/models.py:176
+#: example/models.py:191
 msgid "Form conclusion text"
 msgstr "Texte de conclusion du formulaire"
 
-#: example/models.py:178
+#: example/models.py:193
 msgid ""
 "Data collected in this form is stored by the IT team in order to process "
 "your request."
 msgstr ""
-"Les données recueillies dans ce formulaire sont sauvegardées par le service informatique "
-"afin de prendre en compte votre demande."
+"Les données recueillies dans ce formulaire sont sauvegardées par le service "
+"informatique afin de prendre en compte votre demande."
 
-#: example/models.py:183
+#: example/models.py:198
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"
 
