@@ -36,17 +36,15 @@ class EmailsFormBlock(blocks.StreamBlock):
     email_to_send = EmailsToSendStructBlock()
 
     def validate_email(self, field_value):
-        pass
+        for email in field_value.split(","):
+            validate_email(email.strip())
 
     def get_block_class(self):
         raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         for child_block in self.get_block_class().declared_blocks.values():
-            child_block.child_blocks["recipient_list"].field.validators = [
-                validate_email,
-                self.validate_email,
-            ]
+            child_block.child_blocks["recipient_list"].field.validators = [self.validate_email]
 
         super().__init__(local_blocks, search_index, **kwargs)
 

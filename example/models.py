@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -13,6 +14,7 @@ from wagtail_form_mixins import panels as wfm_panels
 from wagtail_form_mixins import views as wfm_views
 from wagtail_form_mixins import forms as wfm_forms
 
+from wagtail_form_mixins.templating.formatter import TEMPLATE_VAR_LEFT, TEMPLATE_VAR_RIGHT
 
 DEFAULT_EMAILS = [
     {
@@ -159,6 +161,14 @@ class EmailsToSendBlock(
         return wfm_blocks.EmailsFormBlock
 
     def validate_email(self, field_value):
+        for key, example in CustomTemplatingFormatter.examples().items():
+            field_value = field_value.replace(key, example)
+
+        if TEMPLATE_VAR_LEFT in field_value or TEMPLATE_VAR_RIGHT in field_value:
+            raise ValidationError(
+                _("Unrecognized template keyword. See tooltip for a list of available keywords.")
+            )
+
         super().validate_email(field_value)
 
 

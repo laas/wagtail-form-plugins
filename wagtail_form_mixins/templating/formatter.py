@@ -139,3 +139,14 @@ class TemplatingFormatter:
                 help_message += f"• { key }: { value }\n"
 
         return help_message
+
+    @classmethod
+    def examples(cls):
+        doc = cls.doc()
+        examples = {}
+
+        for var_prefix, item in doc.items():
+            for var_suffix, (help_text, example) in item.items():
+                examples[f"{{{ var_prefix }.{ var_suffix }}}"] = example
+
+        return examples
