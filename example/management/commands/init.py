@@ -6,8 +6,6 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
-from wagtail.models import Page
-
 from example.models import FormIndexPage
 
 
@@ -23,9 +21,10 @@ class Command(BaseCommand):
             print("This command is only available in debug mode.")
             return
 
+        FormIndexPage.create_if_missing(self.stdout)
+
         users = self.init_users("Myra Webster", "Shawn Hobbs", "Lacey Andrade", "Abdiel Rosales")
         form_moderators = self.init_group()
-        self.init_form_index_page("Forms")
 
         self.logger.info("\naffecting users to groups...")
         users[1].groups.add(form_moderators)
@@ -72,19 +71,3 @@ class Command(BaseCommand):
                 form_moderators.permissions.add(permission)
 
         return form_moderators
-
-    def init_form_index_page(self, title):
-        self.logger.info("\ninitializing form index page...")
-        FormIndexPage.objects.all().delete()
-
-        home, _ = Page.objects.get_or_create(slug="home")
-        forms_index_page = FormIndexPage(
-            title=title,
-            slug=slugify(title),
-            depth=home.depth + 1,
-            locale_id=home.locale_id,
-            intro="Here is the list of all published forms.",
-        )
-        home.add_child(instance=forms_index_page)
-
-        return forms_index_page

@@ -1,3 +1,5 @@
+import sys
+
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -72,6 +74,24 @@ class FormIndexPage(Page):
     subpage_types = ["example.FormPage"]
     max_count = 1
     admin_default_ordering = "ord"
+
+    @staticmethod
+    def create_if_missing(stdout=sys.stdout):
+        if FormIndexPage.objects.first() is not None:
+            return
+
+        stdout.write("creating form index page")
+
+        home, _ = Page.objects.get_or_create(slug="home")
+
+        forms_index_page = FormIndexPage(
+            title="Formulaires",
+            slug="formulaires",
+            depth=home.depth + 1,
+            locale_id=home.locale_id,
+        )
+        home.add_child(instance=forms_index_page)
+        return forms_index_page
 
 
 class CustomTemplatingFormatter(wfm_models.TemplatingFormatter):
