@@ -97,12 +97,14 @@ class TemplatingFormatter:
         return {
             "user": {
                 "login": (_("the form user login"), "alovelace"),
+                "email": (_("the form user email"), "alovelace@example.com"),
                 "first_name": (_("the form user first name"), "Ada"),
                 "last_name": (_("the form user last name"), "Lovelace"),
                 "full_name": (_("the form user first name and last name"), "Ada Lovelace"),
             },
             "author": {
                 "login": (_("the form author login"), "shawking"),
+                "email": (_("the form author email"), "alovelace@example.com"),
                 "first_name": (_("the form author first name"), "Stephen"),
                 "last_name": (_("the form author last name"), "Hawking"),
                 "full_name": (_("the form author first name and last name"), "Stephen Hawking"),
