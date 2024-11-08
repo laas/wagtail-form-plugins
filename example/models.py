@@ -4,6 +4,7 @@ from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.conf import settings
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
@@ -116,7 +117,8 @@ class CustomFormBuilder(
     wfm_forms.StreamFieldFormBuilder,
     wfm_forms.DatePickersFormBuilder,
 ):
-    file_input_allowed_extensions = ["pdf", "jpg", "jpeg", "png"]
+    file_input_max_size = settings.FORMS_FILE_UPLOAD_MAX_SIZE
+    file_input_allowed_extensions = settings.FORMS_FILE_UPLOAD_ALLOWED_EXTENSIONS
 
 
 class CustomSubmissionListView(

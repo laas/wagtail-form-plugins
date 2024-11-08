@@ -154,3 +154,5 @@ WAGTAILDOCS_EXTENSIONS = ["csv", "pdf", "txt"]
 # Forms app settings
 
 FORMS_FROM_EMAIL = "Wagtail forms <contact@example.com>"
+FORMS_FILE_UPLOAD_MAX_SIZE = 10 * 1024 * 1024
+FORMS_FILE_UPLOAD_ALLOWED_EXTENSIONS = ["pdf", "jpg", "jpeg", "png"]
