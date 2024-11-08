@@ -76,21 +76,19 @@ class FormIndexPage(Page):
     admin_default_ordering = "ord"
 
     @staticmethod
-    def create_if_missing(stdout=sys.stdout):
+    def create_if_missing(home_page: Page, stdout=sys.stdout):
         if FormIndexPage.objects.first() is not None:
             return
 
         stdout.write("creating form index page")
 
-        home, _ = Page.objects.get_or_create(slug="home")
-
         forms_index_page = FormIndexPage(
             title="Formulaires",
             slug="formulaires",
-            depth=home.depth + 1,
-            locale_id=home.locale_id,
+            depth=home_page.depth + 1,
+            locale_id=home_page.locale_id,
         )
-        home.add_child(instance=forms_index_page)
+        home_page.add_child(instance=forms_index_page)
         return forms_index_page
 
 

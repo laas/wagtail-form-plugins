@@ -6,6 +6,8 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
+from wagtail.models import Page
+
 from example.models import FormIndexPage
 
 
@@ -21,53 +23,63 @@ class Command(BaseCommand):
             print("This command is only available in debug mode.")
             return
 
-        FormIndexPage.create_if_missing(self.stdout)
+        self.init_pages()
+        self.init_users("Myra Webster", "Shawn Hobbs", "Lacey Andrade", "Abdiel Rosales")
+        self.init_groups(["myra-webster", "shawn-hobbs"])
 
-        users = self.init_users("Myra Webster", "Shawn Hobbs", "Lacey Andrade", "Abdiel Rosales")
-        form_moderators = self.init_group()
+    def init_pages(self):
+        self.logger.info("\ninitializing pages...")
 
-        self.logger.info("\naffecting users to groups...")
-        users[1].groups.add(form_moderators)
-        users[2].groups.add(form_moderators)
+        Page.objects.exclude(slug="root").exclude(slug="home").delete()
+
+        home_page = Page.objects.get(slug="home")
+        FormIndexPage.create_if_missing(home_page, self.stdout)
 
     def init_users(self, *users_names):
         self.logger.info("\ninitializing users...")
+
         User = get_user_model()
-        users = []
         User.objects.all().delete()
 
         self.logger.info("  admin user")
-        admin = User.objects.create_superuser(
+        User.objects.create_superuser(
             username="admin",
             email="admin@example.com",
             password="admin",
             first_name="Admin",
             last_name="Admin",
         )
-        users.append(admin)
 
         for user_names in users_names:
             first_name, last_name = user_names.split(" ")
             self.logger.info("  user %s", user_names)
-            user = User.objects.create_user(
+            User.objects.create_user(
                 username=slugify(user_names),
                 email=f"{slugify(user_names)}@example.com",
                 password="1234",
                 first_name=first_name,
                 last_name=last_name,
             )
-            users.append(user)
 
-        return users
+    def init_groups(self, moderator_usernames):
+        self.logger.info("\ninitializing groups...")
 
-    def init_group(self):
-        self.logger.info("\ninitializing permissions...")
-        form_moderators, _ = Group.objects.get_or_create(name="Forms moderators")
+        access_admin = Permission.objects.get(codename="access_admin")
+        Group.objects.exclude(name="Moderators").delete()
 
-        for model in ["formpage", "formindexpage", "customformsubmission"]:
-            self.logger.info("  on %s", model)
-            for permission_verb in ["view", "change", "add", "delete"]:
-                permission = Permission.objects.get(codename=f"{permission_verb}_{model}")
-                form_moderators.permissions.add(permission)
+        moderators = Group.objects.get(name="Moderators")
+        for permission in moderators.permissions.all():
+            moderators.permissions.remove(permission)
+        moderators.permissions.add(access_admin)
 
-        return form_moderators
+        everyone = Group.objects.create(name="Everyone")
+        everyone.permissions.add(access_admin)
+
+        self.logger.info("\naffecting users to groups...")
+
+        User = get_user_model()
+        for username in moderator_usernames:
+            User.objects.get(username=username).groups.add(moderators)
+
+        for user in User.objects.all():
+            user.groups.add(everyone)
