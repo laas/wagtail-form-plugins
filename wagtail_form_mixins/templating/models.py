@@ -17,7 +17,7 @@ class TemplatingFormMixin(FormMixin):
 
         if "form_submission" in response.context_data:
             for email in response.context_data["page"].emails_to_send:
-                for field_name in ["subject", "message", "recipient_list"]:
+                for field_name in ["subject", "message", "recipient_list", "reply_to"]:
                     email.value[field_name] = formatter.format(str(email.value[field_name]))
 
         return response

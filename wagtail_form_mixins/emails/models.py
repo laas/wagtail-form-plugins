@@ -20,7 +20,8 @@ class EmailActionsFormMixin(FormMixin):
         send_mail(
             subject=email["subject"],
             message=strip_tags(email["message"].replace("</p>", "</p>\n")),
-            recipient_list=[a.strip() for a in email["recipient_list"].split(",")],
+            recipient_list=[ea.strip() for ea in email["recipient_list"].split(",")],
+            reply_to=[ea.strip() for ea in email["reply_to"].split(",")],
             from_email=settings.FORMS_FROM_EMAIL,
             html_message=email["message"],
         )

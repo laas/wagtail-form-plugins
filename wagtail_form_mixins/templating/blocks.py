@@ -38,7 +38,7 @@ class TemplatingEmailFormBlock(blocks.StreamBlock):
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         for child_block in self.get_block_class().declared_blocks.values():
-            for field_name in ["subject", "message", "recipient_list"]:
+            for field_name in ["subject", "message", "recipient_list", "reply_to"]:
                 if not isinstance(child_block.child_blocks[field_name], RichTextBlock):
                     help_text = build_help_html(self.templating_formatter.help())
                     child_block.child_blocks[field_name].field.help_text += help_text
