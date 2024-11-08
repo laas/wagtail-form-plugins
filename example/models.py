@@ -128,7 +128,7 @@ class CustomSubmissionListView(
 
 
 class FileInput(wfm_models.AbstractFileInput):
-    file = models.FileField(upload_to="example_forms/%Y/%m/%d")
+    upload_dir = "example_forms_uploads/%Y/%m/%d"
 
 
 class AbstractFormPage(

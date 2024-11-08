@@ -1,3 +1,8 @@
+import uuid
+from pathlib import Path
+from datetime import datetime
+
+from typing import Any
 from django.conf import settings
 from django.db import models
 
@@ -6,8 +11,19 @@ from wagtail_form_mixins.file_input.views import FileInputSubmissionsListView
 
 
 class AbstractFileInput(models.Model):
-    file = models.FileField(upload_to="form_file_input/%Y/%m/%d")
+    file = models.FileField()
     field_name = models.CharField(blank=True, max_length=254)
+    upload_dir = "forms_uploads/%Y/%m/%d"
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.file.field.upload_to = self.get_file_path
+
+    def get_file_path(self, instance, file_name):
+        file_path = Path(file_name)
+        dir_path = Path(datetime.now().strftime(str(self.upload_dir)))
+        new_file_name = f"{ file_path.stem }_{ uuid.uuid4() }{ file_path.suffix }"
+        return dir_path / new_file_name
 
     def __str__(self) -> str:
         return f"{self.field_name}: {self.file.name if self.file else '-'}"
