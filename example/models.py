@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.models import FormMixin
-from wagtail.models import Page, GroupPagePermission
+from wagtail.models import Page, GroupPagePermission, PageViewRestriction
 
 from wagtail_form_mixins import models as wfm_models
 from wagtail_form_mixins import blocks as wfm_blocks
@@ -161,6 +161,8 @@ class AbstractFormPage(
         super().save(clean, user, log_action, **kwargs)
         form_moderator, _ = Group.objects.get_or_create(name=f"{ FORM_GROUP_PREFIX }{ self.slug }")
         self.set_page_permissions(form_moderator, ["publish", "change", "lock", "unlock"])
+
+        PageViewRestriction.objects.get_or_create(page=self, restriction_type="login")
 
     def set_page_permissions(self, group, permissions_name):
         for permission_name in permissions_name:
