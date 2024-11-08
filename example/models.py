@@ -3,20 +3,21 @@ import sys
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.models import FormMixin
-from wagtail.models import Page
+from wagtail.models import Page, GroupPagePermission
 
 from wagtail_form_mixins import models as wfm_models
 from wagtail_form_mixins import blocks as wfm_blocks
 from wagtail_form_mixins import panels as wfm_panels
 from wagtail_form_mixins import views as wfm_views
 from wagtail_form_mixins import forms as wfm_forms
-
 from wagtail_form_mixins.templating.formatter import TEMPLATE_VAR_LEFT, TEMPLATE_VAR_RIGHT
+
+FORM_GROUP_PREFIX = "form_moderator_"
 
 DEFAULT_EMAILS = [
     {
@@ -155,6 +156,16 @@ class AbstractFormPage(
         response = super().serve(request, *args, **kwargs)
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
+
+    def save(self, clean=True, user=None, log_action=False, **kwargs):
+        super().save(clean, user, log_action, **kwargs)
+        form_moderator, _ = Group.objects.get_or_create(name=f"{ FORM_GROUP_PREFIX }{ self.slug }")
+        self.set_page_permissions(form_moderator, ["publish", "change", "lock", "unlock"])
+
+    def set_page_permissions(self, group, permissions_name):
+        for permission_name in permissions_name:
+            permission = Permission.objects.get(codename=f"{ permission_name }_page")
+            GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
 
     class Meta:
         abstract = True
