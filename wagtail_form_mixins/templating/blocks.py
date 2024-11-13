@@ -19,19 +19,19 @@ def build_help_html(help_text):
 
 
 class TemplatingFormBlock(FormFieldsBlockMixin):
-    templating_formatter = TemplatingFormatter
+    formatter_class = TemplatingFormatter
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         for child_block in self.get_blocks().values():
             if "initial" in child_block.child_blocks:
-                help_html = build_help_html(self.templating_formatter.help())
+                help_html = build_help_html(self.formatter_class.help())
                 child_block.child_blocks["initial"].field.help_text += help_html
 
         super().__init__(local_blocks, search_index, **kwargs)
 
 
 class TemplatingEmailFormBlock(blocks.StreamBlock):
-    templating_formatter = TemplatingFormatter
+    formatter_class = TemplatingFormatter
 
     def get_block_class(self):
         raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
@@ -40,7 +40,7 @@ class TemplatingEmailFormBlock(blocks.StreamBlock):
         for child_block in self.get_block_class().declared_blocks.values():
             for field_name in ["subject", "message", "recipient_list", "reply_to"]:
                 if not isinstance(child_block.child_blocks[field_name], RichTextBlock):
-                    help_text = build_help_html(self.templating_formatter.help())
+                    help_text = build_help_html(self.formatter_class.help())
                     child_block.child_blocks[field_name].field.help_text += help_text
 
         super().__init__(local_blocks, search_index, **kwargs)

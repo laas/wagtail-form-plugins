@@ -144,7 +144,7 @@ class AbstractFormPage(
     FormMixin,
     Page,
 ):
-    template_context_class = CustomTemplatingFormatter
+    formatter_class = CustomTemplatingFormatter
     form_builder = CustomFormBuilder
     file_input_model = FileInput
     submissions_list_view_class = CustomSubmissionListView
@@ -181,20 +181,20 @@ class FormFieldsBlock(
     wfm_blocks.TemplatingFormBlock,
     wfm_blocks.StreamFieldFormBlock,
 ):
-    templating_formatter = CustomTemplatingFormatter
+    formatter_class = CustomTemplatingFormatter
 
 
 class EmailsToSendBlock(
     wfm_blocks.TemplatingEmailFormBlock,
     wfm_blocks.EmailsFormBlock,
 ):
-    templating_formatter = CustomTemplatingFormatter
+    formatter_class = CustomTemplatingFormatter
 
     def get_block_class(self):
         return wfm_blocks.EmailsFormBlock
 
     def validate_email(self, field_value):
-        for key, example in CustomTemplatingFormatter.examples().items():
+        for key, example in self.formatter_class.examples().items():
             field_value = field_value.replace(key, example)
 
         if TEMPLATE_VAR_LEFT in field_value or TEMPLATE_VAR_RIGHT in field_value:
