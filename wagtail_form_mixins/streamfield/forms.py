@@ -1,6 +1,6 @@
 from django import forms
 
-from wagtail.contrib.forms.forms import FormBuilder
+from wagtail_form_mixins.base.forms import FormBuilderMixin
 from wagtail.contrib.forms.utils import get_field_clean_name
 
 
@@ -29,7 +29,7 @@ class Field:
         return field
 
 
-class StreamFieldFormBuilder(FormBuilder):
+class StreamFieldFormBuilder(FormBuilderMixin):
     extra_field_options = []
 
     def create_dropdown_field(self, field, options):

@@ -1,16 +1,13 @@
 from django.db import models
 
-# Ressources related to each plugin:
-# - FormSubmission
-# - CustomSubmissionsListView?
-# - FormBuilder
-# - FormBlock
-# - FormModel
-# - hooks
+from wagtail.contrib.forms.forms import FormBuilder
+from wagtail.contrib.forms.views import SubmissionsListView
 
 
 class FormMixin(models.Model):
     subclasses = []
+    form_builder: FormBuilder
+    submissions_list_view_class: SubmissionsListView
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)

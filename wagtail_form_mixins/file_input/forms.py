@@ -1,10 +1,11 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError
-from wagtail.contrib.forms.forms import FormBuilder
+
+from wagtail_form_mixins.base.forms import FormBuilderMixin
 
 
-class FileInputFormBuilder(FormBuilder):
+class FileInputFormBuilder(FormBuilderMixin):
     file_input_max_size = 1 * 1024 * 1024
     file_input_allowed_extensions = ["pdf"]
 

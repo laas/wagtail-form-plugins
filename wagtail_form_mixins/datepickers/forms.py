@@ -1,6 +1,6 @@
 from django import forms
 
-from wagtail.contrib.forms.forms import FormBuilder
+from wagtail_form_mixins.base.forms import FormBuilderMixin
 
 
 class DateInput(forms.widgets.DateInput):
@@ -11,7 +11,7 @@ class DateTimeInput(forms.widgets.DateTimeInput):
     input_type = "datetime-local"
 
 
-class DatePickersFormBuilder(FormBuilder):
+class DatePickersFormBuilder(FormBuilderMixin):
     def create_date_field(self, field_value, options):
         return forms.DateField(**options, widget=DateInput)
 
