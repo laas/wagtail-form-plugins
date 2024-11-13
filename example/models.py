@@ -118,7 +118,6 @@ class CustomFormBuilder(
     wfm_forms.DatePickersFormBuilder,
 ):
     file_input_max_size = settings.FORMS_FILE_UPLOAD_MAX_SIZE
-    file_input_allowed_extensions = settings.FORMS_FILE_UPLOAD_ALLOWED_EXTENSIONS
 
 
 class CustomSubmissionListView(

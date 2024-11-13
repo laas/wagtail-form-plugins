@@ -30,8 +30,6 @@ class Field:
 
 
 class StreamFieldFormBuilder(FormBuilderMixin):
-    extra_field_options = []
-
     def create_dropdown_field(self, field, options):
         return forms.ChoiceField(**options)
 
@@ -65,9 +63,8 @@ class StreamFieldFormBuilder(FormBuilderMixin):
         }
 
     def get_field_options(self, field: Field):
-        extra_options = self.extra_field_options if hasattr(self, "extra_field_options") else []
         options = {
             **super().get_field_options(field),
-            **{k: v for k, v in field.options.items() if k not in extra_options},
+            **{k: v for k, v in field.options.items() if k not in self.get_extra_field_options()},
         }
         return self.format_field_options(options)
