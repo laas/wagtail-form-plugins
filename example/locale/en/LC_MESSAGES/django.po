@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-07 10:43+0000\n"
+"POT-Creation-Date: 2024-11-14 15:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,70 +18,70 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: example/models.py:46
+#: example/models.py:50
 msgid "City"
 msgstr ""
 
-#: example/models.py:53
+#: example/models.py:57
 msgid "Form index page introduction"
 msgstr ""
 
-#: example/models.py:54
+#: example/models.py:58
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr ""
 
-#: example/models.py:56
+#: example/models.py:60
 msgid "Forms list"
 msgstr ""
 
-#: example/models.py:60
+#: example/models.py:64
 msgid "Form title"
 msgstr ""
 
-#: example/models.py:61
+#: example/models.py:65
 msgid "A generic title displayed on all form pages."
 msgstr ""
 
-#: example/models.py:62
+#: example/models.py:66
 msgid "Wagtail forms"
 msgstr ""
 
-#: example/models.py:87
+#: example/models.py:107
 msgid "the form user city"
 msgstr ""
 
-#: example/models.py:169
+#: example/models.py:206
 msgid ""
 "Unrecognized template keyword. See tooltip for a list of available keywords."
 msgstr ""
 
-#: example/models.py:178
+#: example/models.py:215
 msgid "Form introduction text"
 msgstr ""
 
-#: example/models.py:182
+#: example/models.py:219
 msgid "Text displayed after form submission"
 msgstr ""
 
-#: example/models.py:183
+#: example/models.py:220
 msgid "Thank you!"
 msgstr ""
 
-#: example/models.py:187
+#: example/models.py:224
 msgid "Form fields"
 msgstr ""
 
-#: example/models.py:191
+#: example/models.py:228
 msgid "Form conclusion text"
 msgstr ""
 
-#: example/models.py:193
+#: example/models.py:230
 msgid ""
 "Data collected in this form is stored by the IT team in order to process "
 "your request."
 msgstr ""
 
-#: example/models.py:198
+#: example/models.py:235
 msgid "E-mails to send after form submission"
 msgstr ""
 

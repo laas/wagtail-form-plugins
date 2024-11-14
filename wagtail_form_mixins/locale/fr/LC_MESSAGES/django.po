@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-07 14:05+0000\n"
+"POT-Creation-Date: 2024-11-14 15:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,31 +100,47 @@ msgstr "Liste des destinataires"
 
 #: wagtail_form_mixins/emails/blocks.py:18
 msgid "E-mail addresses of the recipients, separated by comma."
-msgstr "Adresses e-mail des destinataires, séparés par une virgule."
+msgstr "Adresses e-mail des destinataires, séparées par une virgule."
 
-#: wagtail_form_mixins/emails/blocks.py:22
+#: wagtail_form_mixins/emails/blocks.py:23
+msgid "Reply to"
+msgstr "Répondre à"
+
+#: wagtail_form_mixins/emails/blocks.py:24
+msgid "E-mail addresses set in the “reply_to” email field, separated by comma."
+msgstr "Adresses e-mail définies dans le champ “reply_to”, séparées par une virgule."
+
+#: wagtail_form_mixins/emails/blocks.py:28
 msgid "Subject"
 msgstr "Sujet"
 
-#: wagtail_form_mixins/emails/blocks.py:23
+#: wagtail_form_mixins/emails/blocks.py:29
 msgid "The subject of the e-mail."
 msgstr "Le sujet de l'e-mail."
 
-#: wagtail_form_mixins/emails/blocks.py:27
+#: wagtail_form_mixins/emails/blocks.py:33
 msgid "Message"
 msgstr "Message"
 
-#: wagtail_form_mixins/emails/blocks.py:28
+#: wagtail_form_mixins/emails/blocks.py:34
 msgid "The body of the e-mail."
 msgstr "Le corps de l'e-mail."
 
-#: wagtail_form_mixins/emails/blocks.py:32
+#: wagtail_form_mixins/emails/blocks.py:38
 msgid "E-mail to send"
 msgstr "E-mail à envoyer"
 
-#: wagtail_form_mixins/file_input/blocks.py:12
+#: wagtail_form_mixins/file_input/blocks.py:13
+msgid "Allowed file extensions"
+msgstr "Extensions de fichier autorisées"
+
+#: wagtail_form_mixins/file_input/blocks.py:20
 msgid "File"
 msgstr "Fichier"
+
+#: wagtail_form_mixins/indexed_results/models.py:32
+msgid "Subscription index"
+msgstr "Index du résultat"
 
 #: wagtail_form_mixins/named_form/models.py:32
 msgid "Unique response"

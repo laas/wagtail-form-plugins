@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-07 14:05+0000\n"
+"POT-Creation-Date: 2024-11-14 15:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,28 +102,44 @@ msgstr ""
 msgid "E-mail addresses of the recipients, separated by comma."
 msgstr ""
 
-#: wagtail_form_mixins/emails/blocks.py:22
-msgid "Subject"
-msgstr ""
-
 #: wagtail_form_mixins/emails/blocks.py:23
-msgid "The subject of the e-mail."
+msgid "Reply to"
 msgstr ""
 
-#: wagtail_form_mixins/emails/blocks.py:27
-msgid "Message"
+#: wagtail_form_mixins/emails/blocks.py:24
+msgid "E-mail addresses set in the “reply_to” email field, separated by comma."
 msgstr ""
 
 #: wagtail_form_mixins/emails/blocks.py:28
+msgid "Subject"
+msgstr ""
+
+#: wagtail_form_mixins/emails/blocks.py:29
+msgid "The subject of the e-mail."
+msgstr ""
+
+#: wagtail_form_mixins/emails/blocks.py:33
+msgid "Message"
+msgstr ""
+
+#: wagtail_form_mixins/emails/blocks.py:34
 msgid "The body of the e-mail."
 msgstr ""
 
-#: wagtail_form_mixins/emails/blocks.py:32
+#: wagtail_form_mixins/emails/blocks.py:38
 msgid "E-mail to send"
 msgstr ""
 
-#: wagtail_form_mixins/file_input/blocks.py:12
+#: wagtail_form_mixins/file_input/blocks.py:13
+msgid "Allowed file extensions"
+msgstr ""
+
+#: wagtail_form_mixins/file_input/blocks.py:20
 msgid "File"
+msgstr ""
+
+#: wagtail_form_mixins/indexed_results/models.py:32
+msgid "Subscription index"
 msgstr ""
 
 #: wagtail_form_mixins/named_form/models.py:32

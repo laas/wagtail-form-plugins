@@ -10,7 +10,7 @@ from wagtail_form_mixins.base.blocks import FormFieldsBlockMixin
 class FileInputFormFieldBlock(FormFieldBlock):
     required = RequiredBlock()
     allowed_extensions = blocks.MultipleChoiceBlock(
-        label=_("Allowed file extension(s)"),
+        label=_("Allowed file extensions"),
         choices=[(ext, ext) for ext in settings.FORMS_FILE_UPLOAD_AVAILABLE_EXTENSIONS],
         widget=forms.CheckboxSelectMultiple,
     )
