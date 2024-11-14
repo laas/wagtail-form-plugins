@@ -8,3 +8,4 @@ from .templating.models import TemplatingFormMixin
 from .templating.formatter import TemplatingFormatter
 from .file_input.models import FileInputFormMixin, AbstractFileInput
 from .nav_buttons.models import NavButtonsFormMixin
+from .indexed_results.models import IndexedResultsSubmission, IndexedResultsFormMixin

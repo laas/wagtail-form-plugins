@@ -108,8 +108,12 @@ class CustomTemplatingFormatter(wfm_models.TemplatingFormatter):
         return doc
 
 
-class CustomFormSubmission(wfm_models.NamedFormSubmission):
-    pass
+class CustomFormSubmission(
+    wfm_models.NamedFormSubmission,
+    wfm_models.IndexedResultsSubmission,
+):
+    def get_model_class(self):
+        return self.__class__
 
 
 class CustomFormBuilder(
@@ -140,6 +144,7 @@ class AbstractFormPage(
     wfm_models.NamedFormMixin,
     wfm_models.StreamFieldFormMixin,
     wfm_models.NavButtonsFormMixin,
+    wfm_models.IndexedResultsFormMixin,
     FormMixin,
     Page,
 ):

@@ -10,6 +10,7 @@ class FileInputSubmissionsListView(SubmissionsListView):
 
         if not self.is_export:
             field_types = [
+                "index",
                 "user",
                 "submission_date",
                 *(field.field_type for field in self.form_page.get_form_fields()),
