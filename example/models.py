@@ -101,10 +101,17 @@ class CustomTemplatingFormatter(wfm_models.TemplatingFormatter):
             "city": user.city.lower(),
         }
 
+    def load_result_data(self):
+        return {
+            **super().load_result_data(),
+            "index": str(self.submission.index),
+        }
+
     @classmethod
     def doc(cls):
         doc = super().doc()
         doc["user"]["city"] = (_("the form user city"), "Paris")
+        doc["result"]["index"] = (_("the result index"), "42")
         return doc
 
 
