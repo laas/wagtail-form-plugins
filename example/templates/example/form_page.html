@@ -26,10 +26,11 @@
 
     <form action="{% pageurl page %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div id="form-intro">{{ page.intro|richtext }}</div>
         {% bootstrap_form form %}
-        <div id="form-outro">{{ page.outro|richtext }}</div>
         {% trans "Submit" as submit %}
         {% bootstrap_button button_type="submit" content=submit %}
     </form>
+
+    <div id="form-outro">{{ page.outro|richtext }}</div>
+
 {% endblock %}
