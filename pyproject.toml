@@ -4,11 +4,16 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "wagtail_form_mixins"
-version = "0.4.0"
-description = ""
+version = "0.4.1"
+description = "A set of mixins used to customise and improve Wagtail forms in a modular way."
 authors = ["Nathanaël Jourdane <njourdane@laas.fr>"]
-license = "MIT"
+license = "BSD-3-Clause"
 readme = "README.md"
+repository = "https://github.com/laas/wagtail-form-mixins"
+keywords = ["wagtail", "forms", "plugins"]
+classifiers = [
+  "Framework :: Wagtail"
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
