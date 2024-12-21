@@ -3,14 +3,14 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "wagtail_form_mixins"
-version = "0.4.1"
-description = "A set of mixins used to customise and improve Wagtail forms in a modular way."
+name = "wagtail_form_plugins"
+version = "0.4.2"
+description = "A set of plugins used to customize and improve the Wagtail form builder in a modular way."
 authors = ["Nathanaël Jourdane <njourdane@laas.fr>"]
 license = "BSD-3-Clause"
 readme = "README.md"
-repository = "https://github.com/laas/wagtail-form-mixins"
-keywords = ["wagtail", "forms", "plugins"]
+repository = "https://github.com/laas/wagtail-form-plugins"
+keywords = ["wagtail", "form", "plugins"]
 classifiers = [
   "Framework :: Wagtail"
 ]
@@ -25,6 +25,9 @@ optional = true
 
 [tool.poetry.group.demo.dependencies]
 django-bootstrap5 = "^23"
+
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.6"
