@@ -1,0 +1,432 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-21 17:24+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# === conditional fields ===
+#: wagtail_form_plugins/conditional_fields/blocks.py:17
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr "Select a valid choice. %(value)s is not one of the available choices."
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:40
+msgid "is equal to"
+msgstr "est égal à"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:41
+msgid "is not equal to"
+msgstr "n'est pas égal à"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:42
+msgid "is"
+msgstr "est"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:43
+msgid "is not"
+msgstr "n'est pas"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:44
+msgid "is lower than"
+msgstr "est plus petit que"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:45
+msgid "is lower or equal to"
+msgstr "est plus petit ou égal à"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:46
+msgid "is upper than"
+msgstr "est plus grand que"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:47
+msgid "is upper or equal to"
+msgstr "est plus grand ou égal à"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:48
+msgid "is before than"
+msgstr "est avant"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:49
+msgid "is before or equal to"
+msgstr "est avant ou égal à"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:50
+msgid "is after than"
+msgstr "est après"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:51
+msgid "is after or equal to"
+msgstr "est après ou égal à"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:52
+msgid "contains"
+msgstr "contient"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:53
+msgid "does not contain"
+msgstr "ne contient pas"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:54
+msgid "is checked"
+msgstr "est coché"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:55
+msgid "is not checked"
+msgstr "n'est pas coché"
+
+#: wagtail_form_plugins/conditional_fields/blocks.py:77
+#: wagtail_form_plugins/conditional_fields/blocks.py:134
+msgid "Visibility condition"
+msgstr "Condition de visibilité"
+
+# === emails ===
+#: wagtail_form_plugins/emails/blocks.py:17
+msgid "Recipient list"
+msgstr "Liste des destinataires"
+
+#: wagtail_form_plugins/emails/blocks.py:18
+msgid "E-mail addresses of the recipients, separated by comma."
+msgstr "Adresses e-mail des destinataires, séparées par une virgule."
+
+#: wagtail_form_plugins/emails/blocks.py:23
+msgid "Reply to"
+msgstr "Répondre à"
+
+#: wagtail_form_plugins/emails/blocks.py:24
+msgid "E-mail addresses set in the “reply_to” email field, separated by comma."
+msgstr ""
+"Adresses e-mail définies dans le champ “reply_to”, séparées par une virgule."
+
+#: wagtail_form_plugins/emails/blocks.py:28
+msgid "Subject"
+msgstr "Sujet"
+
+#: wagtail_form_plugins/emails/blocks.py:29
+msgid "The subject of the e-mail."
+msgstr "Le sujet de l'e-mail."
+
+#: wagtail_form_plugins/emails/blocks.py:33
+msgid "Message"
+msgstr "Message"
+
+#: wagtail_form_plugins/emails/blocks.py:34
+msgid "The body of the e-mail."
+msgstr "Le corps de l'e-mail."
+
+#: wagtail_form_plugins/emails/blocks.py:38
+msgid "E-mail to send"
+msgstr "E-mail à envoyer"
+
+#: wagtail_form_plugins/file_input/blocks.py:13
+msgid "Allowed file extensions"
+msgstr "Extensions de fichier autorisées"
+
+#: wagtail_form_plugins/file_input/blocks.py:20
+msgid "File"
+msgstr "Fichier"
+
+#: wagtail_form_plugins/indexed_results/models.py:32
+msgid "Subscription index"
+msgstr "Index du résultat"
+
+#: wagtail_form_plugins/named_form/models.py:32
+msgid "Unique response"
+msgstr "Réponse unique"
+
+#: wagtail_form_plugins/named_form/models.py:33
+msgid "If checked, the user may fill in the form only once."
+msgstr ""
+"Si coché, l'utilisateur ne pourra remplir le formulaire qu'une seule fois."
+
+#: wagtail_form_plugins/named_form/models.py:42
+msgid "Form user"
+msgstr "Utilisateur"
+
+#: wagtail_form_plugins/named_form/models.py:54
+msgid "You have already filled in this form."
+msgstr "Vous avez déjà rempli ce formulaire."
+
+#: wagtail_form_plugins/nav_buttons/views.py:16
+msgid "Forms list"
+msgstr "Liste des formulaires"
+
+#: wagtail_form_plugins/nav_buttons/views.py:23
+msgid "Edit form"
+msgstr "Éditer le formulaire"
+
+# === streamfield ===
+#: wagtail_form_plugins/streamfield/blocks.py:11
+#: wagtail_form_plugins/streamfield/blocks.py:41
+msgid "Label"
+msgstr "Label"
+
+#: wagtail_form_plugins/streamfield/blocks.py:12
+msgid "Short text describing the field."
+msgstr "Texte bref décrivant le champ."
+
+#: wagtail_form_plugins/streamfield/blocks.py:16
+msgid "Help text"
+msgstr "Texte d'aide"
+
+#: wagtail_form_plugins/streamfield/blocks.py:18
+msgid "Text displayed below the label to add more information."
+msgstr "Texte affiché sous le label pour ajouter plus d'information."
+
+#: wagtail_form_plugins/streamfield/blocks.py:21
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: wagtail_form_plugins/streamfield/blocks.py:23
+msgid "Check to make the field not editable by the user."
+msgstr "Cochez pour rendre le champ non éditable par l'utilisateur."
+
+#: wagtail_form_plugins/streamfield/blocks.py:32
+#, python-brace-format
+msgid "If checked, {condition} to validate the form."
+msgstr "Si coché, {condition} pour valider le formulaire."
+
+#: wagtail_form_plugins/streamfield/blocks.py:33
+msgid "this field must be filled"
+msgstr "ce champ doit être rempli"
+
+#: wagtail_form_plugins/streamfield/blocks.py:35
+msgid "Required"
+msgstr "Obligatoire"
+
+#: wagtail_form_plugins/streamfield/blocks.py:45
+msgid "Selected"
+msgstr "Sélectionné"
+
+#: wagtail_form_plugins/streamfield/blocks.py:50
+msgid "Choice"
+msgstr "Choix"
+
+#: wagtail_form_plugins/streamfield/blocks.py:58
+msgid "Choices"
+msgstr "Choix"
+
+#: wagtail_form_plugins/streamfield/blocks.py:64
+msgid "Default value"
+msgstr "Valeur par défaut"
+
+#: wagtail_form_plugins/streamfield/blocks.py:67
+#, python-brace-format
+msgid "{field_type} used to pre-fill the field."
+msgstr "{field_type} utilisé pour pré-remplir le champ."
+
+#: wagtail_form_plugins/streamfield/blocks.py:75
+#: wagtail_form_plugins/streamfield/blocks.py:89
+msgid "Single line text"
+msgstr "Texte simple"
+
+#: wagtail_form_plugins/streamfield/blocks.py:77
+#: wagtail_form_plugins/streamfield/blocks.py:97
+msgid "Min length"
+msgstr "Longueur min"
+
+#: wagtail_form_plugins/streamfield/blocks.py:78
+#: wagtail_form_plugins/streamfield/blocks.py:98
+msgid "Minimum amount of characters allowed in the field."
+msgstr "Nombre minimum de caractères autorisé dans le champ."
+
+#: wagtail_form_plugins/streamfield/blocks.py:82
+#: wagtail_form_plugins/streamfield/blocks.py:102
+msgid "Max length"
+msgstr "Longueur max"
+
+#: wagtail_form_plugins/streamfield/blocks.py:83
+#: wagtail_form_plugins/streamfield/blocks.py:103
+msgid "Maximum amount of characters allowed in the field."
+msgstr "Nombre maximum de caractères autorisé dans le champ."
+
+#: wagtail_form_plugins/streamfield/blocks.py:95
+#: wagtail_form_plugins/streamfield/blocks.py:109
+msgid "Multi-line text"
+msgstr "Texte multi-ligne"
+
+#: wagtail_form_plugins/streamfield/blocks.py:115
+#: wagtail_form_plugins/streamfield/blocks.py:119
+msgid "E-mail"
+msgstr "E-mail"
+
+#: wagtail_form_plugins/streamfield/blocks.py:125
+#: wagtail_form_plugins/streamfield/blocks.py:139
+msgid "Number"
+msgstr "Nombre"
+
+#: wagtail_form_plugins/streamfield/blocks.py:127
+msgid "Min value"
+msgstr "Valeur min"
+
+#: wagtail_form_plugins/streamfield/blocks.py:128
+msgid "Minimum number allowed in the field."
+msgstr "Nombre minimum autorisé dans le champ."
+
+#: wagtail_form_plugins/streamfield/blocks.py:132
+msgid "Max value"
+msgstr "Valeur max"
+
+#: wagtail_form_plugins/streamfield/blocks.py:133
+msgid "Maximum number allowed in the field."
+msgstr "Nombre maximum autorisé dans le champ."
+
+#: wagtail_form_plugins/streamfield/blocks.py:145
+#: wagtail_form_plugins/streamfield/blocks.py:149
+msgid "URL"
+msgstr "URL"
+
+#: wagtail_form_plugins/streamfield/blocks.py:154
+msgid "the box must be checked"
+msgstr "la case doit être cochée"
+
+#: wagtail_form_plugins/streamfield/blocks.py:156
+#: wagtail_form_plugins/streamfield/blocks.py:170
+msgid "Checked"
+msgstr "Coché"
+
+#: wagtail_form_plugins/streamfield/blocks.py:158
+msgid "If checked, the box will be checked by default."
+msgstr "Si coché, la case sera cochée par défaut."
+
+#: wagtail_form_plugins/streamfield/blocks.py:163
+msgid "Checkbox"
+msgstr "Case à cocher"
+
+#: wagtail_form_plugins/streamfield/blocks.py:168
+msgid "at least one box must be checked"
+msgstr "au moins une case doit être cochée"
+
+#: wagtail_form_plugins/streamfield/blocks.py:175
+msgid "Checkboxes"
+msgstr "Cases à cocher"
+
+#: wagtail_form_plugins/streamfield/blocks.py:180
+#: wagtail_form_plugins/streamfield/blocks.py:200
+msgid "an item must be selected"
+msgstr "une option doit être sélectionnée"
+
+#: wagtail_form_plugins/streamfield/blocks.py:185
+msgid "Drop down"
+msgstr "Liste déroulante"
+
+#: wagtail_form_plugins/streamfield/blocks.py:190
+msgid "at least one item must be selected"
+msgstr "au moins une option doit être sélectionnée"
+
+#: wagtail_form_plugins/streamfield/blocks.py:195
+msgid "Multiple select"
+msgstr "Sélection multiple"
+
+#: wagtail_form_plugins/streamfield/blocks.py:205
+msgid "Radio buttons"
+msgstr "Boutons radio"
+
+#: wagtail_form_plugins/streamfield/blocks.py:211
+#: wagtail_form_plugins/streamfield/blocks.py:215
+msgid "Date"
+msgstr "Date"
+
+#: wagtail_form_plugins/streamfield/blocks.py:221
+#: wagtail_form_plugins/streamfield/blocks.py:225
+msgid "Date and time"
+msgstr "Date et heure"
+
+#: wagtail_form_plugins/streamfield/blocks.py:231
+#: wagtail_form_plugins/streamfield/blocks.py:235
+msgid "Hidden text"
+msgstr "Texte caché"
+
+# === templating ===
+#: wagtail_form_plugins/templating/blocks.py:8
+msgid "This field supports the following templating syntax:"
+msgstr "Ce champ supporte la syntaxe par template suivante:"
+
+#: wagtail_form_plugins/templating/formatter.py:99
+msgid "the form user login"
+msgstr "le login de l'utilisateur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:100
+msgid "the form user email"
+msgstr "l'adresse e-mail de l'utilisateur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:101
+msgid "the form user first name"
+msgstr "le prénom de l'utilisateur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:102
+msgid "the form user last name"
+msgstr "le nom de famille l'utilisateur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:103
+msgid "the form user first name and last name"
+msgstr "le prénom et le nom de l'utilisateur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:106
+msgid "the form author login"
+msgstr "le login de l'auteur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:107
+msgid "the form author email"
+msgstr "l'adresse e-mail de l'auteur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:108
+msgid "the form author first name"
+msgstr "le prénom de l'auteur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:109
+msgid "the form author last name"
+msgstr "le nom de famille l'auteur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:110
+msgid "the form author first name and last name"
+msgstr "le prénom et le nom de l'auteur du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:113
+msgid "the form title"
+msgstr "le titre du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:114
+msgid "the form url"
+msgstr "l'url du formulaire"
+
+#: wagtail_form_plugins/templating/formatter.py:115
+msgid "the date on which the form was published"
+msgstr "la date à laquelle le formulaire a été publié"
+
+#: wagtail_form_plugins/templating/formatter.py:116
+msgid "the time on which the form was published"
+msgstr "l'heure à laquelle le formulaire a été publié"
+
+#: wagtail_form_plugins/templating/formatter.py:119
+msgid "the form data as a list"
+msgstr "les données du formulaire sous forme de liste"
+
+#: wagtail_form_plugins/templating/formatter.py:120
+msgid "the date on which the form was completed"
+msgstr "la date à laquelle le formulaire a été complété"
+
+#: wagtail_form_plugins/templating/formatter.py:121
+msgid "the time on which the form was completed"
+msgstr "l'heure à laquelle le formulaire a été complété"
+
+#: wagtail_form_plugins/templating/formatter.py:124
+msgid "the label of the related field"
+msgstr "le label du champ correspondant"
+
+#: wagtail_form_plugins/templating/formatter.py:127
+msgid "the value of the related field"
+msgstr "la valeur du champ correspondant"

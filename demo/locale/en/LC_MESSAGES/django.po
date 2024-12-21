@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-21 17:24+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: demo/models.py:50
+msgid "City"
+msgstr ""
+
+#: demo/models.py:57
+msgid "Form index page introduction"
+msgstr ""
+
+#: demo/models.py:58
+msgid "A rich text introduction to be displayed before the list of forms."
+msgstr ""
+
+#: demo/models.py:60
+msgid "Forms list"
+msgstr ""
+
+#: demo/models.py:64
+msgid "Form title"
+msgstr ""
+
+#: demo/models.py:65
+msgid "A generic title displayed on all form pages."
+msgstr ""
+
+#: demo/models.py:66
+msgid "Wagtail forms"
+msgstr ""
+
+#: demo/models.py:113
+msgid "the form user city"
+msgstr ""
+
+#: demo/models.py:114
+msgid "the result index"
+msgstr ""
+
+#: demo/models.py:213
+msgid ""
+"Unrecognized template keyword. See tooltip for a list of available keywords."
+msgstr ""
+
+#: demo/models.py:222
+msgid "Form introduction text"
+msgstr ""
+
+#: demo/models.py:226
+msgid "Text displayed after form submission"
+msgstr ""
+
+#: demo/models.py:227
+msgid "Thank you!"
+msgstr ""
+
+#: demo/models.py:231
+msgid "Form fields"
+msgstr ""
+
+#: demo/models.py:235
+msgid "Form conclusion text"
+msgstr ""
+
+#: demo/models.py:237
+msgid ""
+"Data collected in this form is stored by the IT team in order to process "
+"your request."
+msgstr ""
+
+#: demo/models.py:242
+msgid "E-mails to send after form submission"
+msgstr ""
+
+#: demo/templates/example/form_page.html:30
+msgid "Submit"
+msgstr ""
