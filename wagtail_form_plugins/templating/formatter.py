@@ -3,8 +3,9 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 
-TEMPLATE_VAR_LEFT = "{"
-TEMPLATE_VAR_RIGHT = "}"
+TMPL_SEP_LEFT = "{"
+TMPL_SEP_RIGHT = "}"
+TMPL_DYNAMIC_PREFIXES = ["field_label", "field_value"]
 
 
 class TemplatingFormatter:
@@ -87,7 +88,7 @@ class TemplatingFormatter:
 
     def format(self, message):
         for val_key, value in self.values.items():
-            look_for = TEMPLATE_VAR_LEFT + val_key + TEMPLATE_VAR_RIGHT
+            look_for = TMPL_SEP_LEFT + val_key + TMPL_SEP_RIGHT
             if look_for in message:
                 message = message.replace(look_for, value)
         return message
@@ -133,22 +134,35 @@ class TemplatingFormatter:
         doc = cls.doc()
         help_message = ""
 
-        for var_prefix, item in doc.items():
+        for tmpl_prefix, item in doc.items():
             help_message += "\n"
-            for var_suffix, (help_text, example) in item.items():
-                key = f"{{{ var_prefix }.{ var_suffix }}}"
+            for tmpl_suffix, (help_text, example) in item.items():
+                key = f"{ TMPL_SEP_LEFT }{ tmpl_prefix }.{ tmpl_suffix }{ TMPL_SEP_RIGHT }"
                 value = f"{ help_text } (ex: “{ example }”)"
                 help_message += f"• { key }: { value }\n"
 
         return help_message
 
     @classmethod
-    def examples(cls):
-        doc = cls.doc()
-        examples = {}
+    def contains_template(cls, text: str) -> bool:
+        for tmpl_prefix, tmpl_suffixes in cls.doc().items():
+            if tmpl_prefix in TMPL_DYNAMIC_PREFIXES:
+                continue
 
-        for var_prefix, item in doc.items():
-            for var_suffix, (help_text, example) in item.items():
-                examples[f"{{{ var_prefix }.{ var_suffix }}}"] = example
+            for tmpl_suffix in tmpl_suffixes:
+                template = f"{ TMPL_SEP_LEFT }{ tmpl_prefix }.{ tmpl_suffix }{ TMPL_SEP_RIGHT }"
+                if template in text:
+                    return True
 
-        return examples
+        for tmpl_prefix in TMPL_DYNAMIC_PREFIXES:
+            sep = f"{ TMPL_SEP_LEFT }{ tmpl_prefix }."
+            tmpl_suffix = (text.split(sep, 1) + [""])[1].split(TMPL_SEP_RIGHT, 1)[0]
+            if tmpl_suffix:
+                if tmpl_suffix != get_field_clean_name(tmpl_suffix):
+                    raise ValueError
+                return True
+
+        if TMPL_SEP_LEFT in text or TMPL_SEP_RIGHT in text:
+            raise ValueError
+
+        return False

@@ -16,7 +16,6 @@ from wagtail_form_plugins import blocks as wfp_blocks
 from wagtail_form_plugins import panels as wfp_panels
 from wagtail_form_plugins import views as wfp_views
 from wagtail_form_plugins import forms as wfp_forms
-from wagtail_form_plugins.templating.formatter import TEMPLATE_VAR_LEFT, TEMPLATE_VAR_RIGHT
 
 FORM_GROUP_PREFIX = "form_moderator_"
 
@@ -204,16 +203,13 @@ class EmailsToSendBlock(
     def get_block_class(self):
         return wfp_blocks.EmailsFormBlock
 
-    def validate_email(self, field_value):
-        for key, example in self.formatter_class.examples().items():
-            field_value = field_value.replace(key, example)
-
-        if TEMPLATE_VAR_LEFT in field_value or TEMPLATE_VAR_RIGHT in field_value:
-            raise ValidationError(
-                _("Unrecognized template keyword. See tooltip for a list of available keywords.")
-            )
-
-        super().validate_email(field_value)
+    def validate_email(self, field_value: str) -> None:
+        try:
+            if not self.formatter_class.contains_template(field_value):
+                super().validate_email(field_value)
+        except ValueError as err:
+            err_message = _("Wrong template syntax. See tooltip for a list of available keywords.")
+            raise ValidationError(err_message) from err
 
 
 class FormPage(AbstractFormPage):
