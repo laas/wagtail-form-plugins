@@ -25,9 +25,14 @@
     <div id="form-intro">{{ page.intro|richtext }}</div>
 
     <form action="{% pageurl page %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% bootstrap_form form %}
         {% trans "Submit" as submit %}
+
+        {% csrf_token %}
+        <label for="email">Validation e-mail</label>
+        <input type="text" name="email"/>
+
+        {% bootstrap_form form %}
+
         {% bootstrap_button button_type="submit" content=submit %}
     </form>
 

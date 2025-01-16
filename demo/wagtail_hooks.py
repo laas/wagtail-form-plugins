@@ -18,7 +18,7 @@ hooks.register("insert_global_admin_css", wfm_hooks.nav_buttons_admin_css)
 @hooks.register("register_page_listing_buttons")
 def page_listing_buttons(page, user, next_url=None):
     if isinstance(page, FormPage):
-        nb_results = CustomFormSubmission.objects.filter(page=page).count()
+        nb_results = CustomFormSubmission.objects.filter(page=page, validated=True).count()
         yield PageListingButton(
             "no result" if nb_results == 0 else f"{ nb_results } results",
             reverse("wagtailforms:list_submissions", args=[page.pk]),

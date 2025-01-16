@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-21 17:24+0000\n"
+"POT-Creation-Date: 2025-01-16 13:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 # === conditional fields ===
+# python-format
 #: wagtail_form_plugins/conditional_fields/blocks.py:17
 #, python-format
 msgid "Select a valid choice. %(value)s is not one of the available choices."
@@ -139,7 +140,7 @@ msgstr "Extensions de fichier autorisées"
 msgid "File"
 msgstr "Fichier"
 
-#: wagtail_form_plugins/indexed_results/models.py:32
+#: wagtail_form_plugins/indexed_results/models.py:35
 msgid "Subscription index"
 msgstr "Index du résultat"
 
@@ -350,83 +351,91 @@ msgstr "Date et heure"
 msgid "Hidden text"
 msgstr "Texte caché"
 
+#: wagtail_form_plugins/templates/wagtail_form_plugins/form_validation.html:2
+msgid "The form submission has been successfully validated, thank you."
+msgstr "La soumission du formulaire a été correctement validée, merci."
+
+#: wagtail_form_plugins/templates/wagtail_form_plugins/form_validation.html:4
+msgid "The form submission token couldn't validated."
+msgstr "La soumission du formulaire n'a pas pu être validée."
+
 # === templating ===
 #: wagtail_form_plugins/templating/blocks.py:8
 msgid "This field supports the following templating syntax:"
 msgstr "Ce champ supporte la syntaxe par template suivante:"
 
-#: wagtail_form_plugins/templating/formatter.py:99
+#: wagtail_form_plugins/templating/formatter.py:100
 msgid "the form user login"
 msgstr "le login de l'utilisateur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:100
+#: wagtail_form_plugins/templating/formatter.py:101
 msgid "the form user email"
 msgstr "l'adresse e-mail de l'utilisateur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:101
+#: wagtail_form_plugins/templating/formatter.py:102
 msgid "the form user first name"
 msgstr "le prénom de l'utilisateur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:102
+#: wagtail_form_plugins/templating/formatter.py:103
 msgid "the form user last name"
 msgstr "le nom de famille l'utilisateur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:103
+#: wagtail_form_plugins/templating/formatter.py:104
 msgid "the form user first name and last name"
 msgstr "le prénom et le nom de l'utilisateur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:106
+#: wagtail_form_plugins/templating/formatter.py:107
 msgid "the form author login"
 msgstr "le login de l'auteur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:107
+#: wagtail_form_plugins/templating/formatter.py:108
 msgid "the form author email"
 msgstr "l'adresse e-mail de l'auteur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:108
+#: wagtail_form_plugins/templating/formatter.py:109
 msgid "the form author first name"
 msgstr "le prénom de l'auteur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:109
+#: wagtail_form_plugins/templating/formatter.py:110
 msgid "the form author last name"
 msgstr "le nom de famille l'auteur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:110
+#: wagtail_form_plugins/templating/formatter.py:111
 msgid "the form author first name and last name"
 msgstr "le prénom et le nom de l'auteur du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:113
+#: wagtail_form_plugins/templating/formatter.py:114
 msgid "the form title"
 msgstr "le titre du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:114
+#: wagtail_form_plugins/templating/formatter.py:115
 msgid "the form url"
 msgstr "l'url du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:115
+#: wagtail_form_plugins/templating/formatter.py:116
 msgid "the date on which the form was published"
 msgstr "la date à laquelle le formulaire a été publié"
 
-#: wagtail_form_plugins/templating/formatter.py:116
+#: wagtail_form_plugins/templating/formatter.py:117
 msgid "the time on which the form was published"
 msgstr "l'heure à laquelle le formulaire a été publié"
 
-#: wagtail_form_plugins/templating/formatter.py:119
+#: wagtail_form_plugins/templating/formatter.py:120
 msgid "the form data as a list"
 msgstr "les données du formulaire sous forme de liste"
 
-#: wagtail_form_plugins/templating/formatter.py:120
+#: wagtail_form_plugins/templating/formatter.py:121
 msgid "the date on which the form was completed"
 msgstr "la date à laquelle le formulaire a été complété"
 
-#: wagtail_form_plugins/templating/formatter.py:121
+#: wagtail_form_plugins/templating/formatter.py:122
 msgid "the time on which the form was completed"
 msgstr "l'heure à laquelle le formulaire a été complété"
 
-#: wagtail_form_plugins/templating/formatter.py:124
+#: wagtail_form_plugins/templating/formatter.py:125
 msgid "the label of the related field"
 msgstr "le label du champ correspondant"
 
-#: wagtail_form_plugins/templating/formatter.py:127
+#: wagtail_form_plugins/templating/formatter.py:128
 msgid "the value of the related field"
 msgstr "la valeur du champ correspondant"

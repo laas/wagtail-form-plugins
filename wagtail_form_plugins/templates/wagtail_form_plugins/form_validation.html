@@ -1,0 +1,7 @@
+{% load i18n %}
+
+{% if is_validated %}
+    <p>{% translate "The form submission has been successfully validated, thank you." %}</p>
+{% else %}
+    <p>{% translate "The form submission token couldn't validated." %}</p>
+{% endif %}

@@ -1,15 +1,18 @@
 import sys
+from django.db.models.query import QuerySet
 
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib import messages
+from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser
 from django.conf import settings
+from django.http.response import HttpResponseRedirect
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel
 from wagtail.contrib.forms.models import FormMixin
-from wagtail.models import Page, GroupPagePermission, PageViewRestriction
+from wagtail.models import Page, GroupPagePermission
 
 from wagtail_form_plugins import models as wfp_models
 from wagtail_form_plugins import blocks as wfp_blocks
@@ -43,6 +46,17 @@ The form author has been informed.
 Have a nice day.""",
     },
 ]
+
+VALIDATION_EMAIL_BODY = _("""
+Hello,
+
+You filled the form "{title}" on our website.
+
+To confirm the form submission, please click on the link bellow:
+{validation_url}
+
+Have a nice day.
+""")
 
 
 class CustomUser(AbstractUser):
@@ -95,9 +109,10 @@ class FormIndexPage(Page):
 
 class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
     def load_user_data(self, user: CustomUser):
+        is_anonymous = isinstance(user, AnonymousUser)
         return {
             **super().load_user_data(user),
-            "city": user.city.lower(),
+            "city": "-" if is_anonymous else user.city.lower(),
         }
 
     def load_result_data(self):
@@ -109,16 +124,18 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
     @classmethod
     def doc(cls):
         doc = super().doc()
+        doc["user"]["email"] = (_("the user email used for validation"), "alovelace@example.com")
         doc["user"]["city"] = (_("the form user city"), "Paris")
         doc["result"]["index"] = (_("the result index"), "42")
         return doc
 
 
 class CustomFormSubmission(
+    wfp_models.TokenValidationFormSubmission,
     wfp_models.NamedFormSubmission,
     wfp_models.IndexedResultsSubmission,
 ):
-    def get_model_class(self):
+    def get_base_class(self):
         return self.__class__
 
 
@@ -131,11 +148,17 @@ class CustomFormBuilder(
 
 
 class CustomSubmissionListView(
+    wfp_views.TokenValidationSubmissionListView,
     wfp_views.NamedSubmissionsListView,
     wfp_views.FileInputSubmissionsListView,
     wfp_views.NavButtonsSubmissionsListView,
 ):
     form_parent_page_model = FormIndexPage
+
+    def get_base_queryset(self) -> QuerySet:
+        qs = super().get_base_queryset()
+        CustomFormSubmission.flush(qs)
+        return qs
 
 
 class FileInput(wfp_models.AbstractFileInput):
@@ -143,6 +166,7 @@ class FileInput(wfp_models.AbstractFileInput):
 
 
 class AbstractFormPage(
+    wfp_models.TokenValidationFormMixin,
     wfp_models.EmailActionsFormMixin,
     wfp_models.TemplatingFormMixin,
     wfp_models.FileInputFormMixin,
@@ -165,7 +189,13 @@ class AbstractFormPage(
         return CustomFormSubmission
 
     def serve(self, request, *args, **kwargs):
-        response = super().serve(request, *args, **kwargs)
+        try:
+            response = super().serve(request, *args, **kwargs)
+        except ValidationError as e:
+            # invalid validation email
+            messages.add_message(request, messages.ERROR, e.message)
+            return HttpResponseRedirect(self.url)
+
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
 
@@ -174,12 +204,24 @@ class AbstractFormPage(
         form_moderator, _ = Group.objects.get_or_create(name=f"{ FORM_GROUP_PREFIX }{ self.slug }")
         self.set_page_permissions(form_moderator, ["publish", "change", "lock", "unlock"])
 
-        PageViewRestriction.objects.get_or_create(page=self, restriction_type="login")
+        # to make forms private:
+        # PageViewRestriction.objects.get_or_create(page=self, restriction_type="login")
 
     def set_page_permissions(self, group, permissions_name):
         for permission_name in permissions_name:
             permission = Permission.objects.get(codename=f"{ permission_name }_page")
             GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
+
+    def get_email_validation_title(self) -> str:
+        return _('Confirm form submission for "{title}"').format(
+            title=self.title,
+        )
+
+    def get_email_validation_body(self, validation_url) -> str:
+        return VALIDATION_EMAIL_BODY.format(
+            title=self.title,
+            validation_url=f"{ settings.WAGTAILADMIN_BASE_URL }{ validation_url }",
+        )
 
     class Meta:
         abstract = True
@@ -225,6 +267,7 @@ class FormPage(AbstractFormPage):
     form_fields = StreamField(
         FormFieldsBlock(),
         verbose_name=_("Form fields"),
+        blank=True,
     )
     outro = RichTextField(
         blank=True,
@@ -237,6 +280,7 @@ class FormPage(AbstractFormPage):
         EmailsToSendBlock(),
         verbose_name=_("E-mails to send after form submission"),
         default=[wfp_blocks.email_to_block(email) for email in DEFAULT_EMAILS],
+        blank=True,
     )
 
     content_panels = [

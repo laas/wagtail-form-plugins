@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-21 17:24+0000\n"
+"POT-Creation-Date: 2025-01-16 14:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,71 +18,100 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: demo/models.py:50
+#: demo/models.py:48
+#, python-brace-format
+msgid ""
+"\n"
+"Hello,\n"
+"\n"
+"You filled the form \"{title}\" on our website.\n"
+"\n"
+"To confirm the form submission, please click on the link bellow:\n"
+"{validation_url}\n"
+"\n"
+"Have a nice day.\n"
+msgstr ""
+"\n"
+"Bonjour,\n"
+"\n"
+"Vous avez rempli le formulaire \"{title}\" sur notre site internet.\n"
+"\n"
+"Pour confirmer la soumission, merci de cliquer sur le lien ci-dessous:\n"
+"{validation_url}\n"
+"\n"
+
+#: demo/models.py:61
 msgid "City"
 msgstr "Ville"
 
-#: demo/models.py:57
+#: demo/models.py:68
 msgid "Form index page introduction"
 msgstr "Texte d'introduction de la page d'index des formulaire"
 
-#: demo/models.py:58
+#: demo/models.py:69
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr ""
 "Une introduction en RichText à afficher avant la liste des formulaires."
 
-#: demo/models.py:60
+#: demo/models.py:71
 msgid "Forms list"
 msgstr "Liste des formulaires"
 
-#: demo/models.py:64
+#: demo/models.py:75
 msgid "Form title"
 msgstr "Titre du formulaire"
 
-#: demo/models.py:65
+#: demo/models.py:76
 msgid "A generic title displayed on all form pages."
 msgstr "Un titre générique à afficher sur toutes les pages de formulaire."
 
-#: demo/models.py:66
+#: demo/models.py:77
 msgid "Wagtail forms"
 msgstr "Formulaires wagtail"
 
-#: demo/models.py:113
+#: demo/models.py:124
+msgid "the user email used for validation"
+msgstr "l'e-mail de l'utilisateur utilisé pour la validation"
+
+#: demo/models.py:125
 msgid "the form user city"
 msgstr "la ville de l'utilisateur du formulaire"
 
-#: demo/models.py:114
+#: demo/models.py:126
 msgid "the result index"
 msgstr "l'index du résultat"
 
-#: demo/models.py:213
-msgid ""
-"Unrecognized template keyword. See tooltip for a list of available keywords."
-msgstr ""
-"Mot-clé de template non reconnu. Voir l'infobulle pour la liste des mot-clés "
-"disponibles."
+#: demo/models.py:205
+#, python-brace-format
+msgid "Confirm form submission for \"{title}\""
+msgstr "Confirmez la soumission du formulaire \"{title}\""
 
-#: demo/models.py:222
+#: demo/models.py:242
+msgid "Wrong template syntax. See tooltip for a list of available keywords."
+msgstr ""
+"Syntaxe invalide. Voir l'infobulle pour la liste des mot-clés disponibles."
+
+#: demo/models.py:249
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: demo/models.py:226
+#: demo/models.py:253
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: demo/models.py:227
+#: demo/models.py:254
 msgid "Thank you!"
 msgstr "Merci !"
 
-#: demo/models.py:231
+#: demo/models.py:258
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: demo/models.py:235
+#: demo/models.py:262
 msgid "Form conclusion text"
 msgstr "Texte de conclusion du formulaire"
 
-#: demo/models.py:237
+#: demo/models.py:264
 msgid ""
 "Data collected in this form is stored by the IT team in order to process "
 "your request."
@@ -90,10 +119,18 @@ msgstr ""
 "Les données recueillies dans ce formulaire sont sauvegardées par le service "
 "informatique afin de prendre en compte votre demande."
 
-#: demo/models.py:242
+#: demo/models.py:269
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"
 
-#: demo/templates/example/form_page.html:30
+#: demo/templates/demo/form_page.html:28
 msgid "Submit"
 msgstr "Envoyer"
+
+#: demo/templates/wagtail_form_plugins/form_validation.html:7
+msgid "The form submission has been successfully validated, thank you."
+msgstr "La soumission du formulaire a été correctement validée, merci."
+
+#: demo/templates/wagtail_form_plugins/form_validation.html:9
+msgid "The form submission token couldn't validated."
+msgstr "La soumission du formulaire n'a pas pu être validée."
