@@ -1,5 +1,14 @@
 {% extends "demo/base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags static django_bootstrap5 i18n %}
+
+{% block extra_js %}
+    {% bootstrap_javascript %}
+{% endblock %}
+
+{% block extra_css %}
+    {% bootstrap_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/form.css' %}">
+{% endblock %}
 
 {% block title %}
     {{ page.title }}
@@ -7,8 +16,6 @@
 
 {% block content %}
     <h1>{{ page.super_title }}</h1>
-
     <h2>{{ page.title }}</h2>
-
     <div id="form-thank-you">{{page.thank_you_text|richtext}}</div>
 {% endblock %}

@@ -26,13 +26,8 @@
 
     <form action="{% pageurl page %}" method="POST" enctype="multipart/form-data">
         {% trans "Submit" as submit %}
-
         {% csrf_token %}
-        <label for="email">Validation e-mail</label>
-        <input type="text" name="email"/>
-
         {% bootstrap_form form %}
-
         {% bootstrap_button button_type="submit" content=submit %}
     </form>
 

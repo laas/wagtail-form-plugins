@@ -1,16 +1,13 @@
 import sys
-from django.db.models.query import QuerySet
 
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.contrib import messages
 from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser
 from django.conf import settings
-from django.http.response import HttpResponseRedirect
 
 from wagtail.fields import RichTextField, StreamField
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.contrib.forms.models import FormMixin
 from wagtail.models import Page, GroupPagePermission
 
@@ -46,17 +43,6 @@ The form author has been informed.
 Have a nice day.""",
     },
 ]
-
-VALIDATION_EMAIL_BODY = _("""
-Hello,
-
-You filled the form "{title}" on our website.
-
-To confirm the form submission, please click on the link bellow:
-{validation_url}
-
-Have a nice day.
-""")
 
 
 class CustomUser(AbstractUser):
@@ -131,7 +117,6 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
 
 
 class CustomFormSubmission(
-    wfp_models.TokenValidationFormSubmission,
     wfp_models.NamedFormSubmission,
     wfp_models.IndexedResultsSubmission,
 ):
@@ -148,17 +133,11 @@ class CustomFormBuilder(
 
 
 class CustomSubmissionListView(
-    wfp_views.TokenValidationSubmissionListView,
     wfp_views.NamedSubmissionsListView,
     wfp_views.FileInputSubmissionsListView,
     wfp_views.NavButtonsSubmissionsListView,
 ):
     form_parent_page_model = FormIndexPage
-
-    def get_base_queryset(self) -> QuerySet:
-        qs = super().get_base_queryset()
-        CustomFormSubmission.flush(qs)
-        return qs
 
 
 class FileInput(wfp_models.AbstractFileInput):
@@ -189,13 +168,7 @@ class AbstractFormPage(
         return CustomFormSubmission
 
     def serve(self, request, *args, **kwargs):
-        try:
-            response = super().serve(request, *args, **kwargs)
-        except ValidationError as e:
-            # invalid validation email
-            messages.add_message(request, messages.ERROR, e.message)
-            return HttpResponseRedirect(self.url)
-
+        response = super().serve(request, *args, **kwargs)
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
 
@@ -211,17 +184,6 @@ class AbstractFormPage(
         for permission_name in permissions_name:
             permission = Permission.objects.get(codename=f"{ permission_name }_page")
             GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
-
-    def get_email_validation_title(self) -> str:
-        return _('Confirm form submission for "{title}"').format(
-            title=self.title,
-        )
-
-    def get_email_validation_body(self, validation_url) -> str:
-        return VALIDATION_EMAIL_BODY.format(
-            title=self.title,
-            validation_url=f"{ settings.WAGTAILADMIN_BASE_URL }{ validation_url }",
-        )
 
     class Meta:
         abstract = True
@@ -256,13 +218,8 @@ class EmailsToSendBlock(
 
 class FormPage(AbstractFormPage):
     intro = RichTextField(
-        blank=True,
         verbose_name=_("Form introduction text"),
-    )
-    thank_you_text = RichTextField(
         blank=True,
-        verbose_name=_("Text displayed after form submission"),
-        default=_("Thank you!"),
     )
     form_fields = StreamField(
         FormFieldsBlock(),
@@ -270,11 +227,25 @@ class FormPage(AbstractFormPage):
         blank=True,
     )
     outro = RichTextField(
-        blank=True,
         verbose_name=_("Form conclusion text"),
         default=_(
             "Data collected in this form is stored by the IT team in order to process your request."
         ),
+        blank=True,
+    )
+    thank_you_text = RichTextField(
+        verbose_name=_("Text displayed after form submission"),
+        default=_("Thank you!"),
+        blank=True,
+    )
+    validation_title = models.CharField(
+        verbose_name=_("E-mail title"),
+        default=_("User validation required to fill a public form"),
+        max_length=100,
+    )
+    validation_body = RichTextField(
+        verbose_name=_("E-mail content"),
+        default=_("Please click on the following link to fill the form: {validation_url} ."),
     )
     emails_to_send = StreamField(
         EmailsToSendBlock(),
@@ -289,6 +260,13 @@ class FormPage(AbstractFormPage):
         FieldPanel("form_fields"),
         FieldPanel("outro"),
         FieldPanel("thank_you_text"),
+        MultiFieldPanel(
+            [
+                FieldPanel("validation_title"),
+                FieldPanel("validation_body"),
+            ],
+            "Validation e-mail",
+        ),
         FieldPanel("emails_to_send"),
         wfp_panels.UniqueResponseFieldPanel(),
     ]

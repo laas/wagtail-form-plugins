@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-16 13:59+0000\n"
+"POT-Creation-Date: 2025-01-22 14:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,107 +18,97 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: demo/models.py:48
-#, python-brace-format
-msgid ""
-"\n"
-"Hello,\n"
-"\n"
-"You filled the form \"{title}\" on our website.\n"
-"\n"
-"To confirm the form submission, please click on the link bellow:\n"
-"{validation_url}\n"
-"\n"
-"Have a nice day.\n"
-msgstr ""
-
-#: demo/models.py:61
+#: demo/models.py:49
 msgid "City"
 msgstr ""
 
-#: demo/models.py:68
+#: demo/models.py:56
 msgid "Form index page introduction"
 msgstr ""
 
-#: demo/models.py:69
+#: demo/models.py:57
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr ""
 
-#: demo/models.py:71
+#: demo/models.py:59
 msgid "Forms list"
 msgstr ""
 
-#: demo/models.py:75
+#: demo/models.py:63
 msgid "Form title"
 msgstr ""
 
-#: demo/models.py:76
+#: demo/models.py:64
 msgid "A generic title displayed on all form pages."
 msgstr ""
 
-#: demo/models.py:77
+#: demo/models.py:65
 msgid "Wagtail forms"
 msgstr ""
 
-#: demo/models.py:124
+#: demo/models.py:113
 msgid "the user email used for validation"
 msgstr ""
 
-#: demo/models.py:125
+#: demo/models.py:114
 msgid "the form user city"
 msgstr ""
 
-#: demo/models.py:126
+#: demo/models.py:115
 msgid "the result index"
 msgstr ""
 
-#: demo/models.py:205
-#, python-brace-format
-msgid "Confirm form submission for \"{title}\""
-msgstr ""
-
-#: demo/models.py:242
+#: demo/models.py:215
 msgid "Wrong template syntax. See tooltip for a list of available keywords."
 msgstr ""
 
-#: demo/models.py:249
+#: demo/models.py:221
 msgid "Form introduction text"
 msgstr ""
 
-#: demo/models.py:253
-msgid "Text displayed after form submission"
-msgstr ""
-
-#: demo/models.py:254
-msgid "Thank you!"
-msgstr ""
-
-#: demo/models.py:258
+#: demo/models.py:226
 msgid "Form fields"
 msgstr ""
 
-#: demo/models.py:262
+#: demo/models.py:230
 msgid "Form conclusion text"
 msgstr ""
 
-#: demo/models.py:264
+#: demo/models.py:232
 msgid ""
 "Data collected in this form is stored by the IT team in order to process "
 "your request."
 msgstr ""
 
-#: demo/models.py:269
+#: demo/models.py:237
+msgid "Text displayed after form submission"
+msgstr ""
+
+#: demo/models.py:238
+msgid "Thank you!"
+msgstr ""
+
+#: demo/models.py:242
+msgid "E-mail title"
+msgstr ""
+
+#: demo/models.py:243
+msgid "User validation required to fill a public form"
+msgstr ""
+
+#: demo/models.py:247
+msgid "E-mail content"
+msgstr ""
+
+#: demo/models.py:248
+#, python-brace-format
+msgid "Please click on the following link to fill the form: {validation_url} ."
+msgstr ""
+
+#: demo/models.py:252
 msgid "E-mails to send after form submission"
 msgstr ""
 
 #: demo/templates/demo/form_page.html:28
 msgid "Submit"
-msgstr ""
-
-#: demo/templates/wagtail_form_plugins/form_validation.html:7
-msgid "The form submission has been successfully validated, thank you."
-msgstr ""
-
-#: demo/templates/wagtail_form_plugins/form_validation.html:9
-msgid "The form submission token couldn't validated."
 msgstr ""

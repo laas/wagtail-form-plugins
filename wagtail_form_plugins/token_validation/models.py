@@ -1,71 +1,86 @@
 import uuid
-from datetime import datetime, timezone, timedelta
 
+from datetime import datetime, timezone
+
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from django.db import models
-from django.urls import reverse
-from django.db.models.query import QuerySet
+from django.template.response import TemplateResponse
+from django.forms import Form, EmailField
+from django.contrib import messages
+from django.utils.html import strip_tags
 
-from wagtail.contrib.forms.models import FormMixin, AbstractFormSubmission
-from wagtail.contrib.forms.forms import BaseForm
+from wagtail_form_plugins.base.models import FormMixin
 from wagtail.admin.mail import send_mail
 
 
-class TokenValidationFormSubmission(AbstractFormSubmission):
-    token = models.CharField(max_length=255, default="")
-    validated = models.BooleanField(default=False)
-    email = models.EmailField(default="")
-
-    @classmethod
-    def flush(cls, qs: QuerySet) -> int:
-        flushed_amount = 0
-        for submission in qs.filter(validated=False):
-            delay: timedelta = datetime.now(timezone.utc) - submission.submit_time
-            if delay.total_seconds() / 60 > settings.FORMS_VALIDATION_EXPIRATION_DELAY:
-                submission.delete()
-                flushed_amount += 1
-        return flushed_amount
-
-    def save(self, *args, **kwargs) -> None:
-        if not self.token:
-            self.token = str(uuid.uuid4())
-        return super().save(*args, **kwargs)
-
-    class Meta:
-        abstract = True
+class ValidationForm(Form):
+    validation_email = EmailField(
+        max_length=100,
+        help_text=_("An e-mail validation is required to fill public forms when not connected."),
+    )
 
 
 class TokenValidationFormMixin(FormMixin):
-    # def serve(self, request, *args, **kwargs):
-    # if request.method == "POST":
-    #     validate_email(request.POST.get("email", ""))
+    tokens: dict[str, datetime] = {}
 
-    # return super().serve(request, *args, **kwargs)
+    def build_token(self) -> str:
+        return str(uuid.uuid4())
 
-    def process_form_submission(self, form: BaseForm):
-        submission = super().process_form_submission(form)
+    def flush(self):
+        for token, date in self.tokens.items():
+            delay = datetime.now(timezone.utc) - date
+            if delay.total_seconds() / 60 > settings.FORMS_VALIDATION_EXPIRATION_DELAY:
+                del self.tokens[token]
 
-        submission.email = form.data["email"]
-        submission.save()
+    def serve(self, request, *args, **kwargs):
+        self.flush()
 
-        url_params = {
-            "submission_id": submission.pk,
-            "token": submission.token,
-        }
-        validation_url = reverse("forms:validate_submission", kwargs=url_params)
+        if not request.user.is_anonymous:
+            return super().serve(request, *args, **kwargs)
 
+        if request.method == "POST":
+            # TODO: the token and the e-mail should be included in the form in a hidden field
+            # and verified on form submission
+            if "validation_email" in request.POST:
+                form = ValidationForm(request.POST)
+                if form.is_valid():
+                    validation_email = form.cleaned_data["validation_email"]
+                    token = self.build_token()
+                    self.tokens[token] = datetime.now(timezone.utc)
+                    self.send_validation_email(validation_email, token)
+                    msg_str = _(
+                        "We just send you an e-mail. Please click on the link to continue the form submission."
+                    )
+                    messages.add_message(request, messages.INFO, msg_str)
+                else:
+                    messages.add_message(request, messages.ERROR, _("This e-mail is not valid."))
+            else:
+                return super().serve(request, *args, **kwargs)
+
+        if request.method == "GET" and "token" in request.GET:
+            token = request.GET["token"]
+            if token in self.tokens:
+                msg_str = _("Your e-mail has been validated. You can now fill the form.")
+                messages.add_message(request, messages.SUCCESS, msg_str)
+
+                del self.tokens[token]
+                return super().serve(request, *args, **kwargs)
+            messages.add_message(request, messages.ERROR, _("This token is not valid."))
+
+        context = self.get_context(request)
+        context["form"] = ValidationForm()
+        return TemplateResponse(request, self.get_template(request), context)
+
+    def send_validation_email(self, email: str, token: str):
+        validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{ self.url }?token={ token }"
+        message = self.validation_body.replace("{validation_url}", validation_url)
         send_mail(
-            self.get_email_validation_title(),
-            self.get_email_validation_body(validation_url),
-            [form.data["email"]],
-            settings.DEFAULT_FROM_EMAIL,
+            subject=self.validation_title,
+            recipient_list=[email],
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            message=strip_tags(message.replace("</p>", "</p>\n")),
+            html_message=message,
         )
-
-    def get_email_validation_title(self) -> str:
-        return "Confirm form submission"
-
-    def get_email_validation_body(self, validation_url) -> str:
-        return f"Form validation link: { validation_url }"
 
     class Meta:
         abstract = True

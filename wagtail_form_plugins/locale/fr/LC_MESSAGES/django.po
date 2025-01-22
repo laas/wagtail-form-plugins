@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-16 13:59+0000\n"
+"POT-Creation-Date: 2025-01-22 15:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,7 +140,7 @@ msgstr "Extensions de fichier autorisées"
 msgid "File"
 msgstr "Fichier"
 
-#: wagtail_form_plugins/indexed_results/models.py:35
+#: wagtail_form_plugins/indexed_results/models.py:32
 msgid "Subscription index"
 msgstr "Index du résultat"
 
@@ -351,14 +351,6 @@ msgstr "Date et heure"
 msgid "Hidden text"
 msgstr "Texte caché"
 
-#: wagtail_form_plugins/templates/wagtail_form_plugins/form_validation.html:2
-msgid "The form submission has been successfully validated, thank you."
-msgstr "La soumission du formulaire a été correctement validée, merci."
-
-#: wagtail_form_plugins/templates/wagtail_form_plugins/form_validation.html:4
-msgid "The form submission token couldn't validated."
-msgstr "La soumission du formulaire n'a pas pu être validée."
-
 # === templating ===
 #: wagtail_form_plugins/templating/blocks.py:8
 msgid "This field supports the following templating syntax:"
@@ -439,3 +431,29 @@ msgstr "le label du champ correspondant"
 #: wagtail_form_plugins/templating/formatter.py:128
 msgid "the value of the related field"
 msgstr "la valeur du champ correspondant"
+
+#: wagtail_form_plugins/token_validation/models.py:18
+msgid ""
+"An e-mail validation is required to fill public forms when not connected."
+msgstr ""
+
+#: wagtail_form_plugins/token_validation/models.py:51
+msgid ""
+"We just send you an e-mail. Please click on the link to continue the form "
+"submission."
+msgstr ""
+"Nous venons de vous envoyer un e-mail. Meric de cliquer sur le lien fourni "
+"pour continuer la saisie du formulaire."
+
+#: wagtail_form_plugins/token_validation/models.py:55
+msgid "This e-mail is not valid."
+msgstr "Cet e-mail n'est pas valide."
+
+#: wagtail_form_plugins/token_validation/models.py:62
+msgid "Your e-mail has been validated. You can now fill the form."
+msgstr ""
+"Votre e-mail a été validé. Vous pouvez maintenant remplir le formulaire."
+
+#: wagtail_form_plugins/token_validation/models.py:67
+msgid "This token is not valid."
+msgstr "Ce token n'est pas valide."
