@@ -1,4 +1,5 @@
 import sys
+from typing import Any
 
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -95,11 +96,14 @@ class FormIndexPage(Page):
 
 class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
     def load_user_data(self, user: CustomUser):
+        user_data: dict[str, Any] = super().load_user_data(user)
         is_anonymous = isinstance(user, AnonymousUser)
-        return {
-            **super().load_user_data(user),
-            "city": "-" if is_anonymous else user.city.lower(),
-        }
+
+        if is_anonymous and self.submission:
+            user_data["email"] = self.submission.email
+        user_data["city"] = "-" if is_anonymous else user.city.lower()
+
+        return user_data
 
     def load_result_data(self):
         return {

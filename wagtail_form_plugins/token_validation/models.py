@@ -50,12 +50,14 @@ class TokenValidationFormMixin(FormMixin):
             if delay.total_seconds() / 60 > settings.FORMS_VALIDATION_EXPIRATION_DELAY:
                 del self.tokens[token]
 
-    def get_submission_options(self, form):
+    def extract_email(self, form) -> str:
         encoded_email: str = form.data["wfp_token"].split("-")[0]
-        email = base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
+        return base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
+
+    def get_submission_options(self, form):
         return {
             **super().get_submission_options(form),
-            "email": email,
+            "email": self.extract_email(form),
         }
 
     def serve(self, request: HttpRequest, *args, **kwargs):
@@ -97,7 +99,7 @@ class TokenValidationFormMixin(FormMixin):
 
     def process_form_submission(self, form):
         submission = super().process_form_submission(form)
-        submission.email = f"{form.data['wfp_token']}@laas.fr"
+        submission.email = self.extract_email(form)
         return submission
 
     def send_validation_email(self, email_address: str, token: str):
