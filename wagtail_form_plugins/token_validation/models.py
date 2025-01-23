@@ -1,7 +1,6 @@
 import uuid
 import base64
 from typing import Any
-
 from datetime import datetime, timezone
 
 from django.utils.translation import gettext_lazy as _
@@ -12,9 +11,9 @@ from django.contrib import messages
 from django.utils.html import strip_tags
 from django.db import models
 from django.http import HttpRequest
+from wagtail.contrib.forms.models import AbstractFormSubmission
 
 from wagtail_form_plugins.base.models import FormMixin
-from wagtail.contrib.forms.models import AbstractFormSubmission
 
 
 class ValidationForm(Form):
@@ -45,10 +44,14 @@ class TokenValidationFormMixin(FormMixin):
         return f"{ encoded_email }-{uuid.uuid4()}"
 
     def flush(self):
+        to_remove = []
         for token, date in self.tokens.items():
             delay = datetime.now(timezone.utc) - date
             if delay.total_seconds() / 60 > settings.FORMS_VALIDATION_EXPIRATION_DELAY:
-                del self.tokens[token]
+                to_remove.append(token)
+
+        for token in to_remove:
+            del self.tokens[token]
 
     def extract_email(self, form) -> str:
         encoded_email: str = form.data["wfp_token"].split("-")[0]
