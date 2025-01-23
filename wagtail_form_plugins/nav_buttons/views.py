@@ -7,8 +7,12 @@ from wagtail.contrib.forms.views import SubmissionsListView
 
 class NavButtonsSubmissionsListView(SubmissionsListView):
     def get_context_data(self, **kwargs):
-        finder = AdminURLFinder()
         context_data = super().get_context_data(**kwargs)
+
+        if self.is_export:
+            return context_data
+
+        finder = AdminURLFinder()
         form_index_page = self.form_parent_page_model.objects.first()
 
         context_data["header_buttons"] += [
