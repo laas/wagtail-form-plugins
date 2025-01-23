@@ -20,7 +20,7 @@ class NamedFormSubmission(AbstractFormSubmission):
     def get_data(self):
         return {
             **super().get_data(),
-            "user": self.user,
+            "user": self.user.get_full_name() if self.user else "-",
         }
 
     class Meta:

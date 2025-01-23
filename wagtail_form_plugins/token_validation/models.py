@@ -1,5 +1,6 @@
 import uuid
 import base64
+from typing import Any
 
 from datetime import datetime, timezone
 
@@ -27,10 +28,10 @@ class TokenValidationSubmission(AbstractFormSubmission):
     email = models.EmailField(default="")
 
     def get_data(self):
-        return {
-            **super().get_data(),
-            "email": self.email,
-        }
+        data: dict[str, Any] = super().get_data()
+        if data["user"] == "-":
+            data["user"] = self.email
+        return data
 
     class Meta:
         abstract = True
@@ -48,12 +49,6 @@ class TokenValidationFormMixin(FormMixin):
             delay = datetime.now(timezone.utc) - date
             if delay.total_seconds() / 60 > settings.FORMS_VALIDATION_EXPIRATION_DELAY:
                 del self.tokens[token]
-
-    def get_data_fields(self):
-        return [
-            ("email", _("Validation email")),
-            *super().get_data_fields(),
-        ]
 
     def get_submission_options(self, form):
         encoded_email: str = form.data["wfp_token"].split("-")[0]

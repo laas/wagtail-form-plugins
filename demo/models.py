@@ -134,7 +134,6 @@ class CustomFormBuilder(
 
 
 class CustomSubmissionListView(
-    wfp_views.NamedSubmissionsListView,
     wfp_views.FileInputSubmissionsListView,
     wfp_views.NavButtonsSubmissionsListView,
 ):
