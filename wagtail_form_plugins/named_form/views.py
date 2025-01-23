@@ -7,7 +7,7 @@ class NamedSubmissionsListView(SubmissionsListView):
 
         if not self.is_export:
             for data_row in context["data_rows"]:
-                user = data_row["fields"][0]
-                data_row["fields"][0] = f"{user.first_name} {user.last_name}" if user else "-"
+                user = data_row["fields"][1]
+                data_row["fields"][1] = f"{user.first_name} {user.last_name}" if user else "-"
 
         return context

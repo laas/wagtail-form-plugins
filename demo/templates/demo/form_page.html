@@ -28,6 +28,7 @@
         {% trans "Submit" as submit %}
         {% csrf_token %}
         {% bootstrap_form form %}
+        <input type="hidden" name="wfp_token" value="{{ request.GET.token }}"/>
         {% bootstrap_button button_type="submit" content=submit %}
     </form>
 

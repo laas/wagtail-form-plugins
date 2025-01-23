@@ -117,6 +117,7 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
 
 
 class CustomFormSubmission(
+    wfp_models.TokenValidationSubmission,
     wfp_models.NamedFormSubmission,
     wfp_models.IndexedResultsSubmission,
 ):
