@@ -10,7 +10,6 @@ from django.contrib import messages
 from django.utils.html import strip_tags
 
 from wagtail_form_plugins.base.models import FormMixin
-from wagtail.admin.mail import send_mail
 
 
 class ValidationForm(Form):
@@ -71,7 +70,7 @@ class TokenValidationFormMixin(FormMixin):
         context["form"] = ValidationForm()
         return TemplateResponse(request, self.get_template(request), context)
 
-    def send_validation_email(self, email: str, token: str):
+    def send_validation_email(self, email_address: str, token: str):
         validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{ self.url }?token={ token }"
         message_text = self.validation_body.replace(
             "{validation_url}",
@@ -81,13 +80,14 @@ class TokenValidationFormMixin(FormMixin):
             "{validation_url}",
             f"<a href='{ validation_url }'>{ validation_url }</a>",
         )
-        send_mail(
-            subject=self.validation_title,
-            recipient_list=[email],
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            message=strip_tags(message_text.replace("</p>", "</p>\n")),
-            html_message=message_html,
-        )
+        email = {
+            "subject": self.validation_title,
+            "recipient_list": [email_address],
+            "from_email": settings.FORMS_FROM_EMAIL,
+            "message": strip_tags(message_text.replace("</p>", "</p>\n")),
+            "html_message": message_html,
+        }
+        self.send_email(email)
 
     class Meta:
         abstract = True

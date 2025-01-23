@@ -1,5 +1,7 @@
 from django.db import models
 
+from wagtail.admin.mail import send_mail
+
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.views import SubmissionsListView
 
@@ -28,6 +30,9 @@ class FormMixin(models.Model):
 
     def format_field_value(self, field_type, field_value):
         return field_value
+
+    def send_email(self, email: dict):
+        send_mail(**email)
 
     class Meta:
         abstract = True

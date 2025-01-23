@@ -172,6 +172,15 @@ class AbstractFormPage(
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
 
+    def send_email(self, email: dict):
+        """Used in local development to avoid to actually send a mail."""
+        if settings.DEBUG and not settings.FORMS_DEV_SEND_MAIL:
+            print("=== sending email ===")
+            for k, v in email.items():
+                print(f"{ k }: { v }")
+        else:
+            super().send_email(email)
+
     def save(self, clean=True, user=None, log_action=False, **kwargs):
         super().save(clean, user, log_action, **kwargs)
         form_moderator, _ = Group.objects.get_or_create(name=f"{ FORM_GROUP_PREFIX }{ self.slug }")
