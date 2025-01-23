@@ -73,13 +73,20 @@ class TokenValidationFormMixin(FormMixin):
 
     def send_validation_email(self, email: str, token: str):
         validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{ self.url }?token={ token }"
-        message = self.validation_body.replace("{validation_url}", validation_url)
+        message_text = self.validation_body.replace(
+            "{validation_url}",
+            validation_url,
+        )
+        message_html = self.validation_body.replace(
+            "{validation_url}",
+            f"<a href='{ validation_url }'>{ validation_url }</a>",
+        )
         send_mail(
             subject=self.validation_title,
             recipient_list=[email],
             from_email=settings.DEFAULT_FROM_EMAIL,
-            message=strip_tags(message.replace("</p>", "</p>\n")),
-            html_message=message,
+            message=strip_tags(message_text.replace("</p>", "</p>\n")),
+            html_message=message_html,
         )
 
     class Meta:
