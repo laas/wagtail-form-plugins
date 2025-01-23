@@ -11,11 +11,11 @@ class EmailActionsFormMixin(FormMixin):
 
         if "form_submission" in response.context_data:
             for email in response.context_data["page"].emails_to_send:
-                self.send_email(email.value)
+                self.send_action_email(email.value)
 
         return response
 
-    def send_email(self, email):
+    def send_action_email(self, email):
         email = {
             "subject": email["subject"],
             "recipient_list": [ea.strip() for ea in email["recipient_list"].split(",")],
