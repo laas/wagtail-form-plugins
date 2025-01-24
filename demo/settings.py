@@ -159,3 +159,6 @@ FORMS_FILE_UPLOAD_AVAILABLE_EXTENSIONS = ["pdf", "jpg", "jpeg", "png"]
 FORMS_VALIDATION_EXPIRATION_DELAY = 60  # 1 hour
 FORMS_SUBMISSION_MODEL = "demo.CustomFormSubmission"
 FORMS_DEV_SEND_MAIL = False
+FORMS_RGPD_TEXT = """
+Data collected in this form is stored by the IT team in order to process your request.
+"""

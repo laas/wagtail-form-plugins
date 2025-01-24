@@ -177,6 +177,7 @@ class AbstractFormPage(
 
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
+        response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
         response.context_data["page"].super_title = self.get_parent().form_title
         return response
 
@@ -243,13 +244,6 @@ class FormPage(AbstractFormPage):
         verbose_name=_("Form fields"),
         blank=True,
     )
-    outro = RichTextField(
-        verbose_name=_("Form conclusion text"),
-        default=_(
-            "Data collected in this form is stored by the IT team in order to process your request."
-        ),
-        blank=True,
-    )
     thank_you_text = RichTextField(
         verbose_name=_("Text displayed after form submission"),
         default=_("Thank you!"),
@@ -275,7 +269,6 @@ class FormPage(AbstractFormPage):
         *AbstractFormPage.content_panels,
         FieldPanel("intro"),
         FieldPanel("form_fields"),
-        FieldPanel("outro"),
         FieldPanel("thank_you_text"),
         MultiFieldPanel(
             [

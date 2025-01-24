@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-23 14:24+0000\n"
+"POT-Creation-Date: 2025-01-24 10:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -429,25 +429,25 @@ msgstr ""
 msgid "the value of the related field"
 msgstr ""
 
-#: wagtail_form_plugins/token_validation/models.py:19
+#: wagtail_form_plugins/token_validation/models.py:22
 msgid ""
 "An e-mail validation is required to fill public forms when not connected."
 msgstr ""
 
-#: wagtail_form_plugins/token_validation/models.py:52
+#: wagtail_form_plugins/token_validation/models.py:81
 msgid ""
 "We just send you an e-mail. Please click on the link to continue the form "
 "submission."
 msgstr ""
 
-#: wagtail_form_plugins/token_validation/models.py:56
+#: wagtail_form_plugins/token_validation/models.py:85
 msgid "This e-mail is not valid."
 msgstr ""
 
-#: wagtail_form_plugins/token_validation/models.py:63
+#: wagtail_form_plugins/token_validation/models.py:93
 msgid "Your e-mail has been validated. You can now fill the form."
 msgstr ""
 
-#: wagtail_form_plugins/token_validation/models.py:68
+#: wagtail_form_plugins/token_validation/models.py:97
 msgid "This token is not valid."
 msgstr ""
