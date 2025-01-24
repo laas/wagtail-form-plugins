@@ -111,6 +111,10 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
             "index": str(self.submission.index),
         }
 
+    def get_fields_data(self):
+        fields_data = super().get_fields_data()
+        return wfp_models.ConditionalFieldsFormMixin.solve_rules(fields_data, self.form.form_fields)
+
     @classmethod
     def doc(cls):
         doc = super().doc()

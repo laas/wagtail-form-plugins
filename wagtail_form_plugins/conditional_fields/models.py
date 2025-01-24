@@ -1,8 +1,28 @@
 import json
+from datetime import datetime
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.base.models import FormMixin
+
+OPERATIONS = {
+    "eq": lambda a, b: a == b,
+    "neq": lambda a, b: a != b,
+    "is": lambda a, b: a == b,
+    "nis": lambda a, b: a != b,
+    "lt": lambda a, b: float(a) < float(b),
+    "lte": lambda a, b: float(a) <= float(b),
+    "ut": lambda a, b: float(a) > float(b),
+    "ute": lambda a, b: float(a) >= float(b),
+    "bt": lambda a, b: datetime.fromisoformat(a) < datetime.fromisoformat(b),
+    "bte": lambda a, b: datetime.fromisoformat(a) <= datetime.fromisoformat(b),
+    "at": lambda a, b: datetime.fromisoformat(a) > datetime.fromisoformat(b),
+    "ate": lambda a, b: datetime.fromisoformat(a) >= datetime.fromisoformat(b),
+    "ct": lambda a, b: b in a,
+    "nct": lambda a, b: b not in a,
+    "c": lambda a, b: a,
+    "nc": lambda a, b: not a,
+}
 
 
 class ConditionalFieldsFormMixin(FormMixin):
@@ -52,6 +72,35 @@ class ConditionalFieldsFormMixin(FormMixin):
                 "opr": value["operator"],
             }
         }
+
+    @classmethod
+    def solve_rules(cls, fields_data, form_fields):
+        slugs = {field.id: get_field_clean_name(field.value["label"]) for field in form_fields}
+
+        to_hide = []
+        for field in form_fields:
+            for rule in field.value["rule"]:
+                a = fields_data[slugs[rule["field"]]][1]
+                b = (
+                    rule["value_char"]
+                    or rule["value_number"]
+                    or rule["value_dropdown"]
+                    or rule["value_date"]
+                    or ""
+                )
+                func = OPERATIONS[rule["operator"]]
+
+                # print("solving rule:", field.value["label"], a, rule["operator"], b)
+                try:
+                    should_show = func(a, b)
+                except Exception:
+                    print("error when solving rule:", a, rule["operator"], b)
+                    should_show = False
+
+                if not should_show:
+                    to_hide.append(slugs[field.id])
+
+        return {fd_slug: fd for fd_slug, fd in fields_data.items() if fd_slug not in to_hide}
 
     class Meta:
         abstract = True
