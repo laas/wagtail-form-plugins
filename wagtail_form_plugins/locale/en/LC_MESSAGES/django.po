@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-24 10:29+0000\n"
+"POT-Creation-Date: 2025-01-24 10:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,19 +142,23 @@ msgstr ""
 msgid "Subscription index"
 msgstr ""
 
-#: wagtail_form_plugins/named_form/models.py:32
+#: wagtail_form_plugins/named_form/models.py:33
 msgid "Unique response"
 msgstr ""
 
-#: wagtail_form_plugins/named_form/models.py:33
+#: wagtail_form_plugins/named_form/models.py:34
 msgid "If checked, the user may fill in the form only once."
 msgstr ""
 
-#: wagtail_form_plugins/named_form/models.py:42
+#: wagtail_form_plugins/named_form/models.py:43
 msgid "Form user"
 msgstr ""
 
-#: wagtail_form_plugins/named_form/models.py:54
+#: wagtail_form_plugins/named_form/models.py:44
+msgid "User e-mail"
+msgstr ""
+
+#: wagtail_form_plugins/named_form/models.py:56
 msgid "You have already filled in this form."
 msgstr ""
 

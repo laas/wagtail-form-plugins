@@ -21,6 +21,7 @@ class NamedFormSubmission(AbstractFormSubmission):
         return {
             **super().get_data(),
             "user": self.user.get_full_name() if self.user else "-",
+            "email": self.user.email if self.user else "-",
         }
 
     class Meta:
@@ -40,6 +41,7 @@ class NamedFormMixin(FormMixin):
     def get_data_fields(self):
         return [
             ("user", _("Form user")),
+            ("email", _("User e-mail")),
             *super().get_data_fields(),
         ]
 

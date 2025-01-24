@@ -28,8 +28,8 @@ class TokenValidationSubmission(AbstractFormSubmission):
 
     def get_data(self):
         data: dict[str, Any] = super().get_data()
-        if data["user"] == "-":
-            data["user"] = self.email
+        if data["email"] == "-":
+            data["email"] = self.email
         return data
 
     class Meta:
