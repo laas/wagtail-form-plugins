@@ -194,6 +194,8 @@ class AbstractFormPage(
         super().save(clean, user, log_action, **kwargs)
         form_moderator, _ = Group.objects.get_or_create(name=f"{ FORM_GROUP_PREFIX }{ self.slug }")
         self.set_page_permissions(form_moderator, ["publish", "change", "lock", "unlock"])
+        if self.owner:
+            self.owner.groups.add(form_moderator)
 
         # to make forms private:
         # PageViewRestriction.objects.get_or_create(page=self, restriction_type="login")

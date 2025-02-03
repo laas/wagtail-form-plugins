@@ -75,7 +75,16 @@ class ConditionalFieldsFormMixin(FormMixin):
 
     @classmethod
     def solve_rules(cls, fields_data, form_fields):
+        def get_choices(field) -> dict[str, str]:
+            if "choices" not in field.value:
+                return {}
+            return {
+                f"c{ idx + 1 }": get_field_clean_name(choice["label"])
+                for idx, choice in enumerate(field.value["choices"])
+            }
+
         slugs = {field.id: get_field_clean_name(field.value["label"]) for field in form_fields}
+        choices_slugs = {field.id: get_choices(field) for field in form_fields}
 
         to_hide = []
         for field in form_fields:
@@ -88,14 +97,17 @@ class ConditionalFieldsFormMixin(FormMixin):
                     or rule["value_date"]
                     or ""
                 )
+                if rule["value_dropdown"]:
+                    b = choices_slugs[rule["field"]][b]
+
                 func = OPERATIONS[rule["operator"]]
 
-                # print("solving rule:", field.value["label"], a, rule["operator"], b)
                 try:
                     should_show = func(a, b)
                 except Exception:
                     print("error when solving rule:", a, rule["operator"], b)
                     should_show = False
+                # print("solved field", field.value["label"], ":", a, rule["operator"], b, "->", should_show)
 
                 if not should_show:
                     to_hide.append(slugs[field.id])
