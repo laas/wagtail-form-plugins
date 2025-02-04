@@ -46,6 +46,8 @@ class TemplatingFormatter:
     def get_fields_data(self):
         fields = {}
         for field in self.form.form_fields:
+            if field.block.name == "hidden":
+                continue
             field_label = field.value["label"]
             field_slug = get_field_clean_name(field_label)
             value = self.submission.form_data[field_slug]
