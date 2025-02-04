@@ -8,21 +8,14 @@ class FileInputSubmissionsListView(SubmissionsListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if not self.is_export:
-            field_types = [
-                "index",
-                "user",
-                "submission_date",
-                *(field.field_type for field in self.form_page.get_form_fields()),
-            ]
-            data_rows = context["data_rows"]
+        fields_slug = [head["name"] for head in context["data_headings"]]
+        fields_type = {f.clean_name: f.field_type for f in self.form_page.get_form_fields()}
 
-            for data_row in data_rows:
-                fields = data_row["fields"]
-
-                for idx, (value, field_type) in enumerate(zip(fields, field_types)):
-                    if field_type == "file":
-                        fields[idx] = FileInputSubmissionsListView.get_file_link(value, True)
+        for row_idx, row in enumerate(context["data_rows"]):
+            for col_idx, val in enumerate(row["fields"]):
+                field_slug = fields_slug[col_idx]
+                if field_slug in fields_type and fields_type[field_slug] == "file":
+                    context["data_rows"][row_idx]["fields"][col_idx] = self.get_file_link(val, True)
 
         return context
 

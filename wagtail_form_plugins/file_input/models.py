@@ -36,19 +36,18 @@ class FileInputFormMixin(FormMixin):
     submissions_list_view_class = FileInputSubmissionsListView
 
     def get_submission_attributes(self, form):
+        attributes = super().get_submission_attributes(form)
+
         file_form_fields = [f.clean_name for f in self.get_form_fields() if f.field_type == "file"]
 
-        for field_name, field_value in form.cleaned_data.items():
+        for field_name, field_value in attributes["form_data"].items():
             if field_name in file_form_fields:
                 file_input = self.file_input_model.objects.create(
                     file=field_value, field_name=field_name
                 )
-                form.cleaned_data[field_name] = file_input.file.url if file_input.file else ""
+                attributes["form_data"][field_name] = file_input.file.url if file_input.file else ""
 
-        return {
-            **super().get_submission_attributes(form),
-            "form_data": form.cleaned_data,
-        }
+        return attributes
 
     def format_field_value(self, field_type, field_value):
         fmt_value = super().format_field_value(field_type, field_value)
