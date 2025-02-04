@@ -57,9 +57,9 @@ class TokenValidationFormMixin(FormMixin):
         encoded_email: str = form.data["wfp_token"].split("-")[0]
         return base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
 
-    def get_submission_options(self, form):
+    def get_submission_attributes(self, form):
         return {
-            **super().get_submission_options(form),
+            **super().get_submission_attributes(form),
             "email": self.extract_email(form),
         }
 

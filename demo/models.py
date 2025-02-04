@@ -95,8 +95,8 @@ class FormIndexPage(Page):
 
 
 class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
-    def load_user_data(self, user: CustomUser):
-        user_data: dict[str, Any] = super().load_user_data(user)
+    def get_user_data(self, user: CustomUser):
+        user_data: dict[str, Any] = super().get_user_data(user)
         is_anonymous = isinstance(user, AnonymousUser)
 
         if is_anonymous and self.submission:
@@ -105,15 +105,11 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
 
         return user_data
 
-    def load_result_data(self):
+    def get_result_data(self, formated_fields):
         return {
-            **super().load_result_data(),
+            **super().get_result_data(formated_fields),
             "index": str(self.submission.index),
         }
-
-    def get_fields_data(self):
-        fields_data = super().get_fields_data()
-        return wfp_models.ConditionalFieldsFormMixin.solve_rules(fields_data, self.form.form_fields)
 
     @classmethod
     def doc(cls):
@@ -144,6 +140,7 @@ class CustomFormBuilder(
 class CustomSubmissionListView(
     wfp_views.FileInputSubmissionsListView,
     wfp_views.NavButtonsSubmissionsListView,
+    wfp_views.ConditionalFieldsSubmissionsListView,
 ):
     form_parent_page_model = FormIndexPage
 

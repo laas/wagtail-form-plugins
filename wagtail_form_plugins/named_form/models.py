@@ -45,9 +45,9 @@ class NamedFormMixin(FormMixin):
             *super().get_data_fields(),
         ]
 
-    def get_submission_options(self, form):
+    def get_submission_attributes(self, form):
         return {
-            **super().get_submission_options(form),
+            **super().get_submission_attributes(form),
             "user": None if isinstance(form.user, AnonymousUser) else form.user,
         }
 

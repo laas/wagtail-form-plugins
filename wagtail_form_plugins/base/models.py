@@ -18,15 +18,15 @@ class FormMixin(models.Model):
     def get_mixins(self):
         return [subclass.__name__ for subclass in self.subclasses]
 
-    def get_submission_options(self, form):
+    def get_submission_attributes(self, form):
         return {
             "form_data": form.cleaned_data,
             "page": self,
         }
 
     def process_form_submission(self, form):
-        options = self.get_submission_options(form)
-        return self.get_submission_class().objects.create(**options)
+        submission_attributes = self.get_submission_attributes(form)
+        return self.get_submission_class().objects.create(**submission_attributes)
 
     def format_field_value(self, field_type, field_value):
         return field_value

@@ -73,8 +73,19 @@ class ConditionalFieldsFormMixin(FormMixin):
             }
         }
 
-    @classmethod
-    def solve_rules(cls, fields_data, form_fields):
+    def get_submission_attributes(self, form):
+        attributes = super().get_submission_attributes(form)
+        active_fields = self.get_active_fields(form.cleaned_data)
+        return {
+            **attributes,
+            "form_data": {
+                k: (v if k in active_fields else None) for k, v in attributes["form_data"].items()
+            },
+        }
+
+    def get_active_fields(self, form_data):
+        """Return the list of fields slug where the computed conditional value of the field is true."""
+
         def get_choices(field) -> dict[str, str]:
             if "choices" not in field.value:
                 return {}
@@ -83,36 +94,40 @@ class ConditionalFieldsFormMixin(FormMixin):
                 for idx, choice in enumerate(field.value["choices"])
             }
 
-        slugs = {field.id: get_field_clean_name(field.value["label"]) for field in form_fields}
-        choices_slugs = {field.id: get_choices(field) for field in form_fields}
+        slugs = {field.id: get_field_clean_name(field.value["label"]) for field in self.form_fields}
+        choices_slugs = {field.id: get_choices(field) for field in self.form_fields}
 
-        to_hide = []
-        for field in form_fields:
-            for rule in field.value["rule"]:
-                a = fields_data[slugs[rule["field"]]][1]
-                b = (
-                    rule["value_char"]
-                    or rule["value_number"]
-                    or rule["value_dropdown"]
-                    or rule["value_date"]
-                    or ""
-                )
-                if rule["value_dropdown"]:
-                    b = choices_slugs[rule["field"]][b]
+        active_fields = []
+        for field in self.form_fields:
+            if not field.value["rule"]:
+                active_fields.append(slugs[field.id])
+                continue
 
-                func = OPERATIONS[rule["operator"]]
+            rule = field.value["rule"][0]
+            a = form_data[slugs[rule["field"]]]
+            b = (
+                rule["value_char"]
+                or rule["value_number"]
+                or rule["value_dropdown"]
+                or rule["value_date"]
+                or ""
+            )
+            if rule["value_dropdown"]:
+                b = choices_slugs[rule["field"]][b]
 
-                try:
-                    should_show = func(a, b)
-                except Exception:
-                    print("error when solving rule:", a, rule["operator"], b)
-                    should_show = False
-                # print("solved field", field.value["label"], ":", a, rule["operator"], b, "->", should_show)
+            func = OPERATIONS[rule["operator"]]
 
-                if not should_show:
-                    to_hide.append(slugs[field.id])
+            try:
+                is_active = func(a, b)
+            except Exception:
+                print("error when solving rule:", a, rule["operator"], b)
+                is_active = False
+            # print("solved field", field.value["label"], ":", a, rule["operator"], b, "->", is_active)
 
-        return {fd_slug: fd for fd_slug, fd in fields_data.items() if fd_slug not in to_hide}
+            if is_active:
+                active_fields.append(slugs[field.id])
+
+        return active_fields
 
     class Meta:
         abstract = True

@@ -35,7 +35,7 @@ class AbstractFileInput(models.Model):
 class FileInputFormMixin(FormMixin):
     submissions_list_view_class = FileInputSubmissionsListView
 
-    def get_submission_options(self, form):
+    def get_submission_attributes(self, form):
         file_form_fields = [f.clean_name for f in self.get_form_fields() if f.field_type == "file"]
 
         for field_name, field_value in form.cleaned_data.items():
@@ -46,7 +46,7 @@ class FileInputFormMixin(FormMixin):
                 form.cleaned_data[field_name] = file_input.file.url if file_input.file else ""
 
         return {
-            **super().get_submission_options(form),
+            **super().get_submission_attributes(form),
             "form_data": form.cleaned_data,
         }
 

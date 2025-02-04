@@ -13,25 +13,26 @@ class TemplatingFormatter:
         self.submission = context.get("form_submission", None)
         self.form = context["page"]
         self.request = context["request"]
-        self.fields_data = self.get_fields_data() if self.submission else None
-        self.data = self.load_data()
-        self.values = self.load_values()
+        self.data = self.get_data()
+        self.values = self.get_values()
 
-    def load_data(self):
+    def get_data(self):
         data = {
-            "user": self.load_user_data(self.request.user),
-            "author": self.load_user_data(self.form.owner),
-            "form": self.load_form_data(),
+            "user": self.get_user_data(self.request.user),
+            "author": self.get_user_data(self.form.owner),
+            "form": self.get_form_data(),
         }
 
         if self.submission:
-            data["result"] = self.load_result_data()
-            data["field_label"] = self.load_label_data()
-            data["field_value"] = self.load_value_data()
+            formated_fields = self.get_formated_fields()
+
+            data["result"] = self.get_result_data(formated_fields)
+            data["field_label"] = {id: label for id, [label, value] in formated_fields.items()}
+            data["field_value"] = {id: value for id, [label, value] in formated_fields.items()}
 
         return data
 
-    def load_values(self):
+    def get_values(self):
         values = {}
 
         for val_name, value in self.data.items():
@@ -43,7 +44,7 @@ class TemplatingFormatter:
 
         return values
 
-    def get_fields_data(self):
+    def get_formated_fields(self):
         fields = {}
         for field in self.form.form_fields:
             if field.block.name == "hidden":
@@ -51,11 +52,13 @@ class TemplatingFormatter:
             field_label = field.value["label"]
             field_slug = get_field_clean_name(field_label)
             value = self.submission.form_data[field_slug]
+            if value is None:
+                continue
             fmt_value = self.form.format_field_value(field.block.name, value)
             fields[field_slug] = (field_label, fmt_value)
         return fields
 
-    def load_user_data(self, user):
+    def get_user_data(self, user):
         is_anonymous = isinstance(user, AnonymousUser)
         return {
             "login": user.username,
@@ -65,7 +68,7 @@ class TemplatingFormatter:
             "email": "" if is_anonymous else user.email,
         }
 
-    def load_form_data(self):
+    def get_form_data(self):
         return {
             "title": self.form.title,
             "url": self.request.build_absolute_uri(self.form.url),
@@ -73,16 +76,10 @@ class TemplatingFormatter:
             "publish_time": self.form.first_published_at.strftime("%H:%M"),
         }
 
-    def load_label_data(self):
-        return {id: label for id, [label, value] in self.fields_data.items()}
-
-    def load_value_data(self):
-        return {id: value for id, [label, value] in self.fields_data.items()}
-
-    def load_result_data(self):
+    def get_result_data(self, formated_fields):
         return {
             "data": "<br/>\n".join(
-                [f"{label}: {value}" for label, value in self.fields_data.values()]
+                [f"{label}: {value}" for label, value in formated_fields.values()]
             ),
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
