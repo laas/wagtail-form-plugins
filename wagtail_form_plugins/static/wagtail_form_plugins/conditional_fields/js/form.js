@@ -106,6 +106,7 @@ function update_fields_visibility() {
     for(const dom_field of document.querySelectorAll('form [data-label]')) {
         const rule = JSON.parse(dom_field.getAttribute('data-rule'))
         const computed_rule = compute_rule(rule)
+        const dom_input_block = dom_field.getAttribute("data-widget") === "HiddenInput" ? dom_field : dom_field.parentNode
 
         if (Object.keys(rule).length !== 0) {
             console.log(`\n=== ${ dom_field.getAttribute('data-label') } ===`)
@@ -114,7 +115,7 @@ function update_fields_visibility() {
             console.log(`${computed_rule.formula}   ⇒   ${computed_rule.str}   ⇒   ${computed_rule.result}`)
         }
 
-        dom_field.parentNode.style.display = computed_rule.result ? '' : 'none';
+        dom_input_block.style.display = computed_rule.result ? '' : 'none';
     }
 }
 
