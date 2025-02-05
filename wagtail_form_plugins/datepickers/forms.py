@@ -16,4 +16,5 @@ class DatePickersFormBuilder(FormBuilderMixin):
         return forms.DateField(**options, widget=DateInput)
 
     def create_datetime_field(self, field_value, options):
+        options["initial"] = options["initial"].replace("Z", "").split("+")[0]
         return forms.DateTimeField(**options, widget=DateTimeInput)
