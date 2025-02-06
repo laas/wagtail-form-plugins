@@ -159,6 +159,7 @@ class AbstractFormPage(
     wfp_models.StreamFieldFormMixin,
     wfp_models.NavButtonsFormMixin,
     wfp_models.IndexedResultsFormMixin,
+    wfp_models.EditableFormMixin,
     FormMixin,
     Page,
 ):
@@ -168,6 +169,9 @@ class AbstractFormPage(
     submissions_list_view_class = CustomSubmissionListView
     parent_page_type = ["demo.FormIndexPage"]
     subpage_types = []
+
+    def get_group_name(self):
+        return f"{ FORM_GROUP_PREFIX }{ self.slug }"
 
     def get_submission_class(self):
         return CustomFormSubmission
@@ -189,7 +193,7 @@ class AbstractFormPage(
 
     def save(self, clean=True, user=None, log_action=False, **kwargs):
         super().save(clean, user, log_action, **kwargs)
-        form_moderator, _ = Group.objects.get_or_create(name=f"{ FORM_GROUP_PREFIX }{ self.slug }")
+        form_moderator, _ = Group.objects.get_or_create(name=self.get_group_name())
         self.set_page_permissions(form_moderator, ["publish", "change", "lock", "unlock"])
         if self.owner:
             self.owner.groups.add(form_moderator)

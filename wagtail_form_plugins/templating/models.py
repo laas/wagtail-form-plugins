@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from wagtail_form_plugins.base.models import FormMixin
 
 from .formatter import TemplatingFormatter
@@ -8,6 +9,9 @@ class TemplatingFormMixin(FormMixin):
 
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
+        if isinstance(response, HttpResponseRedirect):
+            return response
+
         formatter = self.formatter_class(response.context_data)
 
         if request.method == "GET":

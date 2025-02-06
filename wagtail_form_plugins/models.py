@@ -10,3 +10,4 @@ from .file_input.models import FileInputFormMixin, AbstractFileInput
 from .nav_buttons.models import NavButtonsFormMixin
 from .indexed_results.models import IndexedResultsSubmission, IndexedResultsFormMixin
 from .token_validation.models import TokenValidationFormMixin, TokenValidationSubmission
+from .editable.models import EditableFormMixin

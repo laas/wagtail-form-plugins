@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.utils.html import strip_tags
 
@@ -8,6 +9,8 @@ from wagtail_form_plugins.base.models import FormMixin
 class EmailActionsFormMixin(FormMixin):
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
+        if isinstance(response, HttpResponseRedirect):
+            return response
 
         if "form_submission" in response.context_data:
             for email in response.context_data["page"].emails_to_send:
