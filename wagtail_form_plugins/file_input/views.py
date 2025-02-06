@@ -6,18 +6,22 @@ from wagtail.contrib.forms.views import SubmissionsListView
 
 class FileInputSubmissionsListView(SubmissionsListView):
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
 
-        fields_slug = [head["name"] for head in context["data_headings"]]
+        if self.is_export:
+            return context_data
+
+        fields_slug = [head["name"] for head in context_data["data_headings"]]
         fields_type = {f.clean_name: f.field_type for f in self.form_page.get_form_fields()}
 
-        for row_idx, row in enumerate(context["data_rows"]):
-            for col_idx, val in enumerate(row["fields"]):
+        for row_idx, row in enumerate(context_data["data_rows"]):
+            for col_idx, value in enumerate(row["fields"]):
                 field_slug = fields_slug[col_idx]
                 if field_slug in fields_type and fields_type[field_slug] == "file":
-                    context["data_rows"][row_idx]["fields"][col_idx] = self.get_file_link(val, True)
+                    file_link = self.get_file_link(value, True)
+                    context_data["data_rows"][row_idx]["fields"][col_idx] = file_link
 
-        return context
+        return context_data
 
     @staticmethod
     def get_file_link(file_url, to_html):
