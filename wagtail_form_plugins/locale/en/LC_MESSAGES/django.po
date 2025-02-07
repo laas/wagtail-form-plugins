@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-07 15:18+0000\n"
+"POT-Creation-Date: 2025-02-07 17:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -160,6 +160,11 @@ msgstr ""
 
 #: wagtail_form_plugins/named_form/models.py:56
 msgid "You have already filled in this form."
+msgstr ""
+
+#: wagtail_form_plugins/nav_buttons/models.py:15
+#, python-brace-format
+msgid "{nb_subs} submission(s)"
 msgstr ""
 
 #: wagtail_form_plugins/nav_buttons/views.py:20
@@ -354,10 +359,6 @@ msgstr ""
 #: wagtail_form_plugins/streamfield/blocks.py:231
 #: wagtail_form_plugins/streamfield/blocks.py:235
 msgid "Hidden text"
-msgstr ""
-
-#: wagtail_form_plugins/templates/wagtailadmin/shared/headers/page_edit_header.html:11
-msgid "submission(s)"
 msgstr ""
 
 #: wagtail_form_plugins/templates/wagtailforms/list_submissions.html:41

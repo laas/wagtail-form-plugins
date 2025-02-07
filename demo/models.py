@@ -6,9 +6,11 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser
 from django.conf import settings
+from django.urls import reverse
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.forms.models import FormMixin
 from wagtail.models import Page, GroupPagePermission
 
@@ -69,6 +71,16 @@ class FormIndexPage(Page):
     subpage_types = ["demo.FormPage"]
     max_count = 1
     admin_default_ordering = "ord"
+
+    def admin_header_buttons(self):
+        return [
+            HeaderButton(
+                label=_("Forms list"),
+                url=reverse("wagtailadmin_explore", args=[self.pk]),
+                classname="forms-btn-primary",
+                icon_name="list-ul",
+            )
+        ]
 
     @staticmethod
     def create_if_missing(home_page: Page, stdout=sys.stdout):
