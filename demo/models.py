@@ -59,17 +59,10 @@ class FormIndexPage(Page):
         blank=True,
         default=_("Forms list"),
     )
-    form_title = models.CharField(
-        max_length=255,
-        verbose_name=_("Form title"),
-        help_text=_("A generic title displayed on all form pages."),
-        default=_("Wagtail forms"),
-    )
 
     content_panels = [
         *Page.content_panels,
         FieldPanel("intro"),
-        FieldPanel("form_title"),
     ]
 
     parent_page_type = ["demo.HomePage"]
@@ -179,7 +172,6 @@ class AbstractFormPage(
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
         response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
-        response.context_data["page"].super_title = self.get_parent().form_title
         return response
 
     def send_email(self, email: dict):
