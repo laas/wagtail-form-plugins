@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-07 15:09+0000\n"
+"POT-Creation-Date: 2025-02-07 15:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -173,6 +173,10 @@ msgid "Forms list"
 msgstr "Liste des formulaires"
 
 #: wagtail_form_plugins/nav_buttons/views.py:27
+msgid "View form"
+msgstr "Voir le formulaire"
+
+#: wagtail_form_plugins/nav_buttons/views.py:35
 msgid "Edit form"
 msgstr "Éditer le formulaire"
 

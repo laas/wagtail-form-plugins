@@ -24,11 +24,19 @@ class NavButtonsSubmissionsListView(SubmissionsListView):
                 priority=10,
             ),
             HeaderButton(
+                label=_("View form"),
+                url=self.form_page.url,
+                classname="forms-btn-secondary",
+                icon_name="view",
+                attrs={"target": "_blank"},
+                priority=20,
+            ),
+            HeaderButton(
                 label=_("Edit form"),
                 url=finder.get_edit_url(context_data["form_page"]),
                 classname="forms-btn-primary",
                 icon_name="edit",
-                priority=20,
+                priority=30,
             ),
         ]
 
