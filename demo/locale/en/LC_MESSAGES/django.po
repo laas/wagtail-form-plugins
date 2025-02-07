@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-24 10:29+0000\n"
+"POT-Creation-Date: 2025-02-07 15:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,27 +34,15 @@ msgstr ""
 msgid "Forms list"
 msgstr ""
 
-#: demo/models.py:64
-msgid "Form title"
-msgstr ""
-
-#: demo/models.py:65
-msgid "A generic title displayed on all form pages."
-msgstr ""
-
-#: demo/models.py:66
-msgid "Wagtail forms"
-msgstr ""
-
-#: demo/models.py:121
+#: demo/models.py:110
 msgid "the user email used for validation"
 msgstr ""
 
-#: demo/models.py:122
+#: demo/models.py:111
 msgid "the form user city"
 msgstr ""
 
-#: demo/models.py:123
+#: demo/models.py:112
 msgid "the result index"
 msgstr ""
 
@@ -62,43 +50,43 @@ msgstr ""
 msgid "Wrong template syntax. See tooltip for a list of available keywords."
 msgstr ""
 
-#: demo/models.py:239
+#: demo/models.py:242
 msgid "Form introduction text"
 msgstr ""
 
-#: demo/models.py:244
+#: demo/models.py:247
 msgid "Form fields"
 msgstr ""
 
-#: demo/models.py:248
+#: demo/models.py:251
 msgid "Text displayed after form submission"
 msgstr ""
 
-#: demo/models.py:249
+#: demo/models.py:252
 msgid "Thank you!"
 msgstr ""
 
-#: demo/models.py:253
+#: demo/models.py:256
 msgid "E-mail title"
 msgstr ""
 
-#: demo/models.py:254
+#: demo/models.py:257
 msgid "User validation required to fill a public form"
 msgstr ""
 
-#: demo/models.py:258
+#: demo/models.py:261
 msgid "E-mail content"
 msgstr ""
 
-#: demo/models.py:259
+#: demo/models.py:262
 #, python-brace-format
 msgid "Please click on the following link to fill the form: {validation_url} ."
 msgstr ""
 
-#: demo/models.py:263
+#: demo/models.py:266
 msgid "E-mails to send after form submission"
 msgstr ""
 
-#: demo/templates/demo/form_page.html:28
+#: demo/templates/demo/form_page.html:26
 msgid "Submit"
 msgstr ""
