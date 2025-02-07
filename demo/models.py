@@ -219,11 +219,16 @@ class FormFieldsBlock(
     formatter_class = CustomTemplatingFormatter
 
 
-class EmailsToSendBlock(
-    wfp_blocks.TemplatingEmailFormBlock,
-    wfp_blocks.EmailsFormBlock,
-):
+class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
     formatter_class = CustomTemplatingFormatter
+
+    def __init__(self, local_blocks=None, search_index=True, **kwargs):
+        wfp_blocks.TemplatingFormBlock.add_help_messages(
+            self.get_block_class().declared_blocks.values(),
+            ["subject", "message", "recipient_list", "reply_to"],
+            self.formatter_class.help(),
+        )
+        super().__init__(local_blocks, search_index, **kwargs)
 
     def get_block_class(self):
         return wfp_blocks.EmailsFormBlock
@@ -235,6 +240,9 @@ class EmailsToSendBlock(
         except ValueError as err:
             err_message = _("Wrong template syntax. See tooltip for a list of available keywords.")
             raise ValidationError(err_message) from err
+
+    class Meta:
+        collapsed = True
 
 
 class FormPage(AbstractFormPage):

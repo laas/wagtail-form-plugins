@@ -1,4 +1,3 @@
-from wagtail import blocks
 from django.utils.translation import gettext_lazy as _
 from wagtail.blocks.field_block import RichTextBlock
 
@@ -22,28 +21,12 @@ class TemplatingFormBlock(FormFieldsBlockMixin):
     formatter_class = TemplatingFormatter
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
-        for child_block in self.get_blocks().values():
-            if "initial" in child_block.child_blocks:
-                help_html = build_help_html(self.formatter_class.help())
-                child_block.child_blocks["initial"].field.help_text += help_html
-
+        self.add_help_messages(self.get_blocks().values(), ["initial"], self.formatter_class.help())
         super().__init__(local_blocks, search_index, **kwargs)
 
-
-class TemplatingEmailFormBlock(blocks.StreamBlock):
-    formatter_class = TemplatingFormatter
-
-    def get_block_class(self):
-        raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
-
-    def __init__(self, local_blocks=None, search_index=True, **kwargs):
-        for child_block in self.get_block_class().declared_blocks.values():
-            for field_name in ["subject", "message", "recipient_list", "reply_to"]:
-                if not isinstance(child_block.child_blocks[field_name], RichTextBlock):
-                    help_text = build_help_html(self.formatter_class.help())
-                    child_block.child_blocks[field_name].field.help_text += help_text
-
-        super().__init__(local_blocks, search_index, **kwargs)
-
-    class Meta:
-        collapsed = True
+    @classmethod
+    def add_help_messages(cls, blocks, field_names, help_message: str):
+        for block in blocks:
+            for n in field_names:
+                if n in block.child_blocks and not isinstance(block.child_blocks[n], RichTextBlock):
+                    block.child_blocks[n].field.help_text += build_help_html(help_message)
