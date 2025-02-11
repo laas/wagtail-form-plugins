@@ -15,11 +15,13 @@ class IndexedResultsSubmission(AbstractFormSubmission):
         }
 
     def save(self, *args, **kwargs):
-        qs_submissions = self.get_base_class().objects.filter(page=self.page)
-        try:
-            self.index = max(qs_submissions.values_list("index", flat=True)) + 1
-        except ValueError:  # no submission
-            self.index = 1
+        if self.index == 0:
+            qs_submissions = self.get_base_class().objects.filter(page=self.page)
+            try:
+                self.index = max(qs_submissions.values_list("index", flat=True)) + 1
+            except ValueError:  # no submission
+                self.index = 1
+
         return super().save(*args, **kwargs)
 
     class Meta:

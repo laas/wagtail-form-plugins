@@ -7,6 +7,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser
 from django.conf import settings
 from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
@@ -183,6 +184,10 @@ class AbstractFormPage(
 
     def serve(self, request, *args, **kwargs):
         response = super().serve(request, *args, **kwargs)
+
+        if isinstance(response, HttpResponseRedirect):
+            return response
+
         response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
         return response
 
