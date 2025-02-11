@@ -97,13 +97,11 @@ class ConditionalFieldsFormMixin(FormMixin):
         slugs = {field.id: get_field_clean_name(field.value["label"]) for field in self.form_fields}
         choices_slugs = {field.id: get_choices(field) for field in self.form_fields}
 
-        active_fields = []
-        for field in self.form_fields:
-            if not field.value["rule"]:
-                active_fields.append(slugs[field.id])
-                continue
+        def process_rule(rule):
+            if rule["field"] in ["and", "or"]:
+                results = [process_rule(sub_rule) for sub_rule in rule["rules"]]
+                return all(results) if rule["field"] == "and" else any(results)
 
-            rule = field.value["rule"][0]
             a = form_data[slugs[rule["field"]]]
             b = (
                 rule["value_char"]
@@ -118,16 +116,16 @@ class ConditionalFieldsFormMixin(FormMixin):
             func = OPERATIONS[rule["operator"]]
 
             try:
-                is_active = func(a, b)
+                return func(a, b)
             except Exception:
                 print("error when solving rule:", a, rule["operator"], b)
-                is_active = False
-            # print("solved field", field.value["label"], ":", a, rule["operator"], b, "->", is_active)
+                return False
 
-            if is_active:
-                active_fields.append(slugs[field.id])
-
-        return active_fields
+        return [
+            slugs[field.id]
+            for field in self.form_fields
+            if not field.value["rule"] or process_rule(field.value["rule"][0])
+        ]
 
     class Meta:
         abstract = True
