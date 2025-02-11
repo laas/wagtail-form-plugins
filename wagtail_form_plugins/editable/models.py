@@ -19,7 +19,7 @@ class EditableFormMixin(FormMixin):
                 form = self.get_form(request.POST, request.FILES, page=self, user=request.user)
 
                 if form.is_valid():
-                    submission.form_data = request.POST
+                    submission.form_data = form.cleaned_data
                     submission.save()
                     redirect_args = {"page_id": self.pk}
                     return redirect(reverse("wagtailforms:list_submissions", kwargs=redirect_args))
