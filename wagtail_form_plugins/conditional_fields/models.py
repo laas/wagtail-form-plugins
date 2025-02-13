@@ -133,11 +133,13 @@ class ConditionalFieldsFormMixin(FormMixin):
                 print("error when solving rule:", a, rule["operator"], b)
                 return False
 
-        return [
-            slugs[field.id]
-            for field in self.form_fields
-            if not field.value["rule"] or process_rule(field.value["rule"][0])
-        ]
+        active_fields = []
+        for field in self.form_fields:
+            rules = field.value["rule"]
+            if not rules or (process_rule(rules[0]) and slugs[rules[0]["field"]] in active_fields):
+                active_fields.append(slugs[field.id])
+
+        return active_fields
 
     class Meta:
         abstract = True
