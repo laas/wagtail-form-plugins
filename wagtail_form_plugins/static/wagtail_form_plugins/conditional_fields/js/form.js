@@ -111,6 +111,10 @@ function update_fields_visibility() {
         if (Object.keys(rule).length !== 0) {
             console.log(`\n=== ${ dom_field.getAttribute('data-label') } ===`)
             // console.log('dom_field:', dom_field)
+            required_attr = dom_field.getAttributeNode("required")
+            if (required_attr !== null) {
+                dom_field.removeAttributeNode(required_attr)
+            }
             console.log('rule:', rule)
             console.log(`${computed_rule.formula}   ⇒   ${computed_rule.str}   ⇒   ${computed_rule.result}`)
         }

@@ -33,14 +33,25 @@ class ConditionalFieldsFormMixin(FormMixin):
     def get_form(self, *args, **kwargs):
         form = super().get_form(*args, **kwargs)
 
+        active_fields = []
+        if args:
+            form.full_clean()
+            active_fields = self.get_active_fields(form.cleaned_data)
+
         fields_raw_data = {
-            get_field_clean_name(fd["value"]["label"]): fd for fd in form.page.form_fields.raw_data
+            get_field_clean_name(fd["value"]["label"]): fd for fd in self.form_fields.raw_data
         }
 
         for field in form.fields.values():
-            raw_data = fields_raw_data[get_field_clean_name(field.label)]
+            field_slug = get_field_clean_name(field.label)
+
+            raw_data = fields_raw_data[field_slug]
             if "rule" not in raw_data["value"]:
                 continue
+
+            if args and field_slug not in active_fields:
+                field.required = False
+
             raw_rule = raw_data["value"]["rule"]
 
             new_attributes = {
@@ -53,6 +64,7 @@ class ConditionalFieldsFormMixin(FormMixin):
 
             field.widget.attrs.update(new_attributes)
 
+        form.full_clean()
         return form
 
     @classmethod
