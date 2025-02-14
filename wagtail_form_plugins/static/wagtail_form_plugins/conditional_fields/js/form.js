@@ -103,6 +103,8 @@ function debounce(callback) {
 
 function update_fields_visibility() {
     console.log('\n===== updating fields visibility =====\n\n')
+
+    const active_fields = []
     for(const dom_field of document.querySelectorAll('form [data-label]')) {
         const rule = JSON.parse(dom_field.getAttribute('data-rule'))
         const computed_rule = compute_rule(rule)
@@ -118,8 +120,12 @@ function update_fields_visibility() {
             console.log('rule:', rule)
             console.log(`${computed_rule.formula}   ⇒   ${computed_rule.str}   ⇒   ${computed_rule.result}`)
         }
+        if (computed_rule.result) {
+            active_fields.push(dom_field.id)
+        }
 
-        dom_input_block.style.display = computed_rule.result ? '' : 'none';
+        is_activated = computed_rule.result && (!rule.entry || active_fields.includes(rule.entry.target))
+        dom_input_block.style.display = is_activated && dom_field? '' : 'none';
     }
 }
 
