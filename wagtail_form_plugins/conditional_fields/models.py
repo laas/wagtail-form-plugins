@@ -136,7 +136,11 @@ class ConditionalFieldsFormMixin(FormMixin):
         active_fields = []
         for field in self.form_fields:
             rules = field.value["rule"]
-            if not rules or (process_rule(rules[0]) and slugs[rules[0]["field"]] in active_fields):
+            if not rules or (
+                process_rule(rules[0])
+                and rules[0]["field"] not in ["and", "or"]
+                and slugs[rules[0]["field"]] in active_fields
+            ):
                 active_fields.append(slugs[field.id])
 
         return active_fields
