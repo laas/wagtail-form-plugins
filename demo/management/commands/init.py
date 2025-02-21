@@ -1,3 +1,5 @@
+"Define the `init` Django command used to initialize an example database for demonstration."
+
 import logging
 
 from django.contrib.auth.models import Permission, Group
@@ -12,6 +14,8 @@ from demo.models import FormIndexPage
 
 
 class Command(BaseCommand):
+    """The management command class."""
+
     help = "Initialize an example database for demonstration."
 
     def __init__(self, *args, **kwargs) -> None:
@@ -19,6 +23,7 @@ class Command(BaseCommand):
         self.logger = logging.getLogger("demo.commands.init")
 
     def handle(self, *args, **options):
+        """The actual logic of the command. Subclasses must implement this method."""
         if not settings.DEBUG:
             print("This command is only available in debug mode.")
             return
@@ -28,6 +33,7 @@ class Command(BaseCommand):
         self.init_groups(["myra-webster", "shawn-hobbs"])
 
     def init_pages(self):
+        """Initialize Wagtail pages."""
         self.logger.info("\ninitializing pages...")
 
         Page.objects.exclude(slug="root").exclude(slug="home").delete()
@@ -36,6 +42,7 @@ class Command(BaseCommand):
         FormIndexPage.create_if_missing(home_page, self.stdout)
 
     def init_users(self, *users_names):
+        """Initialize users."""
         self.logger.info("\ninitializing users...")
 
         User = get_user_model()
@@ -62,6 +69,7 @@ class Command(BaseCommand):
             )
 
     def init_groups(self, moderator_usernames):
+        """Initialize user groups."""
         self.logger.info("\ninitializing groups...")
 
         access_admin = Permission.objects.get(codename="access_admin")

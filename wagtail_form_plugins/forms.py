@@ -1,3 +1,4 @@
+"""Import all form builder classes of form plugins."""
 # ruff: noqa: F401
 
 from .streamfield.forms import StreamFieldFormBuilder

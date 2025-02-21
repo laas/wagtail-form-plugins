@@ -1,3 +1,5 @@
+"""Wagtail hooks for the Email plugin."""
+
 from django.utils.html import format_html
 from django.templatetags.static import static
 

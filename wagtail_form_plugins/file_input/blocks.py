@@ -1,3 +1,5 @@
+"""Blocks definition for the File Input plugin."""
+
 from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.conf import settings
@@ -8,6 +10,8 @@ from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 
 
 class FileInputFormFieldBlock(FormFieldBlock):
+    """A wagtail struct block used to add a file field when building a form."""
+
     required = RequiredBlock()
     allowed_extensions = blocks.MultipleChoiceBlock(
         label=_("Allowed file extensions"),
@@ -22,4 +26,6 @@ class FileInputFormFieldBlock(FormFieldBlock):
 
 
 class FileInputFormBlock(FormFieldsBlockMixin):
+    """A mixin used to add file input functionnality to form field wagtail blocks."""
+
     file = FileInputFormFieldBlock()

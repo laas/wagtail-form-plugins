@@ -1,3 +1,5 @@
+"""Web Server Gateway Interface of the demo app."""
+
 import os
 
 from django.core.wsgi import get_wsgi_application

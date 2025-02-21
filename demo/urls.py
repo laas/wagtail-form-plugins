@@ -1,3 +1,5 @@
+"""Url patterns of the demo app."""
+
 from django.conf import settings
 from django.urls import include, path
 from django.conf.urls.static import static

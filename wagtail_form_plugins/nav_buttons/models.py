@@ -1,3 +1,5 @@
+"""Models definition for the NavButtons form plugin."""
+
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 
@@ -7,7 +9,10 @@ from wagtail_form_plugins.base.models import FormMixin
 
 
 class NavButtonsFormMixin(FormMixin):
+    """A mixin used to add navigation buttons in the form admin page."""
+
     def admin_header_buttons(self):
+        """Add a button pointing to the list of submissions."""
         submissions_amount = self.get_submission_class().objects.filter(page=self).count()
 
         return [

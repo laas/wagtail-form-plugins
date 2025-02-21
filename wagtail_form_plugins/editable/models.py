@@ -1,3 +1,5 @@
+"""Models definition for the Editable form plugin."""
+
 from django.forms.widgets import HiddenInput, TextInput, FileInput
 from django.forms.fields import CharField
 from django.contrib.auth import get_user_model
@@ -10,7 +12,10 @@ from wagtail_form_plugins.base.models import FormMixin
 
 
 class EditableFormMixin(FormMixin):
+    """Form mixin for the Editable plugin, allowing to edit a form result via the `edit` field."""
+
     def serve(self, request, *args, **kwargs):
+        """Serve the form page."""
         admins = get_user_model().objects.filter(groups__name=self.get_group_name())
 
         if request.user in admins:

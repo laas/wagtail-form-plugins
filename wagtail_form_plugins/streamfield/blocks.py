@@ -1,3 +1,5 @@
+"""Blocks definition for the Streamfield plugin."""
+
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
 
@@ -7,6 +9,8 @@ from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 
 
 class FormFieldBlock(blocks.StructBlock):
+    """A generic struct block containing common fields used in other blocks."""
+
     label = blocks.CharBlock(
         label=_("Label"),
         help_text=_("Short text describing the field."),
@@ -25,6 +29,8 @@ class FormFieldBlock(blocks.StructBlock):
 
 
 class RequiredBlock(blocks.BooleanBlock):
+    """A boolean block used to add a Required checkbox on the struct blocks that need it."""
+
     def __init__(self, condition=None):
         super().__init__(
             required=False,
@@ -37,6 +43,8 @@ class RequiredBlock(blocks.BooleanBlock):
 
 
 class ChoiceBlock(blocks.StructBlock):
+    """A struct block with a label and initial value used as an item for choice-related blocks."""
+
     label = blocks.CharBlock(
         label=_("Label"),
         form_classname="formbuilder-choice-label",
@@ -51,6 +59,8 @@ class ChoiceBlock(blocks.StructBlock):
 
 
 class ChoicesList(blocks.ListBlock):
+    """A generic list block used as a base to define choice-related blocks."""
+
     def __init__(self, child_block=None, **kwargs):
         super().__init__(child_block or ChoiceBlock(), search_index=True, **kwargs)
 
@@ -71,6 +81,8 @@ def init_options(field_type):
 
 
 class SinglelineFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a single line form field."""
+
     required = RequiredBlock()
     initial = blocks.CharBlock(**init_options(_("Single line text")))
     min_length = blocks.IntegerBlock(
@@ -91,6 +103,8 @@ class SinglelineFormFieldBlock(FormFieldBlock):
 
 
 class MultilineFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a multi-line form field."""
+
     required = RequiredBlock()
     initial = blocks.TextBlock(**init_options(_("Multi-line text")))
     min_length = blocks.IntegerBlock(
@@ -111,6 +125,8 @@ class MultilineFormFieldBlock(FormFieldBlock):
 
 
 class EmailFormFieldBlock(FormFieldBlock):
+    """A struct block used to build an email form field."""
+
     required = RequiredBlock()
     initial = blocks.EmailBlock(**init_options(_("E-mail")))
 
@@ -121,6 +137,8 @@ class EmailFormFieldBlock(FormFieldBlock):
 
 
 class NumberFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a number form field."""
+
     required = RequiredBlock()
     initial = blocks.DecimalBlock(**init_options(_("Number")))
     min_value = blocks.IntegerBlock(
@@ -141,6 +159,8 @@ class NumberFormFieldBlock(FormFieldBlock):
 
 
 class URLFormFieldBlock(FormFieldBlock):
+    """A struct block used to build an url form field."""
+
     required = RequiredBlock()
     initial = blocks.URLBlock(**init_options(_("URL")))
 
@@ -151,6 +171,8 @@ class URLFormFieldBlock(FormFieldBlock):
 
 
 class CheckBoxFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a checkbox form field."""
+
     required = RequiredBlock(_("the box must be checked"))
     initial = blocks.BooleanBlock(
         label=_("Checked"),
@@ -165,6 +187,8 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
 
 
 class CheckBoxesFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a multi-checkboxes form field."""
+
     required = RequiredBlock(_("at least one box must be checked"))
     choices = ChoicesList(
         ChoiceBlock([("initial", blocks.BooleanBlock(label=_("Checked"), required=False))])
@@ -177,6 +201,8 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
 
 
 class DropDownFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a dropdown form field."""
+
     required = RequiredBlock(_("an item must be selected"))
     choices = ChoicesList()
 
@@ -187,6 +213,8 @@ class DropDownFormFieldBlock(FormFieldBlock):
 
 
 class MultiSelectFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a multi-select dropdown form field."""
+
     required = RequiredBlock(_("at least one item must be selected"))
     choices = ChoicesList()
 
@@ -197,6 +225,8 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
 
 
 class RadioFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a radio-buttons form field."""
+
     required = RequiredBlock(_("an item must be selected"))
     choices = ChoicesList()
 
@@ -207,6 +237,8 @@ class RadioFormFieldBlock(FormFieldBlock):
 
 
 class DateFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a date form field."""
+
     required = RequiredBlock()
     initial = blocks.DateBlock(**init_options(_("Date")))
 
@@ -217,6 +249,8 @@ class DateFormFieldBlock(FormFieldBlock):
 
 
 class DateTimeFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a date-time form field."""
+
     required = RequiredBlock()
     initial = blocks.DateTimeBlock(**init_options(_("Date and time")))
 
@@ -227,6 +261,8 @@ class DateTimeFormFieldBlock(FormFieldBlock):
 
 
 class HiddenFormFieldBlock(FormFieldBlock):
+    """A struct block used to build an hidden form field."""
+
     required = RequiredBlock()
     initial = blocks.CharBlock(**init_options(_("Hidden text")))
 
@@ -237,6 +273,8 @@ class HiddenFormFieldBlock(FormFieldBlock):
 
 
 class StreamFieldFormBlock(FormFieldsBlockMixin):
+    """A mixin used to use StreamField in a form builder, by selecting some blocks to add fields."""
+
     singleline = SinglelineFormFieldBlock()
     multiline = MultilineFormFieldBlock()
     email = EmailFormFieldBlock()

@@ -1,3 +1,5 @@
+"""Models definition for the Token Validation form plugin."""
+
 import uuid
 import base64
 from typing import Any
@@ -17,6 +19,8 @@ from wagtail_form_plugins.base.models import FormMixin
 
 
 class ValidationForm(Form):
+    """A small form with an email field, used to send validation email to access the actual form."""
+
     validation_email = EmailField(
         max_length=100,
         help_text=_("An e-mail validation is required to fill public forms when not connected."),
@@ -24,9 +28,12 @@ class ValidationForm(Form):
 
 
 class TokenValidationSubmission(AbstractFormSubmission):
+    """A mixin used to update the email value in the submission."""
+
     email = models.EmailField(default="")
 
     def get_data(self):
+        """Return dict with form data."""
         data: dict[str, Any] = super().get_data()
         if data["email"] == "-":
             data["email"] = self.email
@@ -37,13 +44,17 @@ class TokenValidationSubmission(AbstractFormSubmission):
 
 
 class TokenValidationFormMixin(FormMixin):
+    """A mixin used to add validation functionnality to a form."""
+
     tokens: dict[str, datetime] = {}
 
     def build_token(self, email: str) -> str:
+        """Generate and return the token used to validate the form."""
         encoded_email = base64.b64encode(email.encode("utf-8")).decode("utf-8")
         return f"{ encoded_email }-{uuid.uuid4()}"
 
     def flush(self):
+        """Remove the expired tokens."""
         to_remove = []
         for token, date in self.tokens.items():
             delay = datetime.now(timezone.utc) - date
@@ -54,16 +65,19 @@ class TokenValidationFormMixin(FormMixin):
             del self.tokens[token]
 
     def extract_email(self, form) -> str:
+        """Extract the email encoded in the token."""
         encoded_email: str = form.data["wfp_token"].split("-")[0]
         return base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
 
     def get_submission_attributes(self, form):
+        """Return a dictionary containing the attributes to pass to the submission constructor."""
         return {
             **super().get_submission_attributes(form),
             "email": self.extract_email(form),
         }
 
     def serve(self, request: HttpRequest, *args, **kwargs):
+        """Serve the form page."""
         self.flush()
 
         if not request.user.is_anonymous:
@@ -101,11 +115,13 @@ class TokenValidationFormMixin(FormMixin):
         return TemplateResponse(request, self.get_template(request), context)
 
     def process_form_submission(self, form):
+        """Create and return submission instance. Update email value."""
         submission = super().process_form_submission(form)
         submission.email = self.extract_email(form)
         return submission
 
     def send_validation_email(self, email_address: str, token: str):
+        """Send an email containing the link used to validate the form."""
         validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{ self.url }?token={ token }"
         message_text = self.validation_body.replace(
             "{validation_url}",

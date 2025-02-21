@@ -1,3 +1,5 @@
+"""Block-related classes for conditional fields plugin."""
+
 from uuid import UUID
 
 from django import forms
@@ -12,6 +14,8 @@ from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 
 
 class ChoiceError(ValidationError):
+    """A validation error used when the selected choice is not available."""
+
     def __init__(self, choice) -> None:
         super().__init__(
             _("Select a valid choice. %(value)s is not one of the available choices."),
@@ -31,6 +35,8 @@ def validate_field(value):
 
 
 class BooleanExpressionBuilderBlock(blocks.StructBlock):
+    """A struct block used to construct a boolean expression."""
+
     field = blocks.CharBlock(
         validators=[validate_field],
         form_classname="formbuilder-beb-field",
@@ -81,10 +87,13 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
 
 
 class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapter):
+    """Inject javascript and css files to a Wagtail admin page for the boolean expression builder."""
+
     js_constructor = "forms.blocks.BooleanExpressionBuilderBlock"
 
     @cached_property
     def media(self):
+        """Return a Media object containing path to css and js files."""
         streamblock_media = super().media
         js_file_path = "wagtail_form_plugins/conditional_fields/js/form_admin.js"
 
@@ -98,11 +107,15 @@ register_adapter(BooleanExpressionBuilderBlockAdapter(), BooleanExpressionBuilde
 
 
 class BooleanExpressionBuilderBlockLvl3(BooleanExpressionBuilderBlock):
+    """A struct block used to construct a third-level boolean expression."""
+
     class Meta:
         form_classname = "formbuilder-beb formbuilder-beb-lvl3"
 
 
 class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
+    """A struct block used to construct a second-level boolean expression."""
+
     rules = blocks.ListBlock(
         BooleanExpressionBuilderBlockLvl3(),
         label=("Conditions"),
@@ -115,6 +128,8 @@ class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
 
 
 class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
+    """A struct block used to construct a first-level boolean expression."""
+
     rules = blocks.ListBlock(
         BooleanExpressionBuilderBlockLvl2(),
         label=("Conditions"),
@@ -127,6 +142,8 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
 
 
 class ConditionalFieldsFormBlock(FormFieldsBlockMixin):
+    """A mixin used to add conditional fields functionnality to form field wagtail blocks."""
+
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
         local_blocks = local_blocks or []
         rule = blocks.ListBlock(

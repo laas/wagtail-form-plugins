@@ -1,3 +1,5 @@
+"""Form-related classes for the File Input plugin."""
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import FileExtensionValidator
@@ -7,16 +9,20 @@ from wagtail_form_plugins.base.forms import FormBuilderMixin
 
 
 class FileInputFormBuilder(FormBuilderMixin):
+    """Form builder mixin that adds file input functionnality to a form."""
+
     file_input_max_size = 1 * 1024 * 1024
     file_input_allowed_extensions = ["pdf"]
     extra_field_options = ["allowed_extensions"]
 
     def file_input_size_validator(self, value):
+        """Validate the size of a file."""
         if value.size > self.file_input_max_size:
             size_mo = self.file_input_max_size / (1024 * 1024)
             raise ValidationError(f"File is too big. Max size is {size_mo:.2f} MiB.")
 
     def create_file_field(self, field_value, options):
+        """Create a Django file field."""
         allowed_ext = field_value.options["allowed_extensions"]
         validators = [
             FileExtensionValidator(allowed_extensions=allowed_ext),

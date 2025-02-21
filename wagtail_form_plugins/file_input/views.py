@@ -1,3 +1,5 @@
+"""View classes for the File Input plugin."""
+
 from django.utils.html import format_html
 from django.conf import settings
 
@@ -5,7 +7,10 @@ from wagtail.contrib.forms.views import SubmissionsListView
 
 
 class FileInputSubmissionsListView(SubmissionsListView):
+    """Customize lists submissions view, such as adding a link on file fields for each row."""
+
     def get_context_data(self, **kwargs):
+        """Return context for view"""
         context_data = super().get_context_data(**kwargs)
 
         if self.is_export:
@@ -25,6 +30,7 @@ class FileInputSubmissionsListView(SubmissionsListView):
 
     @staticmethod
     def get_file_link(file_url, to_html):
+        """Build an html link poiting to a file url, or `-` if there is no url."""
         if not file_url:
             return "-"
 

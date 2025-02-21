@@ -1,3 +1,5 @@
+"""Blocks definition for the Templating plugin."""
+
 from django.utils.translation import gettext_lazy as _
 from wagtail.blocks.field_block import RichTextBlock
 
@@ -18,6 +20,8 @@ def build_help_html(help_text):
 
 
 class TemplatingFormBlock(FormFieldsBlockMixin):
+    """A mixin used to add templating functionnality to form field wagtail blocks."""
+
     formatter_class = TemplatingFormatter
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
@@ -26,6 +30,7 @@ class TemplatingFormBlock(FormFieldsBlockMixin):
 
     @classmethod
     def add_help_messages(cls, blocks, field_names, help_message: str):
+        """Add a tooltip to wagtail blocks in order that lists all available template variables."""
         for block in blocks:
             for n in field_names:
                 if n in block.child_blocks and not isinstance(block.child_blocks[n], RichTextBlock):

@@ -1,3 +1,5 @@
+"""Models definition for the Emails form plugin."""
+
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.utils.html import strip_tags
@@ -7,7 +9,10 @@ from wagtail_form_plugins.base.models import FormMixin
 
 
 class EmailActionsFormMixin(FormMixin):
+    """Form mixin for the EmailActions plugin, allowing to send emails when submitting a form."""
+
     def serve(self, request, *args, **kwargs):
+        """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
         if isinstance(response, HttpResponseRedirect):
             return response
@@ -19,6 +24,7 @@ class EmailActionsFormMixin(FormMixin):
         return response
 
     def send_action_email(self, email):
+        """Send an email"""
         email = {
             "subject": email["subject"],
             "recipient_list": [ea.strip() for ea in email["recipient_list"].split(",")],

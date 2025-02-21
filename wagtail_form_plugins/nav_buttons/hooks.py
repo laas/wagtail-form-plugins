@@ -1,3 +1,5 @@
+"""Wagtail hooks for the Nav Buttons plugin."""
+
 from django.utils.html import format_html
 from django.templatetags.static import static
 

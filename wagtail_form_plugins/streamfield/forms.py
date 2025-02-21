@@ -1,3 +1,5 @@
+"""Form-related classes for the Streamfield plugin."""
+
 from django import forms
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
@@ -5,6 +7,8 @@ from wagtail.contrib.forms.utils import get_field_clean_name
 
 
 class Field:
+    """The field class used in the form streamfield."""
+
     label: str
     help_text: str
     required: bool
@@ -15,6 +19,7 @@ class Field:
 
     @staticmethod
     def from_streamfield_data(field_data):
+        """Create and return a field based on field data."""
         field_value = field_data["value"]
         base_options = ["label", "help_text", "initial"]
 
@@ -30,19 +35,26 @@ class Field:
 
 
 class StreamFieldFormBuilder(FormBuilderMixin):
+    """Form builder mixin that use streamfields to define form fields in form admin page."""
+
     def create_dropdown_field(self, field, options):
+        """Create a Django choice field."""
         return forms.ChoiceField(**options)
 
     def create_multiselect_field(self, field, options):
+        """Create a Django multiple choice field."""
         return forms.MultipleChoiceField(**options)
 
     def create_radio_field(self, field, options):
+        """Create a Django choice field with radio widget."""
         return forms.ChoiceField(widget=forms.RadioSelect, **options)
 
     def create_checkboxes_field(self, field, options):
+        """Create a Django multiple choice field with checkboxes widget."""
         return forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, **options)
 
     def format_field_options(self, options: dict):
+        """Add formatted field choices and initial options of choice-based fields."""
         formatted_choices = []
         formatted_initial = []
 
@@ -63,6 +75,7 @@ class StreamFieldFormBuilder(FormBuilderMixin):
         }
 
     def get_field_options(self, field: Field):
+        """Return the options given to a field. Override to add or modify some options."""
         options = {
             **super().get_field_options(field),
             **{k: v for k, v in field.options.items() if k not in self.get_extra_field_options()},

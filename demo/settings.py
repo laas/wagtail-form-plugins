@@ -1,3 +1,5 @@
+"""Settings of the demo app."""
+
 from pathlib import Path
 
 DEMO_APP_DIR = Path(__file__).parent

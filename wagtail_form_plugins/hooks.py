@@ -1,3 +1,4 @@
+"""Import all hook functions of form plugins."""
 # ruff: noqa: F401
 
 from .emails.hooks import emails_admin_css

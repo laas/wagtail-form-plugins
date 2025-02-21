@@ -1,3 +1,5 @@
+"""View classes for the Nav Buttons plugin."""
+
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.admin.widgets.button import HeaderButton
@@ -6,7 +8,10 @@ from wagtail.contrib.forms.views import SubmissionsListView
 
 
 class NavButtonsSubmissionsListView(SubmissionsListView):
+    """Customize lists submissions view, such as adding buttons on submission rows."""
+
     def get_context_data(self, **kwargs):
+        """Return context for view"""
         context_data = super().get_context_data(**kwargs)
 
         if self.is_export:

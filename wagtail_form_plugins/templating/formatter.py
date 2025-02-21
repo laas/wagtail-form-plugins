@@ -1,3 +1,5 @@
+"""Classes and variables used to format the template syntax."""
+
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext_lazy as _
 
@@ -9,6 +11,8 @@ TMPL_DYNAMIC_PREFIXES = ["field_label", "field_value"]
 
 
 class TemplatingFormatter:
+    """Class used to format the template syntax."""
+
     def __init__(self, context):
         self.submission = context.get("form_submission", None)
         self.form = context["page"]
@@ -17,6 +21,7 @@ class TemplatingFormatter:
         self.values = self.get_values()
 
     def get_data(self):
+        """Return the template data. Override to customize template."""
         data = {
             "user": self.get_user_data(self.request.user),
             "author": self.get_user_data(self.form.owner),
@@ -33,6 +38,7 @@ class TemplatingFormatter:
         return data
 
     def get_values(self):
+        """Return a dict containing all formatter values on the root level."""
         values = {}
 
         for val_name, value in self.data.items():
@@ -45,6 +51,7 @@ class TemplatingFormatter:
         return values
 
     def get_formated_fields(self):
+        """Return a dict containing a tuple of label and formatted value for each form field."""
         fields = {}
         for field in self.form.form_fields:
             if field.block.name == "hidden":
@@ -59,6 +66,7 @@ class TemplatingFormatter:
         return fields
 
     def get_user_data(self, user):
+        """Return a dict used to format template variables related to the form user or author."""
         is_anonymous = isinstance(user, AnonymousUser)
         return {
             "login": user.username,
@@ -69,6 +77,7 @@ class TemplatingFormatter:
         }
 
     def get_form_data(self):
+        """Return a dict used to format template variables related to the form itself."""
         return {
             "title": self.form.title,
             "url": self.request.build_absolute_uri(self.form.url),
@@ -77,6 +86,7 @@ class TemplatingFormatter:
         }
 
     def get_result_data(self, formated_fields):
+        """Return a dict used to format template variables related to the form results."""
         return {
             "data": "<br/>\n".join(
                 [f"{label}: {value}" for label, value in formated_fields.values()]
@@ -86,6 +96,7 @@ class TemplatingFormatter:
         }
 
     def format(self, message):
+        """Format the message template by replacing template variables."""
         for val_key, value in self.values.items():
             look_for = TMPL_SEP_LEFT + val_key + TMPL_SEP_RIGHT
             if look_for in message:
@@ -94,6 +105,7 @@ class TemplatingFormatter:
 
     @classmethod
     def doc(cls):
+        """Return the dict used to build the template documentation."""
         return {
             "user": {
                 "login": (_("the form user login"), "alovelace"),
@@ -130,6 +142,7 @@ class TemplatingFormatter:
 
     @classmethod
     def help(cls):
+        """Build the template help message."""
         doc = cls.doc()
         help_message = ""
 
@@ -144,6 +157,7 @@ class TemplatingFormatter:
 
     @classmethod
     def contains_template(cls, text: str) -> bool:
+        """Return True if the given text contain a template, False otherwise."""
         for tmpl_prefix, tmpl_suffixes in cls.doc().items():
             if tmpl_prefix in TMPL_DYNAMIC_PREFIXES:
                 continue

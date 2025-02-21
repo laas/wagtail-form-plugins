@@ -1,3 +1,5 @@
+"""Models definition for the Conditional Fields form plugin."""
+
 import json
 from datetime import datetime
 
@@ -26,11 +28,14 @@ OPERATIONS = {
 
 
 class ConditionalFieldsFormMixin(FormMixin):
+    """A mixin used to add conditional fields functionnality to a form."""
+
     def __init__(self, *args, **kwargs):
         self.form_builder.extra_field_options = ["rule"]
         super().__init__(*args, **kwargs)
 
     def get_form(self, *args, **kwargs):
+        """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
 
         active_fields = []
@@ -69,6 +74,7 @@ class ConditionalFieldsFormMixin(FormMixin):
 
     @classmethod
     def format_rule(cls, raw_rule):
+        """Recusively format a field rule in order to facilitate its parsing on the client side."""
         value = raw_rule["value"]
 
         if value["field"] in ["and", "or"]:
@@ -86,6 +92,7 @@ class ConditionalFieldsFormMixin(FormMixin):
         }
 
     def get_submission_attributes(self, form):
+        """Return a dictionary containing the attributes to pass to the submission constructor."""
         attributes = super().get_submission_attributes(form)
         active_fields = self.get_active_fields(form.cleaned_data)
         return {

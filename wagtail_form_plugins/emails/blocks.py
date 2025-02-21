@@ -1,3 +1,5 @@
+"""Blocks definition for the Emails plugin."""
+
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 
@@ -13,6 +15,8 @@ def email_to_block(email_dict):
 
 
 class EmailsToSendStructBlock(blocks.StructBlock):
+    """Wagtail struct block used to define one email entry."""
+
     recipient_list = blocks.CharBlock(
         label=_("Recipient list"),
         help_text=_("E-mail addresses of the recipients, separated by comma."),
@@ -39,13 +43,17 @@ class EmailsToSendStructBlock(blocks.StructBlock):
 
 
 class EmailsFormBlock(blocks.StreamBlock):
+    """Wagtail stream block used to manage form emails behavior."""
+
     email_to_send = EmailsToSendStructBlock()
 
     def validate_email(self, field_value):
+        """Validate the email addresses field value."""
         for email in field_value.split(","):
             validate_email(email.strip())
 
     def get_block_class(self):
+        """Return the block class."""
         raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):

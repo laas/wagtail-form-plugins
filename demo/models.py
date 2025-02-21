@@ -1,3 +1,5 @@
+"""Models definition for the demo app."""
+
 import sys
 from typing import Any
 
@@ -50,10 +52,14 @@ Have a nice day.""",
 
 
 class CustomUser(AbstractUser):
+    """A custom user model."""
+
     city = models.CharField(max_length=255, verbose_name=_("City"))
 
 
 class FormIndexPage(Page):
+    """A page used to manage forms in the Wagtail admin page and list them in the published page."""
+
     PAGINATION = 15
 
     intro = RichTextField(
@@ -74,6 +80,7 @@ class FormIndexPage(Page):
     admin_default_ordering = "ord"
 
     def admin_header_buttons(self):
+        """Add a button on the page header used to go to the list of forms."""
         return [
             HeaderButton(
                 label=_("Forms list"),
@@ -85,6 +92,7 @@ class FormIndexPage(Page):
 
     @staticmethod
     def create_if_missing(home_page: Page, stdout=sys.stdout):
+        """Create the index page if there is none."""
         if FormIndexPage.objects.first() is not None:
             return
 
@@ -101,7 +109,10 @@ class FormIndexPage(Page):
 
 
 class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
+    """Custom templating formatter used to personalize template formatting such as user template."""
+
     def get_user_data(self, user: CustomUser):
+        """Return a dict used to format template variables related to the form user or author."""
         user_data: dict[str, Any] = super().get_user_data(user)
         is_anonymous = isinstance(user, AnonymousUser)
 
@@ -112,6 +123,7 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
         return user_data
 
     def get_result_data(self, formated_fields):
+        """Return a dict used to format template variables related to the form results."""
         return {
             **super().get_result_data(formated_fields),
             "index": str(self.submission.index),
@@ -119,6 +131,7 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
 
     @classmethod
     def doc(cls):
+        """Return the dict used to build the template documentation."""
         doc = super().doc()
         doc["user"]["email"] = (_("the user email used for validation"), "alovelace@example.com")
         doc["user"]["city"] = (_("the form user city"), "Paris")
@@ -131,7 +144,10 @@ class CustomFormSubmission(
     wfp_models.NamedFormSubmission,
     wfp_models.IndexedResultsSubmission,
 ):
+    """A custom model for form submission, composed of various mixins to extend its features."""
+
     def get_base_class(self):
+        """Return the current class. Used by some submission mixins to list object instances."""
         return self.__class__
 
 
@@ -140,6 +156,8 @@ class CustomFormBuilder(
     wfp_forms.StreamFieldFormBuilder,
     wfp_forms.DatePickersFormBuilder,
 ):
+    """A custom form builder with some mixins to extend its features."""
+
     file_input_max_size = settings.FORMS_FILE_UPLOAD_MAX_SIZE
 
 
@@ -148,10 +166,14 @@ class CustomSubmissionListView(
     wfp_views.NavButtonsSubmissionsListView,
     wfp_views.ConditionalFieldsSubmissionsListView,
 ):
+    """A custom submission list view with some mixins to extend its features."""
+
     form_parent_page_model = FormIndexPage
 
 
 class FileInput(wfp_models.AbstractFileInput):
+    """A custom file input model used to define upload folder location."""
+
     upload_dir = "demo_forms_uploads/%Y/%m/%d"
 
 
@@ -169,6 +191,8 @@ class AbstractFormPage(
     FormMixin,
     Page,
 ):
+    """A custom abstract form page model with some mixins to extend its features."""
+
     formatter_class = CustomTemplatingFormatter
     form_builder = CustomFormBuilder
     file_input_model = FileInput
@@ -177,12 +201,15 @@ class AbstractFormPage(
     subpage_types = []
 
     def get_group_name(self):
+        """Return the name of the form admin user group."""
         return f"{ FORM_GROUP_PREFIX }{ self.slug }"
 
     def get_submission_class(self):
+        """Return the custom form submission model class."""
         return CustomFormSubmission
 
     def serve(self, request, *args, **kwargs):
+        """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
 
         if isinstance(response, HttpResponseRedirect):
@@ -192,7 +219,7 @@ class AbstractFormPage(
         return response
 
     def send_email(self, email: dict):
-        """Used in local development to avoid to actually send a mail."""
+        """Print the email instead sending it when debugging."""
         if settings.DEBUG and not settings.FORMS_DEV_SEND_MAIL:
             print("=== sending email ===")
             for k, v in email.items():
@@ -201,6 +228,7 @@ class AbstractFormPage(
             super().send_email(email)
 
     def save(self, clean=True, user=None, log_action=False, **kwargs):
+        """Save the form."""
         super().save(clean, user, log_action, **kwargs)
         form_admins, _ = Group.objects.get_or_create(name=self.get_group_name())
         self.set_page_permissions(form_admins, ["publish", "change", "lock", "unlock"])
@@ -211,10 +239,12 @@ class AbstractFormPage(
         # PageViewRestriction.objects.get_or_create(page=self, restriction_type="login")
 
     def delete(self, *args, **kwargs):
+        """Delete the form."""
         Group.objects.get(name=self.get_group_name()).delete()
         return super().delete(*args, **kwargs)
 
     def set_page_permissions(self, group, permissions_name):
+        """Set user permissions of the form page."""
         for permission_name in permissions_name:
             permission = Permission.objects.get(codename=f"{ permission_name }_page")
             GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
@@ -229,10 +259,14 @@ class FormFieldsBlock(
     wfp_blocks.TemplatingFormBlock,
     wfp_blocks.StreamFieldFormBlock,
 ):
+    """The custom Wagtail block used when adding fields to a form."""
+
     formatter_class = CustomTemplatingFormatter
 
 
 class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
+    """The custom Wagtail block used when configuring form emails behavior."""
+
     formatter_class = CustomTemplatingFormatter
 
     def __init__(self, local_blocks=None, search_index=True, **kwargs):
@@ -244,9 +278,11 @@ class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
         super().__init__(local_blocks, search_index, **kwargs)
 
     def get_block_class(self):
+        """Return the block class."""
         return wfp_blocks.EmailsFormBlock
 
     def validate_email(self, field_value: str) -> None:
+        """Validate the email addresses field value."""
         try:
             if not self.formatter_class.contains_template(field_value):
                 super().validate_email(field_value)
@@ -259,6 +295,8 @@ class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
 
 
 class FormPage(AbstractFormPage):
+    """The actual form page model."""
+
     intro = RichTextField(
         verbose_name=_("Form introduction text"),
         blank=True,

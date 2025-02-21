@@ -1,3 +1,4 @@
+"""Import all block classes and functions of form plugins."""
 # ruff: noqa: F401
 
 from .emails.blocks import EmailsFormBlock, email_to_block

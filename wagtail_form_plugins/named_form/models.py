@@ -1,3 +1,5 @@
+"""Models definition for the Named Form form plugin."""
+
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AnonymousUser
 from django.db import models
@@ -10,6 +12,8 @@ from wagtail_form_plugins.base.models import FormMixin
 
 
 class NamedFormSubmission(AbstractFormSubmission):
+    """A mixin used to store the form user in the submission."""
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         blank=True,
@@ -18,6 +22,7 @@ class NamedFormSubmission(AbstractFormSubmission):
     )
 
     def get_data(self):
+        """Return dict with form data."""
         return {
             **super().get_data(),
             "user": self.user.get_full_name() if self.user else "-",
@@ -29,6 +34,10 @@ class NamedFormSubmission(AbstractFormSubmission):
 
 
 class NamedFormMixin(FormMixin):
+    """A mixin used to add named form functionnality to a form, allowing to identify the user who
+    answered the form, in order to display it on form results and authorise a user to answer a form
+    only once."""
+
     unique_response = models.BooleanField(
         verbose_name=_("Unique response"),
         help_text=_("If checked, the user may fill in the form only once."),
@@ -36,9 +45,11 @@ class NamedFormMixin(FormMixin):
     )
 
     def get_user_submissions_qs(self, user):
+        """Return the submissions QuerySet corresponding to the current form and the given user."""
         return self.get_submission_class().objects.filter(page=self).filter(user=user)
 
     def get_data_fields(self):
+        """Return a list fields data as tuples of slug and label."""
         return [
             ("user", _("Form user")),
             ("email", _("User e-mail")),
@@ -46,12 +57,14 @@ class NamedFormMixin(FormMixin):
         ]
 
     def get_submission_attributes(self, form):
+        """Return a dictionary containing the attributes to pass to the submission constructor."""
         return {
             **super().get_submission_attributes(form),
             "user": None if isinstance(form.user, AnonymousUser) else form.user,
         }
 
     def serve(self, request, *args, **kwargs):
+        """Serve the form page."""
         if self.unique_response and self.get_user_submissions_qs(request.user).exists():
             raise PermissionDenied(_("You have already filled in this form."))
 

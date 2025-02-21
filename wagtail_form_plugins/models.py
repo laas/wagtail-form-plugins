@@ -1,3 +1,4 @@
+"""Import all model classes of form plugins."""
 # ruff: noqa: F401
 
 from .emails.models import EmailActionsFormMixin
