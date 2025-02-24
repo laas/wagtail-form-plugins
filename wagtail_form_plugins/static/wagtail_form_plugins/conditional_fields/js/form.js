@@ -68,7 +68,8 @@ function compute_rule(rule) {
         return {
             formula: `${ dom_field.getAttribute('data-label') } ${ opr_char } "${ rule.entry.val }"`,
             str: `"${ value }" ${ opr_char } "${ rule.entry.val }"`,
-            result: opr_func(value, rule.entry.val) && dom_field.getAttribute("data-active") !== "n",
+            is_active: opr_func(value, rule.entry.val) && dom_field.getAttribute("data-active") !== "n",
+            indent_level: parseInt(dom_field.getAttribute("data-level")) + 1,
         }
     }
 
@@ -77,7 +78,8 @@ function compute_rule(rule) {
         return {
             formula: `(${ computed_rules.map((_rule) => _rule.formula).join(') AND (') })`,
             str: `(${ computed_rules.map((_rule) => _rule.str).join(') AND (') })`,
-            result: computed_rules.every((_rule) => _rule.result),
+            is_active: computed_rules.every((_rule) => _rule.is_active),
+            indent_level: Math.max(...computed_rules.map((_rule) => _rule.indent_level)),
         }
     }
 
@@ -86,11 +88,12 @@ function compute_rule(rule) {
         return {
             formula: `(${ computed_rules.map((_rule) => _rule.formula).join(') OR (') })`,
             str: `(${ computed_rules.map((_rule) => _rule.str).join(') OR (') })`,
-            result: computed_rules.some((_rule) => _rule.result),
+            is_active: computed_rules.some((_rule) => _rule.is_active),
+            indent_level: Math.max(...computed_rules.map((_rule) => _rule.is_active ? _rule.indent_level : 0)),
         }
     }
 
-    return {formula: '∅', str: '∅', result: true}
+    return {formula: '∅', str: '∅', is_active: true, indent_level: 0}
 }
 
 function debounce(callback) {
@@ -117,11 +120,14 @@ function update_fields_visibility() {
                 dom_field.removeAttributeNode(required_attr)
             }
             console.log('rule:', rule)
-            console.log(`${computed_rule.formula}   ⇒   ${computed_rule.str}   ⇒   ${computed_rule.result}`)
+            console.log(`${computed_rule.formula}   ⇒   ${computed_rule.str}   ⇒   ${computed_rule.is_active}`)
         }
 
-        dom_field.setAttribute("data-active", computed_rule.result ? "y" : "n")
-        dom_input_block.style.display = computed_rule.result && dom_field ? '' : 'none';
+        dom_field.setAttribute("data-level", computed_rule.indent_level)
+        dom_field.setAttribute("data-active", computed_rule.is_active ? "y" : "n")
+
+        dom_input_block.style.paddingLeft = `${computed_rule.indent_level * 2}em`;
+        dom_input_block.style.display = computed_rule.is_active && dom_field ? '' : 'none';
     }
 }
 

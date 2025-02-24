@@ -47,6 +47,7 @@ class ConditionalFieldsFormMixin(FormMixin):
             get_field_clean_name(fd["value"]["label"]): fd for fd in self.form_fields.raw_data
         }
 
+        indentations = {}
         for field in form.fields.values():
             field_slug = get_field_clean_name(field.label)
 
@@ -58,13 +59,13 @@ class ConditionalFieldsFormMixin(FormMixin):
                 field.required = False
 
             raw_rule = raw_data["value"]["rule"]
+            field_rule = self.format_rule(raw_rule[0]) if raw_rule else {}
 
             new_attributes = {
                 "id": raw_data["id"],
-                # "class": "form-control", # boostrap forms
                 "data-label": field.label,
                 "data-widget": field.widget.__class__.__name__,
-                "data-rule": json.dumps(self.format_rule(raw_rule[0])) if raw_rule else "{}",
+                "data-rule": json.dumps(field_rule),
             }
 
             field.widget.attrs.update(new_attributes)
