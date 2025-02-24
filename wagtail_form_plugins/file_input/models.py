@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Any
 from django.conf import settings
 from django.db import models
+from django.forms import Form
 
 from wagtail_form_plugins.base.models import FormMixin
 from wagtail_form_plugins.file_input.views import FileInputSubmissionsListView
@@ -23,7 +24,7 @@ class AbstractFileInput(models.Model):
         super().__init__(*args, **kwargs)
         self.file.field.upload_to = self.get_file_path
 
-    def get_file_path(self, instance, file_name):
+    def get_file_path(self, instance: Any, file_name: str):
         """Get the path of the uploaded file."""
         file_path = Path(file_name)
         dir_path = Path(datetime.now().strftime(str(self.upload_dir)))
@@ -42,7 +43,7 @@ class FileInputFormMixin(FormMixin):
 
     submissions_list_view_class = FileInputSubmissionsListView
 
-    def get_submission_attributes(self, form):
+    def get_submission_attributes(self, form: Form):
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         attributes = super().get_submission_attributes(form)
 
@@ -57,7 +58,7 @@ class FileInputFormMixin(FormMixin):
 
         return attributes
 
-    def format_field_value(self, field_type, field_value):
+    def format_field_value(self, field_type: str, field_value: Any):
         """Format the field value. Used to display user-friendly values in result table."""
         fmt_value = super().format_field_value(field_type, field_value)
 

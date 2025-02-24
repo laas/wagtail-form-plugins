@@ -1,5 +1,6 @@
 """Base classes for form builder mixins."""
 
+from typing import Any
 from wagtail.contrib.forms.forms import FormBuilder
 
 
@@ -8,7 +9,7 @@ class FormBuilderMixin(FormBuilder):
 
     subclasses = []
 
-    def __init__(self, fields):
+    def __init__(self, fields: list[Any]):
         super().__init__(fields)
         self.extra_field_options = []
 
@@ -25,6 +26,6 @@ class FormBuilderMixin(FormBuilder):
 
         return extra_field_options
 
-    def add_extra_field_option(self, field_option):
+    def add_extra_field_option(self, field_option: str):
         """Add an extra field option to the form builder."""
         self.extra_field_options.append(field_option)

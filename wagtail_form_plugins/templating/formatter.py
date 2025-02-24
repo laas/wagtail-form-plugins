@@ -1,6 +1,7 @@
 """Classes and variables used to format the template syntax."""
 
-from django.contrib.auth.models import AnonymousUser
+from typing import Any
+from django.contrib.auth.models import AnonymousUser, User
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.utils import get_field_clean_name
@@ -13,7 +14,7 @@ TMPL_DYNAMIC_PREFIXES = ["field_label", "field_value"]
 class TemplatingFormatter:
     """Class used to format the template syntax."""
 
-    def __init__(self, context):
+    def __init__(self, context: dict[str, Any]):
         self.submission = context.get("form_submission", None)
         self.form = context["page"]
         self.request = context["request"]
@@ -65,7 +66,7 @@ class TemplatingFormatter:
             fields[field_slug] = (field_label, fmt_value)
         return fields
 
-    def get_user_data(self, user):
+    def get_user_data(self, user: User):
         """Return a dict used to format template variables related to the form user or author."""
         is_anonymous = isinstance(user, AnonymousUser)
         return {
@@ -85,7 +86,7 @@ class TemplatingFormatter:
             "publish_time": self.form.first_published_at.strftime("%H:%M"),
         }
 
-    def get_result_data(self, formated_fields):
+    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]):
         """Return a dict used to format template variables related to the form results."""
         return {
             "data": "<br/>\n".join(
@@ -95,7 +96,7 @@ class TemplatingFormatter:
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
         }
 
-    def format(self, message):
+    def format(self, message: str):
         """Format the message template by replacing template variables."""
         for val_key, value in self.values.items():
             look_for = TMPL_SEP_LEFT + val_key + TMPL_SEP_RIGHT

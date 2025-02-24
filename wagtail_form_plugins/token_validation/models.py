@@ -64,12 +64,12 @@ class TokenValidationFormMixin(FormMixin):
         for token in to_remove:
             del self.tokens[token]
 
-    def extract_email(self, form) -> str:
+    def extract_email(self, form: Form) -> str:
         """Extract the email encoded in the token."""
         encoded_email: str = form.data["wfp_token"].split("-")[0]
         return base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
 
-    def get_submission_attributes(self, form):
+    def get_submission_attributes(self, form: Form):
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         return {
             **super().get_submission_attributes(form),
@@ -114,7 +114,7 @@ class TokenValidationFormMixin(FormMixin):
         context["form"] = ValidationForm()
         return TemplateResponse(request, self.get_template(request), context)
 
-    def process_form_submission(self, form):
+    def process_form_submission(self, form: Form):
         """Create and return submission instance. Update email value."""
         submission = super().process_form_submission(form)
         submission.email = self.extract_email(form)

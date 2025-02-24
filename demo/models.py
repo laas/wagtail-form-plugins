@@ -1,15 +1,15 @@
 """Models definition for the demo app."""
 
 import sys
-from typing import Any
+from typing import Any, TextIO
 
 from django.forms import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser
+from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser, User
 from django.conf import settings
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpRequest
 
 from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
@@ -91,7 +91,7 @@ class FormIndexPage(Page):
         ]
 
     @staticmethod
-    def create_if_missing(home_page: Page, stdout=sys.stdout):
+    def create_if_missing(home_page: Page, stdout: TextIO = sys.stdout):
         """Create the index page if there is none."""
         if FormIndexPage.objects.first() is not None:
             return
@@ -122,7 +122,7 @@ class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
 
         return user_data
 
-    def get_result_data(self, formated_fields):
+    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]):
         """Return a dict used to format template variables related to the form results."""
         return {
             **super().get_result_data(formated_fields),
@@ -208,7 +208,7 @@ class AbstractFormPage(
         """Return the custom form submission model class."""
         return CustomFormSubmission
 
-    def serve(self, request, *args, **kwargs):
+    def serve(self, request: HttpRequest, *args, **kwargs):
         """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
 
@@ -227,7 +227,7 @@ class AbstractFormPage(
         else:
             super().send_email(email)
 
-    def save(self, clean=True, user=None, log_action=False, **kwargs):
+    def save(self, clean: bool = True, user: User = None, log_action: bool = False, **kwargs):
         """Save the form."""
         super().save(clean, user, log_action, **kwargs)
         form_admins, _ = Group.objects.get_or_create(name=self.get_group_name())
@@ -243,7 +243,7 @@ class AbstractFormPage(
         Group.objects.get(name=self.get_group_name()).delete()
         return super().delete(*args, **kwargs)
 
-    def set_page_permissions(self, group, permissions_name):
+    def set_page_permissions(self, group: Group, permissions_name: list[str]):
         """Set user permissions of the form page."""
         for permission_name in permissions_name:
             permission = Permission.objects.get(codename=f"{ permission_name }_page")
@@ -269,7 +269,9 @@ class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
 
     formatter_class = CustomTemplatingFormatter
 
-    def __init__(self, local_blocks=None, search_index=True, **kwargs):
+    def __init__(
+        self, local_blocks: list[tuple[str, Any]] = None, search_index: bool = True, **kwargs
+    ):
         wfp_blocks.TemplatingFormBlock.add_help_messages(
             self.get_block_class().declared_blocks.values(),
             ["subject", "message", "recipient_list", "reply_to"],

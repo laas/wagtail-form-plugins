@@ -42,4 +42,4 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["D100", "D101", "D102"]
+select = ["D100", "D101", "D102", "ANN001"]

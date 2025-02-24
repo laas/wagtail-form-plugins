@@ -1,5 +1,6 @@
 """Form-related classes for the Streamfield plugin."""
 
+from typing import Any
 from django import forms
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
@@ -18,7 +19,7 @@ class Field:
     options: dict
 
     @staticmethod
-    def from_streamfield_data(field_data):
+    def from_streamfield_data(field_data: dict[str, Any]):
         """Create and return a field based on field data."""
         field_value = field_data["value"]
         base_options = ["label", "help_text", "initial"]
@@ -37,19 +38,19 @@ class Field:
 class StreamFieldFormBuilder(FormBuilderMixin):
     """Form builder mixin that use streamfields to define form fields in form admin page."""
 
-    def create_dropdown_field(self, field, options):
+    def create_dropdown_field(self, field: Any, options: dict[str, Any]):
         """Create a Django choice field."""
         return forms.ChoiceField(**options)
 
-    def create_multiselect_field(self, field, options):
+    def create_multiselect_field(self, field: Any, options: dict[str, Any]):
         """Create a Django multiple choice field."""
         return forms.MultipleChoiceField(**options)
 
-    def create_radio_field(self, field, options):
+    def create_radio_field(self, field: Any, options: dict[str, Any]):
         """Create a Django choice field with radio widget."""
         return forms.ChoiceField(widget=forms.RadioSelect, **options)
 
-    def create_checkboxes_field(self, field, options):
+    def create_checkboxes_field(self, field: Any, options: dict[str, Any]):
         """Create a Django multiple choice field with checkboxes widget."""
         return forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, **options)
 

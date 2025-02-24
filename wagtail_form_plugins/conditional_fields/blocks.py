@@ -1,5 +1,6 @@
 """Block-related classes for conditional fields plugin."""
 
+from typing import Any
 from uuid import UUID
 
 from django import forms
@@ -16,7 +17,7 @@ from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 class ChoiceError(ValidationError):
     """A validation error used when the selected choice is not available."""
 
-    def __init__(self, choice) -> None:
+    def __init__(self, choice: str) -> None:
         super().__init__(
             _("Select a valid choice. %(value)s is not one of the available choices."),
             "invalid_choice",
@@ -24,7 +25,7 @@ class ChoiceError(ValidationError):
         )
 
 
-def validate_field(value):
+def validate_field(value: str):
     if value in ["and", "or"]:
         return
 
@@ -144,7 +145,9 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
 class ConditionalFieldsFormBlock(FormFieldsBlockMixin):
     """A mixin used to add conditional fields functionnality to form field wagtail blocks."""
 
-    def __init__(self, local_blocks=None, search_index=True, **kwargs):
+    def __init__(
+        self, local_blocks: list[tuple[str, Any]] = None, search_index: bool = True, **kwargs
+    ):
         local_blocks = local_blocks or []
         rule = blocks.ListBlock(
             BooleanExpressionBuilderBlockLvl1(),

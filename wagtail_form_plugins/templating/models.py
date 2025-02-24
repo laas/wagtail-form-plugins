@@ -1,6 +1,6 @@
 """Models definition for the Templating form plugin."""
 
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from wagtail_form_plugins.base.models import FormMixin
 
 from .formatter import TemplatingFormatter
@@ -11,7 +11,7 @@ class TemplatingFormMixin(FormMixin):
 
     formatter_class = TemplatingFormatter
 
-    def serve(self, request, *args, **kwargs):
+    def serve(self, request: HttpRequest, *args, **kwargs):
         """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
         if isinstance(response, HttpResponseRedirect):

@@ -1,5 +1,6 @@
 """Form-related classes for the Datepicker plugin."""
 
+from typing import Any
 from django import forms
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
@@ -21,11 +22,11 @@ class DateTimeInput(forms.widgets.DateTimeInput):
 class DatePickersFormBuilder(FormBuilderMixin):
     """Form builder mixin that adds datepicker functionnality to a form."""
 
-    def create_date_field(self, field_value, options):
+    def create_date_field(self, field_value: Any, options: dict[str, Any]):
         """Create a Django date field."""
         return forms.DateField(**options, widget=DateInput)
 
-    def create_datetime_field(self, field_value, options):
+    def create_datetime_field(self, field_value: Any, options: dict[str, Any]):
         """Create a Django datetime field."""
         if "initial" in options:
             default_value = options["initial"]

@@ -1,7 +1,9 @@
 """Models definition for the Named Form form plugin."""
 
+from django.forms import Form
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
 from django.db import models
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
@@ -44,7 +46,7 @@ class NamedFormMixin(FormMixin):
         default=False,
     )
 
-    def get_user_submissions_qs(self, user):
+    def get_user_submissions_qs(self, user: User):
         """Return the submissions QuerySet corresponding to the current form and the given user."""
         return self.get_submission_class().objects.filter(page=self).filter(user=user)
 
@@ -56,14 +58,14 @@ class NamedFormMixin(FormMixin):
             *super().get_data_fields(),
         ]
 
-    def get_submission_attributes(self, form):
+    def get_submission_attributes(self, form: Form):
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         return {
             **super().get_submission_attributes(form),
             "user": None if isinstance(form.user, AnonymousUser) else form.user,
         }
 
-    def serve(self, request, *args, **kwargs):
+    def serve(self, request: HttpRequest, *args, **kwargs):
         """Serve the form page."""
         if self.unique_response and self.get_user_submissions_qs(request.user).exists():
             raise PermissionDenied(_("You have already filled in this form."))

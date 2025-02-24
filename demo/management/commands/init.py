@@ -68,7 +68,7 @@ class Command(BaseCommand):
                 last_name=last_name,
             )
 
-    def init_groups(self, moderator_usernames):
+    def init_groups(self, moderator_usernames: list[str]):
         """Initialize user groups."""
         self.logger.info("\ninitializing groups...")
 

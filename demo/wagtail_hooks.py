@@ -1,10 +1,14 @@
 """Wagtail hooks of the demo app - see https://docs.wagtail.org/en/stable/reference/hooks.html."""
 
+from django.contrib.auth.models import User
+from django.http import HttpRequest
 from django.urls import reverse
 
 from wagtail import hooks
 from wagtail.admin.widgets import PageListingButton
+from wagtail.admin.menu import MenuItem
 from wagtail.contrib.forms.wagtail_hooks import FormsMenuItem
+from wagtail.models import Page
 
 from wagtail_form_plugins import hooks as wfm_hooks
 
@@ -18,7 +22,7 @@ hooks.register("insert_global_admin_css", wfm_hooks.nav_buttons_admin_css)
 
 
 @hooks.register("register_page_listing_buttons")
-def page_listing_buttons(page, user, next_url=None):
+def page_listing_buttons(page: Page, user: User, next_url: str | None = None):
     """Add a button on each row of the admin form list table to access the list of submissions."""
     if isinstance(page, FormPage):
         nb_results = CustomFormSubmission.objects.filter(page=page).count()
@@ -31,6 +35,6 @@ def page_listing_buttons(page, user, next_url=None):
 
 
 @hooks.register("construct_main_menu")
-def hide_old_form_menu_item(request, menu_items):
+def hide_old_form_menu_item(request: HttpRequest, menu_items: list[MenuItem]):
     """Hide the old form item from the main menu."""
     menu_items[:] = [mi for mi in menu_items if not isinstance(mi, FormsMenuItem)]

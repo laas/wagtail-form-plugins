@@ -29,7 +29,7 @@ class FileInputSubmissionsListView(SubmissionsListView):
         return context_data
 
     @staticmethod
-    def get_file_link(file_url, to_html):
+    def get_file_link(file_url: str, to_html: bool):
         """Build an html link poiting to a file url, or `-` if there is no url."""
         if not file_url:
             return "-"

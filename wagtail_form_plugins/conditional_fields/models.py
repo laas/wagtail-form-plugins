@@ -2,7 +2,9 @@
 
 import json
 from datetime import datetime
+from typing import Any
 
+from django.forms import Form
 from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.base.models import FormMixin
@@ -74,7 +76,7 @@ class ConditionalFieldsFormMixin(FormMixin):
         return form
 
     @classmethod
-    def format_rule(cls, raw_rule):
+    def format_rule(cls, raw_rule: dict[str, Any]):
         """Recusively format a field rule in order to facilitate its parsing on the client side."""
         value = raw_rule["value"]
 
@@ -92,7 +94,7 @@ class ConditionalFieldsFormMixin(FormMixin):
             }
         }
 
-    def get_submission_attributes(self, form):
+    def get_submission_attributes(self, form: Form):
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         attributes = super().get_submission_attributes(form)
         active_fields = self.get_active_fields(form.cleaned_data)
@@ -103,10 +105,10 @@ class ConditionalFieldsFormMixin(FormMixin):
             },
         }
 
-    def get_active_fields(self, form_data):
+    def get_active_fields(self, form_data: dict[str, Any]):
         """Return the list of fields slug where the computed conditional value of the field is true."""
 
-        def get_choices(field) -> dict[str, str]:
+        def get_choices(field: Any) -> dict[str, str]:
             if "choices" not in field.value:
                 return {}
             return {
@@ -117,7 +119,7 @@ class ConditionalFieldsFormMixin(FormMixin):
         slugs = {field.id: get_field_clean_name(field.value["label"]) for field in self.form_fields}
         choices_slugs = {field.id: get_choices(field) for field in self.form_fields}
 
-        def process_rule(rule):
+        def process_rule(rule: dict[str, Any]):
             if rule["field"] in ["and", "or"]:
                 results = [process_rule(sub_rule) for sub_rule in rule["rules"]]
                 return all(results) if rule["field"] == "and" else any(results)

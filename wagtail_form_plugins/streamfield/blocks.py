@@ -1,5 +1,6 @@
 """Blocks definition for the Streamfield plugin."""
 
+from typing import Any
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
 
@@ -31,7 +32,7 @@ class FormFieldBlock(blocks.StructBlock):
 class RequiredBlock(blocks.BooleanBlock):
     """A boolean block used to add a Required checkbox on the struct blocks that need it."""
 
-    def __init__(self, condition=None):
+    def __init__(self, condition: str = ""):
         super().__init__(
             required=False,
             help_text=format_lazy(
@@ -61,7 +62,7 @@ class ChoiceBlock(blocks.StructBlock):
 class ChoicesList(blocks.ListBlock):
     """A generic list block used as a base to define choice-related blocks."""
 
-    def __init__(self, child_block=None, **kwargs):
+    def __init__(self, child_block: Any = None, **kwargs):
         super().__init__(child_block or ChoiceBlock(), search_index=True, **kwargs)
 
     class Meta:
@@ -69,7 +70,7 @@ class ChoicesList(blocks.ListBlock):
         form_classname = "formbuilder-choices"
 
 
-def init_options(field_type):
+def init_options(field_type: str):
     return {
         "label": _("Default value"),
         "required": False,
