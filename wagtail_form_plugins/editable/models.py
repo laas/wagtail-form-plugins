@@ -23,7 +23,7 @@ class EditableFormMixin(FormMixin):
             if request.method == "POST" and "edit" in request.POST:
                 submission_id = int(request.POST["edit"])
                 submission = get_object_or_404(self.get_submission_class(), pk=submission_id)
-                form = self.get_form(request.POST, request.FILES, page=self, user=request.user)
+                form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)
                 file_fields = [
                     get_field_clean_name(field.label)
                     for field in form.fields.values()
