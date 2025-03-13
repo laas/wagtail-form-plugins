@@ -3,7 +3,7 @@
 import sys
 from typing import Any, TextIO
 
-from django.forms import ValidationError
+from django.forms import ValidationError, EmailField
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser, User
@@ -177,6 +177,15 @@ class FileInput(wfp_models.AbstractFileInput):
     upload_dir = "demo_forms_uploads/%Y/%m/%d"
 
 
+class CustomValidationForm(wfp_models.ValidationForm):
+    """A small form with an email field, used to send validation email to access the actual form."""
+
+    validation_email = EmailField(
+        label="Confirmation de votre adresse mail / Mail address confirmation",
+        max_length=100,
+    )
+
+
 class AbstractFormPage(
     wfp_models.TokenValidationFormMixin,
     wfp_models.EmailActionsFormMixin,
@@ -194,6 +203,7 @@ class AbstractFormPage(
     """A custom abstract form page model with some mixins to extend its features."""
 
     formatter_class = CustomTemplatingFormatter
+    validation_form_class = CustomValidationForm
     form_builder = CustomFormBuilder
     file_input_model = FileInput
     submissions_list_view_class = CustomSubmissionListView

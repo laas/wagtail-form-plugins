@@ -47,6 +47,7 @@ class TokenValidationFormMixin(FormMixin):
     """A mixin used to add validation functionnality to a form."""
 
     tokens: dict[str, datetime] = {}
+    validation_form_class = ValidationForm
 
     def build_token(self, email: str) -> str:
         """Generate and return the token used to validate the form."""
@@ -85,7 +86,7 @@ class TokenValidationFormMixin(FormMixin):
 
         if request.method == "POST":
             if "validation_email" in request.POST:
-                form = ValidationForm(request.POST)
+                form = self.validation_form_class(request.POST)
                 if form.is_valid():
                     validation_email = form.cleaned_data["validation_email"]
                     token = self.build_token(validation_email)
@@ -111,7 +112,7 @@ class TokenValidationFormMixin(FormMixin):
             messages.add_message(request, messages.ERROR, _("This token is not valid."))
 
         context = self.get_context(request)
-        context["form"] = ValidationForm()
+        context["form"] = self.validation_form_class()
         return TemplateResponse(request, self.get_template(request), context)
 
     def process_form_submission(self, form: Form):
