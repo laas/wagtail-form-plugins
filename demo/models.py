@@ -152,6 +152,7 @@ class CustomFormSubmission(
 
 
 class CustomFormBuilder(
+    wfp_forms.LabelFormBuilder,
     wfp_forms.FileInputFormBuilder,
     wfp_forms.StreamFieldFormBuilder,
     wfp_forms.DatePickersFormBuilder,
@@ -265,6 +266,7 @@ class AbstractFormPage(
 
 class FormFieldsBlock(
     wfp_blocks.ConditionalFieldsFormBlock,
+    wfp_blocks.LabelFormBlock,
     wfp_blocks.FileInputFormBlock,
     wfp_blocks.TemplatingFormBlock,
     wfp_blocks.StreamFieldFormBlock,
