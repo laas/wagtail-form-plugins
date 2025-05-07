@@ -8,3 +8,7 @@ body {
     background-color: aliceblue;
     padding: 1em;
 }
+
+form input {
+    margin: 1em;
+}

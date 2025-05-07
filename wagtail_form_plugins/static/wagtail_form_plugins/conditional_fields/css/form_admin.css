@@ -9,14 +9,16 @@
         display: none;
     }
 
-    /* make inline boolean expressions builders with last deep level or without a rule field */
-    .formbuilder-beb-lvl3,
-    &:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
-        margin-bottom: -25px;
-        display: flex;
+    /* make inline boolean expressions builders with last deep level or without a rule field o nlarge screens */
+    @media (min-width: 1200px) {
+        .formbuilder-beb-lvl3,
+        &:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
+            margin-bottom: -25px;
+            display: flex;
 
-        > div:not(:first-child) {
-            margin-left: 32px;
+            > div:not(:first-child) {
+                margin-left: 32px;
+            }
         }
     }
 }
@@ -34,19 +36,31 @@
         display: none;
     }
 
-    /* make rules buttons inline */
     > div > section {
-        position: relative;
-        > .w-panel__header {
-            position: absolute;
-            top: 13px;
-            right: 0;
-            > *:not(.w-panel__controls) {
-                display: none;
+        /* make rules buttons inline on large screens */
+        @media (min-width: 1200px) {
+            position: relative;
+            > .w-panel__header {
+                position: absolute;
+                top: 13px;
+                right: 0;
+            }
+            > .w-panel__content {
+                width: calc(100% - 65px);
             }
         }
-        > .w-panel__content {
-            width: 88%;
+
+        > .w-panel__header > *:not(.w-panel__controls) {
+            display: none;
+        }
+
+        > div.w-panel__header > div.w-panel__controls {
+            button:has(> svg.icon-arrow-up),
+            button:has(> svg.icon-arrow-down),
+            button:has(> svg.icon-grip),
+            button:has(> svg.icon-copy) {
+                display: none;
+            }
         }
     }
 }
@@ -70,6 +84,7 @@
     > div > section > div.w-panel__header > div.w-panel__controls {
         button:has(> svg.icon-arrow-up),
         button:has(> svg.icon-arrow-down),
+        button:has(> svg.icon-grip),
         button:has(> svg.icon-copy) {
             display: none;
         }
