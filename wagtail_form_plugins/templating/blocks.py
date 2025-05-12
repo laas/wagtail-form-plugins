@@ -2,6 +2,7 @@
 
 from typing import Any
 from django.utils.translation import gettext_lazy as _
+from django.forms.fields import CharField, EmailField
 from wagtail.blocks.field_block import RichTextBlock
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
@@ -36,5 +37,9 @@ class TemplatingFormBlock(FormFieldsBlockMixin):
         """Add a tooltip to wagtail blocks in order that lists all available template variables."""
         for block in blocks:
             for n in field_names:
-                if n in block.child_blocks and not isinstance(block.child_blocks[n], RichTextBlock):
+                if (
+                    n in block.child_blocks
+                    and not isinstance(block.child_blocks[n], RichTextBlock)
+                    and isinstance(block.child_blocks[n].field, (CharField, EmailField))
+                ):
                     block.child_blocks[n].field.help_text += build_help_html(help_message)
