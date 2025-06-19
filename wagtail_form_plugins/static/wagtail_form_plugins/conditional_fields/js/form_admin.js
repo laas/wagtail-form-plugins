@@ -111,7 +111,7 @@ function on_rule_subject_selected(dom_dropdown) {
         dom_val_num.classList.toggle('formbuilder-hide', widget_type !== 'number');
         dom_val_list.classList.toggle('formbuilder-hide', widget_type !== 'dropdown');
         dom_val_date.classList.toggle('formbuilder-hide', widget_type !== 'date');
-        if (dom_rules !== undefined) {
+        if (dom_rules !== undefined && dom_rules !== null) {
             dom_rules.classList.toggle('formbuilder-hide', true);
         }
 
