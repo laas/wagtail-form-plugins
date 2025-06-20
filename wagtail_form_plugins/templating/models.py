@@ -1,6 +1,7 @@
 """Models definition for the Templating form plugin."""
 
 from typing import Any
+from django.forms import Form
 from django.http import HttpRequest, HttpResponseRedirect
 from wagtail_form_plugins.base.models import FormMixin
 from wagtail.contrib.forms.utils import get_field_clean_name
@@ -36,6 +37,15 @@ class TemplatingFormMixin(FormMixin):
                 **new_submission_data,
             }
             form_submission.save()
+
+    def get_submission_attributes(self, form: Form):
+        """Return a dictionary containing the attributes to pass to the submission constructor."""
+        attributes = super().get_submission_attributes(form)
+
+        return {
+            **attributes,
+            "form_data": {dk: form.data.get(dk, dv) for dk, dv in attributes["form_data"].items()},
+        }
 
     def serve(self, request: HttpRequest, *args, **kwargs):
         """Serve the form page."""
