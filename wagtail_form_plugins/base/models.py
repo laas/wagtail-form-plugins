@@ -41,7 +41,7 @@ class FormMixin(models.Model):
         """Format the field value. Used to display user-friendly values in result table."""
         return field_value
 
-    def send_email(self, email: dict):
+    def send_mail(self, email: dict):
         """Send an e-mail. Override this to change the behavior (ie. print the email instead)."""
         send_mail(**email)
 

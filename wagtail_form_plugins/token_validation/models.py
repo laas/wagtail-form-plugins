@@ -122,7 +122,7 @@ class TokenValidationFormMixin(FormMixin):
         return submission
 
     def send_validation_email(self, email_address: str, token: str):
-        """Send an email containing the link used to validate the form."""
+        """Send an e-mail containing the link used to validate the form."""
         validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{ self.url }?token={ token }"
         message_text = self.validation_body.replace(
             "{validation_url}",
@@ -132,14 +132,15 @@ class TokenValidationFormMixin(FormMixin):
             "{validation_url}",
             f"<a href='{ validation_url }'>{ validation_url }</a>",
         )
-        email = {
-            "subject": self.validation_title,
-            "recipient_list": [email_address],
-            "from_email": settings.FORMS_FROM_EMAIL,
-            "message": strip_tags(message_text.replace("</p>", "</p>\n")),
-            "html_message": message_html,
-        }
-        self.send_email(email)
+        self.send_mail(
+            {
+                "subject": self.validation_title,
+                "recipient_list": [email_address],
+                "from_email": settings.FORMS_FROM_EMAIL,
+                "message": strip_tags(message_text.replace("</p>", "</p>\n")),
+                "html_message": message_html,
+            }
+        )
 
     class Meta:
         abstract = True

@@ -25,16 +25,17 @@ class EmailActionsFormMixin(FormMixin):
         return response
 
     def send_action_email(self, email: dict[str, Any]):
-        """Send an email"""
-        email = {
-            "subject": email["subject"],
-            "recipient_list": [ea.strip() for ea in email["recipient_list"].split(",")],
-            "reply_to": [ea.strip() for ea in email["reply_to"].split(",")],
-            "from_email": settings.FORMS_FROM_EMAIL,
-            "message": strip_tags(email["message"].replace("</p>", "</p>\n")),
-            "html_message": email["message"],
-        }
-        super().send_email(email)
+        """Send an e-mail"""
+        self.send_mail(
+            {
+                "subject": email["subject"],
+                "recipient_list": [ea.strip() for ea in email["recipient_list"].split(",")],
+                "reply_to": [ea.strip() for ea in email["reply_to"].split(",")],
+                "from_email": settings.FORMS_FROM_EMAIL,
+                "message": strip_tags(email["message"].replace("</p>", "</p>\n")),
+                "html_message": email["message"],
+            }
+        )
 
     class Meta:
         abstract = True
