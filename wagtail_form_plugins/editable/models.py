@@ -48,6 +48,7 @@ class EditableFormMixin(FormMixin):
                 form = self.get_form(submission.form_data, page=self)
 
                 for field in form.fields.values():
+                    field.disabled = False
                     if isinstance(field.widget, HiddenInput):
                         field.widget = TextInput()
 
