@@ -4,7 +4,6 @@ from typing import Any
 from django.forms import Form
 from django.http import HttpRequest, HttpResponseRedirect
 from wagtail_form_plugins.base.models import FormMixin
-from wagtail.contrib.forms.utils import get_field_clean_name
 
 from .formatter import TemplatingFormatter
 
@@ -19,7 +18,7 @@ class TemplatingFormMixin(FormMixin):
         form_submission = context_data["form_submission"]
 
         disabled_fields = [
-            get_field_clean_name(field.value["label"])
+            field.value["identifier"]
             for field in context_data["page"].form_fields
             if field.value.get("disabled")
         ]

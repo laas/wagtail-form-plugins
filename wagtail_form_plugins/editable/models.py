@@ -7,7 +7,6 @@ from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.base.models import FormMixin
 
@@ -25,7 +24,7 @@ class EditableFormMixin(FormMixin):
                 submission = get_object_or_404(self.get_submission_class(), pk=submission_id)
                 form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)
                 file_fields = [
-                    get_field_clean_name(field.label)
+                    field.identifier
                     for field in form.fields.values()
                     if isinstance(field.widget, FileInput)
                 ]

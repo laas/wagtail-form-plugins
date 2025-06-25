@@ -1,10 +1,15 @@
 """Blocks definition for the Streamfield plugin."""
 
 from typing import Any
+
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
+from django.utils.functional import cached_property
+from django import forms
+from django.core.validators import validate_slug
 
 from wagtail import blocks
+from wagtail.telepath import register as register_adapter
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 
@@ -17,6 +22,12 @@ class FormFieldBlock(blocks.StructBlock):
         help_text=_("Short text describing the field."),
         form_classname="formbuilder-field-block-label",
     )
+    identifier = blocks.CharBlock(
+        label=_("Identifier"),
+        required=True,
+        help_text=_("The id used to identify this field, for instance in conditional fields."),
+        validators=[validate_slug],
+    )
     help_text = blocks.CharBlock(
         label=_("Help text"),
         required=False,
@@ -27,6 +38,25 @@ class FormFieldBlock(blocks.StructBlock):
         required=False,
         help_text=_("Check to make the field not editable by the user."),
     )
+
+
+class FormFieldBlockAdapter(blocks.struct_block.StructBlockAdapter):
+    """Inject javascript and css files to a Wagtail admin page for the form field."""
+
+    js_constructor = "forms.blocks.FormFieldBlock"
+
+    @cached_property
+    def media(self):
+        """Return a Media object containing path to css and js files."""
+        streamblock_media = super().media
+        js_file_path = "wagtail_form_plugins/streamfield/js/form_admin.js"
+
+        return forms.Media(
+            js=streamblock_media._js + [js_file_path],
+        )
+
+
+register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
 
 
 class RequiredBlock(blocks.BooleanBlock):

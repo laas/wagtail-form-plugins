@@ -4,6 +4,7 @@ from typing import Any
 from django import forms
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
+from wagtail_form_plugins.streamfield.forms import CharField
 
 
 class Label(forms.widgets.TextInput):
@@ -19,4 +20,4 @@ class LabelFormBuilder(FormBuilderMixin):
     def create_label_field(self, field: Any, options: dict[str, Any]):
         """Create a label without html input field."""
 
-        return forms.CharField(widget=Label(), **options)
+        return CharField(widget=Label(), **options)

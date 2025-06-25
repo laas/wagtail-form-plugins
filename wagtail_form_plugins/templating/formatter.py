@@ -57,13 +57,11 @@ class TemplatingFormatter:
         for field in self.form.form_fields:
             if field.block.name == "hidden":
                 continue
-            field_label = field.value["label"]
-            field_slug = get_field_clean_name(field_label)
-            value = self.submission.form_data[field_slug]
+            value = self.submission.form_data[field.value["identifier"]]
             if value is None:
                 continue
             fmt_value = self.form.format_field_value(field.block.name, value)
-            fields[field_slug] = (field_label, fmt_value)
+            fields[field.value["identifier"]] = (field.value["label"], fmt_value)
         return fields
 
     def get_user_data(self, user: User):

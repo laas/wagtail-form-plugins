@@ -45,19 +45,14 @@ class ConditionalFieldsFormMixin(FormMixin):
             form.full_clean()
             active_fields = self.get_active_fields(form.cleaned_data)
 
-        fields_raw_data = {
-            get_field_clean_name(fd["value"]["label"]): fd for fd in self.form_fields.raw_data
-        }
+        fields_raw_data = {fd["value"]["identifier"]: fd for fd in self.form_fields.raw_data}
 
-        indentations = {}
         for field in form.fields.values():
-            field_slug = get_field_clean_name(field.label)
-
-            raw_data = fields_raw_data[field_slug]
+            raw_data = fields_raw_data[field.identifier]
             if "rule" not in raw_data["value"]:
                 continue
 
-            if args and field_slug not in active_fields:
+            if args and field.identifier not in active_fields:
                 field.required = False
 
             raw_rule = raw_data["value"]["rule"]
@@ -111,12 +106,13 @@ class ConditionalFieldsFormMixin(FormMixin):
         def get_choices(field: Any) -> dict[str, str]:
             if "choices" not in field.value:
                 return {}
+
             return {
                 f"c{ idx + 1 }": get_field_clean_name(choice["label"])
                 for idx, choice in enumerate(field.value["choices"])
             }
 
-        slugs = {field.id: get_field_clean_name(field.value["label"]) for field in self.form_fields}
+        slugs = {field.id: field.value["identifier"] for field in self.form_fields}
         choices_slugs = {field.id: get_choices(field) for field in self.form_fields}
 
         def process_rule(rule: dict[str, Any]):

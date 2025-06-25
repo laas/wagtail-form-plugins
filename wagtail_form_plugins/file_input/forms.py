@@ -8,6 +8,13 @@ from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
+from wagtail_form_plugins.streamfield.forms import FieldWithIdMixin
+
+
+class FileField(FieldWithIdMixin, forms.FileField):
+    """A Django FileField class with an addititional identifier attribute."""
+
+    pass
 
 
 class FileInputFormBuilder(FormBuilderMixin):
@@ -34,4 +41,4 @@ class FileInputFormBuilder(FormBuilderMixin):
         options["help_text"] += f" { _('Allowed:') } { str_allowed }"
         widget = forms.widgets.FileInput(attrs={"accept": str_allowed})
 
-        return forms.FileField(widget=widget, **options, validators=validators)
+        return FileField(widget=widget, **options, validators=validators)

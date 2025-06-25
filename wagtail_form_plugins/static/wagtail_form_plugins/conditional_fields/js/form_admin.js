@@ -174,7 +174,6 @@ class BEBBlockDefinition extends window.wagtailStreamField.blocks.StructBlockDef
             return block
         }
 
-        // console.log('yay')
         const dom_rules = build_virtual_dropdown(
             dom_beb.querySelector('.formbuilder-beb-field input'),
             get_field_choices(fields, field_index),
