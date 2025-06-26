@@ -221,7 +221,7 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-checkboxes form field."""
 
     required = RequiredBlock(_("at least one box must be checked"))
-    choices = blocks.TextBlock(label=_("Choices, one per line"))
+    choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
         icon = "tick-inverse"
@@ -233,7 +233,7 @@ class DropDownFormFieldBlock(FormFieldBlock):
     """A struct block used to build a dropdown form field."""
 
     required = RequiredBlock(_("an item must be selected"))
-    choices = blocks.TextBlock(label=_("Choices, one per line"))
+    choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
         icon = "list-ul"
@@ -245,7 +245,7 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-select dropdown form field."""
 
     required = RequiredBlock(_("at least one item must be selected"))
-    choices = blocks.TextBlock(label=_("Choices, one per line"))
+    choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
         icon = "list-ul"
@@ -257,7 +257,7 @@ class RadioFormFieldBlock(FormFieldBlock):
     """A struct block used to build a radio-buttons form field."""
 
     required = RequiredBlock(_("an item must be selected"))
-    choices = blocks.TextBlock(label=_("Choices, one per line"))
+    choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
         icon = "radio-empty"
