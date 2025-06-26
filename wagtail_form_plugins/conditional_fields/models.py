@@ -5,9 +5,9 @@ from datetime import datetime
 from typing import Any
 
 from django.forms import Form
-from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.streamfield.forms import StreamFieldFormBuilder
 
 OPERATIONS = {
     "eq": lambda a, b: a == b,
@@ -107,10 +107,8 @@ class ConditionalFieldsFormMixin(FormMixin):
             if "choices" not in field.value:
                 return {}
 
-            return {
-                f"c{ idx + 1 }": get_field_clean_name(choice["label"])
-                for idx, choice in enumerate(field.value["choices"])
-            }
+            fmt_choices = StreamFieldFormBuilder.format_field_options(field.value)["choices"]
+            return {f"c{ idx + 1 }": choice[0] for idx, choice in enumerate(fmt_choices)}
 
         slugs = {field.id: field.value["identifier"] for field in self.form_fields}
         choices_slugs = {field.id: get_choices(field) for field in self.form_fields}

@@ -73,8 +73,19 @@ class RequiredBlock(blocks.BooleanBlock):
         )
 
 
+def init_options(field_type: str):
+    return {
+        "label": _("Default value"),
+        "required": False,
+        "help_text": format_lazy(
+            _("{field_type} used to pre-fill the field."),
+            field_type=field_type,
+        ),
+    }
+
+
 class ChoiceBlock(blocks.StructBlock):
-    """A struct block with a label and initial value used as an item for choice-related blocks."""
+    """To Be Deleted"""
 
     label = blocks.CharBlock(
         label=_("Label"),
@@ -90,7 +101,7 @@ class ChoiceBlock(blocks.StructBlock):
 
 
 class ChoicesList(blocks.ListBlock):
-    """A generic list block used as a base to define choice-related blocks."""
+    """To Be Deleted"""
 
     def __init__(self, child_block: Any = None, **kwargs):
         super().__init__(child_block or ChoiceBlock(), search_index=True, **kwargs)
@@ -98,17 +109,6 @@ class ChoicesList(blocks.ListBlock):
     class Meta:
         label = _("Choices")
         form_classname = "formbuilder-choices"
-
-
-def init_options(field_type: str):
-    return {
-        "label": _("Default value"),
-        "required": False,
-        "help_text": format_lazy(
-            _("{field_type} used to pre-fill the field."),
-            field_type=field_type,
-        ),
-    }
 
 
 class SinglelineFormFieldBlock(FormFieldBlock):
@@ -221,9 +221,7 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-checkboxes form field."""
 
     required = RequiredBlock(_("at least one box must be checked"))
-    choices = ChoicesList(
-        ChoiceBlock([("initial", blocks.BooleanBlock(label=_("Checked"), required=False))])
-    )
+    choices = blocks.TextBlock(label=_("Choices, one per line"))
 
     class Meta:
         icon = "tick-inverse"
@@ -235,7 +233,7 @@ class DropDownFormFieldBlock(FormFieldBlock):
     """A struct block used to build a dropdown form field."""
 
     required = RequiredBlock(_("an item must be selected"))
-    choices = ChoicesList()
+    choices = blocks.TextBlock(label=_("Choices, one per line"))
 
     class Meta:
         icon = "list-ul"
@@ -247,7 +245,7 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-select dropdown form field."""
 
     required = RequiredBlock(_("at least one item must be selected"))
-    choices = ChoicesList()
+    choices = blocks.TextBlock(label=_("Choices, one per line"))
 
     class Meta:
         icon = "list-ul"
@@ -259,7 +257,7 @@ class RadioFormFieldBlock(FormFieldBlock):
     """A struct block used to build a radio-buttons form field."""
 
     required = RequiredBlock(_("an item must be selected"))
-    choices = ChoicesList()
+    choices = blocks.TextBlock(label=_("Choices, one per line"))
 
     class Meta:
         icon = "radio-empty"

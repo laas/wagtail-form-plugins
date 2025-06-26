@@ -154,7 +154,8 @@ class StreamFieldFormBuilder(FormBuilderMixin):
         """Create a Django multiple choice field with checkboxes widget."""
         return MultipleChoiceField(widget=forms.CheckboxSelectMultiple, **options)
 
-    def format_field_options(self, options: dict):
+    @staticmethod
+    def format_field_options(options: dict):
         """Add formatted field choices and initial options of choice-based fields."""
         formatted_choices = []
         formatted_initial = []
@@ -162,11 +163,13 @@ class StreamFieldFormBuilder(FormBuilderMixin):
         if "choices" not in options:
             return options
 
-        for choice in options["choices"]:
-            label = choice["value"]["label"].strip()
+        for choice in [ch.strip() for ch in options["choices"].split("\n") if ch]:
+            is_initial = choice.startswith("*")
+            label = choice[1:] if is_initial else choice
             slug = get_field_clean_name(label)
             formatted_choices.append((slug, label))
-            if choice["value"]["initial"]:
+
+            if is_initial:
                 formatted_initial.append(slug)
 
         return {
