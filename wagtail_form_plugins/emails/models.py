@@ -32,7 +32,7 @@ class EmailActionsFormMixin(FormMixin):
                 "recipient_list": [ea.strip() for ea in email["recipient_list"].split(",")],
                 "reply_to": [ea.strip() for ea in email["reply_to"].split(",")],
                 "from_email": settings.FORMS_FROM_EMAIL,
-                "message": strip_tags(email["message"].source.replace("</p>", "</p>\n")),
+                "message": strip_tags(email["message"].replace("</p>", "</p>\n")),
                 "html_message": email["message"],
             }
         )
