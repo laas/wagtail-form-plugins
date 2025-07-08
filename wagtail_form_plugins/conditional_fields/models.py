@@ -127,7 +127,10 @@ class ConditionalFieldsFormMixin(FormMixin):
             elif field_type == "number":
                 b = rule["value_number"]
             elif field_type in ["checkboxes", "dropdown", "multiselect", "radio"]:
-                b = choices_slugs[rule["field"]][rule["value_dropdown"]]
+                b = rule["value_dropdown"]
+                if b:
+                    b = choices_slugs[rule["field"]][b]
+
             elif field_type in ["date", "datetime"]:
                 b = rule["value_date"]
             else:  # checkbox, file, label

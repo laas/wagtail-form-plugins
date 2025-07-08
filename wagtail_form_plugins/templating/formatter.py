@@ -88,7 +88,11 @@ class TemplatingFormatter:
         """Return a dict used to format template variables related to the form results."""
         return {
             "data": "<br/>\n".join(
-                [f"{label}: {value}" for label, value in formated_fields.values()]
+                [
+                    "{label}: {value}".format(label=label, value=value.replace("\n", "<br/>\n"))
+                    for label, value in formated_fields.values()
+                    if value != "-"
+                ]
             ),
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
