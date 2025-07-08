@@ -26,7 +26,7 @@ class TemplatingFormMixin(FormMixin):
         new_submission_data = {}
         for data_key, data_value in form_submission.form_data.items():
             if data_key in disabled_fields:
-                fmt_data = formatter.format(data_value)
+                fmt_data = formatter.format(data_value) if data_value else "-"
                 if fmt_data != data_value:
                     new_submission_data[data_key] = fmt_data
 
