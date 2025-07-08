@@ -112,6 +112,7 @@ class ConditionalFieldsFormMixin(FormMixin):
 
         slugs = {field.id: field.value["identifier"] for field in self.form_fields}
         choices_slugs = {field.id: get_choices(field) for field in self.form_fields}
+        field_types = {field.id: field.block.name for field in self.form_fields}
 
         def process_rule(rule: dict[str, Any]):
             if rule["field"] in ["and", "or"]:
@@ -119,15 +120,18 @@ class ConditionalFieldsFormMixin(FormMixin):
                 return all(results) if rule["field"] == "and" else any(results)
 
             a = form_data[slugs[rule["field"]]]
-            b = (
-                rule["value_char"]
-                or rule["value_number"]
-                or rule["value_dropdown"]
-                or rule["value_date"]
-                or ""
-            )
-            if rule["value_dropdown"]:
-                b = choices_slugs[rule["field"]][b]
+            field_type = field_types[rule["field"]]
+
+            if field_type in ["singleline", "multiline", "email", "hidden", "url"]:
+                b = rule["value_char"]
+            elif field_type == "number":
+                b = rule["value_number"]
+            elif field_type in ["checkboxes", "dropdown", "multiselect", "radio"]:
+                b = choices_slugs[rule["field"]][rule["value_dropdown"]]
+            elif field_type in ["date", "datetime"]:
+                b = rule["value_date"]
+            else:  # checkbox, file, label
+                b = ""
 
             func = OPERATIONS[rule["operator"]]
 
