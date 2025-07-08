@@ -59,7 +59,7 @@ class TemplatingFormMixin(FormMixin):
                 if field.initial:
                     field.initial = formatter.format(field.initial)
 
-        elif response.context_data["form"].is_valid():
+        elif "form" in response.context_data and response.context_data["form"].is_valid():
             self.format_submission(response.context_data, formatter)
             formatter = self.formatter_class(response.context_data)
 
