@@ -62,11 +62,9 @@ function get_fields() {
 }
 
 function get_value_choices(selected_field) {
-    return Array.from(selected_field.dom_block.querySelectorAll(
-        '.formbuilder-field-block .formbuilder-choices > div > div:not([aria-hidden])'
-    ))
-        .map((dom_block) => dom_block.querySelector('.struct-block .formbuilder-choice-label input'))
-        .map((dom_label, index) => [`c${index + 1}`, dom_label.value])
+    return selected_field.dom_block.querySelector('[data-contentpath=choices] textarea')
+        .value.split('\n')
+        .map((dom_label, index) => [`c${index + 1}`, dom_label])
 }
 
 function get_field_choices(fields, field_index) {
