@@ -4,6 +4,7 @@ from typing import Any
 from django import forms
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
+from wagtail_form_plugins.streamfield.forms import DateField, DateTimeField
 from datetime import datetime
 
 
@@ -24,7 +25,7 @@ class DatePickersFormBuilder(FormBuilderMixin):
 
     def create_date_field(self, field_value: Any, options: dict[str, Any]):
         """Create a Django date field."""
-        return forms.DateField(**options, widget=DateInput)
+        return DateField(**options, widget=DateInput)
 
     def create_datetime_field(self, field_value: Any, options: dict[str, Any]):
         """Create a Django datetime field."""
@@ -35,4 +36,4 @@ class DatePickersFormBuilder(FormBuilderMixin):
 
             options["initial"] = default_value.replace("Z", "").split("+")[0]
 
-        return forms.DateTimeField(**options, widget=DateTimeInput)
+        return DateTimeField(**options, widget=DateTimeInput)
