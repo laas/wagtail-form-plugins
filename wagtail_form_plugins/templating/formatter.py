@@ -54,14 +54,22 @@ class TemplatingFormatter:
     def get_formated_fields(self):
         """Return a dict containing a tuple of label and formatted value for each form field."""
         fields = {}
+        active_fields = self.form.get_active_fields(self.submission.form_data)
+
         for field in self.form.form_fields:
             if field.block.name == "hidden":
                 continue
-            value = self.submission.form_data[field.value["identifier"]]
+
+            field_id = field.value["identifier"]
+            if field_id not in active_fields:
+                continue
+
+            value = self.submission.form_data[field_id]
             if value is None:
                 continue
+
             fmt_value = self.form.format_field_value(field.block.name, value)
-            fields[field.value["identifier"]] = (field.value["label"], fmt_value)
+            fields[field_id] = (field.value["label"], fmt_value)
         return fields
 
     def get_user_data(self, user: User):
