@@ -119,7 +119,7 @@ class ConditionalFieldsFormMixin(FormMixin):
                 results = [process_rule(sub_rule) for sub_rule in rule["rules"]]
                 return all(results) if rule["field"] == "and" else any(results)
 
-            a = form_data[slugs[rule["field"]]]
+            a = form_data.get(slugs[rule["field"]])
             field_type = field_types[rule["field"]]
 
             if field_type in ["singleline", "multiline", "email", "hidden", "url"]:
