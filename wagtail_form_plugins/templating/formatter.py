@@ -57,7 +57,7 @@ class TemplatingFormatter:
         active_fields = self.form.get_active_fields(self.submission.form_data)
 
         for field in self.form.form_fields:
-            if field.block.name == "hidden":
+            if field.block.name in ["hidden", "label"]:
                 continue
 
             field_id = field.value["identifier"]
