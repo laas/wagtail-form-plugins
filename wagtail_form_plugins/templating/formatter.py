@@ -69,7 +69,14 @@ class TemplatingFormatter:
                 continue
 
             fmt_value = self.form.format_field_value(field.block.name, value)
-            fields[field_id] = (field.value["label"], fmt_value)
+            if fmt_value == "-":
+                continue
+
+            if field.block.name in ["checkboxes", "dropdown", "multiselect", "radio"]:
+                choices = {get_field_clean_name(c): c for c in field.value["choices"].split("\n")}
+                fmt_value = choices[fmt_value]
+
+            fields[field_id] = (field.value["label"], fmt_value.replace("\n", "<br/>\n"))
         return fields
 
     def get_user_data(self, user: User):
@@ -95,13 +102,7 @@ class TemplatingFormatter:
     def get_result_data(self, formated_fields: dict[str, tuple[str, str]]):
         """Return a dict used to format template variables related to the form results."""
         return {
-            "data": "<br/>\n".join(
-                [
-                    "{label}: {value}".format(label=label, value=value.replace("\n", "<br/>\n"))
-                    for label, value in formated_fields.values()
-                    if value != "-"
-                ]
-            ),
+            "data": "<br/>\n".join([f"{lbl}: {val}" for lbl, val in formated_fields.values()]),
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
         }
