@@ -3,11 +3,23 @@
 from wagtail_form_plugins.base.models import FormMixin
 from wagtail_form_plugins.streamfield.forms import StreamFieldFormBuilder, Field
 
+from wagtail_form_plugins.utils import create_links
+
 
 class StreamFieldFormMixin(FormMixin):
     """Form mixin for the Streamfield plugin."""
 
     form_builder = StreamFieldFormBuilder
+
+    def get_form(self, *args, **kwargs):
+        """Build and return the form instance."""
+        form = super().get_form(*args, **kwargs)
+
+        for field in form.fields.values():
+            if field.help_text:
+                field.help_text = create_links(field.help_text).replace("\n", "")
+
+        return form
 
     def get_form_fields(self):
         """Return the form fields based on streamfield data."""
