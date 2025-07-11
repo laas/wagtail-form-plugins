@@ -9,8 +9,12 @@
         display: none;
     }
 
-    /* make inline boolean expressions builders with last deep level or without a rule field o nlarge screens */
+    /* make inline boolean expressions builders with last deep level or without a rule field on large screens */
     @media (min-width: 1200px) {
+        > div select {
+            max-width: 10em;
+        }
+
         .formbuilder-beb-lvl3,
         &:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
             margin-bottom: -25px;
