@@ -40,6 +40,8 @@ const FIELD_CUSTOMIZATION = {
     'date': ['d', 'date'],
     'datetime': ['t', 'date'],
     'hidden': ['h', 'char'],
+    'file': ['f', 'none'],
+    'label': ['b', 'none'],
 }
 
 
@@ -128,8 +130,9 @@ function on_rule_subject_selected(dom_dropdown) {
         }
     }
 
-    if (dom_operator.querySelector('select option:not(.formbuilder-hide):checked') === null) {
-        dom_operator.querySelector('select option:not(.formbuilder-hide)').selected = true
+    const visibleOption = dom_operator.querySelector('select option:not(.formbuilder-hide)');
+    if (visibleOption && !dom_operator.querySelector('select option:not(.formbuilder-hide):checked')) {
+        visibleOption.selected = true;
     }
 }
 
