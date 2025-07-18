@@ -6,6 +6,7 @@ from django.http import HttpRequest, HttpResponseRedirect
 from wagtail_form_plugins.base.models import FormMixin
 
 from .formatter import TemplatingFormatter
+from wagtail_form_plugins.utils import create_links
 
 
 class TemplatingFormMixin(FormMixin):
@@ -65,8 +66,10 @@ class TemplatingFormMixin(FormMixin):
 
             for email in response.context_data["page"].emails_to_send:
                 for field_name in ["subject", "message", "recipient_list", "reply_to"]:
-                    email.value[field_name] = formatter.format(str(email.value[field_name]))
-
+                    fmt_value = formatter.format(str(email.value[field_name]))
+                    if field_name == "message":
+                        fmt_value = create_links(fmt_value.replace("\n", "<br/>\n"))
+                    email.value[field_name] = fmt_value
         return response
 
     class Meta:

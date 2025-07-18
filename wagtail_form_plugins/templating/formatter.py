@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser, User
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.utils import get_field_clean_name
-from wagtail_form_plugins.utils import create_links, validate_identifier
+from wagtail_form_plugins.utils import validate_identifier
 
 TMPL_SEP_LEFT = "{"
 TMPL_SEP_RIGHT = "}"
@@ -77,7 +77,6 @@ class TemplatingFormatter:
                 choices = {get_field_clean_name(c): c for c in field.value["choices"].split("\n")}
                 fmt_value = choices[fmt_value]
 
-            fmt_value = create_links(fmt_value.replace("\n", "<br/>\n"))
             fields[field_id] = (field.value["label"], fmt_value)
         return fields
 
