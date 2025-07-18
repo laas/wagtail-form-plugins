@@ -6,12 +6,12 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
 from django.utils.functional import cached_property
 from django import forms
-from django.core.validators import validate_slug
 
 from wagtail import blocks
 from wagtail.telepath import register as register_adapter
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+from wagtail_form_plugins.utils import validate_identifier
 
 
 class FormFieldBlock(blocks.StructBlock):
@@ -26,7 +26,7 @@ class FormFieldBlock(blocks.StructBlock):
         label=_("Identifier"),
         required=True,
         help_text=_("The id used to identify this field, for instance in conditional fields."),
-        validators=[validate_slug],
+        validators=[validate_identifier],
     )
     help_text = blocks.CharBlock(
         label=_("Help text"),

@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser, User
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.utils import get_field_clean_name
-from wagtail_form_plugins.utils import create_links
+from wagtail_form_plugins.utils import create_links, validate_identifier
 
 TMPL_SEP_LEFT = "{"
 TMPL_SEP_RIGHT = "}"
@@ -185,8 +185,7 @@ class TemplatingFormatter:
             sep = f"{ TMPL_SEP_LEFT }{ tmpl_prefix }."
             tmpl_suffix = (text.split(sep, 1) + [""])[1].split(TMPL_SEP_RIGHT, 1)[0]
             if tmpl_suffix:
-                if tmpl_suffix != get_field_clean_name(tmpl_suffix):
-                    raise ValueError
+                validate_identifier(tmpl_suffix)
                 return True
 
         if TMPL_SEP_LEFT in text or TMPL_SEP_RIGHT in text:

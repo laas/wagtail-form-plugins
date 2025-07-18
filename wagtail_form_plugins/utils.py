@@ -3,6 +3,10 @@
 import re
 from urllib.parse import quote
 
+from django.core.exceptions import ValidationError
+from wagtail.contrib.forms.utils import get_field_clean_name
+from django.utils.translation import gettext_lazy as _
+
 
 def create_links(html_message: str) -> str:
     """Detect and convert urls and emails into html links."""
@@ -18,3 +22,10 @@ def create_links(html_message: str) -> str:
 
     html_message = re.sub(url_regex, replace_url, html_message)
     return re.sub(email_regex, r'<a href="mailto:\1">\1</a>', html_message)
+
+
+def validate_identifier(identifier: str):
+    if identifier != get_field_clean_name(identifier):
+        raise ValidationError(
+            _("Identifiers must only contain lower-case letters, digits or underscore."),
+        )
