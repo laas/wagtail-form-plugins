@@ -14,7 +14,7 @@ class TemplatingFormMixin(FormMixin):
 
     formatter_class = TemplatingFormatter
 
-    def format_submission(self, context_data: dict[str, Any], formatter: TemplatingFormatter):
+    def format_submission(self, context_data: dict, formatter: TemplatingFormatter, post: dict):
         """Format the submission passed to the given context data, using the given formatter."""
         form_submission = context_data["form_submission"]
 
@@ -24,8 +24,17 @@ class TemplatingFormMixin(FormMixin):
             if field.value.get("disabled")
         ]
 
+        fields_with_choices = [
+            field.value["identifier"]
+            for field in context_data["page"].form_fields
+            if field.value.get("choices")
+        ]
+
         new_submission_data = {}
         for data_key, data_value in form_submission.form_data.items():
+            if data_key in fields_with_choices:
+                new_submission_data[data_key] = ",".join(post.getlist(data_key))
+
             if data_key in disabled_fields:
                 fmt_data = formatter.format(data_value) if data_value else "-"
                 if fmt_data != data_value:
@@ -61,7 +70,7 @@ class TemplatingFormMixin(FormMixin):
                     field.initial = formatter.format(field.initial)
 
         elif not "form" in response.context_data:
-            self.format_submission(response.context_data, formatter)
+            self.format_submission(response.context_data, formatter, request.POST)
             formatter = self.formatter_class(response.context_data)
 
             for email in response.context_data["page"].emails_to_send:
