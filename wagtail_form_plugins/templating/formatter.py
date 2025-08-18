@@ -74,8 +74,9 @@ class TemplatingFormatter:
                 continue
 
             if field.block.name in ["checkboxes", "dropdown", "multiselect", "radio"]:
-                choices = {get_field_clean_name(c): c for c in field.value["choices"].split("\n")}
-                fmt_value = ", ".join([choices[v] for v in fmt_value.split(",")])
+                choices = {get_field_clean_name(c): c for c in field.value["choices"].splitlines()}
+                if fmt_value:
+                    fmt_value = ", ".join([choices[v] for v in fmt_value.split(",")])
 
             fields[field_id] = (field.value["label"], fmt_value)
         return fields
