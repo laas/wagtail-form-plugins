@@ -27,14 +27,12 @@ class EmailActionsFormMixin(FormMixin):
     def send_action_email(self, email: dict[str, Any]):
         """Send an e-mail"""
         self.send_mail(
-            {
-                "subject": email["subject"],
-                "recipient_list": [ea.strip() for ea in email["recipient_list"].split(",")],
-                "reply_to": [ea.strip() for ea in email["reply_to"].split(",")],
-                "from_email": settings.FORMS_FROM_EMAIL,
-                "message": strip_tags(email["message"].replace("</p>", "</p>\n")),
-                "html_message": email["message"],
-            }
+            subject=email["subject"],
+            message=strip_tags(email["message"].replace("</p>", "</p>\n")),
+            from_email=settings.FORMS_FROM_EMAIL,
+            recipient_list=[ea.strip() for ea in email["recipient_list"].split(",")],
+            html_message=email["message"],
+            reply_to=[ea.strip() for ea in email["reply_to"].split(",")],
         )
 
     class Meta:

@@ -1,10 +1,10 @@
 """Base classes for form mixins."""
 
 from typing import Any
+
 from django.db import models
 from django.forms import Form
-
-from wagtail.admin.mail import send_mail
+from django.core.mail import EmailMultiAlternatives, EmailAlternative
 
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.views import SubmissionsListView
@@ -41,9 +41,25 @@ class FormMixin(models.Model):
         """Format the field value. Used to display user-friendly values in result table."""
         return field_value
 
-    def send_mail(self, email: dict):
+    def send_mail(
+        self,
+        subject: str,
+        message: str,
+        from_email: str,
+        recipient_list: list[str],
+        html_message: str | None,
+        reply_to: list[str] | None,
+    ):
         """Send an e-mail. Override this to change the behavior (ie. print the email instead)."""
-        send_mail(**email)
+        mail = EmailMultiAlternatives(
+            subject=subject,
+            body=message,
+            from_email=from_email,
+            to=recipient_list,
+            alternatives=[EmailAlternative(html_message, "text/html")] if html_message else [],
+            reply_to=reply_to,
+        )
+        mail.send()
 
     class Meta:
         abstract = True

@@ -133,13 +133,11 @@ class TokenValidationFormMixin(FormMixin):
             f"<a href='{ validation_url }'>{ validation_url }</a>",
         )
         self.send_mail(
-            {
-                "subject": self.validation_title,
-                "recipient_list": [email_address],
-                "from_email": settings.FORMS_FROM_EMAIL,
-                "message": strip_tags(message_text.replace("</p>", "</p>\n")),
-                "html_message": message_html,
-            }
+            subject=self.validation_title,
+            message=strip_tags(message_text.replace("</p>", "</p>\n")),
+            from_email=settings.FORMS_FROM_EMAIL,
+            recipient_list=[email_address],
+            html_message=message_html,
         )
 
     class Meta:

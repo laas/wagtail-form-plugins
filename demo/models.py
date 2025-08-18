@@ -229,14 +229,26 @@ class AbstractFormPage(
         response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
         return response
 
-    def send_mail(self, email: dict):
+    def send_mail(
+        self,
+        subject: str,
+        message: str,
+        from_email: str,
+        recipient_list: list[str],
+        html_message: str | None,
+        reply_to: list[str] | None,
+    ):
         """Print the e-mail instead sending it when debugging."""
         if settings.DEBUG and not settings.FORMS_DEV_SEND_MAIL:
             print("=== sending e-mail ===")
-            for k, v in email.items():
-                print(f"{ k }: { v }")
+            print(f"subject: { subject }")
+            print(f"from_email: { from_email }")
+            print(f"recipient_list: { recipient_list }")
+            print(f"reply_to: { reply_to }")
+            print(f"message: { message }")
+            print(f"html_message: { html_message }")
         else:
-            super().send_mail(email)
+            super().send_mail(subject, message, from_email, recipient_list, html_message, reply_to)
 
     def save(self, clean: bool = True, user: User = None, log_action: bool = False, **kwargs):
         """Save the form."""
