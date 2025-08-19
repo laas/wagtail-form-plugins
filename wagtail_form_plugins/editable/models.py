@@ -16,9 +16,8 @@ class EditableFormMixin(FormMixin):
 
     def serve(self, request: HttpRequest, *args, **kwargs):
         """Serve the form page."""
-        admins = get_user_model().objects.filter(groups__name=self.get_group_name())
 
-        if request.user in admins or request.user.is_superuser:
+        if self.permissions_for_user(request.user).can_edit():
             if request.method == "POST" and "edit" in request.POST:
                 submission_id = int(request.POST["edit"])
                 submission = get_object_or_404(self.get_submission_class(), pk=submission_id)
