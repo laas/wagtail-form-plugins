@@ -2,7 +2,6 @@
 
 from django.forms.widgets import HiddenInput, TextInput, FileInput
 from django.forms.fields import CharField
-from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -22,13 +21,19 @@ class EditableFormMixin(FormMixin):
                 submission_id = int(request.POST["edit"])
                 submission = get_object_or_404(self.get_submission_class(), pk=submission_id)
                 form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)
-                file_fields = [
-                    field.identifier
-                    for field in form.fields.values()
-                    if isinstance(field.widget, FileInput)
-                ]
+
+                for field in form.fields.values():
+                    if isinstance(field.widget, FileInput):
+                        field.required = False
+                form.full_clean()
 
                 if form.is_valid():
+                    file_fields = [
+                        f.identifier
+                        for f in form.fields.values()
+                        if isinstance(f.widget, FileInput)
+                    ]
+
                     attrs = self.get_submission_attributes(form)
                     attrs["form_data"] = {
                         k: v if k not in file_fields or v else submission.form_data[k]
@@ -49,6 +54,9 @@ class EditableFormMixin(FormMixin):
                     field.disabled = False
                     if isinstance(field.widget, HiddenInput):
                         field.widget = TextInput()
+
+                    if isinstance(field.widget, FileInput):
+                        field.required = False
 
                 edit_attrs = {"value": request.GET["edit"]}
                 form.fields["edit"] = CharField(widget=HiddenInput(attrs=edit_attrs))
