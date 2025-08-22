@@ -1,7 +1,7 @@
 """Models definition for the Conditional Fields form plugin."""
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone as tz
 from typing import Any
 
 from django.forms import Form
@@ -79,7 +79,8 @@ class ConditionalFieldsFormMixin(FormMixin):
             return {value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]}
 
         if value["value_date"]:
-            fmt_value = int(datetime.strptime(value["value_date"], "%Y-%m-%d").timestamp())
+            fmt_value = datetime.strptime(value["value_date"], "%Y-%m-%d").replace(tzinfo=tz.utc)
+            fmt_value = int(fmt_value.timestamp())
         elif value["value_time"]:
             fmt_value = int(datetime.fromisoformat(f"1970-01-01T{value['value_time']}").timestamp())
         elif value["value_datetime"]:

@@ -25,7 +25,7 @@ function get_value(dom_input) {
         return widget === "Select" ? values[0] : values
         }
     if (["DateInput", "TimeInput", "DateTimeInput"].includes(widget)) {
-        const date = Date.parse((widget === "TimeInput" ? "1970-01-01T" : 0) + dom_input.value)
+        const date = Date.parse((widget === "TimeInput" ? "1970-01-01T" : "") + dom_input.value)
         return Math.floor(date / 1000);
     }
     return dom_input.value
