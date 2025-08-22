@@ -9,7 +9,7 @@ A set of plugins used to customize and improve the Wagtail form builder in a mod
 - **indexed_results**: add an index in the results (can be used in the templating plugin);
 - **named_form**: allow to fill the form only once per user;
 - **emails**: send multiple emails when a form is submitted;
-- **datepickers**: add `date` and `datetime` input types to make the browser datepicker appear.
+- **datepickers**: add `date`, `time` and `datetime` input types to make the browser datepicker appear.
 
 Each plugin is supposed to work independently.
 

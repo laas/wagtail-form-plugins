@@ -24,8 +24,9 @@ function get_value(dom_input) {
 
         return widget === "Select" ? values[0] : values
         }
-    if (["DateInput", "DateTimeInput"].includes(widget)) {
-        return Date.parse(dom_input.value)
+    if (["DateInput", "TimeInput", "DateTimeInput"].includes(widget)) {
+        const date = Date.parse((widget === "TimeInput" ? "1970-01-01T" : 0) + dom_input.value)
+        return Math.floor(date / 1000);
     }
     return dom_input.value
 }
@@ -38,17 +39,17 @@ const OPERATORS = {
     'is': ['=', 'lrd', (a, b) => a === b],
     'nis': ['≠', 'lrd', (a, b) => a !== b],
 
-    'lt': ['<', 'n', (a, b) => a < parseFloat(b)],
-    'lte': ['≤', 'n', (a, b) => a <= parseFloat(b)],
+    'lt': ['<', 'n', (a, b) => a < b],
+    'lte': ['≤', 'n', (a, b) => a <= b],
 
-    'ut': ['>', 'n', (a, b) => a > parseFloat(b)],
-    'ute': ['≥', 'n', (a, b) => a >= parseFloat(b)],
+    'ut': ['>', 'n', (a, b) => a > b],
+    'ute': ['≥', 'n', (a, b) => a >= b],
 
-    'bt': ['<', 'dt', (a, b) => a < Date.parse(b)],
-    'bte': ['≤', 'd', (a, b) => a <= Date.parse(b)],
+    'bt': ['<', 'dt', (a, b) => a < b],
+    'bte': ['≤', 'd', (a, b) => a <= b],
 
-    'at': ['>', 'dt', (a, b) => a > Date.parse(b)],
-    'ate': ['≥', 'd', (a, b) => a >= Date.parse(b)],
+    'at': ['>', 'dt', (a, b) => a > b],
+    'ate': ['≥', 'd', (a, b) => a >= b],
 
     'ct': ['∋', 'mCL', (a, b) => a.includes(b)],
     'nct': ['∌', 'mCL', (a, b) => ! a.includes(b)],
@@ -66,8 +67,8 @@ function compute_rule(rule) {
         const value = get_value(dom_field)
 
         return {
-            formula: `${ dom_field.getAttribute('data-label') } ${ opr_char } "${ rule.entry.val }"`,
-            str: `"${ value }" ${ opr_char } "${ rule.entry.val }"`,
+            formula: `${ dom_field.getAttribute('data-label') } ${ opr_char } ${ rule.entry.val }`,
+            str: `${ value } ${ opr_char } ${ rule.entry.val }`,
             is_active: opr_func(value, rule.entry.val) && dom_field.getAttribute("data-active") !== "n",
             indent_level: parseInt(dom_field.getAttribute("data-level")) + 1,
         }

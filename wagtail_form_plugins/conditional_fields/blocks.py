@@ -79,6 +79,14 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
         required=False,
         form_classname="formbuilder-beb-val-date",
     )
+    value_time = blocks.TimeBlock(
+        required=False,
+        form_classname="formbuilder-beb-val-time",
+    )
+    value_datetime = blocks.DateTimeBlock(
+        required=False,
+        form_classname="formbuilder-beb-val-datetime",
+    )
 
     class Meta:
         label = _("Visibility condition")

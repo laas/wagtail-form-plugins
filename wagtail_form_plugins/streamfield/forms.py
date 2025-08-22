@@ -55,6 +55,12 @@ class DateField(FieldWithIdMixin, forms.DateField):
     pass
 
 
+class TimeField(FieldWithIdMixin, forms.TimeField):
+    """A Django TimeField class with an addititional identifier attribute."""
+
+    pass
+
+
 class DateTimeField(FieldWithIdMixin, forms.DateTimeField):
     """A Django DateTimeField class with an addititional identifier attribute."""
 
@@ -112,6 +118,10 @@ class StreamFieldFormBuilder(FormBuilderMixin):
     def create_date_field(self, field: Field, options: dict[str, Any]):
         """Create a date form field."""
         return DateField(**options)
+
+    def create_time_field(self, field: Field, options: dict[str, Any]):
+        """Create a time form field."""
+        return TimeField(**options)
 
     def create_datetime_field(self, field: Field, options: dict[str, Any]):
         """Create a datetime form field."""

@@ -277,6 +277,18 @@ class DateFormFieldBlock(FormFieldBlock):
         form_classname = "formbuilder-field-block formbuilder-field-block-date"
 
 
+class TimeFormFieldBlock(FormFieldBlock):
+    """A struct block used to build a time form field."""
+
+    required = RequiredBlock()
+    initial = blocks.TimeBlock(**init_options(_("Time")))
+
+    class Meta:
+        icon = "time"
+        label = _("Time")
+        form_classname = "formbuilder-field-block formbuilder-field-block-time"
+
+
 class DateTimeFormFieldBlock(FormFieldBlock):
     """A struct block used to build a date-time form field."""
 
@@ -284,7 +296,7 @@ class DateTimeFormFieldBlock(FormFieldBlock):
     initial = blocks.DateTimeBlock(**init_options(_("Date and time")))
 
     class Meta:
-        icon = "time"
+        icon = "date"
         label = _("Date and time")
         form_classname = "formbuilder-field-block formbuilder-field-block-datetime"
 
@@ -315,6 +327,7 @@ class StreamFieldFormBlock(FormFieldsBlockMixin):
     multiselect = MultiSelectFormFieldBlock()
     radio = RadioFormFieldBlock()
     date = DateFormFieldBlock()
+    time = TimeFormFieldBlock()
     datetime = DateTimeFormFieldBlock()
     hidden = HiddenFormFieldBlock()
 

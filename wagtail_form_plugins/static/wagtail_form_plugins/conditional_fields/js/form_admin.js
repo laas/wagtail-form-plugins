@@ -1,10 +1,11 @@
 // [label, char, widgets, processing function]
+// Labels should be consistent with OPERATIONS dict in wagtail_form_plugins/conditional_fields/models.py
 const OPERATORS = {
     'eq': ['=', 'senu', (a, b) => a.value === b],
     'neq': ['≠', 'senu', (a, b) => a.value !== b],
 
-    'is': ['=', 'lrd', (a, b) => a === b],
-    'nis': ['≠', 'lrd', (a, b) => a !== b],
+    'is': ['=', 'lrdtD', (a, b) => a === b],
+    'nis': ['≠', 'lrdtD', (a, b) => a !== b],
 
     'lt': ['<', 'n', (a, b) => a < parseFloat(b)],
     'lte': ['≤', 'n', (a, b) => a <= parseFloat(b)],
@@ -12,11 +13,11 @@ const OPERATORS = {
     'ut': ['>', 'n', (a, b) => a > parseFloat(b)],
     'ute': ['≥', 'n', (a, b) => a >= parseFloat(b)],
 
-    'bt': ['<', 'dt', (a, b) => a < Date.parse(b)],
-    'bte': ['≤', 'd', (a, b) => a <= Date.parse(b)],
+    'bt': ['<', 'dtD', (a, b) => a < Date.parse(b)],
+    'bte': ['≤', 'dtD', (a, b) => a <= Date.parse(b)],
 
-    'at': ['>', 'dt', (a, b) => a > Date.parse(b)],
-    'ate': ['≥', 'd', (a, b) => a >= Date.parse(b)],
+    'at': ['>', 'dtD', (a, b) => a > Date.parse(b)],
+    'ate': ['≥', 'dtD', (a, b) => a >= Date.parse(b)],
 
     'ct': ['∋', 'mCL', (a, b) => a.includes(b)],
     'nct': ['∌', 'mCL', (a, b) => ! a.includes(b)],
@@ -38,7 +39,8 @@ const FIELD_CUSTOMIZATION = {
     'multiselect': ['L', 'dropdown'],
     'radio': ['r', 'dropdown'],
     'date': ['d', 'date'],
-    'datetime': ['t', 'date'],
+    'time': ['t', 'time'],
+    'datetime': ['D', 'datetime'],
     'hidden': ['h', 'char'],
     'file': ['f', 'none'],
     'label': ['b', 'none'],
@@ -93,6 +95,8 @@ function on_rule_subject_selected(dom_dropdown) {
     const dom_val_num = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-num)');
     const dom_val_list = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-list)');
     const dom_val_date = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-date)');
+    const dom_val_time = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-time)');
+    const dom_val_datetime = dom_beb.querySelector('div:has(> div > .formbuilder-beb-val-datetime)');
     const dom_rules = dom_beb.querySelector('div:has(> .formbuilder-beb-rules)');
 
     if (['and', 'or'].includes(dom_dropdown.value)) {
@@ -101,6 +105,8 @@ function on_rule_subject_selected(dom_dropdown) {
         dom_val_num.classList.toggle('formbuilder-hide', true);
         dom_val_list.classList.toggle('formbuilder-hide', true);
         dom_val_date.classList.toggle('formbuilder-hide', true);
+        dom_val_time.classList.toggle('formbuilder-hide', true);
+        dom_val_datetime.classList.toggle('formbuilder-hide', true);
         dom_rules.classList.toggle('formbuilder-hide', false);
     } else {
         const selected_field = get_fields()[dom_dropdown.value]
@@ -111,6 +117,8 @@ function on_rule_subject_selected(dom_dropdown) {
         dom_val_num.classList.toggle('formbuilder-hide', widget_type !== 'number');
         dom_val_list.classList.toggle('formbuilder-hide', widget_type !== 'dropdown');
         dom_val_date.classList.toggle('formbuilder-hide', widget_type !== 'date');
+        dom_val_time.classList.toggle('formbuilder-hide', widget_type !== 'time');
+        dom_val_datetime.classList.toggle('formbuilder-hide', widget_type !== 'datetime');
         if (dom_rules !== undefined && dom_rules !== null) {
             dom_rules.classList.toggle('formbuilder-hide', true);
         }

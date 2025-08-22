@@ -14,14 +14,14 @@ OPERATIONS = {
     "neq": lambda a, b: a != b,
     "is": lambda a, b: a == b,
     "nis": lambda a, b: a != b,
-    "lt": lambda a, b: float(a) < float(b),
-    "lte": lambda a, b: float(a) <= float(b),
-    "ut": lambda a, b: float(a) > float(b),
-    "ute": lambda a, b: float(a) >= float(b),
-    "bt": lambda a, b: datetime.fromisoformat(a) < datetime.fromisoformat(b),
-    "bte": lambda a, b: datetime.fromisoformat(a) <= datetime.fromisoformat(b),
-    "at": lambda a, b: datetime.fromisoformat(a) > datetime.fromisoformat(b),
-    "ate": lambda a, b: datetime.fromisoformat(a) >= datetime.fromisoformat(b),
+    "lt": lambda a, b: a < b,
+    "lte": lambda a, b: a <= b,
+    "ut": lambda a, b: a > b,
+    "ute": lambda a, b: a >= b,
+    "bt": lambda a, b: a < b,
+    "bte": lambda a, b: a <= b,
+    "at": lambda a, b: a > b,
+    "ate": lambda a, b: a >= b,
     "ct": lambda a, b: b in a,
     "nct": lambda a, b: b not in a,
     "c": lambda a, b: a,
@@ -78,13 +78,23 @@ class ConditionalFieldsFormMixin(FormMixin):
         if value["field"] in ["and", "or"]:
             return {value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]}
 
+        if value["value_date"]:
+            fmt_value = int(datetime.strptime(value["value_date"], "%Y-%m-%d").timestamp())
+        elif value["value_time"]:
+            fmt_value = int(datetime.fromisoformat(f"1970-01-01T{value['value_time']}").timestamp())
+        elif value["value_datetime"]:
+            fmt_value = int(datetime.fromisoformat(value["value_datetime"]).timestamp())
+        elif value["value_dropdown"]:
+            fmt_value = value["value_dropdown"]
+        elif value["value_number"]:
+            fmt_value = int(value["value_number"])
+        else:
+            fmt_value = value["value_char"]
+
         return {
             "entry": {
                 "target": value["field"],
-                "val": value["value_date"]
-                or value["value_dropdown"]
-                or value["value_number"]
-                or value["value_char"],
+                "val": fmt_value,
                 "opr": value["operator"],
             }
         }
@@ -125,14 +135,17 @@ class ConditionalFieldsFormMixin(FormMixin):
             if field_type in ["singleline", "multiline", "email", "hidden", "url"]:
                 b = rule["value_char"]
             elif field_type == "number":
-                b = rule["value_number"]
+                b = float(rule["value_number"])
             elif field_type in ["checkboxes", "dropdown", "multiselect", "radio"]:
                 b = rule["value_dropdown"]
                 if b:
                     b = choices_slugs[rule["field"]][b]
-
-            elif field_type in ["date", "datetime"]:
+            elif field_type == "date":
                 b = rule["value_date"]
+            elif field_type == "time":
+                b = rule["value_time"]
+            elif field_type == "datetime":
+                b = rule["value_datetime"]
             else:  # checkbox, file, label
                 b = ""
 

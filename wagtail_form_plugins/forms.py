@@ -5,6 +5,7 @@ from .streamfield.forms import (
     StreamFieldFormBuilder,
     CharField,
     DateField,
+    TimeField,
     DateTimeField,
     EmailField,
     URLField,
