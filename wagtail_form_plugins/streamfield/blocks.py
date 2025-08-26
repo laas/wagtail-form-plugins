@@ -6,12 +6,28 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.text import format_lazy
 from django.utils.functional import cached_property
 from django import forms
+from django.core.exceptions import ValidationError
 
 from wagtail import blocks
 from wagtail.telepath import register as register_adapter
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 from wagtail_form_plugins.utils import validate_identifier
+
+
+class UniqueCharBlock(blocks.CharBlock):
+    """A CharBlock that displays duplication errors."""
+
+    def clean(self, value: str):
+        """Raise a ValidationError if the block class has a duplicates attribute."""
+        duplicates = getattr(self, "duplicates").get(value)
+        if duplicates:
+            msg = _("The id '{field_id}' is already in use in fields {duplicates}.").format(
+                field_id=value,
+                duplicates=", ".join([f"n°{idx + 1}" for idx in duplicates]),
+            )
+            raise ValidationError(msg)
+        return super().clean(value)
 
 
 class FormFieldBlock(blocks.StructBlock):
@@ -22,7 +38,7 @@ class FormFieldBlock(blocks.StructBlock):
         help_text=_("Short text describing the field."),
         form_classname="formbuilder-field-block-label",
     )
-    identifier = blocks.CharBlock(
+    identifier = UniqueCharBlock(
         label=_("Identifier"),
         required=True,
         help_text=_("The id used to identify this field, for instance in conditional fields."),
@@ -334,3 +350,19 @@ class StreamFieldFormBlock(FormFieldsBlockMixin):
     class Meta:
         form_classname = "formbuilder-fields-block"
         collapsed = True
+
+    @classmethod
+    def get_duplicates(cls, blocks: list):
+        """Return a dict containing identifier duplicates in the given blocks."""
+        duplicates = {}
+        for idx, block_id in enumerate([block.value["identifier"] for block in blocks]):
+            duplicates[block_id] = (duplicates[block_id] if block_id in duplicates else []) + [idx]
+        return {k: v for k, v in duplicates.items() if len(v) > 1}
+
+    def clean(self, value: Any, ignore_required_constraints: Any):
+        """Add duplicates attribute in the block class."""
+        if len(value) > 0:
+            id_block = value[0].block.child_blocks["identifier"]
+            setattr(id_block, "duplicates", self.get_duplicates(value))
+
+        return super().clean(value, ignore_required_constraints)
