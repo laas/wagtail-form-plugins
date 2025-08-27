@@ -144,6 +144,10 @@ class TemplatingFormatter:
                 "url": (_("the form url"), "https://example.com/form/my-form"),
                 "publish_date": (_("the date on which the form was published"), "15/10/2024"),
                 "publish_time": (_("the time on which the form was published"), "13h37"),
+                "url_results": (
+                    _("the url of the form edition page"),
+                    "https://example.com/admin/pages/42/edit/",
+                ),
             },
             "result": {
                 "data": (_("the form data as a list"), "- my_first_question: 42"),
