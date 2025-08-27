@@ -3,9 +3,11 @@
 from typing import Any
 from django.contrib.auth.models import AnonymousUser, User
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 from wagtail_form_plugins.utils import validate_identifier
+from wagtail.admin.admin_url_finder import AdminURLFinder
 
 TMPL_SEP_LEFT = "{"
 TMPL_SEP_RIGHT = "}"
@@ -94,11 +96,13 @@ class TemplatingFormatter:
 
     def get_form_data(self):
         """Return a dict used to format template variables related to the form itself."""
+        finder = AdminURLFinder()
         return {
             "title": self.form.title,
             "url": self.request.build_absolute_uri(self.form.url),
             "publish_date": self.form.first_published_at.strftime("%d/%m/%Y"),
             "publish_time": self.form.first_published_at.strftime("%H:%M"),
+            "url_results": settings.WAGTAILADMIN_BASE_URL + finder.get_edit_url(self.form),
         }
 
     def get_result_data(self, formated_fields: dict[str, tuple[str, str]]):
