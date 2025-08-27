@@ -76,7 +76,7 @@ function get_field_choices(fields, field_index) {
         ['', 'Fields:', true],
         ...Object.values(fields)
             .filter((f) => field_index > f.index)
-            .filter((f) => f.type !== 'hidden')
+            .filter((f) => !(['hidden', 'label', 'file'].includes(f.type)))
             .map(f => [f.contentpath, f.label, false]),
         ['', 'Expression:', true],
         ['or', 'one of...', false],
