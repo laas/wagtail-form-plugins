@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-27 13:39+0000\n"
+"POT-Creation-Date: 2025-09-03 14:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,40 +97,50 @@ msgid "Visibility condition"
 msgstr "Condition de visibilité"
 
 # === emails ===
-#: wagtail_form_plugins/emails/blocks.py:22
+#: wagtail_form_plugins/emails/blocks.py:24
 msgid "Recipient list"
 msgstr "Liste des destinataires"
 
-#: wagtail_form_plugins/emails/blocks.py:23
+#: wagtail_form_plugins/emails/blocks.py:25
 msgid "E-mail addresses of the recipients, separated by comma."
 msgstr "Adresses e-mail des destinataires, séparées par une virgule."
 
-#: wagtail_form_plugins/emails/blocks.py:28
+#: wagtail_form_plugins/emails/blocks.py:30
+msgid "From"
+msgstr "De"
+
+#: wagtail_form_plugins/emails/blocks.py:31
+#, fuzzy
+msgid "E-mail addresses set in the “from” email field, separated by comma."
+msgstr ""
+"Adresses e-mail définies dans le champ “from”, séparées par une virgule."
+
+#: wagtail_form_plugins/emails/blocks.py:37
 msgid "Reply to"
 msgstr "Répondre à"
 
-#: wagtail_form_plugins/emails/blocks.py:29
+#: wagtail_form_plugins/emails/blocks.py:38
 msgid "E-mail addresses set in the “reply_to” email field, separated by comma."
 msgstr ""
 "Adresses e-mail définies dans le champ “reply_to”, séparées par une virgule."
 
-#: wagtail_form_plugins/emails/blocks.py:33
+#: wagtail_form_plugins/emails/blocks.py:42
 msgid "Subject"
 msgstr "Sujet"
 
-#: wagtail_form_plugins/emails/blocks.py:34
+#: wagtail_form_plugins/emails/blocks.py:43
 msgid "The subject of the e-mail."
 msgstr "Le sujet de l'e-mail."
 
-#: wagtail_form_plugins/emails/blocks.py:38
+#: wagtail_form_plugins/emails/blocks.py:47
 msgid "Message"
 msgstr "Message"
 
-#: wagtail_form_plugins/emails/blocks.py:39
+#: wagtail_form_plugins/emails/blocks.py:48
 msgid "The body of the e-mail."
 msgstr "Le corps de l'e-mail."
 
-#: wagtail_form_plugins/emails/blocks.py:43
+#: wagtail_form_plugins/emails/blocks.py:52
 msgid "E-mail to send"
 msgstr "E-mail à envoyer"
 
@@ -465,27 +475,27 @@ msgstr "la date à laquelle le formulaire a été publié"
 msgid "the time on which the form was published"
 msgstr "l'heure à laquelle le formulaire a été publié"
 
-#: wagtail_form_plugins/templating/formatter.py:147
+#: wagtail_form_plugins/templating/formatter.py:148
 msgid "the url of the form edition page"
 msgstr "l'url de la page d'édition du formulaire"
 
-#: wagtail_form_plugins/templating/formatter.py:150
+#: wagtail_form_plugins/templating/formatter.py:153
 msgid "the form data as a list"
 msgstr "les données du formulaire sous forme de liste"
 
-#: wagtail_form_plugins/templating/formatter.py:151
+#: wagtail_form_plugins/templating/formatter.py:154
 msgid "the date on which the form was completed"
 msgstr "la date à laquelle le formulaire a été complété"
 
-#: wagtail_form_plugins/templating/formatter.py:152
+#: wagtail_form_plugins/templating/formatter.py:155
 msgid "the time on which the form was completed"
 msgstr "l'heure à laquelle le formulaire a été complété"
 
-#: wagtail_form_plugins/templating/formatter.py:155
+#: wagtail_form_plugins/templating/formatter.py:158
 msgid "the label of the related field"
 msgstr "le label du champ correspondant"
 
-#: wagtail_form_plugins/templating/formatter.py:158
+#: wagtail_form_plugins/templating/formatter.py:161
 msgid "the value of the related field"
 msgstr "la valeur du champ correspondant"
 

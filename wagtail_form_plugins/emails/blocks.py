@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail import blocks
 
+from django.conf import settings
+
 
 def email_to_block(email_dict: dict[str, Any]):
     email_dict["message"] = email_dict["message"].replace("\n", "</p><p>")
@@ -21,6 +23,13 @@ class EmailsToSendStructBlock(blocks.StructBlock):
     recipient_list = blocks.CharBlock(
         label=_("Recipient list"),
         help_text=_("E-mail addresses of the recipients, separated by comma."),
+    )
+
+    from_email = blocks.CharBlock(
+        required=False,
+        label=_("From"),
+        help_text=_("E-mail addresses set in the “from” email field, separated by comma."),
+        default=settings.FORMS_FROM_EMAIL,
     )
 
     reply_to = blocks.CharBlock(
@@ -63,6 +72,7 @@ class EmailsFormBlock(blocks.StreamBlock):
         for child_block in self.get_block_class().declared_blocks.values():
             child_block.child_blocks["recipient_list"].field.validators = [self.validate_email]
             child_block.child_blocks["reply_to"].field.validators = [self.validate_email]
+            child_block.child_blocks["from_email"].field.validators = [self.validate_email]
 
         super().__init__(local_blocks, search_index, **kwargs)
 
