@@ -139,7 +139,7 @@ class ConditionalFieldsFormMixin(FormMixin):
                 return all(results) if rule["field"] == "and" else any(results)
 
             a = form_data.get(slugs.get(rule["field"]))
-            field_type = field_types[rule["field"]]
+            field_type = field_types.get(rule["field"])
 
             if field_type in ["singleline", "multiline", "email", "hidden", "url"]:
                 b = rule["value_char"]
@@ -148,7 +148,7 @@ class ConditionalFieldsFormMixin(FormMixin):
             elif field_type in ["checkboxes", "dropdown", "multiselect", "radio"]:
                 b = rule["value_dropdown"]
                 if b:
-                    b = choices_slugs[rule["field"]][b]
+                    b = choices_slugs.get(rule["field"]).get(b)
             elif field_type == "date":
                 b = rule["value_date"]
             elif field_type == "time":
