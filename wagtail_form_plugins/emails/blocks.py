@@ -72,7 +72,7 @@ class EmailsFormBlock(blocks.StreamBlock):
         for child_block in self.get_block_class().declared_blocks.values():
             child_block.child_blocks["recipient_list"].field.validators = [self.validate_email]
             child_block.child_blocks["reply_to"].field.validators = [self.validate_email]
-            child_block.child_blocks["from_email"].field.validators = self.validate_email
+            child_block.child_blocks["from_email"].field.validators = [self.validate_email]
 
         super().__init__(local_blocks, search_index, **kwargs)
 
