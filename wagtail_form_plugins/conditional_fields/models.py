@@ -78,16 +78,16 @@ class ConditionalFieldsFormMixin(FormMixin):
         if value["field"] in ["and", "or"]:
             return {value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]}
 
-        if value["value_date"]:
+        if value.get("value_date"):
             fmt_value = datetime.strptime(value["value_date"], "%Y-%m-%d").replace(tzinfo=tz.utc)
             fmt_value = int(fmt_value.timestamp())
-        elif value["value_time"]:
+        elif value.get("value_time"):
             fmt_value = int(datetime.fromisoformat(f"1970-01-01T{value['value_time']}").timestamp())
-        elif value["value_datetime"]:
+        elif value.get("value_datetime"):
             fmt_value = int(datetime.fromisoformat(value["value_datetime"]).timestamp())
-        elif value["value_dropdown"]:
+        elif value.get("value_dropdown"):
             fmt_value = value["value_dropdown"]
-        elif value["value_number"]:
+        elif value.get("value_number"):
             fmt_value = int(value["value_number"])
         else:
             fmt_value = value["value_char"]
