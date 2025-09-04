@@ -80,17 +80,17 @@ class ConditionalFieldsFormMixin(FormMixin):
 
         if value.get("value_date"):
             fmt_value = value["value_date"] or dt.now()
-            if isinstance(value, str):
+            if isinstance(fmt_value, str):
                 fmt_value = dt.strptime(fmt_value, "%Y-%m-%d").replace(tzinfo=tz.utc)
             fmt_value = int(fmt_value.timestamp())
         elif value.get("value_time"):
             fmt_value = value["value_time"] or dt.now()
-            if isinstance(value, str):
+            if isinstance(fmt_value, str):
                 fmt_value = dt.fromisoformat(f"1970-01-01T{fmt_value}")
             fmt_value = int(fmt_value.timestamp())
         elif value.get("value_datetime"):
             fmt_value = value["value_datetime"] or dt.now()
-            if isinstance(value, str):
+            if isinstance(fmt_value, str):
                 fmt_value = dt.fromisoformat(fmt_value)
             fmt_value = int(fmt_value.timestamp())
         elif value.get("value_dropdown"):
