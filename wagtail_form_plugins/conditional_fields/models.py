@@ -79,15 +79,20 @@ class ConditionalFieldsFormMixin(FormMixin):
             return {value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]}
 
         if value.get("value_date"):
+            fmt_value = value["value_date"] or dt.now()
             if isinstance(value, str):
-                fmt_value = dt.strptime(value["value_date"], "%Y-%m-%d").replace(tzinfo=tz.utc)
+                fmt_value = dt.strptime(fmt_value, "%Y-%m-%d").replace(tzinfo=tz.utc)
             fmt_value = int(fmt_value.timestamp())
         elif value.get("value_time"):
+            fmt_value = value["value_time"] or dt.now()
             if isinstance(value, str):
-                fmt_value = int(dt.fromisoformat(f"1970-01-01T{value['value_time']}").timestamp())
+                fmt_value = dt.fromisoformat(f"1970-01-01T{fmt_value}")
+            fmt_value = int(fmt_value.timestamp())
         elif value.get("value_datetime"):
+            fmt_value = value["value_datetime"] or dt.now()
             if isinstance(value, str):
-                fmt_value = int(dt.fromisoformat(value["value_datetime"]).timestamp())
+                fmt_value = dt.fromisoformat(fmt_value)
+            fmt_value = int(fmt_value.timestamp())
         elif value.get("value_dropdown"):
             fmt_value = value["value_dropdown"]
         elif value.get("value_number"):
