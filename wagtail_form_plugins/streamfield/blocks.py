@@ -9,7 +9,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from wagtail import blocks
-from wagtail.telepath import register as register_adapter
+from wagtail.admin.telepath import register as register_adapter
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 from wagtail_form_plugins.utils import validate_identifier

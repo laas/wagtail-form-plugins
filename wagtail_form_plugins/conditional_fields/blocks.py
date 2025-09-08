@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.functional import cached_property
 
 from wagtail import blocks
-from wagtail.telepath import register as register_adapter
+from wagtail.admin.telepath import register as register_adapter
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 
