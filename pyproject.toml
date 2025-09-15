@@ -1,39 +1,47 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.8.17,<0.9.0"]
+build-backend = "uv_build"
 
-[tool.poetry]
+[dependency-groups]
+demo = [
+  "django-bootstrap5>=25.1"
+]
+dev = [
+  "ty>=0.0.1a20",
+  "ruff>=0.6",
+  "pre-commit>=4.2.0",
+  "pyright>=1.1.405",
+  "django-stubs>=5.2.5"
+]
+
+[project]
 name = "wagtail_form_plugins"
 version = "0.4.3"
 description = "A set of plugins used to customize and improve the Wagtail form builder in a modular way."
-authors = ["Nathanaël Jourdane <njourdane@laas.fr>"]
-license = "BSD-3-Clause"
 readme = "README.md"
-repository = "https://github.com/laas/wagtail-form-plugins"
+requires-python = ">=3.10"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 keywords = ["wagtail", "form", "plugins"]
-classifiers = [
-  "Framework :: Wagtail"
+classifiers = ["Framework :: Wagtail"]
+authors = [
+  {name = "Nathanaël Jourdane", email = "njourdane@laas.fr"}
+]
+dependencies = [
+  "django>=5.2.6",
+  "wagtail>=7.0"
 ]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-wagtail = "^7.0"
+[project.urls]
+homepage = "https://pypi.org/project/wagtail_form_plugins"
+source = "https://github.com/laas/wagtail-form-plugins"
+issues = "https://github.com/laas/wagtail-form-plugins/issues"
 
-[tool.poetry.group.demo]
-optional = true
-
-[tool.poetry.group.demo.dependencies]
-django-bootstrap5 = "^25.1"
-
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.6"
-pre-commit = "^4.2.0"
+[tool.django-stubs]
+django_settings_module = "demo.settings"
 
 [tool.pyright]
-typeCheckingMode = "off"
+exclude = ["demo/migrations/*"]
 
 [tool.ruff]
 extend-exclude = ["migrations"]
@@ -41,4 +49,7 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["D100", "D101", "D102", "ANN001"]
+extend-select = ["I", "ANN001"]
+
+[tool.uv.build-backend]
+module-root = ""

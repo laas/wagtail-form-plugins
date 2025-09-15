@@ -16,3 +16,6 @@ media/
 
 # Files used for development purpose
 ___*
+
+# IDE configs
+/.zed/
