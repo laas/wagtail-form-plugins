@@ -2,13 +2,13 @@
 
 from typing import Any
 
-from django import forms
+from django.forms import widgets
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
 from wagtail_form_plugins.streamfield.forms import CharField
 
 
-class Label(forms.widgets.TextInput):
+class Label(widgets.TextInput):
     """A widget used to only display a label without a form input."""
 
     def __init__(self, attrs: dict | None = None):

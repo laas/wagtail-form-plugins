@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.blocks.field_block import RichTextBlock
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+from wagtail_form_plugins.utils import LocalBlocks
 
 from .formatter import TemplatingFormatter
 
@@ -20,7 +21,7 @@ HELP_TEXT_SUFFIX = """<span
 
 
 def build_help_html(help_text: str):
-    return HELP_TEXT_SUFFIX % f"{ TEMPLATING_HELP_INTRO }\n{ help_text }"
+    return HELP_TEXT_SUFFIX % f"{TEMPLATING_HELP_INTRO}\n{help_text}"
 
 
 class TemplatingFormBlock(FormFieldsBlockMixin):
@@ -28,9 +29,7 @@ class TemplatingFormBlock(FormFieldsBlockMixin):
 
     formatter_class = TemplatingFormatter
 
-    def __init__(
-        self, local_blocks: list[tuple[str, Any]] = None, search_index: bool = True, **kwargs
-    ):
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
         self.add_help_messages(self.get_blocks().values(), ["initial"], self.formatter_class.help())
         super().__init__(local_blocks, search_index, **kwargs)
 

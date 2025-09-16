@@ -52,7 +52,7 @@ class TokenValidationFormMixin(FormMixin):
     def build_token(self, email: str) -> str:
         """Generate and return the token used to validate the form."""
         encoded_email = base64.b64encode(email.encode("utf-8")).decode("utf-8")
-        return f"{ encoded_email }-{uuid.uuid4()}"
+        return f"{encoded_email}-{uuid.uuid4()}"
 
     def flush(self):
         """Remove the expired tokens."""
@@ -123,14 +123,14 @@ class TokenValidationFormMixin(FormMixin):
 
     def send_validation_email(self, email_address: str, token: str):
         """Send an e-mail containing the link used to validate the form."""
-        validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{ self.url }?token={ token }"
+        validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{self.url}?token={token}"
         message_text = self.validation_body.replace(
             "{validation_url}",
             validation_url,
         )
         message_html = self.validation_body.replace(
             "{validation_url}",
-            f"<a href='{ validation_url }'>{ validation_url }</a>",
+            f"<a href='{validation_url}'>{validation_url}</a>",
         )
         self.send_mail(
             subject=self.validation_title,

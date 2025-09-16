@@ -3,25 +3,25 @@
 from datetime import datetime
 from typing import Any
 
-from django import forms
+from django.forms import widgets
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
 from wagtail_form_plugins.streamfield.forms import DateField, DateTimeField, TimeField
 
 
-class DateInput(forms.widgets.DateInput):
+class DateInput(widgets.DateInput):
     """A Django DateInput widget with a date input type."""
 
     input_type = "date"
 
 
-class TimeInput(forms.widgets.TimeInput):
+class TimeInput(widgets.TimeInput):
     """A Django Time widget with a time input type."""
 
     input_type = "time"
 
 
-class DateTimeInput(forms.widgets.DateTimeInput):
+class DateTimeInput(widgets.DateTimeInput):
     """A Django DateTimeInput widget with a datetime-local input type."""
 
     input_type = "datetime-local"

@@ -22,6 +22,8 @@ from wagtail_form_plugins import models as wfp_models
 from wagtail_form_plugins import panels as wfp_panels
 from wagtail_form_plugins import views as wfp_views
 
+LocalBlocks = list[tuple[str, Any]] | None
+
 FORM_GROUP_PREFIX = "form_moderator_"
 
 DEFAULT_EMAILS = [
@@ -101,7 +103,7 @@ class FormIndexPage(Page):
             title="Formulaires",
             slug="formulaires",
             depth=home_page.depth + 1,
-            locale_id=home_page.locale_id,
+            locale_id=home_page.locale.id,
         )
         home_page.add_child(instance=forms_index_page)
         return forms_index_page
@@ -212,7 +214,7 @@ class AbstractFormPage(
 
     def get_group_name(self):
         """Return the name of the form admin user group."""
-        return f"{ FORM_GROUP_PREFIX }{ self.slug }"
+        return f"{FORM_GROUP_PREFIX}{self.slug}"
 
     def get_submission_class(self):
         """Return the custom form submission model class."""
@@ -240,16 +242,18 @@ class AbstractFormPage(
         """Print the e-mail instead sending it when debugging."""
         if settings.DEBUG and not settings.FORMS_DEV_SEND_MAIL:
             print("=== sending e-mail ===")
-            print(f"subject: { subject }")
-            print(f"from_email: { from_email }")
-            print(f"recipient_list: { recipient_list }")
-            print(f"reply_to: { reply_to }")
-            print(f"message: { message }")
-            print(f"html_message: { html_message }")
+            print(f"subject: {subject}")
+            print(f"from_email: {from_email}")
+            print(f"recipient_list: {recipient_list}")
+            print(f"reply_to: {reply_to}")
+            print(f"message: {message}")
+            print(f"html_message: {html_message}")
         else:
             super().send_mail(subject, message, from_email, recipient_list, html_message, reply_to)
 
-    def save(self, clean: bool = True, user: User = None, log_action: bool = False, **kwargs):
+    def save(
+        self, clean: bool = True, user: User | None = None, log_action: bool = False, **kwargs
+    ):
         """Save the form."""
         super().save(clean, user, log_action, **kwargs)
         form_admins, _ = Group.objects.get_or_create(name=self.get_group_name())
@@ -268,7 +272,7 @@ class AbstractFormPage(
     def set_page_permissions(self, group: Group, permissions_name: list[str]):
         """Set user permissions of the form page."""
         for permission_name in permissions_name:
-            permission = Permission.objects.get(codename=f"{ permission_name }_page")
+            permission = Permission.objects.get(codename=f"{permission_name}_page")
             GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
 
     class Meta:
@@ -292,9 +296,7 @@ class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
 
     formatter_class = CustomTemplatingFormatter
 
-    def __init__(
-        self, local_blocks: list[tuple[str, Any]] = None, search_index: bool = True, **kwargs
-    ):
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
         wfp_blocks.TemplatingFormBlock.add_help_messages(
             self.get_block_class().declared_blocks.values(),
             ["subject", "message", "recipient_list", "reply_to"],

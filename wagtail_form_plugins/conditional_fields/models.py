@@ -131,9 +131,9 @@ class ConditionalFieldsFormMixin(FormMixin):
                 return {}
 
             fmt_choices = StreamFieldFormBuilder.format_field_options(field.value)["choices"]
-            return {f"c{ idx + 1 }": choice[0] for idx, choice in enumerate(fmt_choices)}
+            return {f"c{idx + 1}": choice[0] for idx, choice in enumerate(fmt_choices)}
 
-        slugs = {field.id: field.value["identifier"] for field in self.form_fields}
+        slugs = {field.id: field.value.get("identifier", "") for field in self.form_fields}
         choices_slugs = {field.id: get_choices(field) for field in self.form_fields}
         field_types = {field.id: field.block.name for field in self.form_fields}
 
@@ -142,7 +142,7 @@ class ConditionalFieldsFormMixin(FormMixin):
                 results = [process_rule(sub_rule) for sub_rule in rule["rules"]]
                 return all(results) if rule["field"] == "and" else any(results)
 
-            a = form_data.get(slugs.get(rule["field"]))
+            a = form_data.get(slugs.get(rule["field"], ""))
             field_type = field_types.get(rule["field"])
 
             if field_type in ["singleline", "multiline", "email", "hidden", "url"]:
@@ -152,7 +152,7 @@ class ConditionalFieldsFormMixin(FormMixin):
             elif field_type in ["checkboxes", "dropdown", "multiselect", "radio"]:
                 b = rule["value_dropdown"]
                 if b:
-                    b = choices_slugs.get(rule["field"]).get(b)
+                    b = choices_slugs.get(rule["field"], "").get(b)
             elif field_type == "date":
                 b = rule["value_date"]
             elif field_type == "time":

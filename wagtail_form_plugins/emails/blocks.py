@@ -7,6 +7,8 @@ from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 
+from wagtail_form_plugins.utils import LocalBlocks
+
 
 def email_to_block(email_dict: dict[str, Any]):
     email_dict["message"] = email_dict["message"].replace("\n", "</p><p>")
@@ -65,9 +67,7 @@ class EmailsFormBlock(blocks.StreamBlock):
         """Return the block class."""
         raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
 
-    def __init__(
-        self, local_blocks: list[tuple[str, Any]] = None, search_index: bool = True, **kwargs
-    ):
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
         for child_block in self.get_block_class().declared_blocks.values():
             child_block.child_blocks["recipient_list"].field.validators = [self.validate_email]
             child_block.child_blocks["reply_to"].field.validators = [self.validate_email]

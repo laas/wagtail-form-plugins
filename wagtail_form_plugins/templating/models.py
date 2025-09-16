@@ -1,7 +1,7 @@
 """Models definition for the Templating form plugin."""
 
 from django.forms import Form
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect, QueryDict
 
 from wagtail_form_plugins.base.models import FormMixin
 from wagtail_form_plugins.utils import create_links
@@ -14,7 +14,9 @@ class TemplatingFormMixin(FormMixin):
 
     formatter_class = TemplatingFormatter
 
-    def format_submission(self, context_data: dict, formatter: TemplatingFormatter, post: dict):
+    def format_submission(
+        self, context_data: dict, formatter: TemplatingFormatter, post: QueryDict
+    ):
         """Format the submission passed to the given context data, using the given formatter."""
         form_submission = context_data["form_submission"]
 

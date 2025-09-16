@@ -1,7 +1,7 @@
 """Models definition for the Streamfield form plugin."""
 
 from wagtail_form_plugins.base.models import FormMixin
-from wagtail_form_plugins.streamfield.forms import Field, StreamFieldFormBuilder
+from wagtail_form_plugins.streamfield.forms import BaseField, StreamFieldFormBuilder
 from wagtail_form_plugins.utils import create_links
 
 
@@ -22,7 +22,7 @@ class StreamFieldFormMixin(FormMixin):
 
     def get_form_fields(self):
         """Return the form fields based on streamfield data."""
-        return [Field.from_streamfield_data(field_data) for field_data in self.form_fields.raw_data]
+        return [BaseField.from_streamfield_data(f_data) for f_data in self.form_fields.raw_data]
 
     class Meta:
         abstract = True

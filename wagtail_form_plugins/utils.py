@@ -1,11 +1,14 @@
 """A set of utility functions used in several places in this project."""
 
 import re
+from typing import Any
 from urllib.parse import quote
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.utils import get_field_clean_name
+
+LocalBlocks = list[tuple[str, Any]] | None
 
 
 def create_links(html_message: str) -> str:

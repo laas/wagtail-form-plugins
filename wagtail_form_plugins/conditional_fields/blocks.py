@@ -1,6 +1,5 @@
 """Block-related classes for conditional fields plugin."""
 
-from typing import Any
 from uuid import UUID
 
 from django import forms
@@ -9,8 +8,10 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
+from wagtail.blocks import struct_block
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+from wagtail_form_plugins.utils import LocalBlocks
 
 
 class ChoiceError(ValidationError):
@@ -94,7 +95,7 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
         icon = "view"
 
 
-class BooleanExpressionBuilderBlockAdapter(blocks.struct_block.StructBlockAdapter):
+class BooleanExpressionBuilderBlockAdapter(struct_block.StructBlockAdapter):
     """Inject javascript and css files to a Wagtail admin page for the boolean expression builder."""
 
     js_constructor = "forms.blocks.BooleanExpressionBuilderBlock"
@@ -152,9 +153,7 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
 class ConditionalFieldsFormBlock(FormFieldsBlockMixin):
     """A mixin used to add conditional fields functionnality to form field wagtail blocks."""
 
-    def __init__(
-        self, local_blocks: list[tuple[str, Any]] = None, search_index: bool = True, **kwargs
-    ):
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
         local_blocks = local_blocks or []
         rule = blocks.ListBlock(
             BooleanExpressionBuilderBlockLvl1(),

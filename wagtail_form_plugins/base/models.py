@@ -31,6 +31,9 @@ class FormMixin(models.Model):
             "page": self,
         }
 
+    def get_submission_class(self):
+        raise NotImplementedError
+
     def process_form_submission(self, form: Form):
         """Create and return submission instance."""
         submission_attributes = self.get_submission_attributes(form)

@@ -6,9 +6,11 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.functional import cached_property
 from django.utils.text import format_lazy
+from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
+from wagtail.blocks import struct_block
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
 from wagtail_form_plugins.utils import validate_identifier
@@ -55,7 +57,7 @@ class FormFieldBlock(blocks.StructBlock):
     )
 
 
-class FormFieldBlockAdapter(blocks.struct_block.StructBlockAdapter):
+class FormFieldBlockAdapter(struct_block.StructBlockAdapter):
     """Inject javascript and css files to a Wagtail admin page for the form field."""
 
     js_constructor = "forms.blocks.FormFieldBlock"
@@ -130,7 +132,7 @@ class SinglelineFormFieldBlock(FormFieldBlock):
     """A struct block used to build a single line form field."""
 
     required = RequiredBlock()
-    initial = blocks.CharBlock(**init_options(_("Single line text")))
+    initial = blocks.CharBlock(**init_options(__("Single line text")))
     min_length = blocks.IntegerBlock(
         label=_("Min length"),
         help_text=_("Minimum amount of characters allowed in the field."),
@@ -152,7 +154,7 @@ class MultilineFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-line form field."""
 
     required = RequiredBlock()
-    initial = blocks.TextBlock(**init_options(_("Multi-line text")))
+    initial = blocks.TextBlock(**init_options(__("Multi-line text")))
     min_length = blocks.IntegerBlock(
         label=_("Min length"),
         help_text=_("Minimum amount of characters allowed in the field."),
@@ -174,7 +176,7 @@ class EmailFormFieldBlock(FormFieldBlock):
     """A struct block used to build an email form field."""
 
     required = RequiredBlock()
-    initial = blocks.EmailBlock(**init_options(_("E-mail")))
+    initial = blocks.EmailBlock(**init_options(__("E-mail")))
 
     class Meta:
         icon = "mail"
@@ -186,7 +188,7 @@ class NumberFormFieldBlock(FormFieldBlock):
     """A struct block used to build a number form field."""
 
     required = RequiredBlock()
-    initial = blocks.DecimalBlock(**init_options(_("Number")))
+    initial = blocks.DecimalBlock(**init_options(__("Number")))
     min_value = blocks.IntegerBlock(
         label=_("Min value"),
         help_text=_("Minimum number allowed in the field."),
@@ -208,7 +210,7 @@ class URLFormFieldBlock(FormFieldBlock):
     """A struct block used to build an url form field."""
 
     required = RequiredBlock()
-    initial = blocks.URLBlock(**init_options(_("URL")))
+    initial = blocks.URLBlock(**init_options(__("URL")))
 
     class Meta:
         icon = "link-external"
@@ -219,7 +221,7 @@ class URLFormFieldBlock(FormFieldBlock):
 class CheckBoxFormFieldBlock(FormFieldBlock):
     """A struct block used to build a checkbox form field."""
 
-    required = RequiredBlock(_("the box must be checked"))
+    required = RequiredBlock(__("the box must be checked"))
     initial = blocks.BooleanBlock(
         label=_("Checked"),
         required=False,
@@ -235,7 +237,7 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
 class CheckBoxesFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-checkboxes form field."""
 
-    required = RequiredBlock(_("at least one box must be checked"))
+    required = RequiredBlock(__("at least one box must be checked"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
@@ -247,7 +249,7 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
 class DropDownFormFieldBlock(FormFieldBlock):
     """A struct block used to build a dropdown form field."""
 
-    required = RequiredBlock(_("an item must be selected"))
+    required = RequiredBlock(__("an item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
@@ -259,7 +261,7 @@ class DropDownFormFieldBlock(FormFieldBlock):
 class MultiSelectFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-select dropdown form field."""
 
-    required = RequiredBlock(_("at least one item must be selected"))
+    required = RequiredBlock(__("at least one item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
@@ -271,7 +273,7 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
 class RadioFormFieldBlock(FormFieldBlock):
     """A struct block used to build a radio-buttons form field."""
 
-    required = RequiredBlock(_("an item must be selected"))
+    required = RequiredBlock(__("an item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
     class Meta:
@@ -284,7 +286,7 @@ class DateFormFieldBlock(FormFieldBlock):
     """A struct block used to build a date form field."""
 
     required = RequiredBlock()
-    initial = blocks.DateBlock(**init_options(_("Date")))
+    initial = blocks.DateBlock(**init_options(__("Date")))
 
     class Meta:
         icon = "date"
@@ -296,7 +298,7 @@ class TimeFormFieldBlock(FormFieldBlock):
     """A struct block used to build a time form field."""
 
     required = RequiredBlock()
-    initial = blocks.TimeBlock(**init_options(_("Time")))
+    initial = blocks.TimeBlock(**init_options(__("Time")))
 
     class Meta:
         icon = "time"
@@ -308,7 +310,7 @@ class DateTimeFormFieldBlock(FormFieldBlock):
     """A struct block used to build a date-time form field."""
 
     required = RequiredBlock()
-    initial = blocks.DateTimeBlock(**init_options(_("Date and time")))
+    initial = blocks.DateTimeBlock(**init_options(__("Date and time")))
 
     class Meta:
         icon = "date"
@@ -320,7 +322,7 @@ class HiddenFormFieldBlock(FormFieldBlock):
     """A struct block used to build an hidden form field."""
 
     required = RequiredBlock()
-    initial = blocks.CharBlock(**init_options(_("Hidden text")))
+    initial = blocks.CharBlock(**init_options(__("Hidden text")))
 
     class Meta:
         icon = "no-view"

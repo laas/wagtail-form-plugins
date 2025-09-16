@@ -59,9 +59,10 @@ class NamedFormMixin(FormMixin):
 
     def get_submission_attributes(self, form: Form):
         """Return a dictionary containing the attributes to pass to the submission constructor."""
+        user = getattr(form, "user")
         return {
             **super().get_submission_attributes(form),
-            "user": None if isinstance(form.user, AnonymousUser) else form.user,
+            "user": None if isinstance(user, AnonymousUser) else user,
         }
 
     def serve(self, request: HttpRequest, *args, **kwargs):

@@ -25,7 +25,7 @@ def page_listing_buttons(page: Page, user: User, next_url: str | None = None):
     if isinstance(page, FormPage):
         nb_results = CustomFormSubmission.objects.filter(page=page).count()
         yield PageListingButton(
-            "no result" if nb_results == 0 else f"{ nb_results } results",
+            "no result" if nb_results == 0 else f"{nb_results} results",
             reverse("wagtailforms:list_submissions", args=[page.pk]),
             priority=10,
             attrs={"disabled": "true"} if nb_results == 0 else {},

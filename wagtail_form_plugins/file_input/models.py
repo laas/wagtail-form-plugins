@@ -28,7 +28,7 @@ class AbstractFileInput(models.Model):
         """Get the path of the uploaded file."""
         file_path = Path(file_name)
         dir_path = Path(datetime.now().strftime(str(self.upload_dir)))
-        new_file_name = f"{ file_path.stem }_{ uuid.uuid4() }{ file_path.suffix }"
+        new_file_name = f"{file_path.stem}_{uuid.uuid4()}{file_path.suffix}"
         return dir_path / new_file_name
 
     def __str__(self) -> str:

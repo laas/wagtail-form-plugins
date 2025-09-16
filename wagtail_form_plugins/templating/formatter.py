@@ -91,7 +91,7 @@ class TemplatingFormatter:
             "login": user.username,
             "first_name": "" if is_anonymous else user.first_name,
             "last_name": "" if is_anonymous else user.last_name,
-            "full_name": "" if is_anonymous else f"{ user.first_name } {user.last_name }",
+            "full_name": "" if is_anonymous else f"{user.first_name} {user.last_name}",
             "email": "" if is_anonymous else user.email,
         }
 
@@ -172,9 +172,9 @@ class TemplatingFormatter:
         for tmpl_prefix, item in doc.items():
             help_message += "\n"
             for tmpl_suffix, (help_text, example) in item.items():
-                key = f"{ TMPL_SEP_LEFT }{ tmpl_prefix }.{ tmpl_suffix }{ TMPL_SEP_RIGHT }"
-                value = f"{ help_text } (ex: “{ example }”)"
-                help_message += f"• { key }: { value }\n"
+                key = f"{TMPL_SEP_LEFT}{tmpl_prefix}.{tmpl_suffix}{TMPL_SEP_RIGHT}"
+                value = f"{help_text} (ex: “{example}”)"
+                help_message += f"• {key}: {value}\n"
 
         return help_message
 
@@ -186,12 +186,12 @@ class TemplatingFormatter:
                 continue
 
             for tmpl_suffix in tmpl_suffixes:
-                template = f"{ TMPL_SEP_LEFT }{ tmpl_prefix }.{ tmpl_suffix }{ TMPL_SEP_RIGHT }"
+                template = f"{TMPL_SEP_LEFT}{tmpl_prefix}.{tmpl_suffix}{TMPL_SEP_RIGHT}"
                 if template in text:
                     return True
 
         for tmpl_prefix in TMPL_DYNAMIC_PREFIXES:
-            sep = f"{ TMPL_SEP_LEFT }{ tmpl_prefix }."
+            sep = f"{TMPL_SEP_LEFT}{tmpl_prefix}."
             tmpl_suffix = (text.split(sep, 1) + [""])[1].split(TMPL_SEP_RIGHT, 1)[0]
             if tmpl_suffix:
                 validate_identifier(tmpl_suffix)

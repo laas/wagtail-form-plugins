@@ -5,7 +5,7 @@ from typing import Any
 from django import forms
 from django.core.files.base import File
 from django.core.validators import FileExtensionValidator
-from django.forms import ValidationError
+from django.forms import ValidationError, widgets
 from django.utils.translation import gettext_lazy as _
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
@@ -38,8 +38,8 @@ class FileInputFormBuilder(FormBuilderMixin):
             FileExtensionValidator(allowed_extensions=allowed_ext),
             self.file_input_size_validator,
         ]
-        str_allowed = ",".join([f".{ ext }" for ext in allowed_ext])
-        options["help_text"] += f" { _('Allowed:') } { str_allowed }"
-        widget = forms.widgets.FileInput(attrs={"accept": str_allowed})
+        str_allowed = ",".join([f".{ext}" for ext in allowed_ext])
+        options["help_text"] += f" {_('Allowed:')} {str_allowed}"
+        widget = widgets.FileInput(attrs={"accept": str_allowed})
 
         return FileField(widget=widget, **options, validators=validators)
