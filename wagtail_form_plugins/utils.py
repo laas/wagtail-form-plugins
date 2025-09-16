@@ -4,8 +4,8 @@ import re
 from urllib.parse import quote
 
 from django.core.exceptions import ValidationError
-from wagtail.contrib.forms.utils import get_field_clean_name
 from django.utils.translation import gettext_lazy as _
+from wagtail.contrib.forms.utils import get_field_clean_name
 
 
 def create_links(html_message: str) -> str:

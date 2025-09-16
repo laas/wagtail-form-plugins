@@ -1,7 +1,7 @@
 """Wagtail hooks for the Templating plugin."""
 
-from django.utils.html import format_html
 from django.templatetags.static import static
+from django.utils.html import format_html
 
 
 def templating_admin_css():

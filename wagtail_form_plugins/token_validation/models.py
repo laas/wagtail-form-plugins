@@ -1,18 +1,18 @@
 """Models definition for the Token Validation form plugin."""
 
-import uuid
 import base64
-from typing import Any
+import uuid
 from datetime import datetime, timezone
+from typing import Any
 
-from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from django.template.response import TemplateResponse
-from django.forms import Form, EmailField
 from django.contrib import messages
-from django.utils.html import strip_tags
 from django.db import models
+from django.forms import EmailField, Form
 from django.http import HttpRequest
+from django.template.response import TemplateResponse
+from django.utils.html import strip_tags
+from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
 from wagtail_form_plugins.base.models import FormMixin

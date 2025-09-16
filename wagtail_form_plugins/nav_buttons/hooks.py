@@ -1,7 +1,7 @@
 """Wagtail hooks for the Nav Buttons plugin."""
 
-from django.utils.html import format_html
 from django.templatetags.static import static
+from django.utils.html import format_html
 
 
 def nav_buttons_admin_css():

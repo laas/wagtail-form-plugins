@@ -1,9 +1,8 @@
 """View classes for the Nav Buttons plugin."""
 
 from django.utils.translation import gettext_lazy as _
-
-from wagtail.admin.widgets.button import HeaderButton
 from wagtail.admin.admin_url_finder import AdminURLFinder
+from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.forms.views import SubmissionsListView
 
 

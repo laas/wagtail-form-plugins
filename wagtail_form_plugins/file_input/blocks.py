@@ -1,12 +1,12 @@
 """Blocks definition for the File Input plugin."""
 
-from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 
-from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, RequiredBlock
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, RequiredBlock
 
 
 class FileInputFormFieldBlock(FormFieldBlock):

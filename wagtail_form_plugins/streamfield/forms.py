@@ -1,10 +1,11 @@
 """Form-related classes for the Streamfield plugin."""
 
 from typing import Any
+
 from django import forms
+from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
-from wagtail.contrib.forms.utils import get_field_clean_name
 
 
 class Field:

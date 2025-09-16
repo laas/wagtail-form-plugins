@@ -1,7 +1,7 @@
 """Models definition for the Editable form plugin."""
 
-from django.forms.widgets import HiddenInput, TextInput, FileInput
 from django.forms.fields import CharField
+from django.forms.widgets import FileInput, HiddenInput, TextInput
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse

@@ -3,7 +3,7 @@
 from django.utils.translation import gettext_lazy as _
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
-from wagtail_form_plugins.streamfield.blocks import RequiredBlock, FormFieldBlock
+from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, RequiredBlock
 
 
 class LabelFormFieldBlock(FormFieldBlock):

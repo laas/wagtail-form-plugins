@@ -1,8 +1,7 @@
 """Models definition for the NavButtons form plugin."""
 
-from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-
+from django.utils.translation import gettext_lazy as _
 from wagtail.admin.widgets.button import HeaderButton
 
 from wagtail_form_plugins.base.models import FormMixin

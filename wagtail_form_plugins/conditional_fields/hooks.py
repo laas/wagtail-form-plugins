@@ -1,7 +1,7 @@
 """Functions used in Wagtail hooks."""
 
-from django.utils.html import format_html
 from django.templatetags.static import static
+from django.utils.html import format_html
 
 
 def conditional_fields_admin_css():

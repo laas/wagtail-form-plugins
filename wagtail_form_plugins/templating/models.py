@@ -1,12 +1,12 @@
 """Models definition for the Templating form plugin."""
 
-from typing import Any
 from django.forms import Form
 from django.http import HttpRequest, HttpResponseRedirect
+
 from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.utils import create_links
 
 from .formatter import TemplatingFormatter
-from wagtail_form_plugins.utils import create_links
 
 
 class TemplatingFormMixin(FormMixin):
@@ -69,7 +69,7 @@ class TemplatingFormMixin(FormMixin):
                 if field.initial:
                     field.initial = formatter.format(field.initial)
 
-        elif not "form" in response.context_data:
+        elif "form" not in response.context_data:
             self.format_submission(response.context_data, formatter, request.POST)
             formatter = self.formatter_class(response.context_data)
 

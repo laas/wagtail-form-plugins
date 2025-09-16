@@ -1,13 +1,14 @@
 """Classes and variables used to format the template syntax."""
 
 from typing import Any
+
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
-
-from wagtail.contrib.forms.utils import get_field_clean_name
-from wagtail_form_plugins.utils import validate_identifier
 from wagtail.admin.admin_url_finder import AdminURLFinder
+from wagtail.contrib.forms.utils import get_field_clean_name
+
+from wagtail_form_plugins.utils import validate_identifier
 
 TMPL_SEP_LEFT = "{"
 TMPL_SEP_RIGHT = "}"

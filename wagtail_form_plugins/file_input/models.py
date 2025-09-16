@@ -1,10 +1,10 @@
 """Models definition for the File Input form plugin."""
 
 import uuid
-from pathlib import Path
 from datetime import datetime
-
+from pathlib import Path
 from typing import Any
+
 from django.conf import settings
 from django.db import models
 from django.forms import Form

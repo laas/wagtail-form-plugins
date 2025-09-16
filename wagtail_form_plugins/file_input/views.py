@@ -1,8 +1,7 @@
 """View classes for the File Input plugin."""
 
-from django.utils.html import format_html
 from django.conf import settings
-
+from django.utils.html import format_html
 from wagtail.contrib.forms.views import SubmissionsListView
 
 

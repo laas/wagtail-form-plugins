@@ -1,11 +1,12 @@
 """Form-related classes for the Datepicker plugin."""
 
+from datetime import datetime
 from typing import Any
+
 from django import forms
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
-from wagtail_form_plugins.streamfield.forms import DateField, TimeField, DateTimeField
-from datetime import datetime
+from wagtail_form_plugins.streamfield.forms import DateField, DateTimeField, TimeField
 
 
 class DateInput(forms.widgets.DateInput):

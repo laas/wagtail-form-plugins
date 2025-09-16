@@ -1,11 +1,12 @@
 """Form-related classes for the File Input plugin."""
 
 from typing import Any
+
 from django import forms
 from django.core.files.base import File
-from django.utils.translation import gettext_lazy as _
 from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin
 from wagtail_form_plugins.streamfield.forms import FieldWithIdMixin

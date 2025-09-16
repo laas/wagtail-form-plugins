@@ -1,6 +1,7 @@
 """Base classes for form builder mixins."""
 
 from typing import Any
+
 from wagtail.contrib.forms.forms import FormBuilder
 
 

@@ -2,10 +2,9 @@
 
 from typing import Any
 
+from django.core.mail import EmailAlternative, EmailMultiAlternatives
 from django.db import models
 from django.forms import Form
-from django.core.mail import EmailMultiAlternatives, EmailAlternative
-
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.views import SubmissionsListView
 

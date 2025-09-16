@@ -3,25 +3,24 @@
 import sys
 from typing import Any, TextIO
 
-from django.forms import ValidationError, EmailField
-from django.utils.translation import gettext_lazy as _
-from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission, AnonymousUser, User
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser, AnonymousUser, Group, Permission, User
+from django.db import models
+from django.forms import EmailField, ValidationError
+from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
-from django.http import HttpResponseRedirect, HttpRequest
-
-from wagtail.fields import RichTextField, StreamField
+from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.forms.models import FormMixin
-from wagtail.models import Page, GroupPagePermission
+from wagtail.fields import RichTextField, StreamField
+from wagtail.models import GroupPagePermission, Page
 
-from wagtail_form_plugins import models as wfp_models
 from wagtail_form_plugins import blocks as wfp_blocks
+from wagtail_form_plugins import forms as wfp_forms
+from wagtail_form_plugins import models as wfp_models
 from wagtail_form_plugins import panels as wfp_panels
 from wagtail_form_plugins import views as wfp_views
-from wagtail_form_plugins import forms as wfp_forms
 
 FORM_GROUP_PREFIX = "form_moderator_"
 

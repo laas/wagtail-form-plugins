@@ -1,12 +1,11 @@
 """Blocks definition for the Emails plugin."""
 
 from typing import Any
-from django.core.validators import validate_email
-from django.utils.translation import gettext_lazy as _
-
-from wagtail import blocks
 
 from django.conf import settings
+from django.core.validators import validate_email
+from django.utils.translation import gettext_lazy as _
+from wagtail import blocks
 
 
 def email_to_block(email_dict: dict[str, Any]):

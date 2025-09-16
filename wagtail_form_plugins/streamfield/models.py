@@ -1,8 +1,7 @@
 """Models definition for the Streamfield form plugin."""
 
 from wagtail_form_plugins.base.models import FormMixin
-from wagtail_form_plugins.streamfield.forms import StreamFieldFormBuilder, Field
-
+from wagtail_form_plugins.streamfield.forms import Field, StreamFieldFormBuilder
 from wagtail_form_plugins.utils import create_links
 
 

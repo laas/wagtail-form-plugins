@@ -2,12 +2,11 @@
 
 import logging
 
-from django.contrib.auth.models import Permission, Group
-from django.core.management.base import BaseCommand
 from django.conf import settings
-from django.utils.text import slugify
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth.models import Group, Permission
+from django.core.management.base import BaseCommand
+from django.utils.text import slugify
 from wagtail.models import Page
 
 from demo.models import FormIndexPage

@@ -2,12 +2,11 @@
 
 from typing import Any
 
-from django.utils.translation import gettext_lazy as _
-from django.utils.text import format_lazy
-from django.utils.functional import cached_property
 from django import forms
 from django.core.exceptions import ValidationError
-
+from django.utils.functional import cached_property
+from django.utils.text import format_lazy
+from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
 

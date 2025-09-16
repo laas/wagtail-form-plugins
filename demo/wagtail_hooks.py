@@ -3,17 +3,15 @@
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.urls import reverse
-
 from wagtail import hooks
-from wagtail.admin.widgets import PageListingButton
 from wagtail.admin.menu import MenuItem
+from wagtail.admin.widgets import PageListingButton
 from wagtail.contrib.forms.wagtail_hooks import FormsMenuItem
 from wagtail.models import Page
 
 from wagtail_form_plugins import hooks as wfm_hooks
 
-from .models import FormPage, CustomFormSubmission
-
+from .models import CustomFormSubmission, FormPage
 
 hooks.register("insert_global_admin_css", wfm_hooks.templating_admin_css)
 hooks.register("insert_global_admin_css", wfm_hooks.conditional_fields_admin_css)

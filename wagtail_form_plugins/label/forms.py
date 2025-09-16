@@ -1,6 +1,7 @@
 """Form-related classes for the Streamfield plugin."""
 
 from typing import Any
+
 from django import forms
 
 from wagtail_form_plugins.base.forms import FormBuilderMixin

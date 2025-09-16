@@ -1,11 +1,13 @@
 """Blocks definition for the Templating plugin."""
 
 from typing import Any
-from django.utils.translation import gettext_lazy as _
+
 from django.forms.fields import CharField, EmailField
+from django.utils.translation import gettext_lazy as _
 from wagtail.blocks.field_block import RichTextBlock
 
 from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+
 from .formatter import TemplatingFormatter
 
 TEMPLATING_HELP_INTRO = _("This field supports the following templating syntax:")

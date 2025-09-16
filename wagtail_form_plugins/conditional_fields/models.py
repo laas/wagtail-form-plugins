@@ -1,7 +1,9 @@
 """Models definition for the Conditional Fields form plugin."""
 
 import json
-from datetime import datetime as dt, timezone as tz, date
+from datetime import date
+from datetime import datetime as dt
+from datetime import timezone as tz
 from typing import Any
 
 from django.forms import Form
