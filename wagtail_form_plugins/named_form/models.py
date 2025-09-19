@@ -7,9 +7,10 @@ from django.db import models
 from django.forms import Form
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
+
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 
 
 class NamedFormSubmission(AbstractFormSubmission):
@@ -34,7 +35,7 @@ class NamedFormSubmission(AbstractFormSubmission):
         abstract = True
 
 
-class NamedFormMixin(FormMixin):
+class NamedFormPageMixin(FormPageMixin):
     """A mixin used to add named form functionnality to a form, allowing to identify the user who
     answered the form, in order to display it on form results and authorise a user to answer a form
     only once."""

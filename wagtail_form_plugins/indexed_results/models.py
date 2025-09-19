@@ -2,9 +2,10 @@
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 
 
 class IndexedResultsSubmission(AbstractFormSubmission):
@@ -34,7 +35,7 @@ class IndexedResultsSubmission(AbstractFormSubmission):
         abstract = True
 
 
-class IndexedResultsFormMixin(FormMixin):
+class IndexedResultsFormPageMixin(FormPageMixin):
     """A mixin used to add indexed result functionnality to a form."""
 
     def get_data_fields(self):

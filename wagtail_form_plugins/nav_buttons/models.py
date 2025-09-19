@@ -2,12 +2,13 @@
 
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
 from wagtail.admin.widgets.button import HeaderButton
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 
 
-class NavButtonsFormMixin(FormMixin):
+class NavButtonsFormPageMixin(FormPageMixin):
     """A mixin used to add navigation buttons in the form admin page."""
 
     def admin_header_buttons(self):

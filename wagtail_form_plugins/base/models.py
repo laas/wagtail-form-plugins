@@ -5,11 +5,12 @@ from typing import Any
 from django.core.mail import EmailAlternative, EmailMultiAlternatives
 from django.db import models
 from django.forms import Form
+
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.views import SubmissionsListView
 
 
-class FormMixin(models.Model):
+class FormPageMixin(models.Model):
     """Base model class for builder mixins."""
 
     subclasses = []

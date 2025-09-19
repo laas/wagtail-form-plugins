@@ -21,18 +21,18 @@ Plugins are Python mixins, you add them with class inheritance:
 from wagtail_form_plugins import models as wfp_models
 
 class AbstractFormPage(
-    wfp_models.TemplatingFormMixin,
-    wfp_models.FileInputFormMixin,
-    wfp_models.ConditionalFieldsFormMixin,
-    wfp_models.StreamFieldFormMixin,
-    wfp_models.NavButtonsFormMixin,
-    wfp_models.IndexedResultsFormMixin,
-    FormMixin,
+    wfp_models.TemplatingFormPageMixin,
+    wfp_models.FileInputFormPageMixin,
+    wfp_models.ConditionalFieldsFormPageMixin,
+    wfp_models.StreamFieldFormPageMixin,
+    wfp_models.NavButtonsFormPageMixin,
+    wfp_models.IndexedResultsFormPageMixin,
+    FormPageMixin,
     Page,
 ):
 ```
 
-See the `demo` project for further understanding.
+See the `demo` project for further understanding and up-to-date usage.
 
 ## Installation
 

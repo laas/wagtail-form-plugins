@@ -13,9 +13,10 @@ from django.http import HttpRequest
 from django.template.response import TemplateResponse
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+
 from wagtail.contrib.forms.models import AbstractFormSubmission
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 
 
 class ValidationForm(Form):
@@ -43,7 +44,7 @@ class TokenValidationSubmission(AbstractFormSubmission):
         abstract = True
 
 
-class TokenValidationFormMixin(FormMixin):
+class TokenValidationFormPageMixin(FormPageMixin):
     """A mixin used to add validation functionnality to a form."""
 
     tokens: dict[str, datetime] = {}

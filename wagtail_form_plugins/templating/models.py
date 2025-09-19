@@ -3,13 +3,13 @@
 from django.forms import Form
 from django.http import HttpRequest, HttpResponseRedirect, QueryDict
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 from wagtail_form_plugins.utils import create_links
 
 from .formatter import TemplatingFormatter
 
 
-class TemplatingFormMixin(FormMixin):
+class TemplatingFormPageMixin(FormPageMixin):
     """Form mixin for the Templating plugin. Used to format initial values and submissions."""
 
     formatter_class = TemplatingFormatter

@@ -8,7 +8,7 @@ from typing import Any
 
 from django.forms import Form
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 from wagtail_form_plugins.streamfield.forms import StreamFieldFormBuilder
 
 OPERATIONS = {
@@ -31,7 +31,7 @@ OPERATIONS = {
 }
 
 
-class ConditionalFieldsFormMixin(FormMixin):
+class ConditionalFieldsFormPageMixin(FormPageMixin):
     """A mixin used to add conditional fields functionnality to a form."""
 
     def __init__(self, *args, **kwargs):

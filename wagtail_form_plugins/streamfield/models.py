@@ -1,11 +1,11 @@
 """Models definition for the Streamfield form plugin."""
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 from wagtail_form_plugins.streamfield.forms import BaseField, StreamFieldFormBuilder
 from wagtail_form_plugins.utils import create_links
 
 
-class StreamFieldFormMixin(FormMixin):
+class StreamFieldFormPageMixin(FormPageMixin):
     """Form mixin for the Streamfield plugin."""
 
     form_builder = StreamFieldFormBuilder

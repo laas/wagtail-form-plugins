@@ -5,10 +5,10 @@ from typing import Any
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils.html import strip_tags
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 
 
-class EmailActionsFormMixin(FormMixin):
+class EmailActionsFormPageMixin(FormPageMixin):
     """Form mixin for the EmailActions plugin, allowing to send emails when submitting a form."""
 
     def serve(self, request: HttpRequest, *args, **kwargs):

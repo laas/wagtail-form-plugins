@@ -9,7 +9,7 @@ from django.conf import settings
 from django.db import models
 from django.forms import Form
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 from wagtail_form_plugins.file_input.views import FileInputSubmissionsListView
 
 
@@ -38,7 +38,7 @@ class AbstractFileInput(models.Model):
         abstract = True
 
 
-class FileInputFormMixin(FormMixin):
+class FileInputFormPageMixin(FormPageMixin):
     """Form mixin for the FileInput plugin, used for instance to get the file url in submission."""
 
     submissions_list_view_class = FileInputSubmissionsListView

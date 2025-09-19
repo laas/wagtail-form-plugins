@@ -828,10 +828,12 @@ dependencies = [
     { name = "wagtail" },
 ]
 
-[package.dev-dependencies]
+[package.optional-dependencies]
 demo = [
     { name = "django-bootstrap5" },
 ]
+
+[package.dev-dependencies]
 dev = [
     { name = "django-stubs" },
     { name = "pre-commit" },
@@ -843,11 +845,12 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = ">=5.2.6" },
+    { name = "django-bootstrap5", marker = "extra == 'demo'", specifier = ">=25.1" },
     { name = "wagtail", specifier = ">=7.0" },
 ]
+provides-extras = ["demo"]
 
 [package.metadata.requires-dev]
-demo = [{ name = "django-bootstrap5", specifier = ">=25.1" }]
 dev = [
     { name = "django-stubs", specifier = ">=5.2.5" },
     { name = "pre-commit", specifier = ">=4.2.0" },

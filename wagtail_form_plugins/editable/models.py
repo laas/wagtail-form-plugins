@@ -7,10 +7,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from wagtail_form_plugins.base.models import FormMixin
+from wagtail_form_plugins.base.models import FormPageMixin
 
 
-class EditableFormMixin(FormMixin):
+class EditableFormPageMixin(FormPageMixin):
     """Form mixin for the Editable plugin, allowing to edit a form result via the `edit` field."""
 
     def serve(self, request: HttpRequest, *args, **kwargs):

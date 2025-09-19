@@ -10,6 +10,7 @@ from django.forms import EmailField, ValidationError
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.forms.models import FormMixin
@@ -188,17 +189,17 @@ class CustomValidationForm(wfp_models.ValidationForm):
     )
 
 
-class AbstractFormPage(
-    wfp_models.TokenValidationFormMixin,
-    wfp_models.EmailActionsFormMixin,
-    wfp_models.TemplatingFormMixin,
-    wfp_models.FileInputFormMixin,
-    wfp_models.ConditionalFieldsFormMixin,
-    wfp_models.NamedFormMixin,
-    wfp_models.StreamFieldFormMixin,
-    wfp_models.NavButtonsFormMixin,
-    wfp_models.IndexedResultsFormMixin,
-    wfp_models.EditableFormMixin,
+class CustomFormPage(
+    wfp_models.TokenValidationFormPageMixin,
+    wfp_models.EmailActionsFormPageMixin,
+    wfp_models.TemplatingFormPageMixin,
+    wfp_models.FileInputFormPageMixin,
+    wfp_models.ConditionalFieldsFormPageMixin,
+    wfp_models.NamedFormPageMixin,
+    wfp_models.StreamFieldFormPageMixin,
+    wfp_models.NavButtonsFormPageMixin,
+    wfp_models.IndexedResultsFormPageMixin,
+    wfp_models.EditableFormPageMixin,
     FormMixin,
     Page,
 ):
@@ -321,7 +322,7 @@ class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
         collapsed = True
 
 
-class FormPage(AbstractFormPage):
+class FormPage(CustomFormPage):
     """The actual form page model."""
 
     intro = RichTextField(
@@ -355,7 +356,7 @@ class FormPage(AbstractFormPage):
     )
 
     content_panels = [
-        *AbstractFormPage.content_panels,
+        *CustomFormPage.content_panels,
         FieldPanel("intro"),
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
