@@ -1,26 +1,26 @@
 """Models definition for the Indexed Results form plugin."""
 
+from typing import Any
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.contrib.forms.models import AbstractFormSubmission
-
-from wagtail_form_plugins.base.models import FormPageMixin
+from wagtail_form_plugins.base import BaseFormPage, BaseFormSubmission
 
 
-class IndexedResultsSubmission(AbstractFormSubmission):
-    """A mixin used to store the form user in the submission."""
+class IndexedResultsFormSubmission(BaseFormSubmission):
+    """A form submission used to store the form user in the submission."""
 
     index = models.IntegerField(default=0)
 
-    def get_data(self):
+    def get_data(self) -> dict[str, Any]:
         """Return dict with form data."""
         return {
             **super().get_data(),
             "index": self.index,
         }
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Save the submission"""
         if self.index == 0:
             qs_submissions = self.get_base_class().objects.filter(page=self.page)
@@ -31,19 +31,19 @@ class IndexedResultsSubmission(AbstractFormSubmission):
 
         return super().save(*args, **kwargs)
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True
 
 
-class IndexedResultsFormPageMixin(FormPageMixin):
-    """A mixin used to add indexed result functionnality to a form."""
+class IndexedResultsFormPage(BaseFormPage):
+    """A form page used to add indexed result functionnality to a form."""
 
-    def get_data_fields(self):
+    def get_data_fields(self) -> list[tuple[str, Any]]:
         """Return a list fields data as tuples of slug and label."""
         return [
             ("index", _("Subscription index")),
             *super().get_data_fields(),
         ]
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True

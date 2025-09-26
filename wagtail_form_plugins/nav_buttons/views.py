@@ -1,15 +1,22 @@
 """View classes for the Nav Buttons plugin."""
 
-from django.utils.translation import gettext_lazy as _
+from typing import Any
+
+from django.utils.translation import gettext as __
+
 from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.admin.widgets.button import HeaderButton
-from wagtail.contrib.forms.views import SubmissionsListView
+from wagtail.models import Page
+
+from wagtail_form_plugins.base import BaseSubmissionsListView
 
 
-class NavButtonsSubmissionsListView(SubmissionsListView):
+class NavButtonsSubmissionsListView(BaseSubmissionsListView):
     """Customize lists submissions view, such as adding buttons on submission rows."""
 
-    def get_context_data(self, **kwargs):
+    file_input_parent_page_class = Page
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Return context for view"""
         context_data = super().get_context_data(**kwargs)
 
@@ -17,18 +24,18 @@ class NavButtonsSubmissionsListView(SubmissionsListView):
             return context_data
 
         finder = AdminURLFinder()
-        form_index_page = self.form_parent_page_model.objects.first()
+        form_index_page = self.file_input_parent_page_class.objects.first()
 
         context_data["header_buttons"] += [
             HeaderButton(
-                label=_("Forms list"),
-                url="/".join(finder.get_edit_url(form_index_page).split("/")[:-2]),
+                label=__("Forms list"),
+                url="/".join(str(finder.get_edit_url(form_index_page)).split("/")[:-2]),
                 classname="forms-btn-secondary",
                 icon_name="list-ul",
                 priority=10,
             ),
             HeaderButton(
-                label=_("View form"),
+                label=__("View form"),
                 url=self.form_page.url,
                 classname="forms-btn-secondary",
                 icon_name="view",
@@ -36,7 +43,7 @@ class NavButtonsSubmissionsListView(SubmissionsListView):
                 priority=20,
             ),
             HeaderButton(
-                label=_("Edit form"),
+                label=__("Edit form"),
                 url=finder.get_edit_url(context_data["form_page"]),
                 classname="forms-btn-primary",
                 icon_name="edit",

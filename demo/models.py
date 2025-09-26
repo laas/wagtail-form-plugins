@@ -1,27 +1,39 @@
 """Models definition for the demo app."""
 
 import sys
-from typing import Any, TextIO
+from typing import Any, ClassVar, TextIO
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, AnonymousUser, Group, Permission, User
+from django.core.management.base import OutputWrapper
 from django.db import models
 from django.forms import EmailField, ValidationError
 from django.http import HttpRequest, HttpResponseRedirect
+from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.admin.widgets.button import HeaderButton
-from wagtail.contrib.forms.models import FormMixin
-from wagtail.fields import RichTextField, StreamField
+from wagtail.contrib.forms.models import FormSubmission as WagtailFormSubmission
+from wagtail.fields import RichTextField, StreamBlock, StreamField
 from wagtail.models import GroupPagePermission, Page
 
-from wagtail_form_plugins import blocks as wfp_blocks
-from wagtail_form_plugins import forms as wfp_forms
-from wagtail_form_plugins import models as wfp_models
-from wagtail_form_plugins import panels as wfp_panels
-from wagtail_form_plugins import views as wfp_views
+from wagtail_form_plugins import (
+    conditional_fields,
+    datepickers,
+    editable,
+    emails,
+    file_input,
+    indexed_results,
+    label,
+    named_form,
+    nav_buttons,
+    streamfield,
+    templating,
+    token_validation,
+)
 
 LocalBlocks = list[tuple[str, Any]] | None
 
@@ -53,12 +65,6 @@ Have a nice day.""",
 ]
 
 
-class CustomUser(AbstractUser):
-    """A custom user model."""
-
-    city = models.CharField(max_length=255, verbose_name=_("City"))
-
-
 class FormIndexPage(Page):
     """A page used to manage forms in the Wagtail admin page and list them in the published page."""
 
@@ -71,32 +77,35 @@ class FormIndexPage(Page):
         default=_("Forms list"),
     )
 
-    content_panels = [
+    content_panels: ClassVar = [
         *Page.content_panels,
         FieldPanel("intro"),
     ]
 
-    parent_page_type = ["demo.HomePage"]
-    subpage_types = ["demo.FormPage"]
+    parent_page_type: ClassVar = ["demo.HomePage"]
+    subpage_types: ClassVar = ["demo.FormPage"]
     max_count = 1
     admin_default_ordering = "ord"
 
-    def admin_header_buttons(self):
+    def admin_header_buttons(self) -> list[HeaderButton]:
         """Add a button on the page header used to go to the list of forms."""
         return [
             HeaderButton(
-                label=_("Forms list"),
+                label=__("Forms list"),
                 url=reverse("wagtailadmin_explore", args=[self.pk]),
                 classname="forms-btn-primary",
                 icon_name="list-ul",
-            )
+            ),
         ]
 
     @staticmethod
-    def create_if_missing(home_page: Page, stdout: TextIO = sys.stdout):
+    def create_if_missing(
+        home_page: Page,
+        stdout: TextIO | OutputWrapper = sys.stdout,
+    ) -> Page | None:
         """Create the index page if there is none."""
         if FormIndexPage.objects.first() is not None:
-            return
+            return None
 
         stdout.write("creating form index page")
 
@@ -110,77 +119,67 @@ class FormIndexPage(Page):
         return forms_index_page
 
 
-class CustomTemplatingFormatter(wfp_models.TemplatingFormatter):
+class CustomUser(AbstractUser):
+    """A custom user model."""
+
+    city = models.CharField(max_length=255, verbose_name=_("City"))
+
+
+class CustomTemplatingFormatter(templating.TemplatingFormatter):
     """Custom templating formatter used to personalize template formatting such as user template."""
 
-    def get_user_data(self, user: CustomUser):
+    def get_user_data(self, user: User) -> dict[str, str]:
         """Return a dict used to format template variables related to the form user or author."""
         user_data: dict[str, Any] = super().get_user_data(user)
-        is_anonymous = isinstance(user, AnonymousUser)
 
-        if is_anonymous and self.submission:
-            user_data["email"] = self.submission.email
-        user_data["city"] = "-" if is_anonymous else user.city.lower()
+        if isinstance(user, AnonymousUser):
+            user_data["city"] = "-"
+            if self.submission:
+                user_data["email"] = self.submission.email
+        else:
+            user_data["city"] = str(getattr(user, "city", "")).lower()
 
         return user_data
 
-    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]):
+    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]) -> dict[str, str]:
         """Return a dict used to format template variables related to the form results."""
-        return {
-            **super().get_result_data(formated_fields),
-            "index": str(self.submission.index),
-        }
+        result_data = super().get_result_data(formated_fields)
+        if self.submission:
+            result_data["index"] = str(self.submission.index)
+        return result_data
 
     @classmethod
-    def doc(cls):
+    def doc(cls) -> dict[str, dict[str, tuple[str, str]]]:
         """Return the dict used to build the template documentation."""
         doc = super().doc()
-        doc["user"]["email"] = (_("the user email used for validation"), "alovelace@example.com")
-        doc["user"]["city"] = (_("the form user city"), "Paris")
-        doc["result"]["index"] = (_("the result index"), "42")
+        doc["user"]["email"] = (__("the user email used for validation"), "alovelace@example.com")
+        doc["user"]["city"] = (__("the form user city"), "Paris")
+        doc["result"]["index"] = (__("the result index"), "42")
         return doc
 
 
-class CustomFormSubmission(
-    wfp_models.TokenValidationSubmission,
-    wfp_models.NamedFormSubmission,
-    wfp_models.IndexedResultsSubmission,
-):
-    """A custom model for form submission, composed of various mixins to extend its features."""
-
-    def get_base_class(self):
-        """Return the current class. Used by some submission mixins to list object instances."""
-        return self.__class__
-
-
 class CustomFormBuilder(
-    wfp_forms.LabelFormBuilder,
-    wfp_forms.FileInputFormBuilder,
-    wfp_forms.StreamFieldFormBuilder,
-    wfp_forms.DatePickersFormBuilder,
+    label.LabelFormBuilder,
+    file_input.FileInputFormBuilder,
+    streamfield.StreamFieldFormBuilder,
+    datepickers.DatePickersFormBuilder,
 ):
-    """A custom form builder with some mixins to extend its features."""
+    """A custom form builder extended with some plugins to extend its features."""
 
     file_input_max_size = settings.FORMS_FILE_UPLOAD_MAX_SIZE
 
 
 class CustomSubmissionListView(
-    wfp_views.FileInputSubmissionsListView,
-    wfp_views.NavButtonsSubmissionsListView,
-    wfp_views.ConditionalFieldsSubmissionsListView,
+    file_input.FileInputSubmissionsListView,
+    nav_buttons.NavButtonsSubmissionsListView,
+    conditional_fields.ConditionalFieldsSubmissionsListView,
 ):
-    """A custom submission list view with some mixins to extend its features."""
+    """A custom submission list view extended with some plugins to extend its features."""
 
-    form_parent_page_model = FormIndexPage
-
-
-class FileInput(wfp_models.AbstractFileInput):
-    """A custom file input model used to define upload folder location."""
-
-    upload_dir = "demo_forms_uploads/%Y/%m/%d"
+    file_input_parent_page_class = FormIndexPage
 
 
-class CustomValidationForm(wfp_models.ValidationForm):
+class CustomValidationForm(token_validation.ValidationForm):
     """A small form with an email field, used to send validation email to access the actual form."""
 
     validation_email = EmailField(
@@ -189,43 +188,106 @@ class CustomValidationForm(wfp_models.ValidationForm):
     )
 
 
-class CustomFormPage(
-    wfp_models.TokenValidationFormPageMixin,
-    wfp_models.EmailActionsFormPageMixin,
-    wfp_models.TemplatingFormPageMixin,
-    wfp_models.FileInputFormPageMixin,
-    wfp_models.ConditionalFieldsFormPageMixin,
-    wfp_models.NamedFormPageMixin,
-    wfp_models.StreamFieldFormPageMixin,
-    wfp_models.NavButtonsFormPageMixin,
-    wfp_models.IndexedResultsFormPageMixin,
-    wfp_models.EditableFormPageMixin,
-    FormMixin,
-    Page,
+class CustomEmailsToSendBlock(emails.EmailsFormBlock):
+    """The custom Wagtail block used when configuring form emails behavior."""
+
+    templating_formatter_class = CustomTemplatingFormatter
+
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
+        templating.TemplatingFormBlock.add_help_messages(
+            self.get_block_class().declared_blocks.values(),  # type: ignore
+            ["subject", "message", "recipient_list", "reply_to"],
+            self.templating_formatter_class.help(),
+        )
+        super().__init__(local_blocks, search_index, **kwargs)
+
+    def get_block_class(self) -> type[StreamBlock]:
+        """Return the block class."""
+        return emails.EmailsFormBlock
+
+    def validate_email(self, field_value: str) -> None:
+        """Validate the email addresses field value."""
+        try:
+            if not self.templating_formatter_class.contains_template(field_value):
+                super().validate_email(field_value)
+        except ValueError as err:
+            err_message = _("Wrong template syntax. See tooltip for a list of available keywords.")
+            raise ValidationError(err_message) from err
+
+    class Meta:  # type: ignore
+        collapsed = True
+
+
+class CustomFormSubmission(
+    token_validation.TokenValidationFormSubmission,
+    named_form.AuthFormSubmission,
+    indexed_results.IndexedResultsFormSubmission,
 ):
-    """A custom abstract form page model with some mixins to extend its features."""
+    """A custom model for form submission, extended with mixins to extend its features"""
 
-    formatter_class = CustomTemplatingFormatter
+    def get_base_class(self) -> type[WagtailFormSubmission]:
+        """Return the current class. Used by some submission classes to list object instances."""
+        return self.__class__  # type: ignore
+
+    class Meta:  # type: ignore
+        pass
+
+
+class CustomFormFieldsBlock(
+    conditional_fields.ConditionalFieldsFormBlock,
+    label.LabelFormBlock,
+    file_input.FileInputFormBlock,
+    templating.TemplatingFormBlock,
+    streamfield.StreamFieldFormBlock,
+):
+    """The custom Wagtail block used when adding fields to a form."""
+
+    templating_formatter_class = CustomTemplatingFormatter
+
+    class Meta:  # type: ignore
+        pass
+
+
+class CustomFormPage(  # type: ignore
+    token_validation.TokenValidationFormPage,
+    emails.EmailActionsFormPage,
+    templating.TemplatingFormPage,
+    file_input.FileInputFormPage,
+    conditional_fields.ConditionalFieldsFormPage,
+    named_form.AuthFormPage,
+    streamfield.StreamFieldFormPage,
+    nav_buttons.NavButtonsFormPage,
+    indexed_results.IndexedResultsFormPage,
+    editable.EditableFormPage,
+):
+    """A custom abstract form page model extended with some plugins to extend its features."""
+
+    parent_page_type: ClassVar = ["demo.FormIndexPage"]
+    subpage_types: ClassVar = []
+
     validation_form_class = CustomValidationForm
-    form_builder = CustomFormBuilder
-    file_input_model = FileInput
+    form_builder_class = CustomFormBuilder
     submissions_list_view_class = CustomSubmissionListView
-    parent_page_type = ["demo.FormIndexPage"]
-    subpage_types = []
 
-    def get_group_name(self):
+    file_input_upload_dir = "demo_forms_uploads/%Y/%m/%d"
+    templating_formatter_class = CustomTemplatingFormatter
+    token_validation_from_email = settings.FORMS_FROM_EMAIL
+    token_validation_reply_to: ClassVar = [settings.FORMS_FROM_EMAIL]
+    token_validation_expiration_delay = settings.FORMS_VALIDATION_EXPIRATION_DELAY
+
+    def get_group_name(self) -> str:
         """Return the name of the form admin user group."""
         return f"{FORM_GROUP_PREFIX}{self.slug}"
 
-    def get_submission_class(self):
+    def get_submission_class(self) -> type[WagtailFormSubmission]:
         """Return the custom form submission model class."""
-        return CustomFormSubmission
+        return CustomFormSubmission  # type: ignore
 
-    def serve(self, request: HttpRequest, *args, **kwargs):
+    def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
 
-        if isinstance(response, HttpResponseRedirect):
+        if isinstance(response, HttpResponseRedirect) or not response.context_data:
             return response
 
         response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
@@ -239,7 +301,7 @@ class CustomFormPage(
         recipient_list: list[str],
         html_message: str | None,
         reply_to: list[str] | None,
-    ):
+    ) -> None:
         """Print the e-mail instead sending it when debugging."""
         if settings.DEBUG and not settings.FORMS_DEV_SEND_MAIL:
             print("=== sending e-mail ===")
@@ -252,74 +314,31 @@ class CustomFormPage(
         else:
             super().send_mail(subject, message, from_email, recipient_list, html_message, reply_to)
 
-    def save(
-        self, clean: bool = True, user: User | None = None, log_action: bool = False, **kwargs
-    ):
+    def save(self, *args, **kwargs) -> None:
         """Save the form."""
-        super().save(clean, user, log_action, **kwargs)
+        result = super().save(*args, **kwargs)
+
         form_admins, _ = Group.objects.get_or_create(name=self.get_group_name())
         self.set_page_permissions(form_admins, ["publish", "change", "lock", "unlock"])
         if self.owner:
             self.owner.groups.add(form_admins)
 
-        # to make forms private:
-        # PageViewRestriction.objects.get_or_create(page=self, restriction_type="login")
+        return result
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs) -> Any:
         """Delete the form."""
+        result = super().delete(*args, **kwargs)
         Group.objects.get(name=self.get_group_name()).delete()
-        return super().delete(*args, **kwargs)
+        return result
 
-    def set_page_permissions(self, group: Group, permissions_name: list[str]):
+    def set_page_permissions(self, group: Group, permissions_name: list[str]) -> None:
         """Set user permissions of the form page."""
         for permission_name in permissions_name:
             permission = Permission.objects.get(codename=f"{permission_name}_page")
             GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True
-
-
-class FormFieldsBlock(
-    wfp_blocks.ConditionalFieldsFormBlock,
-    wfp_blocks.LabelFormBlock,
-    wfp_blocks.FileInputFormBlock,
-    wfp_blocks.TemplatingFormBlock,
-    wfp_blocks.StreamFieldFormBlock,
-):
-    """The custom Wagtail block used when adding fields to a form."""
-
-    formatter_class = CustomTemplatingFormatter
-
-
-class EmailsToSendBlock(wfp_blocks.EmailsFormBlock):
-    """The custom Wagtail block used when configuring form emails behavior."""
-
-    formatter_class = CustomTemplatingFormatter
-
-    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
-        wfp_blocks.TemplatingFormBlock.add_help_messages(
-            self.get_block_class().declared_blocks.values(),
-            ["subject", "message", "recipient_list", "reply_to"],
-            self.formatter_class.help(),
-        )
-        super().__init__(local_blocks, search_index, **kwargs)
-
-    def get_block_class(self):
-        """Return the block class."""
-        return wfp_blocks.EmailsFormBlock
-
-    def validate_email(self, field_value: str) -> None:
-        """Validate the email addresses field value."""
-        try:
-            if not self.formatter_class.contains_template(field_value):
-                super().validate_email(field_value)
-        except ValueError as err:
-            err_message = _("Wrong template syntax. See tooltip for a list of available keywords.")
-            raise ValidationError(err_message) from err
-
-    class Meta:
-        collapsed = True
 
 
 class FormPage(CustomFormPage):
@@ -329,8 +348,10 @@ class FormPage(CustomFormPage):
         verbose_name=_("Form introduction text"),
         blank=True,
     )
+
+    # TODO: move to formfields.models
     form_fields = StreamField(
-        FormFieldsBlock(),
+        CustomFormFieldsBlock(),
         verbose_name=_("Form fields"),
         blank=True,
     )
@@ -339,6 +360,8 @@ class FormPage(CustomFormPage):
         default=_("Thank you!"),
         blank=True,
     )
+
+    # TODO: move to token_validation.models
     validation_title = models.CharField(
         verbose_name=_("E-mail title"),
         default=_("User validation required to fill a public form"),
@@ -348,18 +371,22 @@ class FormPage(CustomFormPage):
         verbose_name=_("E-mail content"),
         default=_("Please click on the following link to fill the form: {validation_url} ."),
     )
+
+    # TODO: move to emails.models
     emails_to_send = StreamField(
-        EmailsToSendBlock(),
+        CustomEmailsToSendBlock(),
         verbose_name=_("E-mails to send after form submission"),
-        default=[wfp_blocks.email_to_block(email) for email in DEFAULT_EMAILS],
+        default=[emails.email_to_block(email) for email in DEFAULT_EMAILS],
         blank=True,
     )
 
-    content_panels = [
+    content_panels: ClassVar = [
         *CustomFormPage.content_panels,
         FieldPanel("intro"),
+        # TODO: move to formfields.panels
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
+        # TODO: move to token_validation.panels
         MultiFieldPanel(
             [
                 FieldPanel("validation_title"),
@@ -367,6 +394,7 @@ class FormPage(CustomFormPage):
             ],
             "Validation e-mail",
         ),
+        # TODO: move to emails.panels
         FieldPanel("emails_to_send"),
-        wfp_panels.UniqueResponseFieldPanel(),
+        named_form.UniqueResponseFieldPanel(),
     ]

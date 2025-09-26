@@ -6,6 +6,7 @@ from urllib.parse import quote
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+
 from wagtail.contrib.forms.utils import get_field_clean_name
 
 LocalBlocks = list[tuple[str, Any]] | None
@@ -14,7 +15,7 @@ LocalBlocks = list[tuple[str, Any]] | None
 def create_links(html_message: str) -> str:
     """Detect and convert urls and emails into html links."""
 
-    def replace_url(match: re.Match[str]):
+    def replace_url(match: re.Match[str]) -> str:
         return ' <a href="{url}">{link}</a> '.format(
             url=quote(match.group(1), safe="/:?&#"),
             link=match.group(1),
@@ -27,8 +28,8 @@ def create_links(html_message: str) -> str:
     return re.sub(email_regex, r'<a href="mailto:\1">\1</a>', html_message)
 
 
-def validate_identifier(identifier: str):
-    if identifier != get_field_clean_name(identifier):
+def validate_identifier(slug: str) -> None:
+    if slug != get_field_clean_name(slug):
         raise ValidationError(
-            _("Identifiers must only contain lower-case letters, digits or underscore."),
+            _("Slugs must only contain lower-case letters, digits or underscore."),
         )

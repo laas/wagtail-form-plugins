@@ -5,7 +5,7 @@ from typing import Any
 
 from django.forms import widgets
 
-from wagtail_form_plugins.base.forms import FormBuilderMixin
+from wagtail_form_plugins.base import BaseFormBuilder
 from wagtail_form_plugins.streamfield.forms import DateField, DateTimeField, TimeField
 
 
@@ -27,18 +27,18 @@ class DateTimeInput(widgets.DateTimeInput):
     input_type = "datetime-local"
 
 
-class DatePickersFormBuilder(FormBuilderMixin):
-    """Form builder mixin that adds datepicker functionnality to a form."""
+class DatePickersFormBuilder(BaseFormBuilder):
+    """Form builder class that adds datepicker functionnality to a form."""
 
-    def create_date_field(self, field_value: Any, options: dict[str, Any]):
+    def create_date_field(self, field: Any, options: dict[str, Any]) -> DateField:
         """Create a Django date field."""
         return DateField(**options, widget=DateInput)
 
-    def create_time_field(self, field_value: Any, options: dict[str, Any]):
+    def create_time_field(self, field: Any, options: dict[str, Any]) -> TimeField:
         """Create a Django time field."""
         return TimeField(**options, widget=TimeInput)
 
-    def create_datetime_field(self, field_value: Any, options: dict[str, Any]):
+    def create_datetime_field(self, field: Any, options: dict[str, Any]) -> DateTimeField:
         """Create a Django datetime field."""
         default = options.get("initial")
         if default:

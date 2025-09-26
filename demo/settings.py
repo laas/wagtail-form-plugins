@@ -80,7 +80,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
 }
 
 # Internationalization
@@ -155,11 +155,10 @@ WAGTAILDOCS_EXTENSIONS = ["csv", "pdf", "txt"]
 
 # Forms app settings
 
-FORMS_FROM_EMAIL = "Wagtail forms <contact@example.com>"
+FORMS_FROM_EMAIL = "contact@example.com"
 FORMS_FILE_UPLOAD_MAX_SIZE = 10 * 1024 * 1024
 FORMS_FILE_UPLOAD_AVAILABLE_EXTENSIONS = ["pdf", "jpg", "jpeg", "png"]
 FORMS_VALIDATION_EXPIRATION_DELAY = 60  # 1 hour
-FORMS_SUBMISSION_MODEL = "demo.CustomFormSubmission"
 FORMS_DEV_SEND_MAIL = False
 FORMS_RGPD_TEXT = """
 Data collected in this form is stored by the IT team in order to process your request.

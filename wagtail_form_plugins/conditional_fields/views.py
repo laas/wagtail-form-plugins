@@ -1,12 +1,14 @@
 """View classes for the Conditional Fields plugin."""
 
-from wagtail.contrib.forms.views import SubmissionsListView
+from typing import Any
+
+from wagtail_form_plugins.base import BaseSubmissionsListView
 
 
-class ConditionalFieldsSubmissionsListView(SubmissionsListView):
+class ConditionalFieldsSubmissionsListView(BaseSubmissionsListView):
     """Customize lists submissions view, such as displaying `-` when a value is set to None."""
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Return context for view"""
         context_data = super().get_context_data(**kwargs)
 

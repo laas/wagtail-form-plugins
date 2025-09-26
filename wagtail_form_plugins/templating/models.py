@@ -1,33 +1,38 @@
 """Models definition for the Templating form plugin."""
 
+from typing import Any
+
 from django.forms import Form
 from django.http import HttpRequest, HttpResponseRedirect, QueryDict
+from django.template.response import TemplateResponse
 
-from wagtail_form_plugins.base.models import FormPageMixin
+from wagtail_form_plugins.base import BaseFormPage
+from wagtail_form_plugins.templating.formatter import TemplatingFormatter
 from wagtail_form_plugins.utils import create_links
 
-from .formatter import TemplatingFormatter
 
-
-class TemplatingFormPageMixin(FormPageMixin):
+class TemplatingFormPage(BaseFormPage):
     """Form mixin for the Templating plugin. Used to format initial values and submissions."""
 
-    formatter_class = TemplatingFormatter
+    templating_formatter_class = TemplatingFormatter
 
     def format_submission(
-        self, context_data: dict, formatter: TemplatingFormatter, post: QueryDict
-    ):
+        self,
+        context_data: dict,
+        formatter: TemplatingFormatter,
+        post: QueryDict,
+    ) -> None:
         """Format the submission passed to the given context data, using the given formatter."""
         form_submission = context_data["form_submission"]
 
         disabled_fields = [
-            field.value["identifier"]
+            field.value["slug"]
             for field in context_data["page"].form_fields
             if field.value.get("disabled")
         ]
 
         fields_with_choices = [
-            field.value["identifier"]
+            field.value["slug"]
             for field in context_data["page"].form_fields
             if field.value.get("choices")
         ]
@@ -49,7 +54,7 @@ class TemplatingFormPageMixin(FormPageMixin):
             }
             form_submission.save()
 
-    def get_submission_attributes(self, form: Form):
+    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         attributes = super().get_submission_attributes(form)
 
@@ -58,13 +63,14 @@ class TemplatingFormPageMixin(FormPageMixin):
             "form_data": {dk: form.data.get(dk, dv) for dk, dv in attributes["form_data"].items()},
         }
 
-    def serve(self, request: HttpRequest, *args, **kwargs):
+    def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
-        if isinstance(response, HttpResponseRedirect):
+
+        if isinstance(response, HttpResponseRedirect) or not response.context_data:
             return response
 
-        formatter = self.formatter_class(response.context_data)
+        formatter = self.templating_formatter_class(response.context_data)
 
         if request.method == "GET":
             for field in response.context_data["form"].fields.values():
@@ -73,7 +79,7 @@ class TemplatingFormPageMixin(FormPageMixin):
 
         elif "form" not in response.context_data:
             self.format_submission(response.context_data, formatter, request.POST)
-            formatter = self.formatter_class(response.context_data)
+            formatter = self.templating_formatter_class(response.context_data)
 
             for email in response.context_data["page"].emails_to_send:
                 for field_name in ["subject", "message", "recipient_list", "reply_to"]:
@@ -83,5 +89,5 @@ class TemplatingFormPageMixin(FormPageMixin):
                     email.value[field_name] = fmt_value
         return response
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True

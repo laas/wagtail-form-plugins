@@ -2,26 +2,27 @@
 
 from typing import Any
 
-from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import Media
 from django.utils.functional import cached_property
 from django.utils.text import format_lazy
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
+
 from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
-from wagtail.blocks import struct_block
+from wagtail.blocks import StreamValue, struct_block
 
-from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+from wagtail_form_plugins.base import BaseFormFieldsBlock
 from wagtail_form_plugins.utils import validate_identifier
 
 
 class UniqueCharBlock(blocks.CharBlock):
     """A CharBlock that displays duplication errors."""
 
-    def clean(self, value: str):
+    def clean(self, value: str) -> Any:
         """Raise a ValidationError if the block class has a duplicates attribute."""
-        duplicates = getattr(self, "duplicates").get(value)
+        duplicates = self.duplicates.get(value)  # type: ignore
         if duplicates:
             msg = _("The id '{field_id}' is already in use in fields {duplicates}.").format(
                 field_id=value,
@@ -29,51 +30,6 @@ class UniqueCharBlock(blocks.CharBlock):
             )
             raise ValidationError(msg)
         return super().clean(value)
-
-
-class FormFieldBlock(blocks.StructBlock):
-    """A generic struct block containing common fields used in other blocks."""
-
-    label = blocks.CharBlock(
-        label=_("Label"),
-        help_text=_("Short text describing the field."),
-        form_classname="formbuilder-field-block-label",
-    )
-    identifier = UniqueCharBlock(
-        label=_("Identifier"),
-        required=True,
-        help_text=_("The id used to identify this field, for instance in conditional fields."),
-        validators=[validate_identifier],
-    )
-    help_text = blocks.CharBlock(
-        label=_("Help text"),
-        required=False,
-        help_text=_("Text displayed below the label to add more information."),
-    )
-    disabled = blocks.BooleanBlock(
-        label=_("Disabled"),
-        required=False,
-        help_text=_("Check to make the field not editable by the user."),
-    )
-
-
-class FormFieldBlockAdapter(struct_block.StructBlockAdapter):
-    """Inject javascript and css files to a Wagtail admin page for the form field."""
-
-    js_constructor = "forms.blocks.FormFieldBlock"
-
-    @cached_property
-    def media(self):
-        """Return a Media object containing path to css and js files."""
-        streamblock_media = super().media
-        js_file_path = "wagtail_form_plugins/streamfield/js/form_admin.js"
-
-        return forms.Media(
-            js=streamblock_media._js + [js_file_path],
-        )
-
-
-register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
 
 
 class RequiredBlock(blocks.BooleanBlock):
@@ -90,7 +46,53 @@ class RequiredBlock(blocks.BooleanBlock):
         )
 
 
-def init_options(field_type: str):
+class FormFieldBlock(blocks.StructBlock):
+    """A generic struct block containing common fields used in other blocks."""
+
+    label = blocks.CharBlock(
+        label=_("Label"),
+        help_text=_("Short text describing the field."),
+        form_classname="formbuilder-field-block-label",
+    )
+    slug = UniqueCharBlock(
+        label=_("Slug"),
+        required=True,
+        help_text=_(
+            "The identifier used to identify this field, for instance in conditional fields."
+        ),
+        validators=[validate_identifier],
+    )
+    help_text = blocks.CharBlock(
+        label=_("Help text"),
+        required=False,
+        help_text=_("Text displayed below the label to add more information."),
+    )
+    is_required = RequiredBlock()
+    disabled = blocks.BooleanBlock(
+        label=_("Disabled"),
+        required=False,
+        help_text=_("Check to make the field not editable by the user."),
+    )
+
+
+class FormFieldBlockAdapter(struct_block.StructBlockAdapter):
+    """Inject javascript and css files to a Wagtail admin page for the form field."""
+
+    js_constructor = "forms.blocks.FormFieldBlock"
+
+    @cached_property
+    def media(self) -> Media:
+        """Return a Media object containing path to css and js files."""
+        streamblock_media = super().media
+        js_file_path = "wagtail_form_plugins/streamfield/js/form_admin.js"
+
+        return Media(js=[*streamblock_media._js, js_file_path])  # type: ignore
+
+
+register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
+
+
+def init_options(field_type: str) -> dict[str, Any]:
     return {
         "label": _("Default value"),
         "required": False,
@@ -113,7 +115,7 @@ class ChoiceBlock(blocks.StructBlock):
         required=False,
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         label = _("Choice")
 
 
@@ -123,7 +125,7 @@ class ChoicesList(blocks.ListBlock):
     def __init__(self, child_block: Any = None, **kwargs):
         super().__init__(child_block or ChoiceBlock(), search_index=True, **kwargs)
 
-    class Meta:
+    class Meta:  # type: ignore
         label = _("Choices")
         form_classname = "formbuilder-choices"
 
@@ -131,7 +133,6 @@ class ChoicesList(blocks.ListBlock):
 class SinglelineFormFieldBlock(FormFieldBlock):
     """A struct block used to build a single line form field."""
 
-    required = RequiredBlock()
     initial = blocks.CharBlock(**init_options(__("Single line text")))
     min_length = blocks.IntegerBlock(
         label=_("Min length"),
@@ -144,7 +145,7 @@ class SinglelineFormFieldBlock(FormFieldBlock):
         default=255,
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "pilcrow"
         label = _("Single line text")
         form_classname = "formbuilder-field-block formbuilder-field-block-singleline"
@@ -153,7 +154,6 @@ class SinglelineFormFieldBlock(FormFieldBlock):
 class MultilineFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-line form field."""
 
-    required = RequiredBlock()
     initial = blocks.TextBlock(**init_options(__("Multi-line text")))
     min_length = blocks.IntegerBlock(
         label=_("Min length"),
@@ -166,7 +166,7 @@ class MultilineFormFieldBlock(FormFieldBlock):
         default=1024,
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "pilcrow"
         label = _("Multi-line text")
         form_classname = "formbuilder-field-block formbuilder-field-block-multiline"
@@ -175,10 +175,9 @@ class MultilineFormFieldBlock(FormFieldBlock):
 class EmailFormFieldBlock(FormFieldBlock):
     """A struct block used to build an email form field."""
 
-    required = RequiredBlock()
     initial = blocks.EmailBlock(**init_options(__("E-mail")))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "mail"
         label = _("E-mail")
         form_classname = "formbuilder-field-block formbuilder-field-block-email"
@@ -187,7 +186,6 @@ class EmailFormFieldBlock(FormFieldBlock):
 class NumberFormFieldBlock(FormFieldBlock):
     """A struct block used to build a number form field."""
 
-    required = RequiredBlock()
     initial = blocks.DecimalBlock(**init_options(__("Number")))
     min_value = blocks.IntegerBlock(
         label=_("Min value"),
@@ -200,7 +198,7 @@ class NumberFormFieldBlock(FormFieldBlock):
         required=False,
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "decimal"
         label = _("Number")
         form_classname = "formbuilder-field-block formbuilder-field-block-number"
@@ -209,10 +207,9 @@ class NumberFormFieldBlock(FormFieldBlock):
 class URLFormFieldBlock(FormFieldBlock):
     """A struct block used to build an url form field."""
 
-    required = RequiredBlock()
     initial = blocks.URLBlock(**init_options(__("URL")))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "link-external"
         label = _("URL")
         form_classname = "formbuilder-field-block formbuilder-field-block-url"
@@ -221,14 +218,14 @@ class URLFormFieldBlock(FormFieldBlock):
 class CheckBoxFormFieldBlock(FormFieldBlock):
     """A struct block used to build a checkbox form field."""
 
-    required = RequiredBlock(__("the box must be checked"))
+    is_required = RequiredBlock(__("the box must be checked"))
     initial = blocks.BooleanBlock(
         label=_("Checked"),
         required=False,
         help_text=_("If checked, the box will be checked by default."),
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "tick-inverse"
         label = _("Checkbox")
         form_classname = "formbuilder-field-block formbuilder-field-block-checkbox"
@@ -237,10 +234,10 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
 class CheckBoxesFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-checkboxes form field."""
 
-    required = RequiredBlock(__("at least one box must be checked"))
+    is_required = RequiredBlock(__("at least one box must be checked"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "tick-inverse"
         label = _("Checkboxes")
         form_classname = "formbuilder-field-block formbuilder-field-block-checkboxes"
@@ -249,10 +246,10 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
 class DropDownFormFieldBlock(FormFieldBlock):
     """A struct block used to build a dropdown form field."""
 
-    required = RequiredBlock(__("an item must be selected"))
+    is_required = RequiredBlock(__("an item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "list-ul"
         label = _("Drop down")
         form_classname = "formbuilder-field-block formbuilder-field-block-dropdown"
@@ -261,10 +258,10 @@ class DropDownFormFieldBlock(FormFieldBlock):
 class MultiSelectFormFieldBlock(FormFieldBlock):
     """A struct block used to build a multi-select dropdown form field."""
 
-    required = RequiredBlock(__("at least one item must be selected"))
+    is_required = RequiredBlock(__("at least one item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "list-ul"
         label = _("Multiple select")
         form_classname = "formbuilder-field-block formbuilder-field-block-multiselect"
@@ -273,10 +270,10 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
 class RadioFormFieldBlock(FormFieldBlock):
     """A struct block used to build a radio-buttons form field."""
 
-    required = RequiredBlock(__("an item must be selected"))
+    is_required = RequiredBlock(__("an item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "radio-empty"
         label = _("Radio buttons")
         form_classname = "formbuilder-field-block formbuilder-field-block-radio"
@@ -285,10 +282,9 @@ class RadioFormFieldBlock(FormFieldBlock):
 class DateFormFieldBlock(FormFieldBlock):
     """A struct block used to build a date form field."""
 
-    required = RequiredBlock()
     initial = blocks.DateBlock(**init_options(__("Date")))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "date"
         label = _("Date")
         form_classname = "formbuilder-field-block formbuilder-field-block-date"
@@ -297,10 +293,9 @@ class DateFormFieldBlock(FormFieldBlock):
 class TimeFormFieldBlock(FormFieldBlock):
     """A struct block used to build a time form field."""
 
-    required = RequiredBlock()
     initial = blocks.TimeBlock(**init_options(__("Time")))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "time"
         label = _("Time")
         form_classname = "formbuilder-field-block formbuilder-field-block-time"
@@ -309,10 +304,9 @@ class TimeFormFieldBlock(FormFieldBlock):
 class DateTimeFormFieldBlock(FormFieldBlock):
     """A struct block used to build a date-time form field."""
 
-    required = RequiredBlock()
     initial = blocks.DateTimeBlock(**init_options(__("Date and time")))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "date"
         label = _("Date and time")
         form_classname = "formbuilder-field-block formbuilder-field-block-datetime"
@@ -321,16 +315,15 @@ class DateTimeFormFieldBlock(FormFieldBlock):
 class HiddenFormFieldBlock(FormFieldBlock):
     """A struct block used to build an hidden form field."""
 
-    required = RequiredBlock()
     initial = blocks.CharBlock(**init_options(__("Hidden text")))
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "no-view"
         label = _("Hidden text")
         form_classname = "formbuilder-field-block formbuilder-field-block-hidden"
 
 
-class StreamFieldFormBlock(FormFieldsBlockMixin):
+class StreamFieldFormBlock(BaseFormFieldsBlock):
     """A mixin used to use StreamField in a form builder, by selecting some blocks to add fields."""
 
     singleline = SinglelineFormFieldBlock()
@@ -348,22 +341,22 @@ class StreamFieldFormBlock(FormFieldsBlockMixin):
     datetime = DateTimeFormFieldBlock()
     hidden = HiddenFormFieldBlock()
 
-    class Meta:
+    class Meta:  # type: ignore
         form_classname = "formbuilder-fields-block"
         collapsed = True
 
     @classmethod
-    def get_duplicates(cls, blocks: list):
-        """Return a dict containing identifier duplicates in the given blocks."""
+    def get_duplicates(cls, blocks: list) -> dict[str, str]:
+        """Return a dict containing slug duplicates in the given blocks."""
         duplicates = {}
-        for idx, block_id in enumerate([block.value["identifier"] for block in blocks]):
-            duplicates[block_id] = (duplicates[block_id] if block_id in duplicates else []) + [idx]
+        for idx, slug in enumerate([block.value["slug"] for block in blocks]):
+            duplicates[slug] = (duplicates[slug] if slug in duplicates else []) + [idx]
         return {k: v for k, v in duplicates.items() if len(v) > 1}
 
-    def clean(self, value: Any, ignore_required_constraints: Any):
+    def clean(self, value: Any, ignore_required_constraints: bool = False) -> StreamValue:
         """Add duplicates attribute in the block class."""
         if len(value) > 0:
-            id_block = value[0].block.child_blocks["identifier"]
-            setattr(id_block, "duplicates", self.get_duplicates(value))
+            block = value[0].block.child_blocks["slug"]
+            block.duplicates = self.get_duplicates(value)
 
         return super().clean(value, ignore_required_constraints)

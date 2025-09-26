@@ -5,12 +5,13 @@ from typing import Any
 from django.conf import settings
 from django.core.validators import validate_email
 from django.utils.translation import gettext_lazy as _
+
 from wagtail import blocks
 
 from wagtail_form_plugins.utils import LocalBlocks
 
 
-def email_to_block(email_dict: dict[str, Any]):
+def email_to_block(email_dict: dict[str, Any]) -> dict[str, Any]:
     email_dict["message"] = email_dict["message"].replace("\n", "</p><p>")
     return {
         "type": "email_to_send",
@@ -49,7 +50,7 @@ class EmailsToSendStructBlock(blocks.StructBlock):
         help_text=_("The body of the e-mail."),
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         label = _("E-mail to send")
 
 
@@ -58,22 +59,23 @@ class EmailsFormBlock(blocks.StreamBlock):
 
     email_to_send = EmailsToSendStructBlock()
 
-    def validate_email(self, field_value: str):
+    def validate_email(self, field_value: str) -> None:
         """Validate the email addresses field value."""
         for email in field_value.split(","):
             validate_email(email.strip())
 
-    def get_block_class(self):
+    def get_block_class(self) -> type[blocks.StreamBlock]:
         """Return the block class."""
-        raise NotImplementedError("Missing get_block_class() in the RulesBlockMixin super class.")
+        error_msg = "Missing get_block_class() in the RulesBlock super class."
+        raise NotImplementedError(error_msg)
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
-        for child_block in self.get_block_class().declared_blocks.values():
+        for child_block in self.get_block_class().declared_blocks.values():  # type: ignore
             child_block.child_blocks["recipient_list"].field.validators = [self.validate_email]
             child_block.child_blocks["reply_to"].field.validators = [self.validate_email]
             child_block.child_blocks["from_email"].field.validators = [self.validate_email]
 
         super().__init__(local_blocks, search_index, **kwargs)
 
-    class Meta:
+    class Meta:  # type: ignore
         blank = True

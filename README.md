@@ -15,20 +15,18 @@ Each plugin is supposed to work independently.
 
 ## Usage
 
-Plugins are Python mixins, you add them with class inheritance:
+You add form plugins with class inheritance:
 
 ```py
 from wagtail_form_plugins import models as wfp_models
 
 class AbstractFormPage(
-    wfp_models.TemplatingFormPageMixin,
-    wfp_models.FileInputFormPageMixin,
-    wfp_models.ConditionalFieldsFormPageMixin,
-    wfp_models.StreamFieldFormPageMixin,
-    wfp_models.NavButtonsFormPageMixin,
-    wfp_models.IndexedResultsFormPageMixin,
-    FormPageMixin,
-    Page,
+    wfp_models.TemplatingFormPage,
+    wfp_models.FileInputFormPage,
+    wfp_models.ConditionalFieldsFormPage,
+    wfp_models.StreamFieldFormPage,
+    wfp_models.NavButtonsFormPage,
+    wfp_models.IndexedResultsFormPage,
 ):
 ```
 

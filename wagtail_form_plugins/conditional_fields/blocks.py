@@ -2,22 +2,23 @@
 
 from uuid import UUID
 
-from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import Media
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+
 from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
 from wagtail.blocks import struct_block
 
-from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+from wagtail_form_plugins.base import BaseFormFieldsBlock
 from wagtail_form_plugins.utils import LocalBlocks
 
 
 class ChoiceError(ValidationError):
     """A validation error used when the selected choice is not available."""
 
-    def __init__(self, choice: str) -> None:
+    def __init__(self, choice: str):
         super().__init__(
             _("Select a valid choice. %(value)s is not one of the available choices."),
             "invalid_choice",
@@ -25,7 +26,7 @@ class ChoiceError(ValidationError):
         )
 
 
-def validate_field(value: str):
+def validate_field(value: str) -> None:
     if value in ["and", "or"]:
         return
 
@@ -88,7 +89,7 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
         form_classname="formbuilder-beb-val-datetime",
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         label = _("Visibility condition")
         required = False
         collapsed = True
@@ -101,14 +102,14 @@ class BooleanExpressionBuilderBlockAdapter(struct_block.StructBlockAdapter):
     js_constructor = "forms.blocks.BooleanExpressionBuilderBlock"
 
     @cached_property
-    def media(self):
+    def media(self) -> Media:
         """Return a Media object containing path to css and js files."""
         streamblock_media = super().media
         js_file_path = "wagtail_form_plugins/conditional_fields/js/form_admin.js"
 
-        return forms.Media(
-            js=streamblock_media._js + [js_file_path],
-            css=streamblock_media._css,
+        return Media(
+            js=[*streamblock_media._js, js_file_path],  # type: ignore
+            css=streamblock_media._css,  # type: ignore
         )
 
 
@@ -118,7 +119,7 @@ register_adapter(BooleanExpressionBuilderBlockAdapter(), BooleanExpressionBuilde
 class BooleanExpressionBuilderBlockLvl3(BooleanExpressionBuilderBlock):
     """A struct block used to construct a third-level boolean expression."""
 
-    class Meta:
+    class Meta:  # type: ignore
         form_classname = "formbuilder-beb formbuilder-beb-lvl3"
 
 
@@ -132,7 +133,7 @@ class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
         default=[],
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         form_classname = "formbuilder-beb formbuilder-beb-lvl2"
 
 
@@ -146,12 +147,12 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
         default=[],
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         form_classname = "formbuilder-beb formbuilder-beb-lvl1"
 
 
-class ConditionalFieldsFormBlock(FormFieldsBlockMixin):
-    """A mixin used to add conditional fields functionnality to form field wagtail blocks."""
+class ConditionalFieldsFormBlock(BaseFormFieldsBlock):
+    """Form field block used to add conditional fields functionnality to form field wagtail blocks."""
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
         local_blocks = local_blocks or []

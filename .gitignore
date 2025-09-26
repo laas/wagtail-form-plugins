@@ -17,5 +17,5 @@ media/
 # Files used for development purpose
 ___*
 
-# IDE configs
-/.zed/
+# We use uv so keeping poetry.lock is not required
+poetry.lock

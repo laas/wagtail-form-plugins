@@ -4,7 +4,7 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 
 
-def nav_buttons_admin_css():
+def hook_nav_buttons_admin_css() -> str:
     return format_html(
         '<link rel="stylesheet" href="{}">',
         static("wagtail_form_plugins/nav_buttons/css/form_admin.css"),

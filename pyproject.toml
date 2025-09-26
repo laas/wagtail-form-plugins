@@ -8,7 +8,8 @@ dev = [
   "ruff>=0.6",
   "pre-commit>=4.2.0",
   "pyright>=1.1.405",
-  "django-stubs>=5.2.5"
+  "django-stubs>=5.2.5",
+  "poethepoet>=0.37.0"
 ]
 
 [project]
@@ -42,8 +43,16 @@ issues = "https://github.com/laas/wagtail-form-plugins/issues"
 [tool.django-stubs]
 django_settings_module = "demo.settings"
 
+[tool.poe.tasks]
+check = ["lint", "format", "static-check", "django-check", "dry-sync"]
+lint = "ruff check --fix"
+format = "ruff format"
+static-check = "pyright ."
+django-check = "python manage.py check"
+dry-sync = "uv sync --extra demo --dry-run"
+
 [tool.pyright]
-exclude = ["demo/migrations/*"]
+exclude = ["demo/migrations/*", ".venv/**/*"]
 
 [tool.ruff]
 extend-exclude = ["migrations"]
@@ -51,7 +60,8 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-extend-select = ["I", "ANN001"]
+extend-select = ["I", "ANN", "A", "B", "C", "COM", "DJ", "EM", "EXE", "G", "I", "N", "PTH", "RET", "RUF", "UP", "W", "YTT"]
+extend-ignore = ["I", "ANN002", "ANN003", "ANN204", "ANN401", "COM812"]
 
 [tool.ruff.lint.isort]
 section-order = ["future", "standard-library", "django", "wagtail", "first-party", "local-folder", "third-party"]

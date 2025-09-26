@@ -1,14 +1,17 @@
 """View classes for the File Input plugin."""
 
+from typing import Any
+
 from django.conf import settings
 from django.utils.html import format_html
-from wagtail.contrib.forms.views import SubmissionsListView
+
+from wagtail_form_plugins.base import BaseSubmissionsListView
 
 
-class FileInputSubmissionsListView(SubmissionsListView):
+class FileInputSubmissionsListView(BaseSubmissionsListView):
     """Customize lists submissions view, such as adding a link on file fields for each row."""
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Return context for view"""
         context_data = super().get_context_data(**kwargs)
 
@@ -16,19 +19,19 @@ class FileInputSubmissionsListView(SubmissionsListView):
             return context_data
 
         fields_slug = [head["name"] for head in context_data["data_headings"]]
-        fields_type = {f.clean_name: f.field_type for f in self.form_page.get_form_fields()}
+        fields = self.form_page.get_form_fields()
 
         for row_idx, row in enumerate(context_data["data_rows"]):
             for col_idx, value in enumerate(row["fields"]):
                 field_slug = fields_slug[col_idx]
-                if field_slug in fields_type and fields_type[field_slug] == "file":
+                if field_slug in fields and fields[field_slug].type == "file":
                     file_link = self.get_file_link(value, True)
                     context_data["data_rows"][row_idx]["fields"][col_idx] = file_link
 
         return context_data
 
     @staticmethod
-    def get_file_link(file_url: str, to_html: bool):
+    def get_file_link(file_url: str, to_html: bool) -> str:
         """Build an html link poiting to a file url, or `-` if there is no url."""
         if not file_url:
             return "-"

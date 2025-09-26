@@ -3,7 +3,7 @@
 import base64
 import uuid
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, ClassVar
 
 from django.conf import settings
 from django.contrib import messages
@@ -14,9 +14,9 @@ from django.template.response import TemplateResponse
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.contrib.forms.models import AbstractFormSubmission
+from wagtail.contrib.forms.models import FormSubmission
 
-from wagtail_form_plugins.base.models import FormPageMixin
+from wagtail_form_plugins.base import BaseFormPage, BaseFormSubmission
 
 
 class ValidationForm(Form):
@@ -28,39 +28,57 @@ class ValidationForm(Form):
     )
 
 
-class TokenValidationSubmission(AbstractFormSubmission):
+class TokenValidationFormSubmission(BaseFormSubmission):
     """A mixin used to update the email value in the submission."""
 
     email = models.EmailField(default="")
 
-    def get_data(self):
+    def get_data(self) -> dict[str, Any]:
         """Return dict with form data."""
-        data: dict[str, Any] = super().get_data()
+        data = super().get_data()
         if data["email"] == "-":
             data["email"] = self.email
         return data
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True
 
 
-class TokenValidationFormPageMixin(FormPageMixin):
+class TokenValidationFormPage(BaseFormPage):
     """A mixin used to add validation functionnality to a form."""
 
-    tokens: dict[str, datetime] = {}
-    validation_form_class = ValidationForm
+    token_validation_form_class = ValidationForm
+    token_validation_title_field_name = "validation_title"
+    token_validation_body_field_name = "validation_body"
+    token_validation_from_email = ""
+    token_validation_reply_to: ClassVar = []
+    token_validation_expiration_delay = 60
+
+    # validation_title = models.CharField(
+    #     verbose_name=_("E-mail title"),
+    #     default=_("User validation required to fill a public form"),
+    #     max_length=100,
+    # )
+    # validation_body = RichTextField(
+    #     verbose_name=_("E-mail content"),
+    #     default=_("Please click on the following link to fill the form: {validation_url} ."),
+    # )
+
+    def __init__(self, *args, **kwargs):
+        self.tokens: dict[str, datetime] = {}
+        super().__init__(*args, **kwargs)
 
     def build_token(self, email: str) -> str:
         """Generate and return the token used to validate the form."""
         encoded_email = base64.b64encode(email.encode("utf-8")).decode("utf-8")
         return f"{encoded_email}-{uuid.uuid4()}"
 
-    def flush(self):
+    def flush(self) -> None:
         """Remove the expired tokens."""
         to_remove = []
         for token, date in self.tokens.items():
             delay = datetime.now(timezone.utc) - date
-            if delay.total_seconds() / 60 > settings.FORMS_VALIDATION_EXPIRATION_DELAY:
+            if delay.total_seconds() / 60 > self.token_validation_expiration_delay:
                 to_remove.append(token)
 
         for token in to_remove:
@@ -71,14 +89,14 @@ class TokenValidationFormPageMixin(FormPageMixin):
         encoded_email: str = form.data["wfp_token"].split("-")[0]
         return base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
 
-    def get_submission_attributes(self, form: Form):
+    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         return {
             **super().get_submission_attributes(form),
             "email": self.extract_email(form),
         }
 
-    def serve(self, request: HttpRequest, *args, **kwargs):
+    def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
         self.flush()
 
@@ -87,14 +105,14 @@ class TokenValidationFormPageMixin(FormPageMixin):
 
         if request.method == "POST":
             if "validation_email" in request.POST:
-                form = self.validation_form_class(request.POST)
+                form = self.token_validation_form_class(request.POST)
                 if form.is_valid():
                     validation_email = form.cleaned_data["validation_email"]
                     token = self.build_token(validation_email)
                     self.tokens[token] = datetime.now(timezone.utc)
                     self.send_validation_email(validation_email, token)
                     msg_str = _(
-                        "We just send you an e-mail. Please click on the link to continue the form submission."
+                        "We just send you an e-mail. Please click on the link to continue the form submission.",
                     )
                     messages.add_message(request, messages.INFO, msg_str)
                 else:
@@ -113,33 +131,37 @@ class TokenValidationFormPageMixin(FormPageMixin):
             messages.add_message(request, messages.ERROR, _("This token is not valid."))
 
         context = self.get_context(request)
-        context["form"] = self.validation_form_class()
+        context["form"] = self.token_validation_form_class()
         return TemplateResponse(request, self.get_template(request), context)
 
-    def process_form_submission(self, form: Form):
+    def process_form_submission(self, form: Form) -> FormSubmission:
         """Create and return submission instance. Update email value."""
         submission = super().process_form_submission(form)
-        submission.email = self.extract_email(form)
+        submission.email = self.extract_email(form)  # type: ignore
         return submission
 
-    def send_validation_email(self, email_address: str, token: str):
+    def send_validation_email(self, email_address: str, token: str) -> None:
         """Send an e-mail containing the link used to validate the form."""
         validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{self.url}?token={token}"
-        message_text = self.validation_body.replace(
+        validation_body = getattr(self, self.token_validation_body_field_name)
+
+        message_text = validation_body.replace(
             "{validation_url}",
             validation_url,
         )
-        message_html = self.validation_body.replace(
+        message_html = validation_body.replace(
             "{validation_url}",
             f"<a href='{validation_url}'>{validation_url}</a>",
         )
+
         self.send_mail(
-            subject=self.validation_title,
+            subject=getattr(self, self.token_validation_title_field_name),
             message=strip_tags(message_text.replace("</p>", "</p>\n")),
-            from_email=settings.FORMS_FROM_EMAIL,
+            from_email=self.token_validation_from_email,
             recipient_list=[email_address],
             html_message=message_html,
+            reply_to=self.token_validation_reply_to,
         )
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True

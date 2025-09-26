@@ -9,7 +9,7 @@ from django.conf import settings
 from django.db import models
 from django.forms import Form
 
-from wagtail_form_plugins.base.models import FormPageMixin
+from wagtail_form_plugins.base import BaseFormPage
 from wagtail_form_plugins.file_input.views import FileInputSubmissionsListView
 
 
@@ -18,32 +18,34 @@ class AbstractFileInput(models.Model):
 
     file = models.FileField()
     field_name = models.CharField(blank=True, max_length=254)
-    upload_dir = "forms_uploads/%Y/%m/%d"
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    class Meta:  # type: ignore
+        abstract = True
+
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
+        self.upload_dir = ""
         self.file.field.upload_to = self.get_file_path
 
-    def get_file_path(self, instance: Any, file_name: str):
+    def __str__(self) -> str:
+        return f"{self.field_name}: {self.file.name if self.file else '-'}"
+
+    def get_file_path(self, instance: Any, file_name: str) -> Path:
         """Get the path of the uploaded file."""
         file_path = Path(file_name)
         dir_path = Path(datetime.now().strftime(str(self.upload_dir)))
         new_file_name = f"{file_path.stem}_{uuid.uuid4()}{file_path.suffix}"
         return dir_path / new_file_name
 
-    def __str__(self) -> str:
-        return f"{self.field_name}: {self.file.name if self.file else '-'}"
 
-    class Meta:
-        abstract = True
-
-
-class FileInputFormPageMixin(FormPageMixin):
-    """Form mixin for the FileInput plugin, used for instance to get the file url in submission."""
+class FileInputFormPage(BaseFormPage):
+    """Form page for the FileInput plugin, used for instance to get the file url in submission."""
 
     submissions_list_view_class = FileInputSubmissionsListView
+    file_input_upload_dir = "forms_uploads/%Y/%m/%d"
+    file_input_model: type[AbstractFileInput]
 
-    def get_submission_attributes(self, form: Form):
+    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         attributes = super().get_submission_attributes(form)
 
@@ -52,13 +54,15 @@ class FileInputFormPageMixin(FormPageMixin):
         for field_name, field_value in attributes["form_data"].items():
             if field_name in file_form_fields:
                 file_input = self.file_input_model.objects.create(
-                    file=field_value, field_name=field_name
+                    file=field_value,
+                    field_name=field_name,
                 )
+                file_input.upload_dir = self.file_input_upload_dir
                 attributes["form_data"][field_name] = file_input.file.url if file_input.file else ""
 
         return attributes
 
-    def format_field_value(self, field_type: str, field_value: Any):
+    def format_field_value(self, field_type: str, field_value: Any) -> str:
         """Format the field value. Used to display user-friendly values in result table."""
         fmt_value = super().format_field_value(field_type, field_value)
 
@@ -67,5 +71,5 @@ class FileInputFormPageMixin(FormPageMixin):
 
         return fmt_value
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True

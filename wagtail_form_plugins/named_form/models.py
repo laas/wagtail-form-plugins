@@ -1,20 +1,23 @@
 """Models definition for the Named Form form plugin."""
 
+from typing import Any
+
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.forms import Form
 from django.http import HttpRequest
+from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.contrib.forms.models import AbstractFormSubmission
+from wagtail.contrib.forms.models import FormSubmission
 
-from wagtail_form_plugins.base.models import FormPageMixin
+from wagtail_form_plugins.base import BaseFormPage, BaseFormSubmission
 
 
-class NamedFormSubmission(AbstractFormSubmission):
-    """A mixin used to store the form user in the submission."""
+class AuthFormSubmission(BaseFormSubmission):
+    """A form submission class used to store the form user in the submission."""
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -23,7 +26,7 @@ class NamedFormSubmission(AbstractFormSubmission):
         on_delete=models.SET_NULL,
     )
 
-    def get_data(self):
+    def get_data(self) -> dict[str, Any]:
         """Return dict with form data."""
         return {
             **super().get_data(),
@@ -31,12 +34,12 @@ class NamedFormSubmission(AbstractFormSubmission):
             "email": self.user.email if self.user else "-",
         }
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True
 
 
-class NamedFormPageMixin(FormPageMixin):
-    """A mixin used to add named form functionnality to a form, allowing to identify the user who
+class AuthFormPage(BaseFormPage):
+    """A form page class used to add named form functionnality to a form, allowing to identify the user who
     answered the form, in order to display it on form results and authorise a user to answer a form
     only once."""
 
@@ -46,11 +49,14 @@ class NamedFormPageMixin(FormPageMixin):
         default=False,
     )
 
-    def get_user_submissions_qs(self, user: User):
+    def get_user_submissions_qs(
+        self,
+        user: AbstractBaseUser | AnonymousUser,
+    ) -> models.QuerySet[FormSubmission]:
         """Return the submissions QuerySet corresponding to the current form and the given user."""
         return self.get_submission_class().objects.filter(page=self).filter(user=user)
 
-    def get_data_fields(self):
+    def get_data_fields(self) -> list[tuple[str, Any]]:
         """Return a list fields data as tuples of slug and label."""
         return [
             ("user", _("Form user")),
@@ -58,20 +64,20 @@ class NamedFormPageMixin(FormPageMixin):
             *super().get_data_fields(),
         ]
 
-    def get_submission_attributes(self, form: Form):
+    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
-        user = getattr(form, "user")
+        user = form.user  # type: ignore
         return {
             **super().get_submission_attributes(form),
             "user": None if isinstance(user, AnonymousUser) else user,
         }
 
-    def serve(self, request: HttpRequest, *args, **kwargs):
+    def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
         if self.unique_response and self.get_user_submissions_qs(request.user).exists():
             raise PermissionDenied(_("You have already filled in this form."))
 
         return super().serve(request, *args, **kwargs)
 
-    class Meta:
+    class Meta:  # type: ignore
         abstract = True

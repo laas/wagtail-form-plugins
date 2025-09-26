@@ -3,29 +3,31 @@
 from django import forms
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+
 from wagtail import blocks
 
-from wagtail_form_plugins.base.blocks import FormFieldsBlockMixin
+from wagtail_form_plugins.base import BaseFormFieldsBlock
 from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, RequiredBlock
 
 
 class FileInputFormFieldBlock(FormFieldBlock):
     """A wagtail struct block used to add a file field when building a form."""
 
-    required = RequiredBlock()
+    is_required = RequiredBlock()
     allowed_extensions = blocks.MultipleChoiceBlock(
         label=_("Allowed file extensions"),
         choices=[(ext, ext) for ext in settings.FORMS_FILE_UPLOAD_AVAILABLE_EXTENSIONS],
         widget=forms.CheckboxSelectMultiple,
     )
 
-    class Meta:
+    class Meta:  # type: ignore
         icon = "doc-full"
         label = _("File")
         form_classname = "formbuilder-field-block formbuilder-field-block-file"
 
 
-class FileInputFormBlock(FormFieldsBlockMixin):
-    """A mixin used to add file input functionnality to form field wagtail blocks."""
+class FileInputFormBlock(BaseFormFieldsBlock):
+    """Form fields block used to add file input functionnality to form field wagtail blocks."""
 
+    # settings.FORMS_FILE_UPLOAD_AVAILABLE_EXTENSIONS
     file = FileInputFormFieldBlock()
