@@ -15,6 +15,7 @@ from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.models import FormSubmission
+from wagtail.fields import RichTextField
 
 from wagtail_form_plugins.base import BaseFormPage, BaseFormSubmission
 
@@ -54,15 +55,15 @@ class TokenValidationFormPage(BaseFormPage):
     token_validation_reply_to: ClassVar = []
     token_validation_expiration_delay = 60
 
-    # validation_title = models.CharField(
-    #     verbose_name=_("E-mail title"),
-    #     default=_("User validation required to fill a public form"),
-    #     max_length=100,
-    # )
-    # validation_body = RichTextField(
-    #     verbose_name=_("E-mail content"),
-    #     default=_("Please click on the following link to fill the form: {validation_url} ."),
-    # )
+    validation_title = models.CharField(
+        verbose_name=_("E-mail title"),
+        default=_("User validation required to fill a public form"),
+        max_length=100,
+    )
+    validation_body = RichTextField(
+        verbose_name=_("E-mail content"),
+        default=_("Please click on the following link to fill the form: {validation_url} ."),
+    )
 
     def __init__(self, *args, **kwargs):
         self.tokens: dict[str, datetime] = {}

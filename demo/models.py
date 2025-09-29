@@ -14,7 +14,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.admin.panels import FieldPanel
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.forms.models import FormSubmission as WagtailFormSubmission
 from wagtail.fields import RichTextField, StreamBlock, StreamField
@@ -158,7 +158,7 @@ class CustomTemplatingFormatter(templating.TemplatingFormatter):
         return doc
 
 
-class CustomFormBuilder(
+class CustomFormBuilder(  # type: ignore
     label.LabelFormBuilder,
     file_input.FileInputFormBuilder,
     streamfield.StreamFieldFormBuilder,
@@ -348,8 +348,6 @@ class FormPage(CustomFormPage):
         verbose_name=_("Form introduction text"),
         blank=True,
     )
-
-    # TODO: move to formfields.models
     form_fields = StreamField(
         CustomFormFieldsBlock(),
         verbose_name=_("Form fields"),
@@ -360,19 +358,6 @@ class FormPage(CustomFormPage):
         default=_("Thank you!"),
         blank=True,
     )
-
-    # TODO: move to token_validation.models
-    validation_title = models.CharField(
-        verbose_name=_("E-mail title"),
-        default=_("User validation required to fill a public form"),
-        max_length=100,
-    )
-    validation_body = RichTextField(
-        verbose_name=_("E-mail content"),
-        default=_("Please click on the following link to fill the form: {validation_url} ."),
-    )
-
-    # TODO: move to emails.models
     emails_to_send = StreamField(
         CustomEmailsToSendBlock(),
         verbose_name=_("E-mails to send after form submission"),
@@ -383,18 +368,9 @@ class FormPage(CustomFormPage):
     content_panels: ClassVar = [
         *CustomFormPage.content_panels,
         FieldPanel("intro"),
-        # TODO: move to formfields.panels
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
-        # TODO: move to token_validation.panels
-        MultiFieldPanel(
-            [
-                FieldPanel("validation_title"),
-                FieldPanel("validation_body"),
-            ],
-            "Validation e-mail",
-        ),
-        # TODO: move to emails.panels
+        token_validation.TokenValidationFieldPanel(),
         FieldPanel("emails_to_send"),
         named_form.UniqueResponseFieldPanel(),
     ]

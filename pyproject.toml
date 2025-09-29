@@ -44,12 +44,13 @@ issues = "https://github.com/laas/wagtail-form-plugins/issues"
 django_settings_module = "demo.settings"
 
 [tool.poe.tasks]
-check = ["lint", "format", "static-check", "django-check", "dry-sync"]
-lint = "ruff check --fix"
-format = "ruff format"
-static-check = "pyright ."
+check = ["ruff-lint", "ruff-format", "pyright", "ty", "django-check", "uv-dry-sync"]
+ruff-lint = "ruff check --fix"
+ruff-format = "ruff format"
+pyright = "pyright ."
+ty = "uv run ty check"
 django-check = "python manage.py check"
-dry-sync = "uv sync --extra demo --dry-run"
+uv-dry-sync = "uv sync --extra demo --dry-run"
 
 [tool.pyright]
 exclude = ["demo/migrations/*", ".venv/**/*"]

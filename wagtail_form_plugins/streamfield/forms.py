@@ -4,7 +4,6 @@ from typing import Any
 
 from django import forms
 
-from wagtail.compat import URLField as WagtailURLField
 from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.base import BaseField, BaseFormBuilder
@@ -48,7 +47,7 @@ class EmailField(FieldWithId, forms.EmailField):
     pass
 
 
-class URLField(FieldWithId, WagtailURLField):
+class URLField(FieldWithId, forms.URLField):
     """A Django URLField class with an addititional slug attribute."""
 
     pass
@@ -106,7 +105,7 @@ class StreamFieldFormBuilder(BaseFormBuilder):
         """Create a email form field."""
         return EmailField(**options)
 
-    def create_url_field(self, field: BaseField, options: dict[str, Any]) -> URLField:
+    def create_url_field(self, field: BaseField, options: dict[str, Any]) -> URLField:  # type: ignore
         """Create a url form field."""
         return URLField(**options)
 
