@@ -2,10 +2,10 @@
 
 from typing import Any
 
-from wagtail_form_plugins.base import BaseSubmissionsListView
+from wagtail_form_plugins.streamfield import StreamFieldSubmissionsListView
 
 
-class ConditionalFieldsSubmissionsListView(BaseSubmissionsListView):
+class ConditionalFieldsSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as displaying `-` when a value is set to None."""
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:

@@ -6,12 +6,12 @@ from django.forms import Form
 from django.http import HttpRequest, HttpResponseRedirect, QueryDict
 from django.template.response import TemplateResponse
 
-from wagtail_form_plugins.base import BaseFormPage
+from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.templating.formatter import TemplatingFormatter
 from wagtail_form_plugins.utils import create_links
 
 
-class TemplatingFormPage(BaseFormPage):
+class TemplatingFormPage(StreamFieldFormPage):
     """Form mixin for the Templating plugin. Used to format initial values and submissions."""
 
     templating_formatter_class = TemplatingFormatter

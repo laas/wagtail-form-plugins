@@ -5,7 +5,7 @@ from typing import Any
 
 from django.forms import widgets
 
-from wagtail_form_plugins.base import BaseFormBuilder
+from wagtail_form_plugins.streamfield import StreamFieldFormBuilder
 from wagtail_form_plugins.streamfield.forms import DateField, DateTimeField, TimeField
 
 
@@ -27,7 +27,7 @@ class DateTimeInput(widgets.DateTimeInput):
     input_type = "datetime-local"
 
 
-class DatePickersFormBuilder(BaseFormBuilder):
+class DatePickersFormBuilder(StreamFieldFormBuilder):
     """Form builder class that adds datepicker functionnality to a form."""
 
     def create_date_field(self, field: Any, options: dict[str, Any]) -> DateField:

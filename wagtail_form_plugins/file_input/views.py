@@ -5,10 +5,10 @@ from typing import Any
 from django.conf import settings
 from django.utils.html import format_html
 
-from wagtail_form_plugins.base import BaseSubmissionsListView
+from wagtail_form_plugins.streamfield import StreamFieldSubmissionsListView
 
 
-class FileInputSubmissionsListView(BaseSubmissionsListView):
+class FileInputSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as adding a link on file fields for each row."""
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:

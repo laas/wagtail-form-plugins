@@ -5,10 +5,10 @@ from typing import Any
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_form_plugins.base import BaseFormPage, BaseFormSubmission
+from wagtail_form_plugins.streamfield import StreamFieldFormSubmission, StreamFieldFormPage
 
 
-class IndexedResultsFormSubmission(BaseFormSubmission):
+class IndexedResultsFormSubmission(StreamFieldFormSubmission):
     """A form submission used to store the form user in the submission."""
 
     index = models.IntegerField(default=0)
@@ -35,7 +35,7 @@ class IndexedResultsFormSubmission(BaseFormSubmission):
         abstract = True
 
 
-class IndexedResultsFormPage(BaseFormPage):
+class IndexedResultsFormPage(StreamFieldFormPage):
     """A form page used to add indexed result functionnality to a form."""
 
     def get_data_fields(self) -> list[tuple[str, Any]]:

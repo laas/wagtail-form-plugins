@@ -9,10 +9,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from wagtail_form_plugins.base import BaseFormPage
+from wagtail_form_plugins.streamfield import StreamFieldFormPage
 
 
-class EditableFormPage(BaseFormPage):
+class EditableFormPage(StreamFieldFormPage):
     """Form page for the Editable plugin, allowing to edit a form result via the `edit` field."""
 
     def edit_post(self, request: HttpRequest) -> str:
@@ -30,7 +30,7 @@ class EditableFormPage(BaseFormPage):
         if form.is_valid():
             file_fields = [f.clean_name for f in form_fields if isinstance(f.widget, FileInput)]  # type: ignore
 
-            attrs = self.get_submission_attributes(form)
+            attrs = self.get_submission_attributes(form)  # type: ignore
             attrs["form_data"] = {
                 k: v if k not in file_fields or v else submission.form_data[k]
                 for k, v in attrs["form_data"].items()

@@ -5,10 +5,10 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.admin.widgets.button import HeaderButton
 
-from wagtail_form_plugins.base import BaseFormPage
+from wagtail_form_plugins.streamfield import StreamFieldFormPage
 
 
-class NavButtonsFormPage(BaseFormPage):
+class NavButtonsFormPage(StreamFieldFormPage):
     """A form page used to add navigation buttons in the form admin page."""
 
     def admin_header_buttons(self) -> list[HeaderButton]:

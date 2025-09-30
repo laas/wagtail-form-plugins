@@ -30,7 +30,6 @@ from wagtail_form_plugins import (
     label,
     named_form,
     nav_buttons,
-    streamfield,
     templating,
     token_validation,
 )
@@ -161,8 +160,8 @@ class CustomTemplatingFormatter(templating.TemplatingFormatter):
 class CustomFormBuilder(  # type: ignore
     label.LabelFormBuilder,
     file_input.FileInputFormBuilder,
-    streamfield.StreamFieldFormBuilder,
     datepickers.DatePickersFormBuilder,
+    conditional_fields.ConditionalFieldsFormBuilder,
 ):
     """A custom form builder extended with some plugins to extend its features."""
 
@@ -238,7 +237,6 @@ class CustomFormFieldsBlock(
     label.LabelFormBlock,
     file_input.FileInputFormBlock,
     templating.TemplatingFormBlock,
-    streamfield.StreamFieldFormBlock,
 ):
     """The custom Wagtail block used when adding fields to a form."""
 
@@ -255,7 +253,6 @@ class CustomFormPage(  # type: ignore
     file_input.FileInputFormPage,
     conditional_fields.ConditionalFieldsFormPage,
     named_form.AuthFormPage,
-    streamfield.StreamFieldFormPage,
     nav_buttons.NavButtonsFormPage,
     indexed_results.IndexedResultsFormPage,
     editable.EditableFormPage,
@@ -266,7 +263,6 @@ class CustomFormPage(  # type: ignore
     subpage_types: ClassVar = []
 
     validation_form_class = CustomValidationForm
-    form_builder_class = CustomFormBuilder
     submissions_list_view_class = CustomSubmissionListView
 
     file_input_upload_dir = "demo_forms_uploads/%Y/%m/%d"

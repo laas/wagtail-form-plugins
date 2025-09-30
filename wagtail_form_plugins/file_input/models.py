@@ -9,7 +9,7 @@ from django.conf import settings
 from django.db import models
 from django.forms import Form
 
-from wagtail_form_plugins.base import BaseFormPage
+from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.file_input.views import FileInputSubmissionsListView
 
 
@@ -38,7 +38,7 @@ class AbstractFileInput(models.Model):
         return dir_path / new_file_name
 
 
-class FileInputFormPage(BaseFormPage):
+class FileInputFormPage(StreamFieldFormPage):
     """Form page for the FileInput plugin, used for instance to get the file url in submission."""
 
     submissions_list_view_class = FileInputSubmissionsListView

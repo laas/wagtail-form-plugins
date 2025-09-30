@@ -11,7 +11,7 @@ from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
 from wagtail.blocks import struct_block
 
-from wagtail_form_plugins.base import BaseFormFieldsBlock
+from wagtail_form_plugins.streamfield.blocks import StreamFieldFormBlock
 from wagtail_form_plugins.utils import LocalBlocks
 
 
@@ -151,7 +151,7 @@ class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
         form_classname = "formbuilder-beb formbuilder-beb-lvl1"
 
 
-class ConditionalFieldsFormBlock(BaseFormFieldsBlock):
+class ConditionalFieldsFormBlock(StreamFieldFormBlock):
     """Form field block used to add conditional fields functionnality to form field wagtail blocks."""
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):

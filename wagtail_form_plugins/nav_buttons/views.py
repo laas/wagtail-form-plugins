@@ -8,10 +8,10 @@ from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.models import Page
 
-from wagtail_form_plugins.base import BaseSubmissionsListView
+from wagtail_form_plugins.streamfield import StreamFieldSubmissionsListView
 
 
-class NavButtonsSubmissionsListView(BaseSubmissionsListView):
+class NavButtonsSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as adding buttons on submission rows."""
 
     file_input_parent_page_class = Page

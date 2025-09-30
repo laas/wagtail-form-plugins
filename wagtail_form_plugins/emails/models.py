@@ -6,10 +6,10 @@ from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.html import strip_tags
 
-from wagtail_form_plugins.base import BaseFormPage
+from wagtail_form_plugins.streamfield import StreamFieldFormPage
 
 
-class EmailActionsFormPage(BaseFormPage):
+class EmailActionsFormPage(StreamFieldFormPage):
     """Form page for the EmailActions plugin, allowing to send emails when submitting a form."""
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:

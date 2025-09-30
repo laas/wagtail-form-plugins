@@ -2,7 +2,7 @@
 
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_form_plugins.base import BaseFormFieldsBlock
+from wagtail_form_plugins.streamfield import StreamFieldFormBlock
 from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, RequiredBlock
 
 
@@ -17,7 +17,7 @@ class LabelFormFieldBlock(FormFieldBlock):
         form_classname = "formbuilder-field-block formbuilder-field-block-label"
 
 
-class LabelFormBlock(BaseFormFieldsBlock):
+class LabelFormBlock(StreamFieldFormBlock):
     """A form field block used to add label functionnality to form field wagtail blocks."""
 
     label = LabelFormFieldBlock()

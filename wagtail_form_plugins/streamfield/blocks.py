@@ -1,6 +1,6 @@
 """Blocks definition for the Streamfield plugin."""
 
-from typing import Any
+from typing import Any, ClassVar
 
 from django.core.exceptions import ValidationError
 from django.forms import Media
@@ -13,7 +13,6 @@ from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
 from wagtail.blocks import StreamValue, struct_block
 
-from wagtail_form_plugins.base import BaseFormFieldsBlock
 from wagtail_form_plugins.utils import validate_identifier
 
 
@@ -323,7 +322,7 @@ class HiddenFormFieldBlock(FormFieldBlock):
         form_classname = "formbuilder-field-block formbuilder-field-block-hidden"
 
 
-class StreamFieldFormBlock(BaseFormFieldsBlock):
+class StreamFieldFormBlock(blocks.StreamBlock):
     """A mixin used to use StreamField in a form builder, by selecting some blocks to add fields."""
 
     singleline = SinglelineFormFieldBlock()
@@ -341,6 +340,8 @@ class StreamFieldFormBlock(BaseFormFieldsBlock):
     datetime = DateTimeFormFieldBlock()
     hidden = HiddenFormFieldBlock()
 
+    subclasses: ClassVar = []
+
     class Meta:  # type: ignore
         form_classname = "formbuilder-fields-block"
         collapsed = True
@@ -352,6 +353,17 @@ class StreamFieldFormBlock(BaseFormFieldsBlock):
         for idx, slug in enumerate([block.value["slug"] for block in blocks]):
             duplicates[slug] = (duplicates[slug] if slug in duplicates else []) + [idx]
         return {k: v for k, v in duplicates.items() if len(v) > 1}
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.subclasses.append(cls)
+
+    def get_blocks(self) -> dict[str, blocks.StreamBlock]:
+        """Get all the declared blocks from all subclasses."""
+        declared_blocks = {}
+        for subclass in self.subclasses:
+            declared_blocks.update(subclass.declared_blocks)
+        return declared_blocks
 
     def clean(self, value: Any, ignore_required_constraints: bool = False) -> StreamValue:
         """Add duplicates attribute in the block class."""

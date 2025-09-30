@@ -13,10 +13,10 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.models import FormSubmission
 
-from wagtail_form_plugins.base import BaseFormPage, BaseFormSubmission
+from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
 
 
-class AuthFormSubmission(BaseFormSubmission):
+class AuthFormSubmission(StreamFieldFormSubmission):
     """A form submission class used to store the form user in the submission."""
 
     user = models.ForeignKey(
@@ -38,7 +38,7 @@ class AuthFormSubmission(BaseFormSubmission):
         abstract = True
 
 
-class AuthFormPage(BaseFormPage):
+class AuthFormPage(StreamFieldFormPage):
     """A form page class used to add named form functionnality to a form, allowing to identify the user who
     answered the form, in order to display it on form results and authorise a user to answer a form
     only once."""

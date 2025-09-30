@@ -7,9 +7,9 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.blocks.field_block import RichTextBlock
 
-from wagtail_form_plugins.base.blocks import BaseFormFieldsBlock
-from wagtail_form_plugins.templating.formatter import TemplatingFormatter
 from wagtail_form_plugins.utils import LocalBlocks
+from wagtail_form_plugins.streamfield import StreamFieldFormBlock
+from .formatter import TemplatingFormatter
 
 TEMPLATING_HELP_INTRO = _("This field supports the following templating syntax:")
 
@@ -24,7 +24,7 @@ def build_help_html(help_text: str) -> str:
     return HELP_TEXT_SUFFIX % f"{TEMPLATING_HELP_INTRO}\n{help_text}"
 
 
-class TemplatingFormBlock(BaseFormFieldsBlock):
+class TemplatingFormBlock(StreamFieldFormBlock):
     """A mixin used to add templating functionnality to form field wagtail blocks."""
 
     templating_formatter_class = TemplatingFormatter

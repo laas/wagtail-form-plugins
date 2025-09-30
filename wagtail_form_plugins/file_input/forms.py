@@ -8,22 +8,24 @@ from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError, widgets
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_form_plugins.base import BaseFormBuilder
-from wagtail_form_plugins.streamfield.forms import FieldWithId
+from wagtail_form_plugins.streamfield.forms import FieldWithSlug, FormField, StreamFieldFormBuilder
 
 
-class FileField(FieldWithId, forms.FileField):
+class FileField(FieldWithSlug, forms.FileField):
     """A Django FileField class with an addititional slug attribute."""
 
     pass
 
 
-class FileInputFormBuilder(BaseFormBuilder):
+class FileInputFormBuilder(StreamFieldFormBuilder):
     """Form builder class that adds file input functionnality to a form."""
 
     file_input_max_size = 1 * 1024 * 1024
     file_input_allowed_extensions: ClassVar = ["pdf"]
-    extra_field_options: ClassVar = ["allowed_extensions"]
+
+    def __init__(self, fields: list[FormField]):
+        super().__init__(fields)
+        self.extra_field_options += ["allowed_extensions"]
 
     def file_input_size_validator(self, value: File) -> None:
         """Validate the size of a file."""

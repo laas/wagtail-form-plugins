@@ -6,11 +6,10 @@ from datetime import datetime as dt
 from datetime import timezone as tz
 from typing import Any
 
-from django.forms import BaseForm, Field, Form
+from django.forms import BaseForm, Form
 
-from wagtail_form_plugins.base import BaseFormPage
-from wagtail_form_plugins.base.forms import BaseField
-from wagtail_form_plugins.streamfield.forms import StreamFieldFormBuilder
+from wagtail_form_plugins.utils import AnyDict, StrDict
+from wagtail_form_plugins.streamfield import FormField, StreamFieldFormPage
 
 OPERATIONS = {
     "eq": lambda a, b: a == b,
@@ -31,21 +30,9 @@ OPERATIONS = {
     "nc": lambda a, b: not a,
 }
 
-StrDict = dict[str, str]
-AnyDict = dict[str, Any]
 
-
-class FormField(Field):
-    slug: str
-    id: str
-
-
-class ConditionalFieldsFormPage(BaseFormPage):
+class ConditionalFieldsFormPage(StreamFieldFormPage):
     """Form page used to add conditional fields functionnality to a form."""
-
-    def __init__(self, *args, **kwargs):
-        self.form_builder_class.extra_field_options = ["rule"]
-        super().__init__(*args, **kwargs)
 
     def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore
         """Build and return the form instance."""
@@ -56,9 +43,12 @@ class ConditionalFieldsFormPage(BaseFormPage):
             form.full_clean()
             active_fields = self.get_active_fields(form.cleaned_data)
 
-        for form_field in form.fields.values():  # type: ignore
-            form_field: FormField
-            field = self.get_form_fields_dict()[form_field.slug]
+        for form_field in form.fields.values():
+            print("form_field:", form_field.__dict__)
+            # TODO: check slug here
+            field_slug = form_field.slug  # type: ignore
+
+            field = self.get_form_fields_dict()[field_slug]
 
             if "rule" not in field.options:
                 continue
@@ -66,11 +56,12 @@ class ConditionalFieldsFormPage(BaseFormPage):
             if args and form_field.slug not in active_fields:  # type: ignore
                 form_field.required = False
 
+            # TODO: possible d'avoir field.rule plutôt, avec rule typé ?
             raw_rule = field.options["rule"]
             field_rule = self.format_rule(raw_rule[0]) if raw_rule else {}
 
             new_attributes = {
-                "id": field.id,
+                "id": field.block_id,
                 "data-label": form_field.label,
                 "data-widget": form_field.widget.__class__.__name__,
                 "data-rule": json.dumps(field_rule),
@@ -105,7 +96,7 @@ class ConditionalFieldsFormPage(BaseFormPage):
         return int(fmt_value.timestamp())
 
     @classmethod
-    def format_rule(cls, raw_rule: dict[str, Any]) -> dict[str, Any]:
+    def format_rule(cls, raw_rule: AnyDict) -> AnyDict:
         """Recusively format a field rule in order to facilitate its parsing on the client side."""
         value = raw_rule["value"]
 
@@ -133,7 +124,7 @@ class ConditionalFieldsFormPage(BaseFormPage):
             },
         }
 
-    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
+    def get_submission_attributes(self, form: Form) -> AnyDict:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         attributes = super().get_submission_attributes(form)
         active_fields = self.get_active_fields(form.cleaned_data)
@@ -187,23 +178,24 @@ class ConditionalFieldsFormPage(BaseFormPage):
             print("error when solving rule:", left_operand, rule["operator"], right_operand)
             return False
 
-    def get_active_fields(self, form_data: dict[str, Any]) -> list[str]:
+    def get_choices_dict(self, field: FormField) -> StrDict:
+        # TODO: idéalement field.options["choices"] devrait renvoyer un tableau vide si "choices" pas dans field.options
+        if "choices" not in field.options:
+            return {}
+
+        # NOTE: field.options["choices"] doit être déjà formatté
+        # fmt_options = StreamFieldFormBuilder.get_choices_options(field.options)
+        return {f"c{idx + 1}": choice[0] for idx, choice in enumerate(field.options["choices"])}
+
+    def get_active_fields(self, form_data: AnyDict) -> list[str]:
         """Return the list of fields slug where the computed conditional value of the field is true."""
-
-        def get_choices(field: BaseField) -> StrDict:
-            if "choices" not in field.options:
-                return {}
-
-            fmt_options = StreamFieldFormBuilder.format_field_options(field.options)
-            return {f"c{idx + 1}": choice[0] for idx, choice in enumerate(fmt_options["choices"])}
-
         fields_dict = self.get_form_fields_dict()
-        choices_slugs = {field_id: get_choices(field) for field_id, field in fields_dict.items()}
+        choices_slugs = {fld_id: self.get_choices_dict(fld) for fld_id, fld in fields_dict.items()}
         slugs = {field_id: field.clean_name for field_id, field in fields_dict.items()}
 
         active_fields = []
         for field in fields_dict.values():
-            rules = field.options["rule"]
+            rules = field.options.get("rule", None)
             if not rules or (
                 self.process_rule(form_data, choices_slugs, rules[0])
                 and (

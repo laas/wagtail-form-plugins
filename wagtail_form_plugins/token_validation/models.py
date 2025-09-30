@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.models import FormSubmission
 from wagtail.fields import RichTextField
 
-from wagtail_form_plugins.base import BaseFormPage, BaseFormSubmission
+from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
 
 
 class ValidationForm(Form):
@@ -29,7 +29,7 @@ class ValidationForm(Form):
     )
 
 
-class TokenValidationFormSubmission(BaseFormSubmission):
+class TokenValidationFormSubmission(StreamFieldFormSubmission):
     """A mixin used to update the email value in the submission."""
 
     email = models.EmailField(default="")
@@ -45,7 +45,7 @@ class TokenValidationFormSubmission(BaseFormSubmission):
         abstract = True
 
 
-class TokenValidationFormPage(BaseFormPage):
+class TokenValidationFormPage(StreamFieldFormPage):
     """A mixin used to add validation functionnality to a form."""
 
     token_validation_form_class = ValidationForm
