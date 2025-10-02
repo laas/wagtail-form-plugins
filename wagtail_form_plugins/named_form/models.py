@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.db import models
-from django.forms import Form
+from django.forms import BaseForm
 from django.http import HttpRequest
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
@@ -64,11 +64,11 @@ class AuthFormPage(StreamFieldFormPage):
             *super().get_data_fields(),
         ]
 
-    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         user = form.user  # type: ignore
         return {
-            **super().get_submission_attributes(form),
+            **super().pre_process_form_submission(form),
             "user": None if isinstance(user, AnonymousUser) else user,
         }
 

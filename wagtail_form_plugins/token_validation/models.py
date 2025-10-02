@@ -8,7 +8,7 @@ from typing import Any, ClassVar
 from django.conf import settings
 from django.contrib import messages
 from django.db import models
-from django.forms import EmailField, Form
+from django.forms import BaseForm, EmailField, Form
 from django.http import HttpRequest
 from django.template.response import TemplateResponse
 from django.utils.html import strip_tags
@@ -85,15 +85,15 @@ class TokenValidationFormPage(StreamFieldFormPage):
         for token in to_remove:
             del self.tokens[token]
 
-    def extract_email(self, form: Form) -> str:
+    def extract_email(self, form: BaseForm) -> str:
         """Extract the email encoded in the token."""
         encoded_email: str = form.data["wfp_token"].split("-")[0]
         return base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
 
-    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         return {
-            **super().get_submission_attributes(form),
+            **super().pre_process_form_submission(form),
             "email": self.extract_email(form),
         }
 
@@ -135,7 +135,7 @@ class TokenValidationFormPage(StreamFieldFormPage):
         context["form"] = self.token_validation_form_class()
         return TemplateResponse(request, self.get_template(request), context)
 
-    def process_form_submission(self, form: Form) -> FormSubmission:
+    def process_form_submission(self, form: BaseForm) -> FormSubmission:
         """Create and return submission instance. Update email value."""
         submission = super().process_form_submission(form)
         submission.email = self.extract_email(form)  # type: ignore

@@ -1,17 +1,22 @@
 """Models definition for the Conditional Fields form plugin."""
 
 import json
-from datetime import date
-from datetime import datetime as dt
-from datetime import timezone as tz
-from typing import Any
+from collections.abc import Callable
+from datetime import date, datetime, time, timezone
+from typing import Any, TypedDict
 
-from django.forms import BaseForm, Form
+from django.forms import BaseForm
 
-from wagtail_form_plugins.utils import AnyDict, StrDict
-from wagtail_form_plugins.streamfield import FormField, StreamFieldFormPage
+from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.forms import FormField
+from wagtail_form_plugins.utils import AnyDict
 
-OPERATIONS = {
+from .blocks import RuleBlockValueDict
+
+Operation = Callable[[Any, Any], bool]
+
+
+OPERATIONS: dict[str, Operation] = {
     "eq": lambda a, b: a == b,
     "neq": lambda a, b: a != b,
     "is": lambda a, b: a == b,
@@ -26,9 +31,19 @@ OPERATIONS = {
     "ate": lambda a, b: a >= b,
     "ct": lambda a, b: b in a,
     "nct": lambda a, b: b not in a,
-    "c": lambda a, b: a,
+    "c": lambda a, b: bool(a),
     "nc": lambda a, b: not a,
 }
+
+
+class EntryDict(TypedDict):
+    target: str
+    val: int | str
+    opr: str
+
+
+class FormattedRuleDict(TypedDict):
+    entry: EntryDict
 
 
 class ConditionalFieldsFormPage(StreamFieldFormPage):
@@ -41,136 +56,139 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         active_fields = []
         if args:
             form.full_clean()
-            active_fields = self.get_active_fields(form.cleaned_data)
+            active_fields = self.get_enabled_fields(form.cleaned_data)
 
-        for form_field in form.fields.values():
-            print("form_field:", form_field.__dict__)
-            # TODO: check slug here
-            field_slug = form_field.slug  # type: ignore
+        form_fields = self.get_form_fields_dict()
+        for field in form.fields.values():
+            # print("form_field:", form_field.__dict__)
+            # TODO: check from where slug come from
+            form_field = form_fields[field.slug]  # type: ignore
 
-            field = self.get_form_fields_dict()[field_slug]
-
-            if "rule" not in field.options:
+            if "rule" not in form_field.options:
                 continue
 
-            if args and form_field.slug not in active_fields:  # type: ignore
-                form_field.required = False
+            if args and field.slug not in active_fields:  # type: ignore
+                field.required = False
 
             # TODO: possible d'avoir field.rule plutôt, avec rule typé ?
-            raw_rule = field.options["rule"]
-            field_rule = self.format_rule(raw_rule[0]) if raw_rule else {}
+            raw_rule = form_field.options["rule"]
+            field_rule = self.format_rule(raw_rule[0]["value"]) if raw_rule else {}
 
+            # TODO: changer "data-widget": ... par "data-type": field.type ?
             new_attributes = {
-                "id": field.block_id,
-                "data-label": form_field.label,
-                "data-widget": form_field.widget.__class__.__name__,
+                "id": form_field.block_id,
+                "data-label": field.label,
+                "data-widget": field.widget.__class__.__name__,
                 "data-rule": json.dumps(field_rule),
             }
 
-            form_field.widget.attrs.update(new_attributes)
+            field.widget.attrs.update(new_attributes)
 
         form.full_clean()
         return form
 
     @classmethod
-    def format_value_date(cls, value: Any) -> int:
-        fmt_value = value or dt.now()
-        if isinstance(fmt_value, str):
-            fmt_value = dt.strptime(fmt_value, "%Y-%m-%d").replace(tzinfo=tz.utc)
-        elif isinstance(fmt_value, date):
-            fmt_value = dt.combine(fmt_value, dt.min.time())
-        return int(fmt_value.timestamp())
-
-    @classmethod
-    def format_value_time(cls, value: Any) -> int:
-        fmt_value = value or dt.now()
-        if isinstance(fmt_value, str):
-            fmt_value = dt.fromisoformat(f"1970-01-01T{fmt_value}")
-        return int(fmt_value.timestamp())
-
-    @classmethod
-    def format_value_datetime(cls, value: Any) -> int:
-        fmt_value = value or dt.now()
-        if isinstance(fmt_value, str):
-            fmt_value = dt.fromisoformat(fmt_value)
-        return int(fmt_value.timestamp())
-
-    @classmethod
-    def format_rule(cls, raw_rule: AnyDict) -> AnyDict:
-        """Recusively format a field rule in order to facilitate its parsing on the client side."""
-        value = raw_rule["value"]
-
-        if value["field"] in ["and", "or"]:
-            return {value["field"]: [cls.format_rule(_rule) for _rule in value["rules"]]}
-
-        if value.get("value_date"):
-            fmt_value = cls.format_value_date(value["value_date"])
-        elif value.get("value_time"):
-            fmt_value = cls.format_value_time(value["value_time"])
-        elif value.get("value_datetime"):
-            fmt_value = cls.format_value_time(value["value_datetime"])
-        elif value.get("value_dropdown"):
-            fmt_value = value["value_dropdown"]
-        elif value.get("value_number"):
-            fmt_value = int(value["value_number"])
+    def get_date_timestamp(cls, value: date | str | None) -> int:
+        if not value:
+            value_dt = datetime.now()
+        elif isinstance(value, str):
+            value_dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=timezone.utc)
         else:
-            fmt_value = value["value_char"]
+            value_dt = datetime.combine(value, datetime.min.time())
+        return int(value_dt.timestamp())
+
+    @classmethod
+    def get_time_timestamp(cls, value: time | str | None) -> int:
+        if not value:
+            value_dt = datetime.now()
+        elif isinstance(value, str):
+            value_dt = datetime.fromisoformat(f"1970-01-01T{value}")
+        else:
+            value_dt = datetime.combine(date(1970, 1, 1), value)
+        return int(value_dt.timestamp())
+
+    @classmethod
+    def get_datetime_timestamp(cls, value: datetime | str | None) -> int:
+        if not value:
+            value_dt = datetime.now()
+        elif isinstance(value, str):
+            value_dt = datetime.fromisoformat(value)
+        else:
+            value_dt = value
+        return int(value_dt.timestamp())
+
+    @classmethod
+    def format_rule(cls, rule: RuleBlockValueDict) -> FormattedRuleDict:
+        """Recusively format a field rule in order to facilitate its parsing on the client side."""
+
+        if rule["field"] in ["and", "or"]:
+            # TODO: change FormattedRuleDict format to avoid dynamic keys:
+            # something like {entry: EntryDict, fields: list[FormattedRuleDict]}
+            return {rule["field"]: [cls.format_rule(_rule["value"]) for _rule in rule["rules"]]}  # type: ignore
+
+        if rule["value_date"]:
+            fmt_value = cls.get_date_timestamp(rule["value_date"])
+        elif rule["value_time"]:
+            fmt_value = cls.get_time_timestamp(rule["value_time"])
+        elif rule["value_datetime"]:
+            fmt_value = cls.get_datetime_timestamp(rule["value_datetime"])
+        elif rule["value_dropdown"]:
+            fmt_value = rule["value_dropdown"]
+        elif rule["value_number"]:
+            fmt_value = int(rule["value_number"])
+        else:
+            fmt_value = rule["value_char"]
 
         return {
             "entry": {
-                "target": value["field"],
+                "target": rule["field"],
                 "val": fmt_value,
-                "opr": value["operator"],
+                "opr": rule["operator"],
             },
         }
 
-    def get_submission_attributes(self, form: Form) -> AnyDict:
-        """Return a dictionary containing the attributes to pass to the submission constructor."""
-        attributes = super().get_submission_attributes(form)
-        active_fields = self.get_active_fields(form.cleaned_data)
-        return {
-            **attributes,
-            "form_data": {
-                k: (v if k in active_fields else None) for k, v in attributes["form_data"].items()
-            },
-        }
+    def get_right_operand(self, field: FormField, leaf_rule: RuleBlockValueDict) -> str | int:
+        """
+        Return the right operand of the rule operation.
+        The leaf_rule is a rule that does not contain a sub rule.
+        """
+        char_fields = ["singleline", "multiline", "email", "hidden", "url"]
+        choice_fields = ["checkboxes", "dropdown", "multiselect", "radio"]
 
+        if field.type in char_fields:
+            return leaf_rule["value_char"]
+        if field.type == "number":
+            return int(leaf_rule["value_number"])
+        if field.type in choice_fields:
+            dropdown_val = leaf_rule["value_dropdown"]
+            return field.choices[dropdown_val] if (dropdown_val and field.choices) else dropdown_val
+        if field.type == "date":
+            return self.get_date_timestamp(leaf_rule["value_date"])
+        if field.type == "time":
+            return self.get_time_timestamp(leaf_rule["value_time"])
+        if field.type == "datetime":
+            return self.get_datetime_timestamp(leaf_rule["value_datetime"])
+        return ""
+
+    # TODO: typer form_data
     def process_rule(
-        self,
-        form_data: AnyDict,
-        choices_slugs: dict[str, StrDict],
-        rule: AnyDict,
-    ) -> Any:
-        field_id = str(rule.get("field", ""))
-        field = self.get_form_fields_dict()[field_id]
+        self, fields: dict[str, FormField], form_data: AnyDict, rule: RuleBlockValueDict
+    ) -> bool:
+        rule_field_attr = rule["field"]
 
-        if field_id in ["and", "or"]:
+        if rule_field_attr in ["and", "or"]:
             results = [
-                self.process_rule(form_data, choices_slugs, sub_rule) for sub_rule in rule["rules"]
+                self.process_rule(fields, form_data, sub_rule["value"])
+                for sub_rule in rule["rules"]
             ]
-            return all(results) if field_id == "and" else any(results)
+            return all(results) if rule_field_attr == "and" else any(results)
 
-        left_operand = form_data.get(field.clean_name)
-
-        if field.field_type in ["singleline", "multiline", "email", "hidden", "url"]:
-            right_operand = rule["value_char"]
-        elif field.field_type == "number":
-            right_operand = float(rule["value_number"])
-        elif field.field_type in ["checkboxes", "dropdown", "multiselect", "radio"]:
-            choice = choices_slugs.get(field_id)
-            dropdown_val: str = rule["value_dropdown"]
-            right_operand = choice[dropdown_val] if dropdown_val and choice else dropdown_val
-
-        elif field.field_type == "date":
-            right_operand = rule["value_date"]
-        elif field.field_type == "time":
-            right_operand = rule["value_time"]
-        elif field.field_type == "datetime":
-            right_operand = rule["value_datetime"]
-        else:  # checkbox, file, label
-            right_operand = ""
+        field = next(field for field in fields.values() if field.block_id == rule_field_attr)
 
         func = OPERATIONS[rule["operator"]]
+        left_operand = form_data[field.slug]
+        # TODO: vérifier si form_data est bien formaté ici (date en timestamp, number en int, etc)
+        right_operand = self.get_right_operand(field, rule)
 
         try:
             return func(left_operand, right_operand)
@@ -178,33 +196,29 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
             print("error when solving rule:", left_operand, rule["operator"], right_operand)
             return False
 
-    def get_choices_dict(self, field: FormField) -> StrDict:
-        # TODO: idéalement field.options["choices"] devrait renvoyer un tableau vide si "choices" pas dans field.options
-        if "choices" not in field.options:
-            return {}
-
-        # NOTE: field.options["choices"] doit être déjà formatté
-        # fmt_options = StreamFieldFormBuilder.get_choices_options(field.options)
-        return {f"c{idx + 1}": choice[0] for idx, choice in enumerate(field.options["choices"])}
-
-    def get_active_fields(self, form_data: AnyDict) -> list[str]:
+    def get_enabled_fields(self, form_data: AnyDict) -> list[str]:
         """Return the list of fields slug where the computed conditional value of the field is true."""
+        enabled_fields = super().get_enabled_fields(form_data)
         fields_dict = self.get_form_fields_dict()
-        choices_slugs = {fld_id: self.get_choices_dict(fld) for fld_id, fld in fields_dict.items()}
-        slugs = {field_id: field.clean_name for field_id, field in fields_dict.items()}
 
-        active_fields = []
-        for field in fields_dict.values():
-            rules = field.options.get("rule", None)
-            if not rules or (
-                self.process_rule(form_data, choices_slugs, rules[0])
-                and (
-                    rules[0]["field"] in ["and", "or"] or slugs[rules[0]["field"]] in active_fields
-                )
-            ):
-                active_fields.append(field.clean_name)
+        new_enabled_fields = []
+        for field_slug in enabled_fields:
+            field = fields_dict[field_slug]
+            rules: list[RuleBlockValueDict] = field.options.get("rule", [])
 
-        return active_fields
+            if not rules:
+                new_enabled_fields.append(field_slug)
+                break
+
+            is_rule_true = self.process_rule(fields_dict, form_data, rules[0])
+            field_attr = rules[0]["field"]
+            rule_field = next(fld for fld in fields_dict.values() if fld.block_id == field_attr)
+            is_rule_field_enabled = field_attr in ["and", "or"] or rule_field.slug in enabled_fields
+
+            if is_rule_true and is_rule_field_enabled:
+                new_enabled_fields.append(field_slug)
+
+        return new_enabled_fields
 
     class Meta:  # type: ignore
         abstract = True

@@ -4,12 +4,14 @@ from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
+from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from wagtail.admin.admin_url_finder import AdminURLFinder
-from wagtail.contrib.forms.utils import get_field_clean_name
+from wagtail.contrib.forms.models import FormSubmission
 
-from wagtail_form_plugins.utils import validate_identifier
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
+from wagtail_form_plugins.utils import StrDict, validate_identifier
 
 TMPL_SEP_LEFT = "{"
 TMPL_SEP_RIGHT = "}"
@@ -20,25 +22,25 @@ class TemplatingFormatter:
     """Class used to format the template syntax."""
 
     def __init__(self, context: dict[str, Any]):
-        self.submission = context.get("form_submission", None)
-        self.form = context["page"]
-        self.request = context["request"]
+        self.submission: FormSubmission | None = context.get("form_submission", None)
+        self.form_page: StreamFieldFormPage = context["page"]
+        self.request: HttpRequest = context["request"]
         self.data = self.get_data()
         self.values = self.get_values()
 
-    def get_data(self) -> dict[str, dict[str, str]]:
+    def get_data(self) -> dict[str, StrDict]:
         """Return the template data. Override to customize template."""
         formated_fields = self.get_formated_fields()
         return {
-            "user": self.get_user_data(self.request.user),
-            "author": self.get_user_data(self.form.owner),
+            "user": self.get_user_data(self.request.user),  # type: ignore
+            "author": self.get_user_data(self.form_page.owner),
             "form": self.get_form_data(),
             "result": self.get_result_data(formated_fields),
             "field_label": {f_id: f_label for f_id, [f_label, f_value] in formated_fields.items()},
             "field_value": {f_id: f_value for f_id, [f_label, f_value] in formated_fields.items()},
         }
 
-    def get_values(self) -> dict[str, str]:
+    def get_values(self) -> StrDict:
         """Return a dict containing all formatter values on the root level."""
         values = {}
 
@@ -57,33 +59,20 @@ class TemplatingFormatter:
             return {}
 
         fields = {}
-        active_fields = self.form.get_active_fields(self.submission.form_data)
+        enabled_fields = self.form_page.get_enabled_fields(self.submission.form_data)
 
-        for field in self.form.form_fields:
-            if field.block.name in ["hidden", "label"]:
+        for field in self.form_page.get_form_fields():
+            if field.slug not in enabled_fields:
                 continue
 
-            field_slug = field.value["slug"]
-            if field_slug not in active_fields:
-                continue
+            value = self.submission.form_data[field.slug]
+            fmt_value = self.form_page.format_field_value(field, value)
+            if fmt_value is not None:
+                fields[field.slug] = (field.label, fmt_value)
 
-            value = self.submission.form_data[field_slug]
-            if value is None:
-                continue
-
-            fmt_value = self.form.format_field_value(field.block.name, value)
-            if fmt_value == "-":
-                continue
-
-            if field.block.name in ["checkboxes", "dropdown", "multiselect", "radio"]:
-                choices = {get_field_clean_name(c): c for c in field.value["choices"].splitlines()}
-                if fmt_value:
-                    fmt_value = ", ".join([choices[v].lstrip("*") for v in fmt_value.split(",")])
-
-            fields[field_slug] = (field.value["label"], fmt_value)
         return fields
 
-    def get_user_data(self, user: User) -> dict[str, str]:
+    def get_user_data(self, user: User) -> StrDict:
         """Return a dict used to format template variables related to the form user or author."""
         is_anonymous = isinstance(user, AnonymousUser)
         return {
@@ -94,18 +83,18 @@ class TemplatingFormatter:
             "email": "" if is_anonymous else user.email,
         }
 
-    def get_form_data(self) -> dict[str, str]:
+    def get_form_data(self) -> StrDict:
         """Return a dict used to format template variables related to the form itself."""
         finder = AdminURLFinder()
         return {
-            "title": self.form.title,
-            "url": self.request.build_absolute_uri(self.form.url),
-            "publish_date": self.form.first_published_at.strftime("%d/%m/%Y"),
-            "publish_time": self.form.first_published_at.strftime("%H:%M"),
-            "url_results": settings.WAGTAILADMIN_BASE_URL + finder.get_edit_url(self.form),
+            "title": self.form_page.title,
+            "url": self.request.build_absolute_uri(self.form_page.url),
+            "publish_date": self.form_page.first_published_at.strftime("%d/%m/%Y"),
+            "publish_time": self.form_page.first_published_at.strftime("%H:%M"),
+            "url_results": settings.WAGTAILADMIN_BASE_URL + finder.get_edit_url(self.form_page),
         }
 
-    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]) -> dict[str, str]:
+    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]) -> StrDict:
         """Return a dict used to format template variables related to the form results."""
         if not self.submission:
             return {}

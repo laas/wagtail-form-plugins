@@ -4,20 +4,20 @@ from dataclasses import dataclass
 
 from django import forms
 
-from wagtail.contrib.forms.utils import get_field_clean_name
 from wagtail.contrib.forms.forms import FormBuilder
+from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.utils import AnyDict
 
+from typing_extensions import Self
+
 
 @dataclass
-class FormField:
+class WaftailFormField:
     """
-    The field class used in the form.
-    It defines all required attributes used by wagtail such as in FormMixin.get_data_fields,
+    A dataclass containing field attributes used by wagtail such as in FormMixin.get_data_fields,
     FormBuilder.formfields(), FormBuilder.get_field_options(), and in first attribute of all
-    create_field methods, as well as its streamfield block id and an options dict to add more field
-    attributes via plugins.
+    create_field methods.
     """
 
     clean_name: str
@@ -27,8 +27,48 @@ class FormField:
     required: bool
     default_value: str
 
+
+@dataclass
+class FormField(WaftailFormField):
+    """
+    A data class representing a field with some extra attributes and syntactic sugar.
+    """
+
     block_id: str
     options: AnyDict
+    disabled: bool
+    choices: dict[str, str]
+
+    @property
+    def slug(self) -> str:
+        return self.clean_name
+
+    @property
+    def type(self) -> str:
+        return self.field_type
+
+    @classmethod
+    def from_streamfield_data(cls, field_data: AnyDict) -> Self:
+        """Return the form fields based the streamfield value of the form page form_fields field."""
+        base_options = ["slug", "label", "help_text", "is_required", "initial"]
+
+        field_value = field_data["value"]
+        options = {k: v for k, v in field_value.items() if k not in base_options}
+        choice_lines = options.get("choices", "").splitlines()
+        choices = filter(None, [line.strip() for line in choice_lines])
+
+        return cls(
+            block_id=field_data["id"],
+            clean_name=field_value["slug"],
+            field_type=field_data["type"],
+            label=field_value["label"],
+            help_text=field_value["help_text"],
+            required=field_value["is_required"],
+            default_value=field_value.get("initial", ""),
+            disabled=field_value.get("disabled", False),
+            choices={f"c{idx + 1}": choice for idx, choice in enumerate(choices)},
+            options=options,
+        )
 
 
 class FieldWithSlug:
@@ -186,7 +226,7 @@ class StreamFieldFormBuilder(FormBuilder):
         """Return the options given to a field. Override to add or modify some options."""
         options = {
             **super().get_field_options(field),
-            "slug": field.clean_name,
+            "slug": field.slug,
             **{k: v for k, v in field.options.items() if k not in self.extra_field_options},
         }
 

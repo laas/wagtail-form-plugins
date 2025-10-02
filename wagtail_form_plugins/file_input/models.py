@@ -7,10 +7,11 @@ from typing import Any
 
 from django.conf import settings
 from django.db import models
-from django.forms import Form
+from django.forms import BaseForm
 
-from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.file_input.views import FileInputSubmissionsListView
+from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.forms import FormField
 
 
 class AbstractFileInput(models.Model):
@@ -45,29 +46,30 @@ class FileInputFormPage(StreamFieldFormPage):
     file_input_upload_dir = "forms_uploads/%Y/%m/%d"
     file_input_model: type[AbstractFileInput]
 
-    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
-        attributes = super().get_submission_attributes(form)
+        submission_data = super().pre_process_form_submission(form)
+        form_fields = self.get_form_fields_dict()
 
-        file_form_fields = [f.clean_name for f in self.get_form_fields() if f.field_type == "file"]
-
-        for field_name, field_value in attributes["form_data"].items():
-            if field_name in file_form_fields:
+        for field_slug, field_value in submission_data["form_data"].items():
+            form_field = form_fields[field_slug]
+            if form_field.type == "file":
                 file_input = self.file_input_model.objects.create(
                     file=field_value,
-                    field_name=field_name,
+                    field_name=field_slug,
                 )
                 file_input.upload_dir = self.file_input_upload_dir
-                attributes["form_data"][field_name] = file_input.file.url if file_input.file else ""
+                file_url = file_input.file.url if file_input.file else ""
+                submission_data["form_data"][field_slug] = file_url
 
-        return attributes
+        return submission_data
 
-    def format_field_value(self, field_type: str, field_value: Any) -> str:
+    def format_field_value(self, field: FormField, field_value: Any) -> str | None:
         """Format the field value. Used to display user-friendly values in result table."""
-        fmt_value = super().format_field_value(field_type, field_value)
+        fmt_value = super().format_field_value(field, field_value)
 
-        if field_type == "file":
-            return (settings.WAGTAILADMIN_BASE_URL + fmt_value) if field_value else "-"
+        if field.type == "file":
+            return (settings.WAGTAILADMIN_BASE_URL + fmt_value) if field_value else None
 
         return fmt_value
 

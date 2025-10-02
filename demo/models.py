@@ -127,6 +127,10 @@ class CustomUser(AbstractUser):
 class CustomTemplatingFormatter(templating.TemplatingFormatter):
     """Custom templating formatter used to personalize template formatting such as user template."""
 
+    def __init__(self, context: dict[str, Any]):
+        super().__init__(context)
+        self.submission: CustomFormSubmission  # type: ignore
+
     def get_user_data(self, user: User) -> dict[str, str]:
         """Return a dict used to format template variables related to the form user or author."""
         user_data: dict[str, Any] = super().get_user_data(user)

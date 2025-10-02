@@ -2,11 +2,13 @@
 
 from typing import Any
 
-from django.forms import Form
-from django.http import HttpRequest, HttpResponseRedirect, QueryDict
+from django.forms import BaseForm
+from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.forms import FormField
+from wagtail_form_plugins.streamfield.models import StreamFieldFormSubmission
 from wagtail_form_plugins.templating.formatter import TemplatingFormatter
 from wagtail_form_plugins.utils import create_links
 
@@ -18,49 +20,43 @@ class TemplatingFormPage(StreamFieldFormPage):
 
     def format_submission(
         self,
-        context_data: dict,
+        submission: StreamFieldFormSubmission,
+        fields: dict[str, FormField],
         formatter: TemplatingFormatter,
-        post: QueryDict,
     ) -> None:
         """Format the submission passed to the given context data, using the given formatter."""
-        form_submission = context_data["form_submission"]
 
-        disabled_fields = [
-            field.value["slug"]
-            for field in context_data["page"].form_fields
-            if field.value.get("disabled")
-        ]
+        new_submission_data: dict[str, str] = {}
+        for data_key, data_value in submission.form_data.items():
+            field = fields.get(data_key, None)
+            if field is None:
+                break
 
-        fields_with_choices = [
-            field.value["slug"]
-            for field in context_data["page"].form_fields
-            if field.value.get("choices")
-        ]
+            # if field.choices:
+            #     new_submission_data[data_key] = ",".join(post.getlist(data_key))
 
-        new_submission_data = {}
-        for data_key, data_value in form_submission.form_data.items():
-            if data_key in fields_with_choices:
-                new_submission_data[data_key] = ",".join(post.getlist(data_key))
-
-            if data_key in disabled_fields:
+            if field.disabled:
                 fmt_data = formatter.format(data_value) if data_value else "-"
                 if fmt_data != data_value:
                     new_submission_data[data_key] = fmt_data
 
         if new_submission_data:
-            form_submission.form_data = {
-                **form_submission.form_data,
+            submission.form_data = {
+                **submission.form_data,
                 **new_submission_data,
             }
-            form_submission.save()
+            submission.save()
 
-    def get_submission_attributes(self, form: Form) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
-        attributes = super().get_submission_attributes(form)
+        # TODO: remove?
+        submission_data = super().pre_process_form_submission(form)
 
         return {
-            **attributes,
-            "form_data": {dk: form.data.get(dk, dv) for dk, dv in attributes["form_data"].items()},
+            **submission_data,
+            "form_data": {
+                dk: form.data.get(dk, dv) for dk, dv in submission_data["form_data"].items()
+            },
         }
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
@@ -73,15 +69,19 @@ class TemplatingFormPage(StreamFieldFormPage):
         formatter = self.templating_formatter_class(response.context_data)
 
         if request.method == "GET":
-            for field in response.context_data["form"].fields.values():
+            form: BaseForm = response.context_data["form"]
+            for field in form.fields.values():
                 if field.initial:
                     field.initial = formatter.format(field.initial)
 
         elif "form" not in response.context_data:
-            self.format_submission(response.context_data, formatter, request.POST)
-            formatter = self.templating_formatter_class(response.context_data)
+            form_submission: StreamFieldFormSubmission = response.context_data["form_submission"]
+            form_page: StreamFieldFormPage = response.context_data["page"]
+            form_fields = form_page.get_form_fields_dict()
+            self.format_submission(form_submission, form_fields, formatter)
 
-            for email in response.context_data["page"].emails_to_send:
+            # TODO: fix typing error
+            for email in form_page.emails_to_send:  # type: ignore
                 for field_name in ["subject", "message", "recipient_list", "reply_to"]:
                     fmt_value = formatter.format(str(email.value[field_name]))
                     if field_name == "message":

@@ -28,14 +28,14 @@ class EditableFormPage(StreamFieldFormPage):
         form.full_clean()
 
         if form.is_valid():
-            file_fields = [f.clean_name for f in form_fields if isinstance(f.widget, FileInput)]  # type: ignore
+            file_fields = [f.slug for f in form_fields if isinstance(f.widget, FileInput)]  # type: ignore
 
-            attrs = self.get_submission_attributes(form)  # type: ignore
-            attrs["form_data"] = {
-                k: v if k not in file_fields or v else submission.form_data[k]
-                for k, v in attrs["form_data"].items()
+            submission_data = self.pre_process_form_submission(form)  # type: ignore
+            submission_data["form_data"] = {
+                k: v if (k not in file_fields or v) else submission.form_data[k]
+                for k, v in submission_data["form_data"].items()
             }
-            for attr_key, attr_value in attrs.items():
+            for attr_key, attr_value in submission_data.items():
                 setattr(submission, attr_key, attr_value)
             submission.save()
             redirect_args = {"page_id": self.pk}

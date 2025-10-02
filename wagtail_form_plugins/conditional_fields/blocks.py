@@ -1,5 +1,7 @@
 """Block-related classes for conditional fields plugin."""
 
+from datetime import date, datetime, time
+from typing import TypedDict
 from uuid import UUID
 
 from django.core.exceptions import ValidationError
@@ -36,7 +38,23 @@ def validate_field(value: str) -> None:
         raise ChoiceError(value) from err
 
 
-class BooleanExpressionBuilderBlock(blocks.StructBlock):
+class RuleBlockDict(TypedDict):
+    value: "RuleBlockValueDict"
+
+
+class RuleBlockValueDict(TypedDict):
+    field: str
+    operator: str
+    value_char: str
+    value_number: int
+    value_dropdown: str
+    value_date: date
+    value_time: time
+    value_datetime: datetime
+    rules: list[RuleBlockDict]
+
+
+class RuleBlock(blocks.StructBlock):
     """A struct block used to construct a boolean expression."""
 
     field = blocks.CharBlock(
@@ -96,7 +114,7 @@ class BooleanExpressionBuilderBlock(blocks.StructBlock):
         icon = "view"
 
 
-class BooleanExpressionBuilderBlockAdapter(struct_block.StructBlockAdapter):
+class RuleBlockAdapter(struct_block.StructBlockAdapter):
     """Inject javascript and css files to a Wagtail admin page for the boolean expression builder."""
 
     js_constructor = "forms.blocks.BooleanExpressionBuilderBlock"
@@ -113,21 +131,21 @@ class BooleanExpressionBuilderBlockAdapter(struct_block.StructBlockAdapter):
         )
 
 
-register_adapter(BooleanExpressionBuilderBlockAdapter(), BooleanExpressionBuilderBlock)
+register_adapter(RuleBlockAdapter(), RuleBlock)
 
 
-class BooleanExpressionBuilderBlockLvl3(BooleanExpressionBuilderBlock):
+class RuleBlockLvl3(RuleBlock):
     """A struct block used to construct a third-level boolean expression."""
 
     class Meta:  # type: ignore
         form_classname = "formbuilder-beb formbuilder-beb-lvl3"
 
 
-class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
+class RuleBlockLvl2(RuleBlock):
     """A struct block used to construct a second-level boolean expression."""
 
     rules = blocks.ListBlock(
-        BooleanExpressionBuilderBlockLvl3(),
+        RuleBlockLvl3(),
         label=("Conditions"),
         form_classname="formbuilder-beb-rules",
         default=[],
@@ -137,11 +155,11 @@ class BooleanExpressionBuilderBlockLvl2(BooleanExpressionBuilderBlock):
         form_classname = "formbuilder-beb formbuilder-beb-lvl2"
 
 
-class BooleanExpressionBuilderBlockLvl1(BooleanExpressionBuilderBlock):
+class RuleBlockLvl1(RuleBlock):
     """A struct block used to construct a first-level boolean expression."""
 
     rules = blocks.ListBlock(
-        BooleanExpressionBuilderBlockLvl2(),
+        RuleBlockLvl2(),
         label=("Conditions"),
         form_classname="formbuilder-beb-rules",
         default=[],
@@ -157,7 +175,7 @@ class ConditionalFieldsFormBlock(StreamFieldFormBlock):
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
         local_blocks = local_blocks or []
         rule = blocks.ListBlock(
-            BooleanExpressionBuilderBlockLvl1(),
+            RuleBlockLvl1(),
             label=_("Visibility condition"),
             form_classname="formbuilder-field-block-rule",
             default=[],
