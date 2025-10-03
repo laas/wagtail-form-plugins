@@ -2,11 +2,12 @@
 
 from typing import Any
 
+from django.core.mail import EmailMultiAlternatives
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
-from django.utils.html import strip_tags
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.utils import build_email
 
 
 class EmailActionsFormPage(StreamFieldFormPage):
@@ -19,21 +20,26 @@ class EmailActionsFormPage(StreamFieldFormPage):
             return response
 
         if "form_submission" in response.context_data:
-            for email in response.context_data["page"].emails_to_send:
-                self.send_action_email(email.value)
+            form_page: StreamFieldFormPage = response.context_data["page"]
+            for email in form_page.emails_to_send:  # type: ignore
+                email = self.build_action_email(email.value)
+                self.send_action_email(email)
 
         return response
 
-    def send_action_email(self, email: dict[str, Any]) -> None:
-        """Send an e-mail"""
-        self.send_mail(
-            subject=email["subject"],
-            message=strip_tags(email["message"].replace("</p>", "</p>\n")),
-            from_email=email["from_email"],
-            recipient_list=[ea.strip() for ea in email["recipient_list"].split(",")],
-            html_message=email["message"],
-            reply_to=[ea.strip() for ea in email["reply_to"].split(",")],
+    def build_action_email(self, email_value: dict[str, Any]) -> EmailMultiAlternatives:
+        return build_email(
+            subject=email_value["subject"],
+            message=email_value["message"],
+            from_email=email_value["from_email"],
+            recipient_list=email_value["recipient_list"],
+            html_message=email_value["message"],
+            reply_to=email_value["reply_to"],
         )
+
+    def send_action_email(self, email: EmailMultiAlternatives) -> None:
+        """Send an e-mail"""
+        email.send()
 
     class Meta:  # type: ignore
         abstract = True

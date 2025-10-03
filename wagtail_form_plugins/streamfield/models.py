@@ -3,7 +3,6 @@
 from datetime import date, datetime, time
 from typing import Any
 
-from django.core.mail import EmailAlternative, EmailMultiAlternatives
 from django.forms import BaseForm
 from django.http import HttpRequest
 
@@ -105,27 +104,6 @@ class StreamFieldFormPage(FormMixin, Page):
             return "✔" if value else "✘"
 
         return value
-
-    def send_mail(
-        self,
-        subject: str,
-        message: str,
-        from_email: str,
-        recipient_list: list[str],
-        html_message: str | None,
-        reply_to: list[str] | None,
-    ) -> None:
-        """Send an e-mail. Override this to change the behavior (ie. print the email instead)."""
-        # TODO: Remove. not related to StreamFieldFormPage.
-        mail = EmailMultiAlternatives(
-            subject=subject,
-            body=message,
-            from_email=from_email,
-            to=recipient_list,
-            alternatives=[EmailAlternative(html_message, "text/html")] if html_message else [],
-            reply_to=reply_to,
-        )
-        mail.send()
 
     def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore
         """Build and return the form instance."""

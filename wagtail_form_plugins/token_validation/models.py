@@ -7,17 +7,18 @@ from typing import Any, ClassVar
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.forms import BaseForm, EmailField, Form
 from django.http import HttpRequest
 from django.template.response import TemplateResponse
-from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.models import FormSubmission
 from wagtail.fields import RichTextField
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
+from wagtail_form_plugins.utils import build_email
 
 
 class ValidationForm(Form):
@@ -112,7 +113,10 @@ class TokenValidationFormPage(StreamFieldFormPage):
                     validation_email = form.cleaned_data["validation_email"]
                     token = self.build_token(validation_email)
                     self.tokens[token] = datetime.now(timezone.utc)
-                    self.send_validation_email(validation_email, token)
+
+                    email = self.build_validation_email(validation_email, token)
+                    self.send_validation_email(email)
+
                     msg_str = _(
                         "We just send you an e-mail. Please click on the link to continue the form submission.",
                     )
@@ -142,28 +146,28 @@ class TokenValidationFormPage(StreamFieldFormPage):
         submission.email = self.extract_email(form)  # type: ignore
         return submission
 
-    def send_validation_email(self, email_address: str, token: str) -> None:
+    def build_validation_email(self, email_address: str, token: str) -> EmailMultiAlternatives:
         """Send an e-mail containing the link used to validate the form."""
         validation_url = f"{settings.WAGTAILADMIN_BASE_URL}{self.url}?token={token}"
         validation_body = getattr(self, self.token_validation_body_field_name)
 
-        message_text = validation_body.replace(
-            "{validation_url}",
-            validation_url,
-        )
+        message_text = validation_body.replace("{validation_url}", validation_url)
         message_html = validation_body.replace(
             "{validation_url}",
             f"<a href='{validation_url}'>{validation_url}</a>",
         )
-
-        self.send_mail(
+        return build_email(
             subject=getattr(self, self.token_validation_title_field_name),
-            message=strip_tags(message_text.replace("</p>", "</p>\n")),
+            message=message_text,
             from_email=self.token_validation_from_email,
-            recipient_list=[email_address],
+            recipient_list=email_address,
             html_message=message_html,
             reply_to=self.token_validation_reply_to,
         )
+
+    def send_validation_email(self, email: EmailMultiAlternatives) -> None:
+        """Send the validation e-mail."""
+        email.send()
 
     class Meta:  # type: ignore
         abstract = True

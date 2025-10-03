@@ -5,6 +5,7 @@ from typing import Any, ClassVar, TextIO
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, AnonymousUser, Group, Permission, User
+from django.core.mail import EmailMultiAlternatives
 from django.core.management.base import OutputWrapper
 from django.db import models
 from django.forms import EmailField, ValidationError
@@ -32,6 +33,7 @@ from wagtail_form_plugins import (
     templating,
     token_validation,
 )
+from wagtail_form_plugins.utils import print_email
 
 LocalBlocks = list[tuple[str, Any]] | None
 
@@ -291,26 +293,19 @@ class CustomFormPage(  # type: ignore
         response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
         return response
 
-    def send_mail(
-        self,
-        subject: str,
-        message: str,
-        from_email: str,
-        recipient_list: list[str],
-        html_message: str | None,
-        reply_to: list[str] | None,
-    ) -> None:
-        """Print the e-mail instead sending it when debugging."""
+    def send_action_email(self, email: EmailMultiAlternatives) -> None:
+        """Print the action e-mail instead sending it when debugging."""
         if settings.DEBUG and not settings.FORMS_DEV_SEND_MAIL:
-            print("=== sending e-mail ===")
-            print(f"subject: {subject}")
-            print(f"from_email: {from_email}")
-            print(f"recipient_list: {recipient_list}")
-            print(f"reply_to: {reply_to}")
-            print(f"message: {message}")
-            print(f"html_message: {html_message}")
+            print_email(email)
         else:
-            super().send_mail(subject, message, from_email, recipient_list, html_message, reply_to)
+            email.send()
+
+    def send_validation_email(self, email: EmailMultiAlternatives) -> None:
+        """Print the validation e-mail instead sending it when debugging."""
+        if settings.DEBUG and not settings.FORMS_DEV_SEND_MAIL:
+            print_email(email)
+        else:
+            email.send()
 
     def save(self, *args, **kwargs) -> None:
         """Save the form."""

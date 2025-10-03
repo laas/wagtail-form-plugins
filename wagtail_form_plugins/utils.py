@@ -5,6 +5,8 @@ from typing import Any
 from urllib.parse import quote
 
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailAlternative, EmailMultiAlternatives
+from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.utils import get_field_clean_name
@@ -35,3 +37,36 @@ def validate_identifier(slug: str) -> None:
         raise ValidationError(
             _("Slugs must only contain lower-case letters, digits or underscore."),
         )
+
+
+def build_email(
+    subject: str,
+    message: str,
+    from_email: str,
+    recipient_list: str | list[str],
+    html_message: str | None,
+    reply_to: str | list[str] | None,
+) -> EmailMultiAlternatives:
+    if isinstance(recipient_list, str):
+        recipient_list = [email.strip() for email in recipient_list.split(",")]
+    if isinstance(reply_to, str):
+        reply_to = [email.strip() for email in reply_to.split(",")]
+    return EmailMultiAlternatives(
+        subject=subject,
+        body=strip_tags(message.replace("</p>", "</p>\n")),
+        from_email=from_email,
+        to=recipient_list,
+        alternatives=[EmailAlternative(html_message, "text/html")] if html_message else [],
+        reply_to=reply_to,
+    )
+
+
+def print_email(email: EmailMultiAlternatives) -> None:
+    print("=== sending e-mail ===")
+    print(f"subject: {email.subject}")
+    print(f"from_email: {email.from_email}")
+    print(f"recipient_list: {email.to}")
+    print(f"reply_to: {email.reply_to}")
+    print(f"message: {email.body}")
+    for alternative in email.alternatives:
+        print(f"html_message: {alternative.content}")  # type: ignore
