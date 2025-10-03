@@ -70,7 +70,9 @@ class StreamFieldFormPage(FormMixin, Page):
         submission_data = self.pre_process_form_submission(form)
         return self.get_submission_class().objects.create(**submission_data)
 
-    def format_field_value(self, field: FormField, field_value: Any) -> str | None:
+    def format_field_value(
+        self, field: FormField, value: Any, join_lists: bool
+    ) -> str | list[str] | None:
         """
         Format the field value, or return None if the value should not be displayed.
         Used to display user-friendly values in result table and emails.
@@ -78,30 +80,31 @@ class StreamFieldFormPage(FormMixin, Page):
 
         if field.type in ["checkboxes", "dropdown", "multiselect", "radio"]:
             choices = {get_field_clean_name(cv): cv for cv in field.choices.values()}
-            return ", ".join([choices[v].lstrip("*") for v in field_value])
+            values = [choices[v].lstrip("*") for v in value]
+            return ", ".join(values) if join_lists else values
 
         if field.type == "datetime":
-            if isinstance(field_value, str):
-                field_value = datetime.fromisoformat(field_value.replace("Z", "+00:00"))
-            return field_value.strftime("%d/%m/%Y, %H:%M")
+            if isinstance(value, str):
+                value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return value.strftime("%d/%m/%Y, %H:%M")
 
         if field.type == "date":
-            if isinstance(field_value, str):
-                field_value = date.fromisoformat(field_value)
-            return field_value.strftime("%d/%m/%Y")
+            if isinstance(value, str):
+                value = date.fromisoformat(value)
+            return value.strftime("%d/%m/%Y")
 
         if field.type == "time":
-            if isinstance(field_value, str):
-                field_value = time.fromisoformat(field_value)
-            return field_value.strftime("%H:%M")
+            if isinstance(value, str):
+                value = time.fromisoformat(value)
+            return value.strftime("%H:%M")
 
         if field.type == "number":
-            return str(field_value)
+            return str(value)
 
         if field.type == "checkbox":
-            return "✔" if field_value else "✘"
+            return "✔" if value else "✘"
 
-        return field_value
+        return value
 
     def send_mail(
         self,

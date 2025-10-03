@@ -66,7 +66,7 @@ class TemplatingFormatter:
                 continue
 
             value = self.submission.form_data[field.slug]
-            fmt_value = self.form_page.format_field_value(field, value)
+            fmt_value = self.form_page.format_field_value(field, value, True)
             if fmt_value is not None:
                 fields[field.slug] = (field.label, fmt_value)
 
