@@ -1,7 +1,6 @@
 """Form-related classes for the Streamfield plugin."""
 
 from dataclasses import dataclass
-from datetime import datetime
 
 from django import forms
 from django.forms import widgets
@@ -67,7 +66,7 @@ class FormField(WaftailFormField):
             help_text=field_value["help_text"],
             required=field_value["is_required"],
             default_value=field_value.get("initial", ""),
-            disabled=field_value.get("disabled", False),
+            disabled=field_value["disabled"],
             choices={f"c{idx + 1}": choice for idx, choice in enumerate(choices)},
             options=options,
         )
@@ -179,10 +178,9 @@ class StreamFieldFormBuilder(FormBuilder):
         class DateTimeInput(widgets.DateTimeInput):
             input_type = "datetime-local"
 
-        default = options.get("initial")
-        if default:
-            default = default.isoformat() if isinstance(default, datetime) else default
-            options["initial"] = default.replace("Z", "").split("+")[0]
+            def format_value(self, value: str) -> str | None:
+                fmt_value = super().format_value(value)
+                return fmt_value.rstrip("Z") if fmt_value else None
 
         return DateTimeField(**options, widget=DateTimeInput)
 
@@ -243,11 +241,13 @@ class StreamFieldFormBuilder(FormBuilder):
 
     def get_field_options(self, field: FormField) -> AnyDict:
         """Return the options given to a field. Override to add or modify some options."""
-        options = {
-            **super().get_field_options(field),
-            "slug": field.slug,
-            **{k: v for k, v in field.options.items() if k not in self.extra_field_options},
-        }
+        options = super().get_field_options(field)
+
+        options["slug"] = field.slug
+
+        for k, v in field.options.items():
+            if k not in self.extra_field_options:
+                options[k] = v
 
         if "choices" in options:
             options["initial"] = self.get_choices_defaults(options["choices"])

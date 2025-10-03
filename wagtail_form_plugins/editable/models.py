@@ -49,18 +49,20 @@ class EditableFormPage(StreamFieldFormPage):
         submission = get_object_or_404(self.get_submission_class(), pk=submission_id)
         form = self.get_form(submission.form_data, page=self)
 
-        for field in form.fields.values():
-            field.disabled = False
-            if isinstance(field.widget, HiddenInput):
-                field.widget = TextInput()
+        for field_value in form.fields.values():
+            field_value.disabled = False
+            if isinstance(field_value.widget, HiddenInput):
+                field_value.widget = TextInput()
 
-            if isinstance(field.widget, FileInput):
-                field.required = False
+            if isinstance(field_value.widget, FileInput):
+                field_value.required = False
 
         edit_attrs = {"value": request.GET["edit"]}
         form.fields["edit"] = CharField(widget=HiddenInput(attrs=edit_attrs))
 
-        return {**self.get_context(request), "form": form}
+        context = self.get_context(request)
+        context["form"] = form
+        return context
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
