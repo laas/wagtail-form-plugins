@@ -1,8 +1,8 @@
 """View classes for the Conditional Fields plugin."""
 
-from datetime import date, time, datetime
 from typing import Any
 
+from wagtail.contrib.forms.models import AbstractFormSubmission
 from wagtail.contrib.forms.views import SubmissionsListView
 
 from . import StreamFieldFormPage
@@ -13,43 +13,27 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
 
     form_page: StreamFieldFormPage
 
-    # def format_field(col_idx: int, field_value: Any):
-    #     field_slug = fields_slug[col_idx]
-    #     if field_slug == "submit_time":
-    #         return field_value.strftime("%d/%m/%Y, %H:%M")
-    #     if field_slug in fields:
-    #         return value
-    #     return field_value
-
-    # if field.choices:
-    #     new_submission_data[data_key] = ",".join(post.getlist(data_key))
-
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Return context for view"""
         context_data = super().get_context_data(**kwargs)
-        print("=== StreamFieldSubmissionsListView.get_context_data ===")
-        print("data_rows:", context_data["data_rows"])
 
-        # fields_slug = [head["name"] for head in context_data["data_headings"]]
+        submissions = {s.id: s for s in context_data["submissions"]}
+        header = [head["name"] for head in context_data["data_headings"]]
+        fields = self.form_page.get_form_fields_dict()
 
         for row_idx, row in enumerate(context_data["data_rows"]):
-            for col_idx, value in enumerate(row["fields"]):
-                # field_slug = fields_slug[col_idx]
-                fmt_value = None
+            submission_id = context_data["data_rows"][row_idx]["model_id"]
+            submission: AbstractFormSubmission = submissions[submission_id]
+            for col_idx, col_value in enumerate(row["fields"]):
+                field_header = header[col_idx]
+                if field_header in fields:
+                    sub_value = submission.form_data[field_header]
+                    fmt_value = self.form_page.format_field_value(fields[field_header], sub_value)
+                elif field_header == "submit_time":
+                    fmt_value = col_value.strftime("%d/%m/%Y, %H:%M")
+                else:
+                    fmt_value = col_value
 
-                if isinstance(value, datetime):
-                    fmt_value = value.strftime("%d/%m/%Y, %H:%M")
-                elif isinstance(value, date):
-                    fmt_value = value.strftime("%d/%m/%Y")
-                elif isinstance(value, time):
-                    # TODO: vérifier
-                    fmt_value = value.strftime("%H:%M")
-                elif isinstance(value, list):
-                    fmt_value = ", ".join(value)
-                elif value is None:
-                    fmt_value = "-"
-
-                if fmt_value:
-                    context_data["data_rows"][row_idx]["fields"][col_idx] = fmt_value
+                context_data["data_rows"][row_idx]["fields"][col_idx] = fmt_value or "-"
 
         return context_data

@@ -208,7 +208,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
             if not rules:
                 new_enabled_fields.append(field_slug)
-                break
+                continue
 
             is_rule_true = self.process_rule(fields_dict, form_data, rules[0])
             field_attr = rules[0]["field"]

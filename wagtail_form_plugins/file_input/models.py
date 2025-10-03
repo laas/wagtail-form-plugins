@@ -49,8 +49,8 @@ class FileInputFormPage(StreamFieldFormPage):
     def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         submission_data = super().pre_process_form_submission(form)
-        form_fields = self.get_form_fields_dict()
 
+        form_fields = self.get_form_fields_dict()
         for field_slug, field_value in submission_data["form_data"].items():
             form_field = form_fields[field_slug]
             if form_field.type == "file":

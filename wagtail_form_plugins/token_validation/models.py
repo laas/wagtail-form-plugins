@@ -92,10 +92,11 @@ class TokenValidationFormPage(StreamFieldFormPage):
 
     def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
-        return {
-            **super().pre_process_form_submission(form),
-            "email": self.extract_email(form),
-        }
+        submission_data = super().pre_process_form_submission(form)
+
+        submission_data["email"] = self.extract_email(form)
+
+        return submission_data
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""

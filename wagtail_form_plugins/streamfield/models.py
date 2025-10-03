@@ -1,5 +1,6 @@
 """Models definition for the Streamfield form plugin."""
 
+from datetime import date, datetime, time
 from typing import Any
 
 from django.core.mail import EmailAlternative, EmailMultiAlternatives
@@ -37,6 +38,7 @@ class StreamFieldFormPage(FormMixin, Page):
         return FormSubmission
 
     def serve_preview(self, request: HttpRequest, mode_name: str) -> Any:
+        """Fix typing (FormMixin.serve_preview and Page.serve_preview return types are different)"""
         return
 
     def get_form_fields(self) -> list[FormField]:
@@ -48,18 +50,14 @@ class StreamFieldFormPage(FormMixin, Page):
         return {field.slug: field for field in self.get_form_fields()}
 
     def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
-        print("=== get_enabled_fields ===")
-        print("form_data:", form_data)
         # TODO: disabled "hidden", and "label" in label module:
         # if field.type in ["hidden", "label"]:
         #     continue
         return [slug for slug, field_data in form_data.items() if field_data is not None]
 
     def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
-        """Pre-processing step before to process the form submission."""
-        print("=== pre_process_form_submission ===")
+        """Pre-processing step before to create the form submission object."""
         enabled_fields = self.get_enabled_fields(form.cleaned_data)
-        print("=== ===")
         form_data = {k: (v if k in enabled_fields else None) for k, v in form.cleaned_data.items()}
 
         return {
@@ -75,11 +73,33 @@ class StreamFieldFormPage(FormMixin, Page):
     def format_field_value(self, field: FormField, field_value: Any) -> str | None:
         """
         Format the field value, or return None if the value should not be displayed.
-        Used to display user-friendly values in result table.
+        Used to display user-friendly values in result table and emails.
         """
+
         if field.type in ["checkboxes", "dropdown", "multiselect", "radio"]:
-            choices = {get_field_clean_name(c): c for c in field.choices}
-            return ", ".join([choices[v].lstrip("*") for v in field_value.split(",")])
+            choices = {get_field_clean_name(cv): cv for cv in field.choices.values()}
+            return ", ".join([choices[v].lstrip("*") for v in field_value])
+
+        if field.type == "datetime":
+            if isinstance(field_value, str):
+                field_value = datetime.fromisoformat(field_value.replace("Z", "+00:00"))
+            return field_value.strftime("%d/%m/%Y, %H:%M")
+
+        if field.type == "date":
+            if isinstance(field_value, str):
+                field_value = date.fromisoformat(field_value)
+            return field_value.strftime("%d/%m/%Y")
+
+        if field.type == "time":
+            if isinstance(field_value, str):
+                field_value = time.fromisoformat(field_value)
+            return field_value.strftime("%H:%M")
+
+        if field.type == "number":
+            return str(field_value)
+
+        if field.type == "checkbox":
+            return "✔" if field_value else "✘"
 
         return field_value
 

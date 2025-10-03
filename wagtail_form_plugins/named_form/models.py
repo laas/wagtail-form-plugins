@@ -66,11 +66,12 @@ class AuthFormPage(StreamFieldFormPage):
 
     def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
+        submission_data = super().pre_process_form_submission(form)
+
         user = form.user  # type: ignore
-        return {
-            **super().pre_process_form_submission(form),
-            "user": None if isinstance(user, AnonymousUser) else user,
-        }
+        submission_data["user"] = None if isinstance(user, AnonymousUser) else user
+
+        return submission_data
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""

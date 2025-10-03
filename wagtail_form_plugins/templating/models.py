@@ -1,7 +1,5 @@
 """Models definition for the Templating form plugin."""
 
-from typing import Any
-
 from django.forms import BaseForm
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -47,17 +45,16 @@ class TemplatingFormPage(StreamFieldFormPage):
             }
             submission.save()
 
-    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
-        """Return a dictionary containing the attributes to pass to the submission constructor."""
-        # TODO: remove?
-        submission_data = super().pre_process_form_submission(form)
+    # def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
+    #     """Return a dictionary containing the attributes to pass to the submission constructor."""
+    #     submission_data = super().pre_process_form_submission(form)
 
-        return {
-            **submission_data,
-            "form_data": {
-                dk: form.data.get(dk, dv) for dk, dv in submission_data["form_data"].items()
-            },
-        }
+    #     return {
+    #         **submission_data,
+    #         "form_data": {
+    #             dk: form.data.get(dk, dv) for dk, dv in submission_data["form_data"].items()
+    #         },
+    #     }
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""

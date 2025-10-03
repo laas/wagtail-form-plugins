@@ -22,7 +22,6 @@ from wagtail.models import GroupPagePermission, Page
 
 from wagtail_form_plugins import (
     conditional_fields,
-    datepickers,
     editable,
     emails,
     file_input,
@@ -164,7 +163,6 @@ class CustomTemplatingFormatter(templating.TemplatingFormatter):
 class CustomFormBuilder(  # type: ignore
     label.LabelFormBuilder,
     file_input.FileInputFormBuilder,
-    datepickers.DatePickersFormBuilder,
     conditional_fields.ConditionalFieldsFormBuilder,
 ):
     """A custom form builder extended with some plugins to extend its features."""

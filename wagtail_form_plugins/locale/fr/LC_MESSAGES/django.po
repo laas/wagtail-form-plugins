@@ -393,7 +393,7 @@ msgstr "Date"
 #: wagtail_form_plugins/streamfield/blocks.py:300
 #: wagtail_form_plugins/streamfield/blocks.py:304
 msgid "Time"
-msgstr "Temps"
+msgstr "Heure"
 
 #: wagtail_form_plugins/streamfield/blocks.py:312
 #: wagtail_form_plugins/streamfield/blocks.py:316

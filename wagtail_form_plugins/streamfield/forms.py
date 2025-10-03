@@ -1,8 +1,10 @@
 """Form-related classes for the Streamfield plugin."""
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from django import forms
+from django.forms import widgets
 
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
@@ -25,6 +27,7 @@ class WaftailFormField:
     label: str
     help_text: str
     required: bool
+    choices: dict[str, str]
     default_value: str
 
 
@@ -37,7 +40,6 @@ class FormField(WaftailFormField):
     block_id: str
     options: AnyDict
     disabled: bool
-    choices: dict[str, str]
 
     @property
     def slug(self) -> str:
@@ -157,15 +159,32 @@ class StreamFieldFormBuilder(FormBuilder):
 
     def create_date_field(self, field: FormField, options: AnyDict) -> DateField:
         """Create a date form field."""
-        return DateField(**options)
+
+        class DateInput(widgets.DateInput):
+            input_type = "date"
+
+        return DateField(**options, widget=DateInput)
 
     def create_time_field(self, field: FormField, options: AnyDict) -> TimeField:
         """Create a time form field."""
-        return TimeField(**options)
+
+        class TimeInput(widgets.TimeInput):
+            input_type = "time"
+
+        return TimeField(**options, widget=TimeInput)
 
     def create_datetime_field(self, field: FormField, options: AnyDict) -> DateTimeField:
         """Create a datetime form field."""
-        return DateTimeField(**options)
+
+        class DateTimeInput(widgets.DateTimeInput):
+            input_type = "datetime-local"
+
+        default = options.get("initial")
+        if default:
+            default = default.isoformat() if isinstance(default, datetime) else default
+            options["initial"] = default.replace("Z", "").split("+")[0]
+
+        return DateTimeField(**options, widget=DateTimeInput)
 
     def create_email_field(self, field: FormField, options: AnyDict) -> EmailField:
         """Create a email form field."""
