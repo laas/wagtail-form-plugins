@@ -1,8 +1,8 @@
 .forms-btn-secondary {
-    border: solid 1px inherit;
+	border: solid 1px inherit;
 }
 
 .forms-btn-primary {
-    background-color: var(--w-color-text-button-outline-default);
-    color: var(--w-color-surface-button-outline-hover);
+	background-color: var(--w-color-text-button-outline-default);
+	color: var(--w-color-surface-button-outline-hover);
 }

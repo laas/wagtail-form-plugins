@@ -1,26 +1,26 @@
 .formbuilder-templating-help_suffix {
-    color: blue;
-    font-weight: bold;
-    padding: 5px;
-    margin: 5px;
-    position: relative;
+	color: blue;
+	font-weight: bold;
+	padding: 5px;
+	margin: 5px;
+	position: relative;
 
-    &::after {
-        content: attr(data-message);
-    }
+	&::after {
+		content: attr(data-message);
+	}
 
-    &:hover::after {
-        color: darkslategrey;
-        content: attr(data-title);
-        font-weight: normal;
-        white-space: pre;
-        position: absolute;
-        background-color: whitesmoke;
-        left:0;
-        top:0;
-        z-index: 100;
-        border: 1px solid black;
-        border-radius: 5px;
-        padding: 5px;
-    }
+	&:hover::after {
+		color: darkslategrey;
+		content: attr(data-title);
+		font-weight: normal;
+		white-space: pre;
+		position: absolute;
+		background-color: whitesmoke;
+		left: 0;
+		top: 0;
+		z-index: 100;
+		border: 1px solid black;
+		border-radius: 5px;
+		padding: 5px;
+	}
 }

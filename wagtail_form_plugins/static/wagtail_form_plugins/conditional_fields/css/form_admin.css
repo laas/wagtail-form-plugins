@@ -1,96 +1,97 @@
 /* elements to hide programmatically */
 .formbuilder-hide {
-    display: none;
+	display: none;
 }
 
 /* boolean expressions builder */
 .formbuilder-beb {
-    > div > label {
-        display: none;
-    }
+	> div > label {
+		display: none;
+	}
 
-    /* make inline boolean expressions builders with last deep level or without a rule field on large screens */
-    @media (min-width: 1200px) {
-        > div select {
-            max-width: 10em;
-        }
+	/* make inline boolean expressions builders with last deep level or without a rule field on large screens */
+	@media (min-width: 1200px) {
+		> div select {
+			max-width: 10em;
+		}
 
-        .formbuilder-beb-lvl3,
-        &:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
-            margin-bottom: -25px;
-            display: flex;
+		.formbuilder-beb-lvl3,
+		&:has(> div[class*="formbuilder-hide"] > .formbuilder-beb-rules) {
+			margin-bottom: -25px;
+			display: flex;
 
-            > div:not(:first-child) {
-                margin-left: 32px;
-            }
-        }
-    }
+			> div:not(:first-child) {
+				margin-left: 32px;
+			}
+		}
+	}
 }
 
 /* input replaced by dropdown lists */
 .formbuilder-beb-val-list input,
 .formbuilder-beb-field input {
-    display: none;
+	display: none;
 }
 
 /* boolean expressions builder rules */
 .formbuilder-beb-rules > div {
-    /* only display the last "add rule" button */
-    > button:has(+ div) {
-        display: none;
-    }
+	/* only display the last "add rule" button */
+	> button:has(+ div) {
+		display: none;
+	}
 
-    > div > section {
-        /* make rules buttons inline on large screens */
-        @media (min-width: 1200px) {
-            position: relative;
-            > .w-panel__header {
-                position: absolute;
-                top: 13px;
-                right: 0;
-            }
-            > .w-panel__content {
-                width: calc(100% - 65px);
-            }
-        }
+	> div > section {
+		/* make rules buttons inline on large screens */
+		@media (min-width: 1200px) {
+			position: relative;
+			> .w-panel__header {
+				position: absolute;
+				top: 13px;
+				right: 0;
+			}
+			> .w-panel__content {
+				width: calc(100% - 65px);
+			}
+		}
 
-        > .w-panel__header > *:not(.w-panel__controls) {
-            display: none;
-        }
+		> .w-panel__header > *:not(.w-panel__controls) {
+			display: none;
+		}
 
-        > div.w-panel__header > div.w-panel__controls {
-            button:has(> svg.icon-arrow-up),
-            button:has(> svg.icon-arrow-down),
-            button:has(> svg.icon-grip),
-            button:has(> svg.icon-copy) {
-                display: none;
-            }
-        }
-    }
+		> div.w-panel__header > div.w-panel__controls {
+			button:has(> svg.icon-arrow-up),
+			button:has(> svg.icon-arrow-down),
+			button:has(> svg.icon-grip),
+			button:has(> svg.icon-copy) {
+				display: none;
+			}
+		}
+	}
 }
 
 /* hide the rule block of the first displayed field block */
 .formbuilder-fields-block > div > div[data-contentpath]:not([aria-hidden]) {
-    > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rule) {
-        display: none !important;
-    }
-    ~ & > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rule) {
-        display: inherit !important;
-    }
+	> section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rule) {
+		display: none !important;
+	}
+	~ & > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rule) {
+		display: inherit !important;
+	}
 }
 
 /* hide unnecessary buttons in the root rules block that contains a boolean expressions builder */
-.formbuilder-field-block-rule > div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
-    > button.c-sf-add-button {
-        display: none !important;
-    }
+.formbuilder-field-block-rule
+	> div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
+	> button.c-sf-add-button {
+		display: none !important;
+	}
 
-    > div > section > div.w-panel__header > div.w-panel__controls {
-        button:has(> svg.icon-arrow-up),
-        button:has(> svg.icon-arrow-down),
-        button:has(> svg.icon-grip),
-        button:has(> svg.icon-copy) {
-            display: none;
-        }
-    }
+	> div > section > div.w-panel__header > div.w-panel__controls {
+		button:has(> svg.icon-arrow-up),
+		button:has(> svg.icon-arrow-down),
+		button:has(> svg.icon-grip),
+		button:has(> svg.icon-copy) {
+			display: none;
+		}
+	}
 }
