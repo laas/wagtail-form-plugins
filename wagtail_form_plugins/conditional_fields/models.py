@@ -52,37 +52,22 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
     def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
-
-        active_fields = []
-        if args:
-            form.full_clean()
-            active_fields = self.get_enabled_fields(form.cleaned_data)
-
         form_fields = self.get_form_fields_dict()
-        for field in form.fields.values():
-            # print("form_field:", form_field.__dict__)
-            # TODO: check from where slug come from
-            form_field = form_fields[field.slug]  # type: ignore
 
-            if "rule" not in form_field.options:
-                continue
-
-            if args and field.slug not in active_fields:  # type: ignore
-                field.required = False
-
+        for field_value in form.fields.values():
+            form_field = form_fields[field_value.slug]  # type: ignore
             # TODO: possible d'avoir field.rule plutôt, avec rule typé ?
-            raw_rule = form_field.options["rule"]
-            field_rule = self.format_rule(raw_rule[0]["value"]) if raw_rule else {}
-
-            # TODO: changer "data-widget": ... par "data-type": field.type ?
-            new_attributes = {
-                "id": form_field.block_id,
-                "data-label": field.label,
-                "data-widget": field.widget.__class__.__name__,
-                "data-rule": json.dumps(field_rule),
-            }
-
-            field.widget.attrs.update(new_attributes)
+            raw_rule = form_field.options.get("rule")
+            if raw_rule:
+                field_rule = self.format_rule(raw_rule[0]["value"]) if raw_rule else {}
+                field_value.widget.attrs.update(
+                    {
+                        "id": form_field.block_id,
+                        "data-label": form_field.label,
+                        "data-type": form_field.type,
+                        "data-rule": json.dumps(field_rule),
+                    }
+                )
 
         form.full_clean()
         return form

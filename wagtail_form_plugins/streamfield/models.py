@@ -109,10 +109,18 @@ class StreamFieldFormPage(FormMixin, Page):
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
 
-        for field in form.fields.values():
-            if field.help_text:
-                field.help_text = create_links(str(field.help_text)).replace("\n", "")
+        for field_value in form.fields.values():
+            if field_value.help_text:
+                field_value.help_text = create_links(str(field_value.help_text)).replace("\n", "")
 
+        if args:
+            form.full_clean()
+            enabled_fields = self.get_enabled_fields(form.cleaned_data)
+            for field_value in form.fields.values():
+                if field_value.slug not in enabled_fields:  # type: ignore
+                    field_value.required = False
+
+        form.full_clean()
         return form
 
     class Meta:  # type: ignore

@@ -1,29 +1,29 @@
 function get_value(dom_input) {
-	const widget = dom_input.getAttribute("data-widget");
-	if (widget === "NumberInput") {
+	const field_type = dom_input.getAttribute("data-type");
+	if (field_type === "number") {
 		return parseFloat(dom_input.value);
 	}
-	if (widget === "CheckboxInput") {
+	if (field_type === "checkbox") {
 		return dom_input.checked;
 	}
-	if (["CheckboxSelectMultiple", "RadioSelect"].includes(widget)) {
+	if (["checkboxes", "radio"].includes(field_type)) {
 		const values = Array.from(dom_input.querySelectorAll("input"))
 			.map((dom, index) => [`c${index + 1}`, dom.checked])
 			.filter(([i, checked]) => checked)
 			.map(([val_id, c]) => val_id);
 
-		return widget === "RadioSelect" ? values[0] : values;
+		return field_type === "radio" ? values[0] : values;
 	}
-	if (["Select", "SelectMultiple"].includes(widget)) {
+	if (["dropdown", "multiselect"].includes(field_type)) {
 		const values = Array.from(dom_input.querySelectorAll("option"))
 			.map((dom, index) => [`c${index + 1}`, dom.selected])
 			.filter(([i, selected]) => selected)
 			.map(([val_id, c]) => val_id);
 
-		return widget === "Select" ? values[0] : values;
+		return field_type === "dropdown" ? values[0] : values;
 	}
-	if (["DateInput", "TimeInput", "DateTimeInput"].includes(widget)) {
-		const date = Date.parse((widget === "TimeInput" ? "1970-01-01T" : "") + dom_input.value);
+	if (["date", "time", "datetime"].includes(field_type)) {
+		const date = Date.parse((field_type === "time" ? "1970-01-01T" : "") + dom_input.value);
 		return Math.floor(date / 1000);
 	}
 	return dom_input.value;
@@ -112,9 +112,7 @@ function update_fields_visibility() {
 		const rule = JSON.parse(dom_field.getAttribute("data-rule"));
 		const computed_rule = compute_rule(rule);
 		const dom_input_block =
-			dom_field.getAttribute("data-widget") === "HiddenInput"
-				? dom_field
-				: dom_field.parentNode;
+			dom_field.getAttribute("data-widget") === "hidden" ? dom_field : dom_field.parentNode;
 
 		if (Object.keys(rule).length !== 0) {
 			console.log(`\n=== ${dom_field.getAttribute("data-label")} ===`);
