@@ -11,7 +11,7 @@ from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.contrib.forms.models import FormSubmission
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
-from wagtail_form_plugins.utils import StrDict, validate_identifier
+from wagtail_form_plugins.utils import StrDict, create_links, validate_identifier
 
 TMPL_SEP_LEFT = "{"
 TMPL_SEP_RIGHT = "}"
@@ -56,12 +56,10 @@ class TemplatingFormatter:
         self.submission: FormSubmission | None = context.get("form_submission", None)
         self.form_page: StreamFieldFormPage = context["page"]
         self.request: HttpRequest = context["request"]
-        self.data = self.get_data()
-        self.values = self.get_values()
 
-    def get_data(self) -> DataDict:
+    def get_data(self, in_html: bool) -> DataDict:
         """Return the template data. Override to customize template."""
-        formated_fields = self.get_formated_fields()
+        formated_fields = self.get_formated_fields(in_html)
         return {
             "user": self.get_user_data(self.request.user),  # type: ignore
             "author": self.get_user_data(self.form_page.owner),
@@ -71,16 +69,16 @@ class TemplatingFormatter:
             "field_value": {f_id: f_value for f_id, [f_label, f_value] in formated_fields.items()},
         }
 
-    def get_values(self) -> StrDict:
+    def get_values(self, in_html: bool) -> StrDict:
         """Return a dict containing all formatter values on the root level."""
         values = {}
 
-        for val_name, value in self.data.items():
+        for val_name, value in self.get_data(in_html).items():
             if isinstance(value, dict):
                 for sub_val_name, sub_value in value.items():
-                    values[f"{val_name}.{sub_val_name}"] = str(sub_value)
+                    values[f"{val_name}.{sub_val_name}"] = sub_value
             else:
-                values[val_name] = str(value)
+                values[val_name] = value
 
         return values
 
@@ -132,17 +130,21 @@ class TemplatingFormatter:
             return None
 
         return {
-            "data": "<br/>\n".join([f"{lbl}: {val}" for lbl, val in formated_fields.values()]),
+            "data": "<br/>\n".join([f"◦ {lbl}: {val}" for lbl, val in formated_fields.values()]),
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
         }
 
-    def format(self, message: str) -> str:
+    def format(self, message: str, in_html: bool) -> str:
         """Format the message template by replacing template variables."""
-        for val_key, value in self.values.items():
+        for val_key, value in self.get_values(in_html).items():
             look_for = TMPL_SEP_LEFT + val_key + TMPL_SEP_RIGHT
             if look_for in message:
                 message = message.replace(look_for, value)
+
+        if in_html:
+            message = create_links(message.replace("\n", "<br/>\n"))
+
         return message
 
     @classmethod

@@ -8,7 +8,6 @@ from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.streamfield.forms import FormField
 from wagtail_form_plugins.streamfield.models import StreamFieldFormSubmission
 from wagtail_form_plugins.templating.formatter import TemplatingFormatter
-from wagtail_form_plugins.utils import create_links
 
 
 class TemplatingFormPage(StreamFieldFormPage):
@@ -34,7 +33,7 @@ class TemplatingFormPage(StreamFieldFormPage):
             #     new_submission_data[data_key] = ",".join(post.getlist(data_key))
 
             if field.disabled:
-                fmt_data = formatter.format(data_value) if data_value else "-"
+                fmt_data = formatter.format(data_value, False) if data_value else "-"
                 if fmt_data != data_value:
                     new_submission_data[data_key] = fmt_data
 
@@ -69,7 +68,7 @@ class TemplatingFormPage(StreamFieldFormPage):
             form: BaseForm = response.context_data["form"]
             for field in form.fields.values():
                 if field.initial:
-                    field.initial = formatter.format(field.initial)
+                    field.initial = formatter.format(field.initial, False)
 
         elif "form" not in response.context_data:
             form_submission: StreamFieldFormSubmission = response.context_data["form_submission"]
@@ -77,12 +76,9 @@ class TemplatingFormPage(StreamFieldFormPage):
             form_fields = form_page.get_form_fields_dict()
             self.format_submission(form_submission, form_fields, formatter)
 
-            # TODO: fix typing error
-            for email in form_page.emails_to_send:  # type: ignore
+            for email in getattr(form_page, "emails_to_send", []):
                 for field_name in ["subject", "message", "recipient_list", "reply_to"]:
-                    fmt_value = formatter.format(str(email.value[field_name]))
-                    if field_name == "message":
-                        fmt_value = create_links(fmt_value.replace("\n", "<br/>\n"))
+                    fmt_value = formatter.format(email.value[field_name], field_name == "message")
                     email.value[field_name] = fmt_value
         return response
 
