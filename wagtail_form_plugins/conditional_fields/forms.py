@@ -18,10 +18,9 @@ class ConditionalFieldsFormField(FormField):
     def format_rule(cls, rule: RuleBlockValueDict) -> FormattedRuleDict:
         """Recusively format a field rule in order to facilitate its parsing on the client side."""
 
-        if rule["field"] in ["and", "or"]:
-            # TODO: change FormattedRuleDict format to avoid dynamic keys:
-            # something like {entry: EntryDict, fields: list[FormattedRuleDict]}
-            return {rule["field"]: [cls.format_rule(_rule["value"]) for _rule in rule["rules"]]}  # type: ignore
+        if rule["field"] in ("and", "or"):
+            rules = [cls.format_rule(_rule["value"]) for _rule in rule["rules"]]
+            return {"bool_opr": rule["field"], "subrules": rules}
 
         if rule["value_date"]:
             fmt_value = utils.get_date_timestamp(rule["value_date"])

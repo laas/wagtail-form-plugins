@@ -2,7 +2,7 @@
 
 import json
 from collections.abc import Callable
-from typing import Any, TypedDict
+from typing import Any, Literal, TypedDict
 
 from django.forms import BaseForm
 
@@ -12,6 +12,8 @@ from wagtail_form_plugins.utils import AnyDict
 
 from . import utils
 from .blocks import RuleBlockValueDict
+
+from typing_extensions import NotRequired
 
 Operation = Callable[[Any, Any], bool]
 
@@ -43,7 +45,9 @@ class EntryDict(TypedDict):
 
 
 class FormattedRuleDict(TypedDict):
-    entry: EntryDict
+    entry: NotRequired[EntryDict]
+    bool_opr: NotRequired[Literal["and", "or"]]
+    subrules: NotRequired[list["FormattedRuleDict"]]
 
 
 class ConditionalFieldsFormPage(StreamFieldFormPage):

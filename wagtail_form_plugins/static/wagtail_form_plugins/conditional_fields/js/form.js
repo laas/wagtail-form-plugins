@@ -72,8 +72,8 @@ function compute_rule(rule) {
 		};
 	}
 
-	if (rule.and) {
-		const computed_rules = rule.and.map((_rule) => compute_rule(_rule));
+	if (rule?.bool_opr === "and") {
+		const computed_rules = rule.subrules.map((_rule) => compute_rule(_rule));
 		return {
 			formula: `(${computed_rules.map((_rule) => _rule.formula).join(") AND (")})`,
 			str: `(${computed_rules.map((_rule) => _rule.str).join(") AND (")})`,
@@ -82,8 +82,8 @@ function compute_rule(rule) {
 		};
 	}
 
-	if (rule.or) {
-		const computed_rules = rule.or.map((_rule) => compute_rule(_rule));
+	if (rule?.bool_opr === "or") {
+		const computed_rules = rule.subrules.map((_rule) => compute_rule(_rule));
 		return {
 			formula: `(${computed_rules.map((_rule) => _rule.formula).join(") OR (")})`,
 			str: `(${computed_rules.map((_rule) => _rule.str).join(") OR (")})`,
