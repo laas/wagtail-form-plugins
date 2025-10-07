@@ -18,6 +18,7 @@ from wagtail.contrib.forms.models import FormSubmission
 from wagtail.fields import RichTextField
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
+from wagtail_form_plugins.streamfield.models import SubmissionData
 from wagtail_form_plugins.utils import build_email
 
 
@@ -91,11 +92,11 @@ class TokenValidationFormPage(StreamFieldFormPage):
         encoded_email: str = form.data["wfp_token"].split("-")[0]
         return base64.b64decode(encoded_email.encode("utf-8")).decode("utf-8")
 
-    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         submission_data = super().pre_process_form_submission(form)
 
-        submission_data["email"] = self.extract_email(form)
+        submission_data["email"] = self.extract_email(form)  # type: ignore
 
         return submission_data
 

@@ -132,24 +132,26 @@ class CustomTemplatingFormatter(templating.TemplatingFormatter):
         super().__init__(context)
         self.submission: CustomFormSubmission  # type: ignore
 
-    def get_user_data(self, user: User) -> dict[str, str]:
+    def get_user_data(self, user: User) -> templating.UserDataDict:
         """Return a dict used to format template variables related to the form user or author."""
-        user_data: dict[str, Any] = super().get_user_data(user)
+        user_data = super().get_user_data(user)
 
         if isinstance(user, AnonymousUser):
-            user_data["city"] = "-"
+            user_data["city"] = "-"  # type: ignore
             if self.submission:
                 user_data["email"] = self.submission.email
         else:
-            user_data["city"] = str(getattr(user, "city", "")).lower()
+            user_data["city"] = getattr(user, "city", "").lower()  # type: ignore
 
         return user_data
 
-    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]) -> dict[str, str]:
+    def get_result_data(
+        self, formated_fields: dict[str, tuple[str, str]]
+    ) -> templating.ResultDataDict | None:
         """Return a dict used to format template variables related to the form results."""
         result_data = super().get_result_data(formated_fields)
-        if self.submission:
-            result_data["index"] = str(self.submission.index)
+        if result_data:
+            result_data["index"] = self.submission.index  # type: ignore
         return result_data
 
     @classmethod

@@ -1,13 +1,13 @@
 """Models definition for the Emails form plugin."""
 
-from typing import Any
-
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.utils import build_email
+
+from .blocks import EmailsToSendBlockDict
 
 
 class EmailActionsFormPage(StreamFieldFormPage):
@@ -27,7 +27,7 @@ class EmailActionsFormPage(StreamFieldFormPage):
 
         return response
 
-    def build_action_email(self, email_value: dict[str, Any]) -> EmailMultiAlternatives:
+    def build_action_email(self, email_value: EmailsToSendBlockDict) -> EmailMultiAlternatives:
         return build_email(
             subject=email_value["subject"],
             message=email_value["message"],

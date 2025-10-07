@@ -5,7 +5,7 @@ from typing import Any
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_form_plugins.streamfield import StreamFieldFormSubmission, StreamFieldFormPage
+from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
 
 
 class IndexedResultsFormSubmission(StreamFieldFormSubmission):

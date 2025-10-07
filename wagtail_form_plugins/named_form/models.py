@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.models import FormSubmission
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
+from wagtail_form_plugins.streamfield.models import SubmissionData
 
 
 class AuthFormSubmission(StreamFieldFormSubmission):
@@ -64,12 +65,12 @@ class AuthFormPage(StreamFieldFormPage):
             *super().get_data_fields(),
         ]
 
-    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         submission_data = super().pre_process_form_submission(form)
 
         user = form.user  # type: ignore
-        submission_data["user"] = None if isinstance(user, AnonymousUser) else user
+        submission_data["user"] = None if isinstance(user, AnonymousUser) else user  # type: ignore
 
         return submission_data
 

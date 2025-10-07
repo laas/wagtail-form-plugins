@@ -2,7 +2,6 @@
 
 import json
 from collections.abc import Callable
-from datetime import date, datetime, time, timezone
 from typing import Any, TypedDict
 
 from django.forms import BaseForm
@@ -11,6 +10,7 @@ from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.streamfield.forms import FormField
 from wagtail_form_plugins.utils import AnyDict
 
+from . import utils
 from .blocks import RuleBlockValueDict
 
 Operation = Callable[[Any, Any], bool]
@@ -56,81 +56,19 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
         for field_value in form.fields.values():
             form_field = form_fields[field_value.slug]  # type: ignore
-            # TODO: possible d'avoir field.rule plutôt, avec rule typé ?
-            raw_rule = form_field.options.get("rule")
-            if raw_rule:
-                field_rule = self.format_rule(raw_rule[0]["value"]) if raw_rule else {}
+            rule = form_field.get_rule()  # type: ignore
+            if rule:
                 field_value.widget.attrs.update(
                     {
                         "id": form_field.block_id,
                         "data-label": form_field.label,
                         "data-type": form_field.type,
-                        "data-rule": json.dumps(field_rule),
+                        "data-rule": json.dumps(rule),
                     }
                 )
 
         form.full_clean()
         return form
-
-    @classmethod
-    def get_date_timestamp(cls, value: date | str | None) -> int:
-        if not value:
-            value_dt = datetime.now()
-        elif isinstance(value, str):
-            value_dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=timezone.utc)
-        else:
-            value_dt = datetime.combine(value, datetime.min.time())
-        return int(value_dt.timestamp())
-
-    @classmethod
-    def get_time_timestamp(cls, value: time | str | None) -> int:
-        if not value:
-            value_dt = datetime.now()
-        elif isinstance(value, str):
-            value_dt = datetime.fromisoformat(f"1970-01-01T{value}")
-        else:
-            value_dt = datetime.combine(date(1970, 1, 1), value)
-        return int(value_dt.timestamp())
-
-    @classmethod
-    def get_datetime_timestamp(cls, value: datetime | str | None) -> int:
-        if not value:
-            value_dt = datetime.now()
-        elif isinstance(value, str):
-            value_dt = datetime.fromisoformat(value)
-        else:
-            value_dt = value
-        return int(value_dt.timestamp())
-
-    @classmethod
-    def format_rule(cls, rule: RuleBlockValueDict) -> FormattedRuleDict:
-        """Recusively format a field rule in order to facilitate its parsing on the client side."""
-
-        if rule["field"] in ["and", "or"]:
-            # TODO: change FormattedRuleDict format to avoid dynamic keys:
-            # something like {entry: EntryDict, fields: list[FormattedRuleDict]}
-            return {rule["field"]: [cls.format_rule(_rule["value"]) for _rule in rule["rules"]]}  # type: ignore
-
-        if rule["value_date"]:
-            fmt_value = cls.get_date_timestamp(rule["value_date"])
-        elif rule["value_time"]:
-            fmt_value = cls.get_time_timestamp(rule["value_time"])
-        elif rule["value_datetime"]:
-            fmt_value = cls.get_datetime_timestamp(rule["value_datetime"])
-        elif rule["value_dropdown"]:
-            fmt_value = rule["value_dropdown"]
-        elif rule["value_number"]:
-            fmt_value = int(rule["value_number"])
-        else:
-            fmt_value = rule["value_char"]
-
-        return {
-            "entry": {
-                "target": rule["field"],
-                "val": fmt_value,
-                "opr": rule["operator"],
-            },
-        }
 
     def get_right_operand(self, field: FormField, leaf_rule: RuleBlockValueDict) -> str | int:
         """
@@ -148,11 +86,11 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
             dropdown_val = leaf_rule["value_dropdown"]
             return field.choices[dropdown_val] if (dropdown_val and field.choices) else dropdown_val
         if field.type == "date":
-            return self.get_date_timestamp(leaf_rule["value_date"])
+            return utils.get_date_timestamp(leaf_rule["value_date"])
         if field.type == "time":
-            return self.get_time_timestamp(leaf_rule["value_time"])
+            return utils.get_time_timestamp(leaf_rule["value_time"])
         if field.type == "datetime":
-            return self.get_datetime_timestamp(leaf_rule["value_datetime"])
+            return utils.get_datetime_timestamp(leaf_rule["value_datetime"])
         return ""
 
     # TODO: typer form_data

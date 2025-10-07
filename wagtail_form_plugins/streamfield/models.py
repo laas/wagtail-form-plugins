@@ -1,7 +1,7 @@
 """Models definition for the Streamfield form plugin."""
 
 from datetime import date, datetime, time
-from typing import Any
+from typing import Any, TypedDict
 
 from django.forms import BaseForm
 from django.http import HttpRequest
@@ -14,6 +14,12 @@ from wagtail.models import Page
 from wagtail_form_plugins.utils import create_links
 
 from . import FormField, StreamFieldFormBuilder
+from .utils import format_choices
+
+
+class SubmissionData(TypedDict):
+    form_data: dict[str, Any]
+    page: "StreamFieldFormPage"
 
 
 class StreamFieldFormSubmission(AbstractFormSubmission):
@@ -54,7 +60,7 @@ class StreamFieldFormPage(FormMixin, Page):
         #     continue
         return [slug for slug, field_data in form_data.items() if field_data is not None]
 
-    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Pre-processing step before to create the form submission object."""
         enabled_fields = self.get_enabled_fields(form.cleaned_data)
         form_data = {k: (v if k in enabled_fields else None) for k, v in form.cleaned_data.items()}
@@ -70,7 +76,7 @@ class StreamFieldFormPage(FormMixin, Page):
         return self.get_submission_class().objects.create(**submission_data)
 
     def format_field_value(
-        self, field: FormField, value: Any, join_lists: bool
+        self, field: FormField, value: Any, format_lists: bool, in_html: bool
     ) -> str | list[str] | None:
         """
         Format the field value, or return None if the value should not be displayed.
@@ -80,7 +86,7 @@ class StreamFieldFormPage(FormMixin, Page):
         if field.type in ["checkboxes", "dropdown", "multiselect", "radio"]:
             choices = {get_field_clean_name(cv): cv for cv in field.choices.values()}
             values = [choices[v].lstrip("*") for v in value]
-            return ", ".join(values) if join_lists else values
+            return format_choices(values, in_html) if format_lists else values
 
         if field.type == "datetime":
             if isinstance(value, str):

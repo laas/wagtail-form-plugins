@@ -346,6 +346,7 @@ class StreamFieldFormBlock(blocks.StreamBlock):
         form_classname = "formbuilder-fields-block"
         collapsed = True
 
+    # TODO: type blocks
     @classmethod
     def get_duplicates(cls, blocks: list) -> dict[str, str]:
         """Return a dict containing slug duplicates in the given blocks."""
@@ -365,8 +366,10 @@ class StreamFieldFormBlock(blocks.StreamBlock):
             declared_blocks.update(subclass.declared_blocks)
         return declared_blocks
 
+    # TODO: type value
     def clean(self, value: Any, ignore_required_constraints: bool = False) -> StreamValue:
         """Add duplicates attribute in the block class."""
+        print("value:", type(value), value)
         if len(value) > 0:
             block = value[0].block.child_blocks["slug"]
             block.duplicates = self.get_duplicates(value)

@@ -12,6 +12,7 @@ from django.forms import BaseForm
 from wagtail_form_plugins.file_input.views import FileInputSubmissionsListView
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.streamfield.forms import FormField
+from wagtail_form_plugins.streamfield.models import SubmissionData
 
 
 class AbstractFileInput(models.Model):
@@ -46,7 +47,7 @@ class FileInputFormPage(StreamFieldFormPage):
     file_input_upload_dir = "forms_uploads/%Y/%m/%d"
     file_input_model: type[AbstractFileInput]
 
-    def pre_process_form_submission(self, form: BaseForm) -> dict[str, Any]:
+    def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         submission_data = super().pre_process_form_submission(form)
 
@@ -65,10 +66,10 @@ class FileInputFormPage(StreamFieldFormPage):
         return submission_data
 
     def format_field_value(
-        self, field: FormField, value: Any, join_lists: bool
+        self, field: FormField, value: Any, format_lists: bool, in_html: bool
     ) -> str | list[str] | None:
         """Format the field value. Used to display user-friendly values in result table."""
-        fmt_value = super().format_field_value(field, value, join_lists)
+        fmt_value = super().format_field_value(field, value, format_lists, in_html)
 
         if field.type == "file":
             return (settings.WAGTAILADMIN_BASE_URL + fmt_value) if value else None

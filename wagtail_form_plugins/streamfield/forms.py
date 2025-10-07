@@ -1,6 +1,7 @@
 """Form-related classes for the Streamfield plugin."""
 
 from dataclasses import dataclass
+from typing import TypedDict
 
 from django import forms
 from django.forms import widgets
@@ -11,6 +12,21 @@ from wagtail.contrib.forms.utils import get_field_clean_name
 from wagtail_form_plugins.utils import AnyDict
 
 from typing_extensions import Self
+
+
+class StreamFieldValueDict(TypedDict):
+    slug: str
+    label: str
+    help_text: str
+    is_required: bool
+    initial: str
+    disabled: bool
+
+
+class StreamFieldDataDict(TypedDict):
+    id: str
+    value: StreamFieldValueDict
+    type: str
 
 
 @dataclass
@@ -49,14 +65,12 @@ class FormField(WaftailFormField):
         return self.field_type
 
     @classmethod
-    def from_streamfield_data(cls, field_data: AnyDict) -> Self:
+    def from_streamfield_data(cls, field_data: StreamFieldDataDict) -> Self:
         """Return the form fields based the streamfield value of the form page form_fields field."""
         base_options = ["slug", "label", "help_text", "is_required", "initial"]
 
         field_value = field_data["value"]
-        options = {k: v for k, v in field_value.items() if k not in base_options}
-        choice_lines = options.get("choices", "").splitlines()
-        choices = filter(None, [line.strip() for line in choice_lines])
+        choices = filter(None, [ln.strip() for ln in field_data.get("choices", "").splitlines()])
 
         return cls(
             block_id=field_data["id"],
@@ -68,7 +82,7 @@ class FormField(WaftailFormField):
             default_value=field_value.get("initial", ""),
             disabled=field_value["disabled"],
             choices={f"c{idx + 1}": choice for idx, choice in enumerate(choices)},
-            options=options,
+            options={k: v for k, v in field_value.items() if k not in base_options},
         )
 
 
