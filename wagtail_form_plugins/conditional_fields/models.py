@@ -2,18 +2,14 @@
 
 import json
 from collections.abc import Callable
-from typing import Any, Literal, TypedDict
+from typing import Any
 
 from django.forms import BaseForm
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
-from wagtail_form_plugins.streamfield.forms import FormField
 from wagtail_form_plugins.utils import AnyDict
 
-from . import utils
-from .blocks import RuleBlockValueDict
-
-from typing_extensions import NotRequired
+from . import ConditionalFieldsFormField, utils
 
 Operation = Callable[[Any, Any], bool]
 
@@ -38,29 +34,17 @@ OPERATIONS: dict[str, Operation] = {
 }
 
 
-class EntryDict(TypedDict):
-    target: str
-    val: int | str
-    opr: str
-
-
-class FormattedRuleDict(TypedDict):
-    entry: NotRequired[EntryDict]
-    bool_opr: NotRequired[Literal["and", "or"]]
-    subrules: NotRequired[list["FormattedRuleDict"]]
-
-
 class ConditionalFieldsFormPage(StreamFieldFormPage):
     """Form page used to add conditional fields functionnality to a form."""
 
-    def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore
+    def get_form(self, *args, **kwargs) -> BaseForm:
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
-        form_fields = self.get_form_fields_dict()
+        form_fields: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore
 
         for field_value in form.fields.values():
             form_field = form_fields[field_value.slug]  # type: ignore
-            rule = form_field.get_rule()  # type: ignore
+            rule = form_field.rule
             if rule:
                 field_value.widget.attrs.update(
                     {
@@ -74,7 +58,9 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         form.full_clean()
         return form
 
-    def get_right_operand(self, field: FormField, leaf_rule: RuleBlockValueDict) -> str | int:
+    def get_right_operand(
+        self, field: ConditionalFieldsFormField, leaf_rule: utils.RuleBlockValueDict
+    ) -> str | int:
         """
         Return the right operand of the rule operation.
         The leaf_rule is a rule that does not contain a sub rule.
@@ -99,7 +85,10 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
     # TODO: typer form_data
     def process_rule(
-        self, fields: dict[str, FormField], form_data: AnyDict, rule: RuleBlockValueDict
+        self,
+        fields: dict[str, ConditionalFieldsFormField],
+        form_data: AnyDict,
+        rule: utils.RuleBlockValueDict,
     ) -> bool:
         rule_field_attr = rule["field"]
 
@@ -126,12 +115,12 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
     def get_enabled_fields(self, form_data: AnyDict) -> list[str]:
         """Return the list of fields slug where the computed conditional value of the field is true."""
         enabled_fields = super().get_enabled_fields(form_data)
-        fields_dict = self.get_form_fields_dict()
+        fields_dict: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore
 
         new_enabled_fields = []
         for field_slug in enabled_fields:
             field = fields_dict[field_slug]
-            rules: list[RuleBlockValueDict] = field.options.get("rule", [])
+            rules: list[utils.RuleBlockValueDict] = field.options.get("rule", [])
 
             if not rules:
                 new_enabled_fields.append(field_slug)

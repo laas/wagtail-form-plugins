@@ -10,9 +10,8 @@ from django.db import models
 from django.forms import BaseForm
 
 from wagtail_form_plugins.file_input.views import FileInputSubmissionsListView
-from wagtail_form_plugins.streamfield import StreamFieldFormPage
-from wagtail_form_plugins.streamfield.forms import FormField
-from wagtail_form_plugins.streamfield.models import SubmissionData
+from wagtail_form_plugins.streamfield import StreamFieldFormField, StreamFieldFormPage
+from wagtail_form_plugins.streamfield.utils import SubmissionData
 
 
 class AbstractFileInput(models.Model):
@@ -66,7 +65,7 @@ class FileInputFormPage(StreamFieldFormPage):
         return submission_data
 
     def format_field_value(
-        self, field: FormField, value: Any, format_lists: bool, in_html: bool
+        self, field: StreamFieldFormField, value: Any, format_lists: bool, in_html: bool
     ) -> str | list[str] | None:
         """Format the field value. Used to display user-friendly values in result table."""
         fmt_value = super().format_field_value(field, value, format_lists, in_html)

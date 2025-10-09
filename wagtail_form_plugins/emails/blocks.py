@@ -1,6 +1,6 @@
 """Blocks definition for the Emails plugin."""
 
-from typing import Any, TypedDict
+from typing import Any
 
 from django.conf import settings
 from django.core.validators import validate_email
@@ -17,14 +17,6 @@ def email_to_block(email_dict: dict[str, Any]) -> dict[str, Any]:
         "type": "email_to_send",
         "value": email_dict,
     }
-
-
-class EmailsToSendBlockDict(TypedDict):
-    recipient_list: str
-    from_email: str
-    reply_to: str
-    subject: str
-    message: str
 
 
 class EmailsToSendStructBlock(blocks.StructBlock):

@@ -44,19 +44,21 @@ def build_email(
     message: str,
     from_email: str,
     recipient_list: str | list[str],
-    html_message: str | None,
     reply_to: str | list[str] | None,
+    html_message: str | None = None,
 ) -> EmailMultiAlternatives:
     if isinstance(recipient_list, str):
         recipient_list = [email.strip() for email in recipient_list.split(",")]
     if isinstance(reply_to, str):
         reply_to = [email.strip() for email in reply_to.split(",")]
+
+    html_message = html_message if html_message else message
     return EmailMultiAlternatives(
         subject=subject,
-        body=strip_tags(message.replace("</p>", "</p>\n")),
+        body=strip_tags(message.replace("</p>", "\n")),
         from_email=from_email,
         to=recipient_list,
-        alternatives=[EmailAlternative(html_message, "text/html")] if html_message else [],
+        alternatives=[EmailAlternative(html_message, "text/html")],
         reply_to=reply_to,
     )
 

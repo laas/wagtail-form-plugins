@@ -25,7 +25,7 @@
                             <input type="checkbox" name="selected-submissions" class="select-submission" value="{{ row.model_id|unlocalize }}" data-action="w-bulk#toggle" data-w-bulk-target="item" />
                         </td>
                         {% for cell in row.fields %}
-                            <td>
+                            <td style="list-style-type: circle;">
                                 {{ cell }}
                             </td>
                         {% endfor %}

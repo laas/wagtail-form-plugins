@@ -1,4 +1,7 @@
 from datetime import date, datetime, time, timezone
+from typing import Literal, TypedDict
+
+from typing_extensions import NotRequired
 
 
 def get_date_timestamp(value: date | str | None) -> int:
@@ -29,3 +32,31 @@ def get_datetime_timestamp(value: datetime | str | None) -> int:
     else:
         value_dt = value
     return int(value_dt.timestamp())
+
+
+class EntryDict(TypedDict):
+    target: str
+    val: int | str
+    opr: str
+
+
+class FormattedRuleDict(TypedDict):
+    entry: NotRequired[EntryDict]
+    bool_opr: NotRequired[Literal["and", "or"]]
+    subrules: NotRequired[list["FormattedRuleDict"]]
+
+
+class RuleBlockDict(TypedDict):
+    value: "RuleBlockValueDict"
+
+
+class RuleBlockValueDict(TypedDict):
+    field: str
+    operator: str
+    value_char: str
+    value_number: int
+    value_dropdown: str
+    value_date: date
+    value_time: time
+    value_datetime: datetime
+    rules: list[RuleBlockDict]

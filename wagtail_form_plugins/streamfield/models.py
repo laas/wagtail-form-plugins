@@ -1,7 +1,7 @@
 """Models definition for the Streamfield form plugin."""
 
 from datetime import date, datetime, time
-from typing import Any, TypedDict
+from typing import Any
 
 from django.forms import BaseForm
 from django.http import HttpRequest
@@ -13,13 +13,8 @@ from wagtail.models import Page
 
 from wagtail_form_plugins.utils import create_links
 
-from . import FormField, StreamFieldFormBuilder
-from .utils import format_choices
-
-
-class SubmissionData(TypedDict):
-    form_data: dict[str, Any]
-    page: "StreamFieldFormPage"
+from . import StreamFieldFormBuilder, StreamFieldFormField
+from .utils import SubmissionData, format_choices
 
 
 class StreamFieldFormSubmission(AbstractFormSubmission):
@@ -34,8 +29,9 @@ class StreamFieldFormSubmission(AbstractFormSubmission):
 class StreamFieldFormPage(FormMixin, Page):
     """Form mixin for the Streamfield plugin."""
 
-    submissions_list_view_class = SubmissionsListView
     form_builder = StreamFieldFormBuilder
+    submissions_list_view_class = SubmissionsListView
+    form_field_class = StreamFieldFormField
     fields_attr_name = "form_fields"
 
     def get_submission_class(self) -> type[FormSubmission]:
@@ -46,18 +42,24 @@ class StreamFieldFormPage(FormMixin, Page):
         """Fix typing (FormMixin.serve_preview and Page.serve_preview return types are different)"""
         return
 
-    def get_form_fields(self) -> list[FormField]:
+    def get_form_fields(self) -> list[StreamFieldFormField]:
         """Return the form fields based on streamfield data."""
         steamchild = getattr(self, self.fields_attr_name)
-        return [FormField.from_streamfield_data(field_data) for field_data in steamchild.raw_data]
+        return [
+            self.form_field_class.from_streamfield_data(field_data)
+            for field_data in steamchild.raw_data
+        ]
 
-    def get_form_fields_dict(self) -> dict[str, FormField]:
+    def get_form_fields_dict(self) -> dict[str, StreamFieldFormField]:
         return {field.slug: field for field in self.get_form_fields()}
 
     def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
         # TODO: disabled "hidden", and "label" in label module:
         # if field.type in ["hidden", "label"]:
         #     continue
+
+        print("form_data:", form_data)
+
         return [slug for slug, field_data in form_data.items() if field_data is not None]
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
@@ -76,7 +78,7 @@ class StreamFieldFormPage(FormMixin, Page):
         return self.get_submission_class().objects.create(**submission_data)
 
     def format_field_value(
-        self, field: FormField, value: Any, format_lists: bool, in_html: bool
+        self, field: StreamFieldFormField, value: Any, format_lists: bool, in_html: bool
     ) -> str | list[str] | None:
         """
         Format the field value, or return None if the value should not be displayed.

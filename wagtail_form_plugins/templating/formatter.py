@@ -1,6 +1,6 @@
 """Classes and variables used to format the template syntax."""
 
-from typing import Any, TypedDict
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
@@ -8,9 +8,16 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from wagtail.admin.admin_url_finder import AdminURLFinder
+from wagtail.admin.panels import RichText
 from wagtail.contrib.forms.models import FormSubmission
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
+from wagtail_form_plugins.templating.utils import (
+    DataDict,
+    FormDataDict,
+    ResultDataDict,
+    UserDataDict,
+)
 from wagtail_form_plugins.utils import StrDict, create_links, validate_identifier
 
 TMPL_SEP_LEFT = "{"
@@ -18,48 +25,18 @@ TMPL_SEP_RIGHT = "}"
 TMPL_DYNAMIC_PREFIXES = ["field_label", "field_value"]
 
 
-class UserDataDict(TypedDict):
-    login: str
-    first_name: str
-    last_name: str
-    full_name: str
-    email: str
-
-
-class FormDataDict(TypedDict):
-    title: str
-    url: str
-    publish_date: str
-    publish_time: str
-    url_results: str
-
-
-class ResultDataDict(TypedDict):
-    data: str
-    publish_date: str
-    publish_time: str
-
-
-class DataDict(TypedDict):
-    user: UserDataDict
-    author: UserDataDict
-    form: FormDataDict
-    result: ResultDataDict | None
-    field_label: StrDict
-    field_value: StrDict
-
-
 class TemplatingFormatter:
     """Class used to format the template syntax."""
 
-    def __init__(self, context: dict[str, Any]):
+    def __init__(self, context: dict[str, Any], in_html: bool):
         self.submission: FormSubmission | None = context.get("form_submission", None)
         self.form_page: StreamFieldFormPage = context["page"]
         self.request: HttpRequest = context["request"]
+        self.in_html = in_html
 
-    def get_data(self, in_html: bool) -> DataDict:
+    def get_data(self) -> DataDict:
         """Return the template data. Override to customize template."""
-        formated_fields = self.get_formated_fields(in_html)
+        formated_fields = self.get_formated_fields()
         return {
             "user": self.get_user_data(self.request.user),  # type: ignore
             "author": self.get_user_data(self.form_page.owner),
@@ -69,11 +46,11 @@ class TemplatingFormatter:
             "field_value": {f_id: f_value for f_id, [f_label, f_value] in formated_fields.items()},
         }
 
-    def get_values(self, in_html: bool) -> StrDict:
+    def get_values(self) -> StrDict:
         """Return a dict containing all formatter values on the root level."""
         values = {}
 
-        for val_name, value in self.get_data(in_html).items():
+        for val_name, value in self.get_data().items():
             if isinstance(value, dict):
                 for sub_val_name, sub_value in value.items():
                     values[f"{val_name}.{sub_val_name}"] = sub_value
@@ -82,7 +59,7 @@ class TemplatingFormatter:
 
         return values
 
-    def get_formated_fields(self, in_html: bool = False) -> dict[str, tuple[str, str]]:
+    def get_formated_fields(self) -> dict[str, tuple[str, str]]:
         """Return a dict containing a tuple of label and formatted value for each form field."""
         if not self.submission:
             return {}
@@ -95,7 +72,7 @@ class TemplatingFormatter:
                 continue
 
             value = self.submission.form_data[field.slug]
-            fmt_value = self.form_page.format_field_value(field, value, True, in_html)
+            fmt_value = self.form_page.format_field_value(field, value, True, self.in_html)
             if fmt_value is not None:
                 fields[field.slug] = (field.label, fmt_value)
 
@@ -129,23 +106,30 @@ class TemplatingFormatter:
         if not self.submission:
             return None
 
+        values = formated_fields.values()
+        if self.in_html:
+            data = "<ul>" + "".join([f"<li>{lbl}: {val}</li>" for lbl, val in values]) + "</ul>"
+        else:
+            data = "\n".join([f"◦ {lbl}: {val}" for lbl, val in values])
+
         return {
-            "data": "<br/>\n".join([f"◦ {lbl}: {val}" for lbl, val in formated_fields.values()]),
+            "data": data,
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
         }
 
-    def format(self, message: str, in_html: bool) -> str:
+    def format(self, message: str | RichText) -> str:
         """Format the message template by replacing template variables."""
-        for val_key, value in self.get_values(in_html).items():
+        fmt_message = str(message)
+        for val_key, value in self.get_values().items():
             look_for = TMPL_SEP_LEFT + val_key + TMPL_SEP_RIGHT
-            if look_for in message:
-                message = message.replace(look_for, value)
+            if look_for in fmt_message:
+                fmt_message = fmt_message.replace(look_for, value)
 
-        if in_html:
-            message = create_links(message.replace("\n", "<br/>\n"))
+        if self.in_html:
+            fmt_message = create_links(fmt_message.replace("\n", "<br/>\n"))
 
-        return message
+        return fmt_message
 
     @classmethod
     def doc(cls) -> dict[str, dict[str, tuple[str, str]]]:

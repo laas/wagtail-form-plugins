@@ -1,12 +1,12 @@
 from .blocks import StreamFieldFormBlock
-from .forms import StreamFieldFormBuilder, FormField
+from .forms import StreamFieldFormBuilder, StreamFieldFormField
 from .models import StreamFieldFormPage, StreamFieldFormSubmission
 from .views import StreamFieldSubmissionsListView
 
 __all__ = [
-    "FormField",
     "StreamFieldFormBlock",
     "StreamFieldFormBuilder",
+    "StreamFieldFormField",
     "StreamFieldFormPage",
     "StreamFieldFormSubmission",
     "StreamFieldSubmissionsListView",

@@ -1,25 +1,27 @@
 from dataclasses import dataclass
 
 from wagtail_form_plugins.conditional_fields import utils
-from wagtail_form_plugins.conditional_fields.models import FormattedRuleDict
-from wagtail_form_plugins.streamfield import FormField, StreamFieldFormBuilder
+from wagtail_form_plugins.streamfield import StreamFieldFormBuilder, StreamFieldFormField
 
-from .blocks import RuleBlockValueDict
+from .utils import RuleBlockValueDict
 
 
 @dataclass
-class ConditionalFieldsFormField(FormField):
-    @property
-    def get_rule(self) -> FormattedRuleDict | None:
-        raw_rule = self.options.get("rule", None)
-        return self.format_rule(raw_rule[0]["value"]) if raw_rule else None
+class ConditionalFieldsFormField(StreamFieldFormField):
+    _rule: utils.FormattedRuleDict | None = None
 
-    @classmethod
-    def format_rule(cls, rule: RuleBlockValueDict) -> FormattedRuleDict:
+    @property
+    def rule(self) -> utils.FormattedRuleDict | None:
+        if self._rule is None:
+            raw_rule = self.options.get("rule", None)
+            self._rule = self.format_rule(raw_rule[0]["value"]) if raw_rule else None
+        return self._rule
+
+    def format_rule(self, rule: RuleBlockValueDict) -> utils.FormattedRuleDict:
         """Recusively format a field rule in order to facilitate its parsing on the client side."""
 
         if rule["field"] in ("and", "or"):
-            rules = [cls.format_rule(_rule["value"]) for _rule in rule["rules"]]
+            rules = [self.format_rule(_rule["value"]) for _rule in rule["rules"]]
             return {"bool_opr": rule["field"], "subrules": rules}
 
         if rule["value_date"]:
@@ -45,6 +47,6 @@ class ConditionalFieldsFormField(FormField):
 
 
 class ConditionalFieldsFormBuilder(StreamFieldFormBuilder):
-    def __init__(self, fields: list[FormField]):
+    def __init__(self, fields: list[StreamFieldFormField]):
         super().__init__(fields)
         self.extra_field_options += ["rule"]

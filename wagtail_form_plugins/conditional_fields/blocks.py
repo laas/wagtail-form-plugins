@@ -1,7 +1,5 @@
 """Block-related classes for conditional fields plugin."""
 
-from datetime import date, datetime, time
-from typing import TypedDict
 from uuid import UUID
 
 from django.core.exceptions import ValidationError
@@ -36,22 +34,6 @@ def validate_field(value: str) -> None:
         UUID(str(value))
     except ValueError as err:
         raise ChoiceError(value) from err
-
-
-class RuleBlockDict(TypedDict):
-    value: "RuleBlockValueDict"
-
-
-class RuleBlockValueDict(TypedDict):
-    field: str
-    operator: str
-    value_char: str
-    value_number: int
-    value_dropdown: str
-    value_date: date
-    value_time: time
-    value_datetime: datetime
-    rules: list[RuleBlockDict]
 
 
 class RuleBlock(blocks.StructBlock):

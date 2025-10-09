@@ -1,7 +1,6 @@
 """Form-related classes for the Streamfield plugin."""
 
 from dataclasses import dataclass
-from typing import TypedDict
 
 from django import forms
 from django.forms import widgets
@@ -9,24 +8,10 @@ from django.forms import widgets
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
 
+from wagtail_form_plugins.streamfield.utils import StreamFieldDataDict
 from wagtail_form_plugins.utils import AnyDict
 
 from typing_extensions import Self
-
-
-class StreamFieldValueDict(TypedDict):
-    slug: str
-    label: str
-    help_text: str
-    is_required: bool
-    initial: str
-    disabled: bool
-
-
-class StreamFieldDataDict(TypedDict):
-    id: str
-    value: StreamFieldValueDict
-    type: str
 
 
 @dataclass
@@ -47,7 +32,7 @@ class WaftailFormField:
 
 
 @dataclass
-class FormField(WaftailFormField):
+class StreamFieldFormField(WaftailFormField):
     """
     A data class representing a field with some extra attributes and syntactic sugar.
     """
@@ -70,7 +55,7 @@ class FormField(WaftailFormField):
         base_options = ["slug", "label", "help_text", "is_required", "initial"]
 
         field_value = field_data["value"]
-        choices = filter(None, [ln.strip() for ln in field_data.get("choices", "").splitlines()])
+        choices = filter(None, [ln.strip() for ln in field_value.get("choices", "").splitlines()])
 
         return cls(
             block_id=field_data["id"],
@@ -157,20 +142,20 @@ class MultipleChoiceField(FieldWithSlug, forms.MultipleChoiceField):
 class StreamFieldFormBuilder(FormBuilder):
     """Form builder mixin that use streamfields to define form fields in form admin page."""
 
-    def __init__(self, fields: list[FormField]):
+    def __init__(self, fields: list[StreamFieldFormField]):
         super().__init__(fields)
         self.extra_field_options = []
 
-    def create_singleline_field(self, field: FormField, options: AnyDict) -> CharField:
+    def create_singleline_field(self, field: StreamFieldFormField, options: AnyDict) -> CharField:
         """Create a singleline form field."""
         return CharField(**options)
 
-    def create_multiline_field(self, field: FormField, options: AnyDict) -> CharField:
+    def create_multiline_field(self, field: StreamFieldFormField, options: AnyDict) -> CharField:
         """Create a multiline form field."""
         options.setdefault("widget", forms.Textarea)
         return CharField(**options)
 
-    def create_date_field(self, field: FormField, options: AnyDict) -> DateField:
+    def create_date_field(self, field: StreamFieldFormField, options: AnyDict) -> DateField:
         """Create a date form field."""
 
         class DateInput(widgets.DateInput):
@@ -178,7 +163,7 @@ class StreamFieldFormBuilder(FormBuilder):
 
         return DateField(**options, widget=DateInput)
 
-    def create_time_field(self, field: FormField, options: AnyDict) -> TimeField:
+    def create_time_field(self, field: StreamFieldFormField, options: AnyDict) -> TimeField:
         """Create a time form field."""
 
         class TimeInput(widgets.TimeInput):
@@ -186,7 +171,7 @@ class StreamFieldFormBuilder(FormBuilder):
 
         return TimeField(**options, widget=TimeInput)
 
-    def create_datetime_field(self, field: FormField, options: AnyDict) -> DateTimeField:
+    def create_datetime_field(self, field: StreamFieldFormField, options: AnyDict) -> DateTimeField:
         """Create a datetime form field."""
 
         class DateTimeInput(widgets.DateTimeInput):
@@ -198,40 +183,44 @@ class StreamFieldFormBuilder(FormBuilder):
 
         return DateTimeField(**options, widget=DateTimeInput)
 
-    def create_email_field(self, field: FormField, options: AnyDict) -> EmailField:
+    def create_email_field(self, field: StreamFieldFormField, options: AnyDict) -> EmailField:
         """Create a email form field."""
         return EmailField(**options)
 
-    def create_url_field(self, field: FormField, options: AnyDict) -> URLField:  # type: ignore
+    def create_url_field(self, field: StreamFieldFormField, options: AnyDict) -> URLField:  # type: ignore
         """Create a url form field."""
         return URLField(**options)
 
-    def create_number_field(self, field: FormField, options: AnyDict) -> DecimalField:
+    def create_number_field(self, field: StreamFieldFormField, options: AnyDict) -> DecimalField:
         """Create a number form field."""
         return DecimalField(**options)
 
-    def create_checkbox_field(self, field: FormField, options: AnyDict) -> BooleanField:
+    def create_checkbox_field(self, field: StreamFieldFormField, options: AnyDict) -> BooleanField:
         """Create a checkbox form field."""
         return BooleanField(**options)
 
-    def create_hidden_field(self, field: FormField, options: AnyDict) -> CharField:
+    def create_hidden_field(self, field: StreamFieldFormField, options: AnyDict) -> CharField:
         """Create a hidden form field."""
         options.setdefault("widget", forms.HiddenInput)
         return CharField(**options)
 
-    def create_dropdown_field(self, field: FormField, options: AnyDict) -> ChoiceField:
+    def create_dropdown_field(self, field: StreamFieldFormField, options: AnyDict) -> ChoiceField:
         """Create a dropdown form field."""
         return ChoiceField(**options)
 
-    def create_multiselect_field(self, field: FormField, options: AnyDict) -> MultipleChoiceField:
+    def create_multiselect_field(
+        self, field: StreamFieldFormField, options: AnyDict
+    ) -> MultipleChoiceField:
         """Create a multiselect form field."""
         return MultipleChoiceField(**options)
 
-    def create_radio_field(self, field: FormField, options: AnyDict) -> ChoiceField:
+    def create_radio_field(self, field: StreamFieldFormField, options: AnyDict) -> ChoiceField:
         """Create a Django choice field with radio widget."""
         return ChoiceField(widget=forms.RadioSelect, **options)
 
-    def create_checkboxes_field(self, field: FormField, options: AnyDict) -> MultipleChoiceField:
+    def create_checkboxes_field(
+        self, field: StreamFieldFormField, options: AnyDict
+    ) -> MultipleChoiceField:
         """Create a Django multiple choice field with checkboxes widget."""
         return MultipleChoiceField(widget=forms.CheckboxSelectMultiple, **options)
 
@@ -253,7 +242,7 @@ class StreamFieldFormBuilder(FormBuilder):
             if ch
         ]
 
-    def get_field_options(self, field: FormField) -> AnyDict:
+    def get_field_options(self, field: StreamFieldFormField) -> AnyDict:
         """Return the options given to a field. Override to add or modify some options."""
         options = super().get_field_options(field)
 

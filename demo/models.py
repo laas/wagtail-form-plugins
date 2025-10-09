@@ -128,8 +128,8 @@ class CustomUser(AbstractUser):
 class CustomTemplatingFormatter(templating.TemplatingFormatter):
     """Custom templating formatter used to personalize template formatting such as user template."""
 
-    def __init__(self, context: dict[str, Any]):
-        super().__init__(context)
+    def __init__(self, context: dict[str, Any], in_html: bool):
+        super().__init__(context, in_html)
         self.submission: CustomFormSubmission  # type: ignore
 
     def get_user_data(self, user: User) -> templating.UserDataDict:
@@ -252,6 +252,10 @@ class CustomFormFieldsBlock(
         pass
 
 
+class CustomFormField(conditional_fields.ConditionalFieldsFormField):
+    pass
+
+
 class CustomFormPage(  # type: ignore
     token_validation.TokenValidationFormPage,
     emails.EmailActionsFormPage,
@@ -268,11 +272,13 @@ class CustomFormPage(  # type: ignore
     parent_page_type: ClassVar = ["demo.FormIndexPage"]
     subpage_types: ClassVar = []
 
-    validation_form_class = CustomValidationForm
+    form_builder = CustomFormBuilder
     submissions_list_view_class = CustomSubmissionListView
+    validation_form_class = CustomValidationForm
+    templating_formatter_class = CustomTemplatingFormatter
+    form_field_class = CustomFormField
 
     file_input_upload_dir = "demo_forms_uploads/%Y/%m/%d"
-    templating_formatter_class = CustomTemplatingFormatter
     token_validation_from_email = settings.FORMS_FROM_EMAIL
     token_validation_reply_to: ClassVar = [settings.FORMS_FROM_EMAIL]
     token_validation_expiration_delay = settings.FORMS_VALIDATION_EXPIRATION_DELAY

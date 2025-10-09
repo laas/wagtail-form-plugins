@@ -8,7 +8,11 @@ from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError, widgets
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_form_plugins.streamfield.forms import FieldWithSlug, FormField, StreamFieldFormBuilder
+from wagtail_form_plugins.streamfield.forms import (
+    FieldWithSlug,
+    StreamFieldFormBuilder,
+    StreamFieldFormField,
+)
 
 
 class FileField(FieldWithSlug, forms.FileField):
@@ -23,7 +27,7 @@ class FileInputFormBuilder(StreamFieldFormBuilder):
     file_input_max_size = 1 * 1024 * 1024
     file_input_allowed_extensions: ClassVar = ["pdf"]
 
-    def __init__(self, fields: list[FormField]):
+    def __init__(self, fields: list[StreamFieldFormField]):
         super().__init__(fields)
         self.extra_field_options += ["allowed_extensions"]
 
