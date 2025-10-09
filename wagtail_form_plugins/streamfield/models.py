@@ -18,10 +18,6 @@ from .utils import SubmissionData, format_choices
 
 
 class StreamFieldFormSubmission(AbstractFormSubmission):
-    def get_base_class(self) -> type[FormSubmission]:
-        error_msg = "FormSubmission should implement get_base_class() method"
-        raise NotImplementedError(error_msg)
-
     class Meta:  # type: ignore
         abstract = True
 

@@ -230,10 +230,6 @@ class CustomFormSubmission(
 ):
     """A custom model for form submission, extended with mixins to extend its features"""
 
-    def get_base_class(self) -> type[WagtailFormSubmission]:
-        """Return the current class. Used by some submission classes to list object instances."""
-        return self.__class__  # type: ignore
-
     class Meta:  # type: ignore
         pass
 
@@ -266,6 +262,7 @@ class CustomFormPage(  # type: ignore
     nav_buttons.NavButtonsFormPage,
     indexed_results.IndexedResultsFormPage,
     editable.EditableFormPage,
+    label.LabelFormPage,
 ):
     """A custom abstract form page model extended with some plugins to extend its features."""
 
