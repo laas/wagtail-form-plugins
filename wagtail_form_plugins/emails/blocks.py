@@ -64,13 +64,8 @@ class EmailsFormBlock(blocks.StreamBlock):
         for email in field_value.split(","):
             validate_email(email.strip())
 
-    def get_block_class(self) -> type[blocks.StreamBlock]:
-        """Return the block class."""
-        error_msg = "Missing get_block_class() in the RulesBlock super class."
-        raise NotImplementedError(error_msg)
-
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
-        for child_block in self.get_block_class().declared_blocks.values():  # type: ignore
+        for child_block in self.__class__.declared_blocks.values():  # type: ignore
             child_block.child_blocks["recipient_list"].field.validators = [self.validate_email]
             child_block.child_blocks["reply_to"].field.validators = [self.validate_email]
             child_block.child_blocks["from_email"].field.validators = [self.validate_email]

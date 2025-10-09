@@ -18,21 +18,25 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.forms.models import FormSubmission as WagtailFormSubmission
-from wagtail.fields import RichTextField, StreamBlock, StreamField
+from wagtail.fields import RichTextField, StreamField
 from wagtail.models import GroupPagePermission, Page
 
 from wagtail_form_plugins import (
-    conditional_fields,
-    editable,
     emails,
-    file_input,
-    indexed_results,
-    label,
     named_form,
-    nav_buttons,
     templating,
     token_validation,
 )
+from wagtail_form_plugins.editable import Editable
+from wagtail_form_plugins.emails import EmailActions
+from wagtail_form_plugins.file_input import FileInput
+from wagtail_form_plugins.indexed_results import IndexedResults
+from wagtail_form_plugins.label import Label
+from wagtail_form_plugins.named_form import AuthForm
+from wagtail_form_plugins.nav_buttons import NavButtons
+from wagtail_form_plugins.streamfield import WagtailFormPlugin
+from wagtail_form_plugins.templating import Templating
+from wagtail_form_plugins.token_validation import TokenValidation
 from wagtail_form_plugins.utils import print_email
 
 LocalBlocks = list[tuple[str, Any]] | None
@@ -63,6 +67,19 @@ The form author has been informed.
 Have a nice day.""",
     },
 ]
+
+
+wfp = WagtailFormPlugin(
+    Editable,
+    EmailActions,
+    FileInput,
+    IndexedResults,
+    Label,
+    AuthForm,
+    NavButtons,
+    Templating,
+    TokenValidation,
+)
 
 
 class FormIndexPage(Page):
@@ -164,22 +181,13 @@ class CustomTemplatingFormatter(templating.TemplatingFormatter):
         return doc
 
 
-class CustomFormBuilder(  # type: ignore
-    label.LabelFormBuilder,
-    file_input.FileInputFormBuilder,
-    conditional_fields.ConditionalFieldsFormBuilder,
-):
+class CustomFormBuilder(*wfp.form_builder_classes):
     """A custom form builder extended with some plugins to extend its features."""
 
     file_input_max_size = settings.FORMS_FILE_UPLOAD_MAX_SIZE
 
 
-class CustomSubmissionListView(
-    file_input.FileInputSubmissionsListView,
-    nav_buttons.NavButtonsSubmissionsListView,
-    conditional_fields.ConditionalFieldsSubmissionsListView,
-    label.LabelSubmissionsListView,
-):
+class CustomSubmissionListView(*wfp.submission_list_view_classes):
     """A custom submission list view extended with some plugins to extend its features."""
 
     file_input_parent_page_class = FormIndexPage
@@ -201,15 +209,11 @@ class CustomEmailsToSendBlock(emails.EmailsFormBlock):
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
         templating.TemplatingFormBlock.add_help_messages(
-            self.get_block_class().declared_blocks.values(),  # type: ignore
+            self.__class__.declared_blocks.values(),  # type: ignore
             ["subject", "message", "recipient_list", "reply_to"],
             self.templating_formatter_class.help(),
         )
         super().__init__(local_blocks, search_index, **kwargs)
-
-    def get_block_class(self) -> type[StreamBlock]:
-        """Return the block class."""
-        return emails.EmailsFormBlock
 
     def validate_email(self, field_value: str) -> None:
         """Validate the email addresses field value."""
@@ -224,23 +228,14 @@ class CustomEmailsToSendBlock(emails.EmailsFormBlock):
         collapsed = True
 
 
-class CustomFormSubmission(
-    token_validation.TokenValidationFormSubmission,
-    named_form.AuthFormSubmission,
-    indexed_results.IndexedResultsFormSubmission,
-):
+class CustomFormSubmission(*wfp.form_submission_classes):
     """A custom model for form submission, extended with mixins to extend its features"""
 
     class Meta:  # type: ignore
         pass
 
 
-class CustomFormFieldsBlock(
-    conditional_fields.ConditionalFieldsFormBlock,
-    label.LabelFormBlock,
-    file_input.FileInputFormBlock,
-    templating.TemplatingFormBlock,
-):
+class CustomFormFieldsBlock(*wfp.form_block_classes):
     """The custom Wagtail block used when adding fields to a form."""
 
     templating_formatter_class = CustomTemplatingFormatter
@@ -249,22 +244,11 @@ class CustomFormFieldsBlock(
         pass
 
 
-class CustomFormField(conditional_fields.ConditionalFieldsFormField):
+class CustomFormField(*wfp.form_field_classes):
     pass
 
 
-class CustomFormPage(  # type: ignore
-    token_validation.TokenValidationFormPage,
-    emails.EmailActionsFormPage,
-    templating.TemplatingFormPage,
-    file_input.FileInputFormPage,
-    conditional_fields.ConditionalFieldsFormPage,
-    named_form.AuthFormPage,
-    nav_buttons.NavButtonsFormPage,
-    indexed_results.IndexedResultsFormPage,
-    editable.EditableFormPage,
-    label.LabelFormPage,
-):
+class CustomFormPage(*wfp.form_page_classes):
     """A custom abstract form page model extended with some plugins to extend its features."""
 
     parent_page_type: ClassVar = ["demo.FormIndexPage"]
@@ -294,7 +278,7 @@ class CustomFormPage(  # type: ignore
         response = super().serve(request, *args, **kwargs)
 
         if isinstance(response, HttpResponseRedirect) or not response.context_data:
-            return response
+            return response  # type: ignore
 
         response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
         return response
