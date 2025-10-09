@@ -65,10 +65,10 @@ class FileInputFormPage(StreamFieldFormPage):
         return submission_data
 
     def format_field_value(
-        self, field: StreamFieldFormField, value: Any, format_lists: bool, in_html: bool
+        self, field: StreamFieldFormField, value: Any, in_html: bool
     ) -> str | list[str] | None:
         """Format the field value. Used to display user-friendly values in result table."""
-        fmt_value = super().format_field_value(field, value, format_lists, in_html)
+        fmt_value = super().format_field_value(field, value, in_html)
 
         if field.type == "file":
             return (settings.WAGTAILADMIN_BASE_URL + fmt_value) if value else None

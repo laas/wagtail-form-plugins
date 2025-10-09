@@ -74,7 +74,7 @@ class StreamFieldFormPage(FormMixin, Page):
         return self.get_submission_class().objects.create(**submission_data)
 
     def format_field_value(
-        self, field: StreamFieldFormField, value: Any, format_lists: bool, in_html: bool
+        self, field: StreamFieldFormField, value: Any, in_html: bool
     ) -> str | list[str] | None:
         """
         Format the field value, or return None if the value should not be displayed.
@@ -84,7 +84,7 @@ class StreamFieldFormPage(FormMixin, Page):
         if field.type in ["checkboxes", "dropdown", "multiselect", "radio"]:
             choices = {get_field_clean_name(cv): cv for cv in field.choices.values()}
             values = [choices[v].lstrip("*") for v in value]
-            return format_choices(values, in_html) if format_lists else values
+            return format_choices(values, in_html)
 
         if field.type == "datetime":
             if isinstance(value, str):
