@@ -178,6 +178,7 @@ class CustomSubmissionListView(
     file_input.FileInputSubmissionsListView,
     nav_buttons.NavButtonsSubmissionsListView,
     conditional_fields.ConditionalFieldsSubmissionsListView,
+    label.LabelSubmissionsListView,
 ):
     """A custom submission list view extended with some plugins to extend its features."""
 

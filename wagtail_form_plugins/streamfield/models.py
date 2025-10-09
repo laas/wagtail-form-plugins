@@ -50,12 +50,6 @@ class StreamFieldFormPage(FormMixin, Page):
         return {field.slug: field for field in self.get_form_fields()}
 
     def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
-        # TODO: disabled "hidden", and "label" in label module:
-        # if field.type in ["hidden", "label"]:
-        #     continue
-
-        print("form_data:", form_data)
-
         return [slug for slug, field_data in form_data.items() if field_data is not None]
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
