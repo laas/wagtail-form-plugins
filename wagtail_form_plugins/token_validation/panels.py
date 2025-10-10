@@ -3,7 +3,7 @@
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 
 
-class TokenValidationFieldPanel(MultiFieldPanel):
+class ValidationFieldPanel(MultiFieldPanel):
     """A panel used to add token validation field to the form admin page."""
 
     def __init__(self, *args, **kwargs):

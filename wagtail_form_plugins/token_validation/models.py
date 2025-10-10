@@ -31,7 +31,7 @@ class ValidationForm(Form):
     )
 
 
-class TokenValidationFormSubmission(StreamFieldFormSubmission):
+class ValidationFormSubmission(StreamFieldFormSubmission):
     """A mixin used to update the email value in the submission."""
 
     email = models.EmailField(default="")
@@ -47,7 +47,7 @@ class TokenValidationFormSubmission(StreamFieldFormSubmission):
         abstract = True
 
 
-class TokenValidationFormPage(StreamFieldFormPage):
+class ValidationFormPage(StreamFieldFormPage):
     """A mixin used to add validation functionnality to a form."""
 
     token_validation_form_class = ValidationForm

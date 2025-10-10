@@ -1,18 +1,18 @@
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
-from .models import TokenValidationFormPage, TokenValidationFormSubmission, ValidationForm
-from .panels import TokenValidationFieldPanel
+from .models import ValidationForm, ValidationFormPage, ValidationFormSubmission
+from .panels import ValidationFieldPanel
 
 
-class TokenValidation(Plugin):
-    form_page_class = TokenValidationFormPage
-    form_submission_class = TokenValidationFormSubmission
+class Validation(Plugin):
+    form_page_class = ValidationFormPage
+    form_submission_class = ValidationFormSubmission
 
 
 __all__ = [
-    "TokenValidation",
-    "TokenValidationFieldPanel",
-    "TokenValidationFormPage",
-    "TokenValidationFormSubmission",
+    "Validation",
+    "ValidationFieldPanel",
     "ValidationForm",
+    "ValidationFormPage",
+    "ValidationFormSubmission",
 ]

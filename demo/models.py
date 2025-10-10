@@ -21,22 +21,17 @@ from wagtail.contrib.forms.models import FormSubmission as WagtailFormSubmission
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import GroupPagePermission, Page
 
-from wagtail_form_plugins import (
-    emails,
-    named_form,
-    templating,
-    token_validation,
-)
 from wagtail_form_plugins.editable import Editable
-from wagtail_form_plugins.emails import EmailActions
+from wagtail_form_plugins.emails import EmailActions, EmailsFormBlock, email_to_block
 from wagtail_form_plugins.file_input import FileInput
 from wagtail_form_plugins.indexed_results import IndexedResults
 from wagtail_form_plugins.label import Label
-from wagtail_form_plugins.named_form import AuthForm
+from wagtail_form_plugins.named_form import AuthForm, UniqueResponseFieldPanel
 from wagtail_form_plugins.nav_buttons import NavButtons
 from wagtail_form_plugins.streamfield import WagtailFormPlugin
-from wagtail_form_plugins.templating import Templating
-from wagtail_form_plugins.token_validation import TokenValidation
+from wagtail_form_plugins.templating import Templating, TemplatingFormatter, TemplatingFormBlock
+from wagtail_form_plugins.templating.utils import ResultDataDict, UserDataDict
+from wagtail_form_plugins.token_validation import Validation, ValidationFieldPanel, ValidationForm
 from wagtail_form_plugins.utils import print_email
 
 LocalBlocks = list[tuple[str, Any]] | None
@@ -78,7 +73,7 @@ wfp = WagtailFormPlugin(
     AuthForm,
     NavButtons,
     Templating,
-    TokenValidation,
+    Validation,
 )
 
 
@@ -142,14 +137,14 @@ class CustomUser(AbstractUser):
     city = models.CharField(max_length=255, verbose_name=_("City"))
 
 
-class CustomTemplatingFormatter(templating.TemplatingFormatter):
+class CustomTemplatingFormatter(TemplatingFormatter):
     """Custom templating formatter used to personalize template formatting such as user template."""
 
     def __init__(self, context: dict[str, Any], in_html: bool):
         super().__init__(context, in_html)
         self.submission: CustomFormSubmission  # type: ignore
 
-    def get_user_data(self, user: User) -> templating.UserDataDict:
+    def get_user_data(self, user: User) -> UserDataDict:
         """Return a dict used to format template variables related to the form user or author."""
         user_data = super().get_user_data(user)
 
@@ -162,9 +157,7 @@ class CustomTemplatingFormatter(templating.TemplatingFormatter):
 
         return user_data
 
-    def get_result_data(
-        self, formated_fields: dict[str, tuple[str, str]]
-    ) -> templating.ResultDataDict | None:
+    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]) -> ResultDataDict | None:
         """Return a dict used to format template variables related to the form results."""
         result_data = super().get_result_data(formated_fields)
         if result_data:
@@ -193,7 +186,7 @@ class CustomSubmissionListView(*wfp.submission_list_view_classes):
     file_input_parent_page_class = FormIndexPage
 
 
-class CustomValidationForm(token_validation.ValidationForm):
+class CustomValidationForm(ValidationForm):
     """A small form with an email field, used to send validation email to access the actual form."""
 
     validation_email = EmailField(
@@ -202,13 +195,13 @@ class CustomValidationForm(token_validation.ValidationForm):
     )
 
 
-class CustomEmailsToSendBlock(emails.EmailsFormBlock):
+class CustomEmailsToSendBlock(EmailsFormBlock):
     """The custom Wagtail block used when configuring form emails behavior."""
 
     templating_formatter_class = CustomTemplatingFormatter
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
-        templating.TemplatingFormBlock.add_help_messages(
+        TemplatingFormBlock.add_help_messages(
             self.__class__.declared_blocks.values(),  # type: ignore
             ["subject", "message", "recipient_list", "reply_to"],
             self.templating_formatter_class.help(),
@@ -344,7 +337,7 @@ class FormPage(CustomFormPage):
     emails_to_send = StreamField(
         CustomEmailsToSendBlock(),
         verbose_name=_("E-mails to send after form submission"),
-        default=[emails.email_to_block(email) for email in DEFAULT_EMAILS],
+        default=[email_to_block(email) for email in DEFAULT_EMAILS],
         blank=True,
     )
 
@@ -353,7 +346,7 @@ class FormPage(CustomFormPage):
         FieldPanel("intro"),
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
-        token_validation.TokenValidationFieldPanel(),
+        ValidationFieldPanel(),
         FieldPanel("emails_to_send"),
-        named_form.UniqueResponseFieldPanel(),
+        UniqueResponseFieldPanel(),
     ]
