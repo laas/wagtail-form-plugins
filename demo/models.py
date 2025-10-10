@@ -17,7 +17,6 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.admin.panels import FieldPanel
 from wagtail.admin.widgets.button import HeaderButton
-from wagtail.contrib.forms.models import FormSubmission as WagtailFormSubmission
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import GroupPagePermission, Page
 
@@ -247,7 +246,8 @@ class CustomFormPage(*wfp.form_page_classes):
     parent_page_type: ClassVar = ["demo.FormIndexPage"]
     subpage_types: ClassVar = []
 
-    form_builder = CustomFormBuilder
+    form_builder_class = CustomFormBuilder
+    form_submission_class = CustomFormSubmission
     submissions_list_view_class = CustomSubmissionListView
     validation_form_class = CustomValidationForm
     templating_formatter_class = CustomTemplatingFormatter
@@ -261,10 +261,6 @@ class CustomFormPage(*wfp.form_page_classes):
     def get_group_name(self) -> str:
         """Return the name of the form admin user group."""
         return f"{FORM_GROUP_PREFIX}{self.slug}"
-
-    def get_submission_class(self) -> type[WagtailFormSubmission]:
-        """Return the custom form submission model class."""
-        return CustomFormSubmission  # type: ignore
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""

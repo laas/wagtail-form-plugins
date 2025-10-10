@@ -8,8 +8,9 @@ from django.forms import widgets
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
 
-from wagtail_form_plugins.streamfield.utils import StreamFieldDataDict
 from wagtail_form_plugins.utils import AnyDict
+
+from .utils import StreamFieldDataDict
 
 from typing_extensions import Self
 

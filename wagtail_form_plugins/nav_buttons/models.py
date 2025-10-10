@@ -13,7 +13,7 @@ class NavButtonsFormPage(StreamFieldFormPage):
 
     def admin_header_buttons(self) -> list[HeaderButton]:
         """Add a button pointing to the list of submissions."""
-        submissions_amount = self.get_submission_class().objects.filter(page=self).count()
+        submissions_amount = self.form_submission_class.objects.filter(page=self).count()
 
         return [
             HeaderButton(

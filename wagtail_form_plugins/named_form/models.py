@@ -11,8 +11,6 @@ from django.http import HttpRequest
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.contrib.forms.models import FormSubmission
-
 from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
 from wagtail_form_plugins.streamfield.models import SubmissionData
 
@@ -53,9 +51,9 @@ class AuthFormPage(StreamFieldFormPage):
     def get_user_submissions_qs(
         self,
         user: AbstractBaseUser | AnonymousUser,
-    ) -> models.QuerySet[FormSubmission]:
+    ) -> models.QuerySet[StreamFieldFormSubmission]:
         """Return the submissions QuerySet corresponding to the current form and the given user."""
-        return self.get_submission_class().objects.filter(page=self).filter(user=user)
+        return self.form_submission_class.objects.filter(page=self).filter(user=user)
 
     def get_data_fields(self) -> list[tuple[str, Any]]:
         """Return a list fields data as tuples of slug and label."""

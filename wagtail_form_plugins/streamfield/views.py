@@ -2,10 +2,10 @@
 
 from typing import Any
 
-from wagtail.contrib.forms.models import AbstractFormSubmission
+from wagtail.contrib.forms.models import FormSubmission
 from wagtail.contrib.forms.views import SubmissionsListView
 
-from . import StreamFieldFormPage
+from .models import StreamFieldFormPage
 
 
 class StreamFieldSubmissionsListView(SubmissionsListView):
@@ -17,7 +17,7 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
         """Return context for view"""
         ctx_data = super().get_context_data(**kwargs)
 
-        submissions: dict[str, AbstractFormSubmission] = {s.id: s for s in ctx_data["submissions"]}
+        submissions: dict[str, FormSubmission] = {sub.id: sub for sub in ctx_data["submissions"]}
         header: list[str] = [head["name"] for head in ctx_data["data_headings"]]
         fields = self.form_page.get_form_fields_dict()
 

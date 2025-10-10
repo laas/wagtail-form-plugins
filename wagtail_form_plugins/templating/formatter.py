@@ -12,13 +12,14 @@ from wagtail.admin.panels import RichText
 from wagtail.contrib.forms.models import FormSubmission
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
-from wagtail_form_plugins.templating.utils import (
+from wagtail_form_plugins.utils import StrDict, create_links, validate_identifier
+
+from .utils import (
     DataDict,
     FormDataDict,
     ResultDataDict,
     UserDataDict,
 )
-from wagtail_form_plugins.utils import StrDict, create_links, validate_identifier
 
 TMPL_SEP_LEFT = "{"
 TMPL_SEP_RIGHT = "}"

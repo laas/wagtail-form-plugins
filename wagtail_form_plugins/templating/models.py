@@ -9,7 +9,8 @@ from wagtail_form_plugins.streamfield import (
     StreamFieldFormPage,
     StreamFieldFormSubmission,
 )
-from wagtail_form_plugins.templating import TemplatingFormatter
+
+from .formatter import TemplatingFormatter
 
 
 class TemplatingFormPage(StreamFieldFormPage):

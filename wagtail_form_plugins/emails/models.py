@@ -15,6 +15,8 @@ from .utils import EmailsToSendBlockDict
 class EmailActionsFormPage(StreamFieldFormPage):
     """Form page for the EmailActions plugin, allowing to send emails when submitting a form."""
 
+    emails_field_attr_name = "emails_to_send"
+
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
@@ -28,7 +30,7 @@ class EmailActionsFormPage(StreamFieldFormPage):
             text_formatter = fmt_class(response.context_data, False) if fmt_class else None
             html_formatter = fmt_class(response.context_data, True) if fmt_class else None
 
-            for email in form_page.emails_to_send:  # type: ignore
+            for email in getattr(form_page, self.emails_field_attr_name, []):
                 email = self.build_action_email(email.value, text_formatter, html_formatter)
                 self.send_action_email(email)
 

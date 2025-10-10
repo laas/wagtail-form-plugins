@@ -6,7 +6,6 @@ from .models import EmailActionsFormPage
 
 
 class EmailActions(Plugin):
-    form_block_class = EmailsFormBlock
     form_page_class = EmailActionsFormPage
 
 

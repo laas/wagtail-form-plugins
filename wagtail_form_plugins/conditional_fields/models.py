@@ -9,7 +9,8 @@ from django.forms import BaseForm
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.utils import AnyDict
 
-from . import ConditionalFieldsFormField, utils
+from .forms import ConditionalFieldsFormField
+from .utils import RuleBlockValueDict, date_to_timestamp, datetime_to_timestamp, time_to_timestamp
 
 Operation = Callable[[Any, Any], bool]
 
@@ -59,7 +60,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         return form
 
     def get_right_operand(
-        self, field: ConditionalFieldsFormField, leaf_rule: utils.RuleBlockValueDict
+        self, field: ConditionalFieldsFormField, leaf_rule: RuleBlockValueDict
     ) -> str | int:
         """
         Return the right operand of the rule operation.
@@ -76,11 +77,11 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
             dropdown_val = leaf_rule["value_dropdown"]
             return field.choices[dropdown_val] if (dropdown_val and field.choices) else dropdown_val
         if field.type == "date":
-            return utils.get_date_timestamp(leaf_rule["value_date"])
+            return date_to_timestamp(leaf_rule["value_date"])
         if field.type == "time":
-            return utils.get_time_timestamp(leaf_rule["value_time"])
+            return time_to_timestamp(leaf_rule["value_time"])
         if field.type == "datetime":
-            return utils.get_datetime_timestamp(leaf_rule["value_datetime"])
+            return datetime_to_timestamp(leaf_rule["value_datetime"])
         return ""
 
     # TODO: typer form_data
@@ -88,7 +89,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         self,
         fields: dict[str, ConditionalFieldsFormField],
         form_data: AnyDict,
-        rule: utils.RuleBlockValueDict,
+        rule: RuleBlockValueDict,
     ) -> bool:
         rule_field_attr = rule["field"]
 
@@ -120,7 +121,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         new_enabled_fields = []
         for field_slug in enabled_fields:
             field = fields_dict[field_slug]
-            rules: list[utils.RuleBlockValueDict] = field.options.get("rule", [])
+            rules: list[RuleBlockValueDict] = field.options.get("rule", [])
 
             if not rules:
                 new_enabled_fields.append(field_slug)

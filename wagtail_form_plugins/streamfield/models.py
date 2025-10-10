@@ -6,14 +6,14 @@ from typing import Any
 from django.forms import BaseForm
 from django.http import HttpRequest
 
-from wagtail.contrib.forms.models import AbstractFormSubmission, FormMixin, FormSubmission
+from wagtail.contrib.forms.models import AbstractFormSubmission, FormMixin
 from wagtail.contrib.forms.utils import get_field_clean_name
 from wagtail.contrib.forms.views import SubmissionsListView
 from wagtail.models import Page
 
 from wagtail_form_plugins.utils import create_links
 
-from . import StreamFieldFormBuilder, StreamFieldFormField
+from .forms import StreamFieldFormBuilder, StreamFieldFormField
 from .utils import SubmissionData, format_choices
 
 
@@ -25,14 +25,21 @@ class StreamFieldFormSubmission(AbstractFormSubmission):
 class StreamFieldFormPage(FormMixin, Page):
     """Form mixin for the Streamfield plugin."""
 
-    form_builder = StreamFieldFormBuilder
-    submissions_list_view_class = SubmissionsListView
+    form_builder_class = StreamFieldFormBuilder
+    form_submission_class = StreamFieldFormSubmission
     form_field_class = StreamFieldFormField
-    fields_attr_name = "form_fields"
+    submissions_list_view_class = SubmissionsListView
 
-    def get_submission_class(self) -> type[FormSubmission]:
+    fields_field_attr_name = "form_fields"
+
+    @classmethod
+    @property
+    def form_builder(cls) -> type[StreamFieldFormBuilder]:
+        return cls.form_builder_class
+
+    def get_submission_class(self) -> type[StreamFieldFormSubmission]:  # type: ignore
         """Used in wagtail.FormMixin."""
-        return FormSubmission
+        return self.form_submission_class
 
     def serve_preview(self, request: HttpRequest, mode_name: str) -> Any:
         """Fix typing (FormMixin.serve_preview and Page.serve_preview return types are different)"""
@@ -40,7 +47,7 @@ class StreamFieldFormPage(FormMixin, Page):
 
     def get_form_fields(self) -> list[StreamFieldFormField]:
         """Return the form fields based on streamfield data."""
-        steamchild = getattr(self, self.fields_attr_name)
+        steamchild = getattr(self, self.fields_field_attr_name)
         return [
             self.form_field_class.from_streamfield_data(field_data)
             for field_data in steamchild.raw_data
@@ -62,10 +69,10 @@ class StreamFieldFormPage(FormMixin, Page):
             "page": self,
         }
 
-    def process_form_submission(self, form: BaseForm) -> FormSubmission:
+    def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:  # type: ignore
         """Create and return the submission instance."""
         submission_data = self.pre_process_form_submission(form)
-        return self.get_submission_class().objects.create(**submission_data)
+        return self.form_submission_class.objects.create(**submission_data)
 
     def format_field_value(
         self, field: StreamFieldFormField, value: Any, in_html: bool

@@ -14,7 +14,6 @@ from django.http import HttpRequest
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
-from wagtail.contrib.forms.models import FormSubmission
 from wagtail.fields import RichTextField
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
@@ -141,7 +140,7 @@ class ValidationFormPage(StreamFieldFormPage):
         context["form"] = self.token_validation_form_class()
         return TemplateResponse(request, self.get_template(request), context)
 
-    def process_form_submission(self, form: BaseForm) -> FormSubmission:
+    def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:
         """Create and return submission instance. Update email value."""
         submission = super().process_form_submission(form)
         submission.email = self.extract_email(form)  # type: ignore

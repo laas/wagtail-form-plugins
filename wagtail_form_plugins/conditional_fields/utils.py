@@ -4,7 +4,7 @@ from typing import Literal, TypedDict
 from typing_extensions import NotRequired
 
 
-def get_date_timestamp(value: date | str | None) -> int:
+def date_to_timestamp(value: date | str | None) -> int:
     if not value:
         value_dt = datetime.now()
     elif isinstance(value, str):
@@ -14,7 +14,7 @@ def get_date_timestamp(value: date | str | None) -> int:
     return int(value_dt.timestamp())
 
 
-def get_time_timestamp(value: time | str | None) -> int:
+def time_to_timestamp(value: time | str | None) -> int:
     if not value:
         value_dt = datetime.now()
     elif isinstance(value, str):
@@ -24,7 +24,7 @@ def get_time_timestamp(value: time | str | None) -> int:
     return int(value_dt.timestamp())
 
 
-def get_datetime_timestamp(value: datetime | str | None) -> int:
+def datetime_to_timestamp(value: datetime | str | None) -> int:
     if not value:
         value_dt = datetime.now()
     elif isinstance(value, str):

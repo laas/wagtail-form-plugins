@@ -4,43 +4,13 @@ from .models import StreamFieldFormPage, StreamFieldFormSubmission
 from .views import StreamFieldSubmissionsListView
 
 
-class DefaultFormBlock(StreamFieldFormBlock):
-    class Meta:  # type: ignore
-        abstract = True
-
-
-class DefaultFormBuilder(StreamFieldFormBuilder):
-    class Meta:  # type: ignore
-        abstract = True
-
-
-class DefaultFormField(StreamFieldFormField):
-    class Meta:  # type: ignore
-        abstract = True
-
-
-class DefaultFormSubmission(StreamFieldFormSubmission):
-    class Meta:  # type: ignore
-        abstract = True
-
-
-class DefaultFormPage(StreamFieldFormPage):
-    class Meta:  # type: ignore
-        abstract = True
-
-
-class DefaultSubmissionsListView(StreamFieldSubmissionsListView):
-    class Meta:  # type: ignore
-        abstract = True
-
-
 class Plugin:
-    form_block_class = DefaultFormBlock
-    form_builder_class = DefaultFormBuilder
-    form_field_class = DefaultFormField
-    form_submission_class = DefaultFormSubmission
-    form_page_class = DefaultFormPage
-    submission_list_view_class = DefaultSubmissionsListView
+    form_block_class = StreamFieldFormBlock
+    form_builder_class = StreamFieldFormBuilder
+    form_field_class = StreamFieldFormField
+    form_submission_class = StreamFieldFormSubmission
+    form_page_class = StreamFieldFormPage
+    submission_list_view_class = StreamFieldSubmissionsListView
 
 
 class WagtailFormPlugin:
@@ -49,24 +19,54 @@ class WagtailFormPlugin:
 
     @property
     def form_block_classes(self) -> set[type[StreamFieldFormBlock]]:
-        return {plugin.form_block_class for plugin in self.plugins}
+        base_classes = {
+            plugin.form_block_class
+            for plugin in self.plugins
+            if plugin.form_block_class != StreamFieldFormBlock
+        }
+        return base_classes if base_classes else {StreamFieldFormBlock}
 
     @property
     def form_builder_classes(self) -> set[type[StreamFieldFormBuilder]]:
-        return {plugin.form_builder_class for plugin in self.plugins}
+        base_classes = {
+            plugin.form_builder_class
+            for plugin in self.plugins
+            if plugin.form_builder_class != StreamFieldFormBuilder
+        }
+        return base_classes if base_classes else {StreamFieldFormBuilder}
 
     @property
     def form_field_classes(self) -> set[type[StreamFieldFormField]]:
-        return {plugin.form_field_class for plugin in self.plugins}
+        base_classes = {
+            plugin.form_field_class
+            for plugin in self.plugins
+            if plugin.form_field_class != StreamFieldFormField
+        }
+        return base_classes if base_classes else {StreamFieldFormField}
 
     @property
     def form_submission_classes(self) -> set[type[StreamFieldFormSubmission]]:
-        return {plugin.form_submission_class for plugin in self.plugins}
+        base_classes = {
+            plugin.form_submission_class
+            for plugin in self.plugins
+            if plugin.form_submission_class != StreamFieldFormSubmission
+        }
+        return base_classes if base_classes else {StreamFieldFormSubmission}
 
     @property
     def form_page_classes(self) -> set[type[StreamFieldFormPage]]:
-        return {plugin.form_page_class for plugin in self.plugins}
+        base_classes = {
+            plugin.form_page_class
+            for plugin in self.plugins
+            if plugin.form_page_class != StreamFieldFormPage
+        }
+        return base_classes if base_classes else {StreamFieldFormPage}
 
     @property
     def submission_list_view_classes(self) -> set[type[StreamFieldSubmissionsListView]]:
-        return {plugin.submission_list_view_class for plugin in self.plugins}
+        base_classes = {
+            plugin.submission_list_view_class
+            for plugin in self.plugins
+            if plugin.submission_list_view_class != StreamFieldSubmissionsListView
+        }
+        return base_classes if base_classes else {StreamFieldSubmissionsListView}

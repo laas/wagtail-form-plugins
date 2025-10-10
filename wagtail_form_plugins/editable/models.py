@@ -18,7 +18,7 @@ class EditableFormPage(StreamFieldFormPage):
     def edit_post(self, request: HttpRequest) -> str:
         """Handle POST request of form page edition, return redirect url or empty string."""
         submission_id = int(request.POST["edit"])
-        submission = get_object_or_404(self.get_submission_class(), pk=submission_id)
+        submission = get_object_or_404(self.form_submission_class, pk=submission_id)
         form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)  # type: ignore
         form_fields = list(form.fields.values())
 
@@ -46,7 +46,7 @@ class EditableFormPage(StreamFieldFormPage):
     def edit_get(self, request: HttpRequest) -> dict[str, Any]:
         """Handle GET request of form page edition, return context."""
         submission_id = int(request.GET["edit"])
-        submission = get_object_or_404(self.get_submission_class(), pk=submission_id)
+        submission = get_object_or_404(self.form_submission_class, pk=submission_id)
         form = self.get_form(submission.form_data, page=self)
 
         for field_value in form.fields.values():
