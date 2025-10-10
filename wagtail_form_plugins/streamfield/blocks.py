@@ -350,8 +350,9 @@ class StreamFieldFormBlock(blocks.StreamBlock):
     def get_duplicates(cls, blocks: StreamValue) -> dict[str, str]:
         """Return a dict containing slug duplicates in the given blocks."""
         duplicates = {}
-        for idx, slug in enumerate([block.value["slug"] for block in blocks]):
-            duplicates[slug] = (duplicates[slug] if slug in duplicates else []) + [idx]
+        for idx, slug in enumerate([block.value.get("slug", None) for block in blocks]):
+            if slug:
+                duplicates[slug] = (duplicates[slug] if slug in duplicates else []) + [idx]
         return {k: v for k, v in duplicates.items() if len(v) > 1}
 
     def __init_subclass__(cls, **kwargs):
@@ -368,7 +369,8 @@ class StreamFieldFormBlock(blocks.StreamBlock):
     def clean(self, value: StreamValue, ignore_required_constraints: bool = False) -> StreamValue:
         """Add duplicates attribute in the block class."""
         if len(value) > 0:
-            block = value[0].block.child_blocks["slug"]  # type: ignore
-            block.duplicates = self.get_duplicates(value)
+            block = value[0].block.child_blocks.get("slug", None)  # type: ignore
+            if block:
+                block.duplicates = self.get_duplicates(value)
 
         return super().clean(value, ignore_required_constraints)

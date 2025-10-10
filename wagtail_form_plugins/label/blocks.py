@@ -2,17 +2,16 @@
 
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_form_plugins.streamfield.blocks import (
-    FormFieldBlock,
-    RequiredBlock,
-    StreamFieldFormBlock,
-)
+from wagtail import blocks
+
+from wagtail_form_plugins.streamfield.blocks import StreamFieldFormBlock
 
 
-class LabelFormFieldBlock(FormFieldBlock):
+class LabelFormFieldBlock(blocks.StructBlock):
     """A struct block used to build a label form field."""
 
-    is_required = RequiredBlock()
+    label = blocks.CharBlock(label=_("Title"), form_classname="formbuilder-field-block-label")
+    help_text = blocks.CharBlock(label=_("Subtitle"), required=False)
 
     class Meta:  # type: ignore
         icon = "title"

@@ -6,17 +6,12 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail import blocks
 
-from wagtail_form_plugins.streamfield.blocks import (
-    FormFieldBlock,
-    RequiredBlock,
-    StreamFieldFormBlock,
-)
+from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, StreamFieldFormBlock
 
 
 class FileInputFormFieldBlock(FormFieldBlock):
     """A wagtail struct block used to add a file field when building a form."""
 
-    is_required = RequiredBlock()
     allowed_extensions = blocks.MultipleChoiceBlock(
         label=_("Allowed file extensions"),
         choices=[(ext, ext) for ext in settings.FORMS_FILE_UPLOAD_AVAILABLE_EXTENSIONS],

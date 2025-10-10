@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any
 
+from wagtail.contrib.forms.utils import get_field_clean_name
+
 from .dicts import StreamFieldDataDict
 
 from typing_extensions import Self
@@ -51,13 +53,13 @@ class StreamFieldFormField(WaftailFormField):
 
         return cls(
             block_id=field_data["id"],
-            clean_name=field_value["slug"],
+            clean_name=field_value.get("slug", get_field_clean_name(field_value["label"])),
             field_type=field_data["type"],
             label=field_value["label"],
             help_text=field_value["help_text"],
-            required=field_value["is_required"],
+            required=field_value.get("is_required", False),
             default_value=field_value.get("initial", ""),
-            disabled=field_value["disabled"],
+            disabled=field_value.get("disabled", False),
             choices={f"c{idx + 1}": choice for idx, choice in enumerate(choices)},
             options={k: v for k, v in field_value.items() if k not in base_options},
         )
