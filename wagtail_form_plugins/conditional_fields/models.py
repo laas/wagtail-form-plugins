@@ -10,7 +10,7 @@ from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 from wagtail_form_plugins.utils import AnyDict
 
 from .dicts import RuleBlockValueDict
-from .forms import ConditionalFieldsFormField
+from .form_field import ConditionalFieldsFormField
 from .utils import date_to_timestamp, datetime_to_timestamp, time_to_timestamp
 
 Operation = Callable[[Any, Any], bool]

@@ -1,7 +1,8 @@
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
 from .blocks import ConditionalFieldsFormBlock
-from .forms import ConditionalFieldsFormBuilder, ConditionalFieldsFormField
+from .form_field import ConditionalFieldsFormField
+from .forms import ConditionalFieldsFormBuilder
 from .hooks import hook_conditional_fields_admin_css
 from .models import ConditionalFieldsFormPage
 from .views import ConditionalFieldsSubmissionsListView

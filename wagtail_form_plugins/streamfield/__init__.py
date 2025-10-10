@@ -1,5 +1,6 @@
 from .blocks import StreamFieldFormBlock
-from .forms import StreamFieldFormBuilder, StreamFieldFormField
+from .form_field import StreamFieldFormField
+from .forms import StreamFieldFormBuilder
 from .models import StreamFieldFormPage, StreamFieldFormSubmission
 from .plugin import WagtailFormPlugin
 from .views import StreamFieldSubmissionsListView

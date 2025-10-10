@@ -8,11 +8,8 @@ from django.core.validators import FileExtensionValidator
 from django.forms import ValidationError, widgets
 from django.utils.translation import gettext_lazy as _
 
-from wagtail_form_plugins.streamfield.forms import (
-    FieldWithSlug,
-    StreamFieldFormBuilder,
-    StreamFieldFormField,
-)
+from wagtail_form_plugins.streamfield.form_field import StreamFieldFormField
+from wagtail_form_plugins.streamfield.forms import FieldWithSlug, StreamFieldFormBuilder
 
 
 class FileField(FieldWithSlug, forms.FileField):
