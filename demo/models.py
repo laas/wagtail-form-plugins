@@ -31,9 +31,7 @@ from wagtail_form_plugins.streamfield import WagtailFormPlugin
 from wagtail_form_plugins.templating import Templating, TemplatingFormatter, TemplatingFormBlock
 from wagtail_form_plugins.templating.dicts import ResultDataDict, UserDataDict
 from wagtail_form_plugins.token_validation import Validation, ValidationFieldPanel, ValidationForm
-from wagtail_form_plugins.utils import print_email
-
-LocalBlocks = list[tuple[str, Any]] | None
+from wagtail_form_plugins.utils import LocalBlocks, print_email
 
 FORM_GROUP_PREFIX = "form_moderator_"
 

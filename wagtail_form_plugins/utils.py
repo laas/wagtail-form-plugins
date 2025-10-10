@@ -12,8 +12,6 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.utils import get_field_clean_name
 
 LocalBlocks = list[tuple[str, Any]] | None
-StrDict = dict[str, str]
-AnyDict = dict[str, Any]
 
 
 def create_links(html_message: str) -> str:

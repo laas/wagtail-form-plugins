@@ -7,7 +7,6 @@ from typing import Any
 from django.forms import BaseForm
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
-from wagtail_form_plugins.utils import AnyDict
 
 from .dicts import RuleBlockValueDict
 from .form_field import ConditionalFieldsFormField
@@ -89,7 +88,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
     def process_rule(
         self,
         fields: dict[str, ConditionalFieldsFormField],
-        form_data: AnyDict,
+        form_data: dict[str, Any],
         rule: RuleBlockValueDict,
     ) -> bool:
         rule_field_attr = rule["field"]
@@ -114,7 +113,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
             print("error when solving rule:", left_operand, rule["operator"], right_operand)
             return False
 
-    def get_enabled_fields(self, form_data: AnyDict) -> list[str]:
+    def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
         """Return the list of fields slug where the computed conditional value of the field is true."""
         enabled_fields = super().get_enabled_fields(form_data)
         fields_dict: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore

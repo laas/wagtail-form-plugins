@@ -1,14 +1,16 @@
 """Form-related classes for the Streamfield plugin."""
 
+from typing import Any
+
 from django import forms
 from django.forms import widgets
 
 from wagtail.contrib.forms.forms import FormBuilder
 from wagtail.contrib.forms.utils import get_field_clean_name
 
-from wagtail_form_plugins.utils import AnyDict
-
 from .form_field import StreamFieldFormField
+
+AnyDict = dict[str, Any]
 
 
 class FieldWithSlug:

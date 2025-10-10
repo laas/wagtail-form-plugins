@@ -26,6 +26,7 @@ class FileInputFormBuilder(StreamFieldFormBuilder):
 
     def __init__(self, fields: list[StreamFieldFormField]):
         super().__init__(fields)
+        print("--- init FileInputFormBuilder ---")
         self.extra_field_options += ["allowed_extensions"]
 
     def file_input_size_validator(self, value: File) -> None:

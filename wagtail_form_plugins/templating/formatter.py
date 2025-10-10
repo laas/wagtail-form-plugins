@@ -12,7 +12,7 @@ from wagtail.admin.panels import RichText
 from wagtail.contrib.forms.models import FormSubmission
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
-from wagtail_form_plugins.utils import StrDict, create_links, validate_identifier
+from wagtail_form_plugins.utils import create_links, validate_identifier
 
 from .dicts import DataDict, FormDataDict, ResultDataDict, UserDataDict
 
@@ -42,7 +42,7 @@ class TemplatingFormatter:
             "field_value": {f_id: f_value for f_id, [f_label, f_value] in formated_fields.items()},
         }
 
-    def get_values(self) -> StrDict:
+    def get_values(self) -> dict[str, str]:
         """Return a dict containing all formatter values on the root level."""
         values = {}
 
