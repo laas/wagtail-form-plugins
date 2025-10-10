@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.admin.widgets.button import HeaderButton
 
-from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 
 
 class NavButtonsFormPage(StreamFieldFormPage):

@@ -5,7 +5,7 @@ from typing import Any
 from django.conf import settings
 from django.utils.html import format_html
 
-from wagtail_form_plugins.streamfield import StreamFieldSubmissionsListView
+from wagtail_form_plugins.streamfield.views import StreamFieldSubmissionsListView
 
 
 class FileInputSubmissionsListView(StreamFieldSubmissionsListView):

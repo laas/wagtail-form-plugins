@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 
 
 class EditableFormPage(StreamFieldFormPage):

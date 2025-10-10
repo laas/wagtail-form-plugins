@@ -6,7 +6,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
-from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 from wagtail_form_plugins.utils import build_email
 
 from .dicts import EmailsToSendBlockDict

@@ -7,8 +7,9 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.blocks.field_block import RichTextBlock
 
+from wagtail_form_plugins.streamfield.blocks import StreamFieldFormBlock
 from wagtail_form_plugins.utils import LocalBlocks
-from wagtail_form_plugins.streamfield import StreamFieldFormBlock
+
 from .formatter import TemplatingFormatter
 
 TEMPLATING_HELP_INTRO = _("This field supports the following templating syntax:")

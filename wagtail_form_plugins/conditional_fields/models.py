@@ -6,7 +6,7 @@ from typing import Any
 
 from django.forms import BaseForm
 
-from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 from wagtail_form_plugins.utils import AnyDict
 
 from .dicts import RuleBlockValueDict

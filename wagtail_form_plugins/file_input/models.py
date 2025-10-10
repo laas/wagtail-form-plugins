@@ -9,8 +9,9 @@ from django.conf import settings
 from django.db import models
 from django.forms import BaseForm
 
-from wagtail_form_plugins.streamfield import StreamFieldFormField, StreamFieldFormPage
 from wagtail_form_plugins.streamfield.dicts import SubmissionData
+from wagtail_form_plugins.streamfield.forms import StreamFieldFormField
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 
 from .views import FileInputSubmissionsListView
 

@@ -4,11 +4,8 @@ from django.forms import BaseForm
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
-from wagtail_form_plugins.streamfield import (
-    StreamFieldFormField,
-    StreamFieldFormPage,
-    StreamFieldFormSubmission,
-)
+from wagtail_form_plugins.streamfield.forms import StreamFieldFormField
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage, StreamFieldFormSubmission
 
 from .formatter import TemplatingFormatter
 

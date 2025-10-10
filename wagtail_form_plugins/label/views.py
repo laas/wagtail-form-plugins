@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from wagtail_form_plugins.streamfield import StreamFieldSubmissionsListView
+from wagtail_form_plugins.streamfield.views import StreamFieldSubmissionsListView
 
 
 class LabelSubmissionsListView(StreamFieldSubmissionsListView):

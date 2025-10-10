@@ -4,8 +4,8 @@ from typing import Any
 
 from django.forms import widgets
 
-from wagtail_form_plugins.streamfield import StreamFieldFormBuilder
 from wagtail_form_plugins.streamfield.forms import CharField
+from wagtail_form_plugins.streamfield.models import StreamFieldFormBuilder
 
 
 class Label(widgets.TextInput):

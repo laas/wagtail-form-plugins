@@ -6,8 +6,11 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail import blocks
 
-from wagtail_form_plugins.streamfield import StreamFieldFormBlock
-from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, RequiredBlock
+from wagtail_form_plugins.streamfield.blocks import (
+    FormFieldBlock,
+    RequiredBlock,
+    StreamFieldFormBlock,
+)
 
 
 class FileInputFormFieldBlock(FormFieldBlock):

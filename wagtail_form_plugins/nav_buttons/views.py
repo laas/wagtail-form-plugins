@@ -8,7 +8,7 @@ from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.models import Page
 
-from wagtail_form_plugins.streamfield import StreamFieldSubmissionsListView
+from wagtail_form_plugins.streamfield.views import StreamFieldSubmissionsListView
 
 
 class NavButtonsSubmissionsListView(StreamFieldSubmissionsListView):

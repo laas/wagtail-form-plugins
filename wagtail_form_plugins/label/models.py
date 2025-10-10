@@ -1,6 +1,6 @@
 from typing import Any
 
-from wagtail_form_plugins.streamfield import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 
 
 class LabelFormPage(StreamFieldFormPage):
