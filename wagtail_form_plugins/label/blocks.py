@@ -11,7 +11,7 @@ class LabelFormFieldBlock(blocks.StructBlock):
     """A struct block used to build a label form field."""
 
     label = blocks.CharBlock(label=_("Title"), form_classname="formbuilder-field-block-label")
-    help_text = blocks.CharBlock(label=_("Subtitle"), required=False)
+    help_text = blocks.CharBlock(label=_("Sub-title"), required=False)
 
     class Meta:  # type: ignore
         icon = "title"

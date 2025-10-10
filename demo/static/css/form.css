@@ -1,14 +1,23 @@
 html {
-    background-color: antiquewhite;
+	background-color: antiquewhite;
 }
 
 body {
-    max-width: 800px;
-    margin: auto;
-    background-color: aliceblue;
-    padding: 1em;
+	max-width: 800px;
+	margin: auto;
+	background-color: aliceblue;
+	padding: 1em;
 }
 
-form input {
-    margin: 1em;
+div:has(.form-title-input) {
+	margin-left: 1em;
+
+	label {
+		margin-top: 3em;
+		font-weight: bold;
+	}
+
+	.form-text {
+		margin-bottom: 3em;
+	}
 }

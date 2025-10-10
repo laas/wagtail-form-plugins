@@ -12,7 +12,7 @@ class Label(widgets.TextInput):
     """A widget used to only display a label without a form input."""
 
     def __init__(self, attrs: dict | None = None):
-        super().__init__({**(attrs or {}), "style": "display: none"})
+        super().__init__({**(attrs or {}), "style": "display: none", "class": "form-title-input"})
 
 
 class LabelFormBuilder(StreamFieldFormBuilder):
