@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.fields import RichTextField
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
-from wagtail_form_plugins.streamfield.utils import SubmissionData
+from wagtail_form_plugins.streamfield.dicts import SubmissionData
 from wagtail_form_plugins.utils import build_email
 
 

@@ -9,8 +9,9 @@ from django.forms import BaseForm
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.utils import AnyDict
 
+from .dicts import RuleBlockValueDict
 from .forms import ConditionalFieldsFormField
-from .utils import RuleBlockValueDict, date_to_timestamp, datetime_to_timestamp, time_to_timestamp
+from .utils import date_to_timestamp, datetime_to_timestamp, time_to_timestamp
 
 Operation = Callable[[Any, Any], bool]
 

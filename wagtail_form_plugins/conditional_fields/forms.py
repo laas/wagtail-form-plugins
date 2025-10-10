@@ -2,13 +2,8 @@ from dataclasses import dataclass
 
 from wagtail_form_plugins.streamfield import StreamFieldFormBuilder, StreamFieldFormField
 
-from .utils import (
-    FormattedRuleDict,
-    RuleBlockValueDict,
-    date_to_timestamp,
-    datetime_to_timestamp,
-    time_to_timestamp,
-)
+from .dicts import FormattedRuleDict, RuleBlockValueDict
+from .utils import date_to_timestamp, datetime_to_timestamp, time_to_timestamp
 
 
 @dataclass

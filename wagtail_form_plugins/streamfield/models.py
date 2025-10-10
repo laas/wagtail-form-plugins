@@ -13,8 +13,9 @@ from wagtail.models import Page
 
 from wagtail_form_plugins.utils import create_links
 
+from .dicts import SubmissionData
 from .forms import StreamFieldFormBuilder, StreamFieldFormField
-from .utils import SubmissionData, format_choices
+from .utils import format_choices
 
 
 class StreamFieldFormSubmission(AbstractFormSubmission):

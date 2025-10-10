@@ -10,7 +10,7 @@ from wagtail.contrib.forms.utils import get_field_clean_name
 
 from wagtail_form_plugins.utils import AnyDict
 
-from .utils import StreamFieldDataDict
+from .dicts import StreamFieldDataDict
 
 from typing_extensions import Self
 

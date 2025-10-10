@@ -29,7 +29,7 @@ from wagtail_form_plugins.named_form import AuthForm, UniqueResponseFieldPanel
 from wagtail_form_plugins.nav_buttons import NavButtons
 from wagtail_form_plugins.streamfield import WagtailFormPlugin
 from wagtail_form_plugins.templating import Templating, TemplatingFormatter, TemplatingFormBlock
-from wagtail_form_plugins.templating.utils import ResultDataDict, UserDataDict
+from wagtail_form_plugins.templating.dicts import ResultDataDict, UserDataDict
 from wagtail_form_plugins.token_validation import Validation, ValidationFieldPanel, ValidationForm
 from wagtail_form_plugins.utils import print_email
 

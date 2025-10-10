@@ -9,7 +9,7 @@ from django.template.response import TemplateResponse
 from wagtail_form_plugins.streamfield import StreamFieldFormPage
 from wagtail_form_plugins.utils import build_email
 
-from .utils import EmailsToSendBlockDict
+from .dicts import EmailsToSendBlockDict
 
 
 class EmailActionsFormPage(StreamFieldFormPage):

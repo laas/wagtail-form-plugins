@@ -12,7 +12,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
 from wagtail_form_plugins.streamfield import StreamFieldFormPage, StreamFieldFormSubmission
-from wagtail_form_plugins.streamfield.models import SubmissionData
+from wagtail_form_plugins.streamfield.dicts import SubmissionData
 
 
 class AuthFormSubmission(StreamFieldFormSubmission):
