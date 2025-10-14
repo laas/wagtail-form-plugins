@@ -2,9 +2,8 @@
 
 from typing import Any
 
-from django.forms import widgets
+from django.forms import CharField, widgets
 
-from wagtail_form_plugins.streamfield.forms import CharField
 from wagtail_form_plugins.streamfield.models import StreamFieldFormBuilder
 
 

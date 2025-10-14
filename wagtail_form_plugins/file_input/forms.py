@@ -2,20 +2,13 @@
 
 from typing import Any, ClassVar
 
-from django import forms
 from django.core.files.base import File
 from django.core.validators import FileExtensionValidator
-from django.forms import ValidationError, widgets
+from django.forms import FileField, ValidationError, widgets
 from django.utils.translation import gettext_lazy as _
 
 from wagtail_form_plugins.streamfield.form_field import StreamFieldFormField
-from wagtail_form_plugins.streamfield.forms import FieldWithSlug, StreamFieldFormBuilder
-
-
-class FileField(FieldWithSlug, forms.FileField):
-    """A Django FileField class with an addititional slug attribute."""
-
-    pass
+from wagtail_form_plugins.streamfield.forms import StreamFieldFormBuilder
 
 
 class FileInputFormBuilder(StreamFieldFormBuilder):
@@ -35,15 +28,14 @@ class FileInputFormBuilder(StreamFieldFormBuilder):
             error_msg = f"File is too big. Max size is {size_mo:.2f} MiB."
             raise ValidationError(error_msg)
 
-    def create_file_field(self, field_value: Any, options: dict[str, Any]) -> FileField:
+    def create_file_field(self, form_field: Any, options: dict[str, Any]) -> FileField:
         """Create a Django file field."""
-        allowed_ext = field_value.options["allowed_extensions"]
+        allowed_ext = form_field.options["allowed_extensions"]
         validators = [
             FileExtensionValidator(allowed_extensions=allowed_ext),
             self.file_input_size_validator,
         ]
         str_allowed = ",".join([f".{ext}" for ext in allowed_ext])
         options["help_text"] += f" {_('Allowed:')} {str_allowed}"
-        widget = widgets.FileInput(attrs={"accept": str_allowed})
-
+        widget = widgets.FileInput(attrs={"slug": form_field.slug, "accept": str_allowed})
         return FileField(widget=widget, **options, validators=validators)

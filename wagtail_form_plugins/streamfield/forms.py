@@ -6,79 +6,10 @@ from django import forms
 from django.forms import widgets
 
 from wagtail.contrib.forms.forms import FormBuilder
-from wagtail.contrib.forms.utils import get_field_clean_name
 
 from .form_field import StreamFieldFormField
 
 AnyDict = dict[str, Any]
-
-
-class FieldWithSlug:
-    """A mixin used to add a slug attribute to Django Field classes."""
-
-    def __init__(self, *args, **kwargs):
-        self.slug = kwargs.pop("slug")
-        super().__init__(*args, **kwargs)
-
-
-class CharField(FieldWithSlug, forms.CharField):
-    """A Django CharField class with an addititional slug attribute."""
-
-    pass
-
-
-class DateField(FieldWithSlug, forms.DateField):
-    """A Django DateField class with an addititional slug attribute."""
-
-    pass
-
-
-class TimeField(FieldWithSlug, forms.TimeField):
-    """A Django TimeField class with an addititional slug attribute."""
-
-    pass
-
-
-class DateTimeField(FieldWithSlug, forms.DateTimeField):
-    """A Django DateTimeField class with an addititional slug attribute."""
-
-    pass
-
-
-class EmailField(FieldWithSlug, forms.EmailField):
-    """A Django EmailField class with an addititional slug attribute."""
-
-    pass
-
-
-class URLField(FieldWithSlug, forms.URLField):
-    """A Django URLField class with an addititional slug attribute."""
-
-    pass
-
-
-class DecimalField(FieldWithSlug, forms.DecimalField):
-    """A Django DecimalField class with an addititional slug attribute."""
-
-    pass
-
-
-class BooleanField(FieldWithSlug, forms.BooleanField):
-    """A Django BooleanField class with an addititional slug attribute."""
-
-    pass
-
-
-class ChoiceField(FieldWithSlug, forms.ChoiceField):
-    """A Django ChoiceField class with an addititional slug attribute."""
-
-    pass
-
-
-class MultipleChoiceField(FieldWithSlug, forms.MultipleChoiceField):
-    """A Django MultipleChoiceField class with an addititional slug attribute."""
-
-    pass
 
 
 class StreamFieldFormBuilder(FormBuilder):
@@ -88,32 +19,45 @@ class StreamFieldFormBuilder(FormBuilder):
         super().__init__(fields)
         self.extra_field_options = []
 
-    def create_singleline_field(self, field: StreamFieldFormField, options: AnyDict) -> CharField:
+    def create_singleline_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.CharField:
         """Create a singleline form field."""
-        return CharField(**options)
+        widget = widgets.TextInput(attrs={"slug": form_field.slug})
+        return forms.CharField(widget=widget, **options)
 
-    def create_multiline_field(self, field: StreamFieldFormField, options: AnyDict) -> CharField:
+    def create_multiline_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.CharField:
         """Create a multiline form field."""
-        options.setdefault("widget", forms.Textarea)
-        return CharField(**options)
+        widget = widgets.Textarea(attrs={"slug": form_field.slug})
+        return forms.CharField(widget=widget, **options)
 
-    def create_date_field(self, field: StreamFieldFormField, options: AnyDict) -> DateField:
+    def create_date_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.DateField:
         """Create a date form field."""
 
         class DateInput(widgets.DateInput):
             input_type = "date"
 
-        return DateField(**options, widget=DateInput)
+        widget = DateInput(attrs={"slug": form_field.slug})
+        return forms.DateField(widget=widget, **options)
 
-    def create_time_field(self, field: StreamFieldFormField, options: AnyDict) -> TimeField:
+    def create_time_field(
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.TimeField:
         """Create a time form field."""
 
         class TimeInput(widgets.TimeInput):
             input_type = "time"
 
-        return TimeField(**options, widget=TimeInput)
+        widget = TimeInput(attrs={"slug": form_field.slug})
+        return forms.TimeField(widget=widget, **options)
 
-    def create_datetime_field(self, field: StreamFieldFormField, options: AnyDict) -> DateTimeField:
+    def create_datetime_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.DateTimeField:
         """Create a datetime form field."""
 
         class DateTimeInput(widgets.DateTimeInput):
@@ -123,79 +67,81 @@ class StreamFieldFormBuilder(FormBuilder):
                 fmt_value = super().format_value(value)
                 return fmt_value.rstrip("Z") if fmt_value else None
 
-        return DateTimeField(**options, widget=DateTimeInput)
+        widget = DateTimeInput(attrs={"slug": form_field.slug})
+        return forms.DateTimeField(widget=widget, **options)
 
-    def create_email_field(self, field: StreamFieldFormField, options: AnyDict) -> EmailField:
+    def create_email_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.EmailField:
         """Create a email form field."""
-        return EmailField(**options)
+        widget = widgets.EmailInput(attrs={"slug": form_field.slug})
+        return forms.EmailField(widget=widget, **options)
 
-    def create_url_field(self, field: StreamFieldFormField, options: AnyDict) -> URLField:  # type: ignore
+    def create_url_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.URLField:  # type: ignore
         """Create a url form field."""
-        return URLField(**options)
+        widget = widgets.URLInput(attrs={"slug": form_field.slug})
+        return forms.URLField(widget=widget, **options)
 
-    def create_number_field(self, field: StreamFieldFormField, options: AnyDict) -> DecimalField:
+    def create_number_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.DecimalField:
         """Create a number form field."""
-        return DecimalField(**options)
+        widget = widgets.NumberInput(attrs={"slug": form_field.slug})
+        return forms.DecimalField(widget=widget, **options)
 
-    def create_checkbox_field(self, field: StreamFieldFormField, options: AnyDict) -> BooleanField:
+    def create_checkbox_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.BooleanField:
         """Create a checkbox form field."""
-        return BooleanField(**options)
+        widget = widgets.CheckboxInput(attrs={"slug": form_field.slug})
+        return forms.BooleanField(widget=widget, **options)
 
-    def create_hidden_field(self, field: StreamFieldFormField, options: AnyDict) -> CharField:
+    def create_hidden_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.CharField:
         """Create a hidden form field."""
-        options.setdefault("widget", forms.HiddenInput)
-        return CharField(**options)
+        widget = widgets.HiddenInput(attrs={"slug": form_field.slug})
+        return forms.CharField(widget=widget, **options)
 
-    def create_dropdown_field(self, field: StreamFieldFormField, options: AnyDict) -> ChoiceField:
+    def create_dropdown_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.ChoiceField:
         """Create a dropdown form field."""
-        return ChoiceField(**options)
+        widget = widgets.Select(attrs={"slug": form_field.slug})
+        return forms.ChoiceField(widget=widget, **options)
 
-    def create_multiselect_field(
-        self, field: StreamFieldFormField, options: AnyDict
-    ) -> MultipleChoiceField:
+    def create_multiselect_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.MultipleChoiceField:
         """Create a multiselect form field."""
-        return MultipleChoiceField(**options)
+        widget = widgets.SelectMultiple(attrs={"slug": form_field.slug})
+        return forms.MultipleChoiceField(widget=widget, **options)
 
-    def create_radio_field(self, field: StreamFieldFormField, options: AnyDict) -> ChoiceField:
+    def create_radio_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.ChoiceField:
         """Create a Django choice field with radio widget."""
-        return ChoiceField(widget=forms.RadioSelect, **options)
+        widget = widgets.RadioSelect(attrs={"slug": form_field.slug})
+        return forms.ChoiceField(widget=widget, **options)
 
-    def create_checkboxes_field(
-        self, field: StreamFieldFormField, options: AnyDict
-    ) -> MultipleChoiceField:
+    def create_checkboxes_field(  # type: ignore
+        self, form_field: StreamFieldFormField, options: AnyDict
+    ) -> forms.MultipleChoiceField:
         """Create a Django multiple choice field with checkboxes widget."""
-        return MultipleChoiceField(widget=forms.CheckboxSelectMultiple, **options)
+        widget = widgets.CheckboxSelectMultiple(attrs={"slug": form_field.slug})
+        return forms.MultipleChoiceField(widget=widget, **options)
 
-    @classmethod
-    def get_choices_defaults(cls, str_choices: str) -> list[str]:
-        """Return formatted choices of choice-based fields."""
-        return [
-            choice.strip()
-            for choice in str_choices.split("\n")
-            if choice and choice.startswith("*")
-        ]
-
-    @classmethod
-    def get_choices_options(cls, str_choices: str) -> list[tuple[str, str]]:
-        """Return formatted initial options of choice-based fields."""
-        return [
-            (get_field_clean_name(ch.lstrip("*")), ch.lstrip("*").strip())
-            for ch in str_choices.split("\n")
-            if ch
-        ]
-
-    def get_field_options(self, field: StreamFieldFormField) -> AnyDict:
+    def get_field_options(self, form_field: StreamFieldFormField) -> AnyDict:  # type: ignore
         """Return the options given to a field. Override to add or modify some options."""
-        options = super().get_field_options(field)
+        options = super().get_field_options(form_field)  # label, help_text, required, initial
 
-        options["slug"] = field.slug
+        if form_field.choices:  # dropdown, multiselect, radio, checkboxes
+            options["choices"] = form_field.choices
 
-        for k, v in field.options.items():
+        for k, v in form_field.options.items():
             if k not in self.extra_field_options:
                 options[k] = v
-
-        if "choices" in options:
-            options["initial"] = self.get_choices_defaults(options["choices"])
-            options["choices"] = self.get_choices_options(options["choices"])
 
         return options

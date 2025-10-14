@@ -46,7 +46,7 @@ class FileInputFormPage(StreamFieldFormPage):
 
     submissions_list_view_class = FileInputSubmissionsListView
     file_input_upload_dir = "forms_uploads/%Y/%m/%d"
-    file_input_model: type[AbstractFileInput]
+    file_input_class: type[AbstractFileInput]
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
@@ -56,7 +56,7 @@ class FileInputFormPage(StreamFieldFormPage):
         for field_slug, field_value in submission_data["form_data"].items():
             form_field = form_fields[field_slug]
             if form_field.type == "file":
-                file_input = self.file_input_model.objects.create(
+                file_input = self.file_input_class.objects.create(
                     file=field_value,
                     field_name=field_slug,
                 )
@@ -66,7 +66,7 @@ class FileInputFormPage(StreamFieldFormPage):
 
         return submission_data
 
-    def format_field_value(
+    def format_field_value(  # type: ignore
         self, field: StreamFieldFormField, value: Any, in_html: bool
     ) -> str | list[str] | None:
         """Format the field value. Used to display user-friendly values in result table."""

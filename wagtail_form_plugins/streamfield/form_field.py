@@ -21,8 +21,8 @@ class WaftailFormField:
     label: str
     help_text: str
     required: bool
-    choices: dict[str, str]
-    default_value: str
+    choices: list[tuple[str, str]]
+    default_value: str | list[str]
 
 
 @dataclass
@@ -46,10 +46,17 @@ class StreamFieldFormField(WaftailFormField):
     @classmethod
     def from_streamfield_data(cls, field_data: StreamFieldDataDict) -> Self:
         """Return the form fields based the streamfield value of the form page form_fields field."""
-        base_options = ["slug", "label", "help_text", "is_required", "initial"]
-
+        base_attrs = ["slug", "label", "help_text", "is_required", "initial", "choices", "disabled"]
         field_value = field_data["value"]
-        choices = filter(None, [ln.strip() for ln in field_value.get("choices", "").splitlines()])
+
+        choices_list = [t.strip() for t in field_value.get("choices", "").splitlines() if t.strip()]
+
+        if choices_list:
+            initial = [get_field_clean_name(ch) for ch in choices_list if ch[0] == "*"]
+            if field_data["type"] in ["dropdown", "radio"]:
+                initial = initial[0]
+        else:
+            initial = field_value.get("initial", "")
 
         return cls(
             block_id=field_data["id"],
@@ -58,8 +65,8 @@ class StreamFieldFormField(WaftailFormField):
             label=field_value["label"],
             help_text=field_value["help_text"],
             required=field_value.get("is_required", False),
-            default_value=field_value.get("initial", ""),
+            default_value=initial,
             disabled=field_value.get("disabled", False),
-            choices={f"c{idx + 1}": choice for idx, choice in enumerate(choices)},
-            options={k: v for k, v in field_value.items() if k not in base_options},
+            choices=[(get_field_clean_name(ch), ch.lstrip("*").strip()) for ch in choices_list],
+            options={k: v for k, v in field_value.items() if k not in base_attrs},
         )

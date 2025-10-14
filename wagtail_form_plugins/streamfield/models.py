@@ -7,7 +7,6 @@ from django.forms import BaseForm
 from django.http import HttpRequest
 
 from wagtail.contrib.forms.models import AbstractFormSubmission, FormMixin
-from wagtail.contrib.forms.utils import get_field_clean_name
 from wagtail.contrib.forms.views import SubmissionsListView
 from wagtail.models import Page
 
@@ -75,38 +74,42 @@ class StreamFieldFormPage(FormMixin, Page):
         submission_data = self.pre_process_form_submission(form)
         return self.form_submission_class.objects.create(**submission_data)
 
-    def format_field_value(
-        self, field: StreamFieldFormField, value: Any, in_html: bool
+    def format_field_value(  # noqa: C901
+        self, form_field: StreamFieldFormField, value: Any, in_html: bool
     ) -> str | list[str] | None:
         """
         Format the field value, or return None if the value should not be displayed.
         Used to display user-friendly values in result table and emails.
         """
 
-        if field.type in ["checkboxes", "dropdown", "multiselect", "radio"]:
-            choices = {get_field_clean_name(cv): cv for cv in field.choices.values()}
-            values = [choices[v].lstrip("*") for v in value]
-            return format_choices(values, in_html)
+        if form_field.type in ["checkboxes", "multiselect"]:
+            return format_choices([v for k, v in form_field.choices if k in value], in_html)
 
-        if field.type == "datetime":
+        if form_field.type in ["dropdown", "radio"]:
+            return dict(form_field.choices)[value]
+
+        if form_field.type == "multiline":
+            return ("<br/>" if in_html else "\n") + value
+
+        if form_field.type == "datetime":
             if isinstance(value, str):
                 value = datetime.fromisoformat(value.replace("Z", "+00:00"))
             return value.strftime("%d/%m/%Y, %H:%M")
 
-        if field.type == "date":
+        if form_field.type == "date":
             if isinstance(value, str):
                 value = date.fromisoformat(value)
             return value.strftime("%d/%m/%Y")
 
-        if field.type == "time":
+        if form_field.type == "time":
             if isinstance(value, str):
                 value = time.fromisoformat(value)
             return value.strftime("%H:%M")
 
-        if field.type == "number":
+        if form_field.type == "number":
             return str(value)
 
-        if field.type == "checkbox":
+        if form_field.type == "checkbox":
             return "✔" if value else "✘"
 
         return value
@@ -114,6 +117,7 @@ class StreamFieldFormPage(FormMixin, Page):
     def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
+        form.render()  # required to make multiselect inital values work - black magic here
 
         for field_value in form.fields.values():
             if field_value.help_text:
@@ -123,7 +127,7 @@ class StreamFieldFormPage(FormMixin, Page):
             form.full_clean()
             enabled_fields = self.get_enabled_fields(form.cleaned_data)
             for field_value in form.fields.values():
-                if field_value.slug not in enabled_fields:  # type: ignore
+                if field_value.widget.attrs.get("slug", None) not in enabled_fields:  # type: ignore
                     field_value.required = False
 
         form.full_clean()
