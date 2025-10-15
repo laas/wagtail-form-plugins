@@ -14,7 +14,7 @@ from wagtail_form_plugins.streamfield.views import StreamFieldSubmissionsListVie
 class NavButtonsSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as adding buttons on submission rows."""
 
-    file_input_parent_page_class = Page
+    parent_form_page_class = Page
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         """Return context for view"""
@@ -24,7 +24,7 @@ class NavButtonsSubmissionsListView(StreamFieldSubmissionsListView):
             return context_data
 
         finder = AdminURLFinder()
-        form_index_page = self.file_input_parent_page_class.objects.first()
+        form_index_page = self.parent_form_page_class.objects.first()
 
         context_data["header_buttons"] += [
             HeaderButton(

@@ -138,10 +138,6 @@ class CustomUser(AbstractUser):
 class CustomTemplatingFormatter(TemplatingFormatter):
     """Custom templating formatter used to personalize template formatting such as user template."""
 
-    def __init__(self, context: dict[str, Any], in_html: bool):
-        super().__init__(context, in_html)
-        self.submission: CustomFormSubmission  # type: ignore
-
     def get_user_data(self, user: User) -> UserDataDict:
         """Return a dict used to format template variables related to the form user or author."""
         user_data = super().get_user_data(user)
@@ -149,7 +145,7 @@ class CustomTemplatingFormatter(TemplatingFormatter):
         if isinstance(user, AnonymousUser):
             user_data["city"] = "-"  # type: ignore
             if self.submission:
-                user_data["email"] = self.submission.email
+                user_data["email"] = self.submission.email  # type: ignore
         else:
             user_data["city"] = getattr(user, "city", "").lower()  # type: ignore
 
@@ -181,7 +177,7 @@ class CustomFormBuilder(*wfp.form_builder_classes):
 class CustomSubmissionListView(*wfp.submission_list_view_classes):
     """A custom submission list view extended with some plugins to extend its features."""
 
-    file_input_parent_page_class = FormIndexPage
+    parent_form_page_class = FormIndexPage
 
 
 class CustomValidationForm(ValidationForm):
@@ -296,8 +292,20 @@ class CustomFormPage(*wfp.form_page_classes):
 
         form_admins, _ = Group.objects.get_or_create(name=self.get_group_name())
         self.set_page_permissions(form_admins, ["publish", "change", "lock", "unlock"])
-        if self.owner:
+
+        old_admins = CustomUser.objects.filter(groups=form_admins)
+        new_admins = CustomUser.objects.filter(formpage=self)
+
+        if self.owner and self.owner not in old_admins:
             self.owner.groups.add(form_admins)
+
+        for new_admin in new_admins:
+            if new_admin not in old_admins and new_admin != self.owner:
+                new_admin.groups.add(form_admins)
+
+        for old_admin in old_admins:
+            if old_admin not in new_admins:
+                old_admin.groups.remove(form_admins)
 
         return result
 
@@ -309,6 +317,7 @@ class CustomFormPage(*wfp.form_page_classes):
 
     def set_page_permissions(self, group: Group, permissions_name: list[str]) -> None:
         """Set user permissions of the form page."""
+        group.permissions.add(Permission.objects.get(codename="access_admin"))
         for permission_name in permissions_name:
             permission = Permission.objects.get(codename=f"{permission_name}_page")
             GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
