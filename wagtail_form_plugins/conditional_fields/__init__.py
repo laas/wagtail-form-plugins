@@ -1,6 +1,7 @@
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
 from .blocks import ConditionalFieldsFormBlock
+from .dicts import FormattedRuleDict, RuleBlockDict, RuleBlockValueDict
 from .form_field import ConditionalFieldsFormField
 from .forms import ConditionalFieldsFormBuilder
 from .hooks import hook_conditional_fields_admin_css
@@ -22,5 +23,8 @@ __all__ = [
     "ConditionalFieldsFormField",
     "ConditionalFieldsFormPage",
     "ConditionalFieldsSubmissionsListView",
+    "FormattedRuleDict",
+    "RuleBlockDict",
+    "RuleBlockValueDict",
     "hook_conditional_fields_admin_css",
 ]

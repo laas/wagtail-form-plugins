@@ -1,6 +1,7 @@
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
 from .blocks import EmailsFormBlock, email_to_block
+from .dicts import EmailsToSendBlockDict
 from .hooks import hook_emails_admin_css
 from .models import EmailActionsFormPage
 
@@ -13,6 +14,7 @@ __all__ = [
     "EmailActions",
     "EmailActionsFormPage",
     "EmailsFormBlock",
+    "EmailsToSendBlockDict",
     "email_to_block",
     "hook_emails_admin_css",
 ]

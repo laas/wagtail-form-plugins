@@ -1,6 +1,7 @@
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
 from .blocks import TemplatingFormBlock
+from .dicts import DataDict, FormDataDict, ResultDataDict, UserDataDict
 from .formatter import TemplatingFormatter
 from .forms import TemmplatingFormBuilder
 from .hooks import hook_templating_admin_css
@@ -14,9 +15,13 @@ class Templating(Plugin):
 
 
 __all__ = [
+    "DataDict",
+    "FormDataDict",
+    "ResultDataDict",
     "Templating",
     "TemplatingFormBlock",
     "TemplatingFormPage",
     "TemplatingFormatter",
+    "UserDataDict",
     "hook_templating_admin_css",
 ]
