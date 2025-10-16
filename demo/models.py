@@ -33,6 +33,9 @@ from wagtail_form_plugins.templating.dicts import ResultDataDict, UserDataDict
 from wagtail_form_plugins.token_validation import Validation, ValidationFieldPanel, ValidationForm
 from wagtail_form_plugins.utils import LocalBlocks, print_email
 
+from modelcluster.fields import ParentalManyToManyField
+from wagtailautocomplete.edit_handlers import AutocompletePanel
+
 FORM_GROUP_PREFIX = "form_moderator_"
 
 DEFAULT_EMAILS = [
@@ -337,6 +340,11 @@ class FormPage(CustomFormPage):
         default=[email_to_block(email) for email in DEFAULT_EMAILS],
         blank=True,
     )
+    administrators = ParentalManyToManyField(
+        CustomUser,
+        verbose_name=_("administrators"),
+        blank=True,
+    )
 
     content_panels: ClassVar = [
         *CustomFormPage.content_panels,
@@ -345,5 +353,6 @@ class FormPage(CustomFormPage):
         FieldPanel("thank_you_text"),
         ValidationFieldPanel(),
         FieldPanel("emails_to_send"),
+        AutocompletePanel("administrators"),
         UniqueResponseFieldPanel(),
     ]

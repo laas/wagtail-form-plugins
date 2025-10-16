@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.admin",
     "wagtail",
+    "wagtailautocomplete",
     "modelcluster",
     "taggit",
     "django.contrib.admin",
