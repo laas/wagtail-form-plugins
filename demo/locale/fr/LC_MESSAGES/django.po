@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-26 15:28+0000\n"
+"POT-Creation-Date: 2025-10-16 14:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,79 +18,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: demo/models.py:57
-msgid "City"
-msgstr "Ville"
-
-#: demo/models.py:66
+#: demo/models.py:86
 msgid "Form index page introduction"
 msgstr "Texte d'introduction de la page d'index des formulaire"
 
-#: demo/models.py:67
+#: demo/models.py:87
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr ""
 "Une introduction en RichText à afficher avant la liste des formulaires."
 
-#: demo/models.py:69 demo/models.py:86
+#: demo/models.py:89
 msgid "Forms list"
 msgstr "Liste des formulaires"
 
-#: demo/models.py:136
-msgid "the user email used for validation"
-msgstr "l'e-mail de l'utilisateur utilisé pour la validation"
-
 #: demo/models.py:137
-msgid "the form user city"
-msgstr "la ville de l'utilisateur du formulaire"
+msgid "City"
+msgstr "Ville"
 
-#: demo/models.py:138
-msgid "the result index"
-msgstr "l'index du résultat"
-
-#: demo/models.py:304
+#: demo/models.py:213
 msgid "Wrong template syntax. See tooltip for a list of available keywords."
 msgstr ""
 "Syntaxe invalide. Voir l'infobulle pour la liste des mot-clés disponibles."
 
-#: demo/models.py:315
+#: demo/models.py:324
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: demo/models.py:320
+#: demo/models.py:329
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: demo/models.py:324
+#: demo/models.py:333
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: demo/models.py:325
+#: demo/models.py:334
 msgid "Thank you!"
 msgstr "Merci !"
-
-#: demo/models.py:329
-#, fuzzy
-#| msgid "Form title"
-msgid "E-mail title"
-msgstr "Titre du formulaire"
-
-#: demo/models.py:330
-msgid "User validation required to fill a public form"
-msgstr "Validation utilisateur nécessaire pour saisir un formulaire public"
-
-#: demo/models.py:334
-msgid "E-mail content"
-msgstr "Contenu de l'e-mail"
-
-#: demo/models.py:335
-#, python-brace-format
-msgid "Please click on the following link to fill the form: {validation_url} ."
-msgstr ""
-"Merci de cliquer sur ce lien pour remplir le formulaire : {validation_url} ."
 
 #: demo/models.py:339
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"
+
+#: demo/models.py:345
+msgid "administrators"
+msgstr "administrateurs"
 
 #: demo/templates/demo/form_page.html:26
 msgid "Submit"
