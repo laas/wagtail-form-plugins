@@ -23,7 +23,6 @@ from wagtail.models import GroupPagePermission, Page
 from wagtail_form_plugins.editable import Editable
 from wagtail_form_plugins.emails import EmailActions, EmailsFormBlock, email_to_block
 from wagtail_form_plugins.file_input import FileInput
-from wagtail_form_plugins.file_input.models import AbstractFileInput
 from wagtail_form_plugins.indexed_results import IndexedResults
 from wagtail_form_plugins.label import Label
 from wagtail_form_plugins.named_form import AuthForm, UniqueResponseFieldPanel
@@ -218,21 +217,11 @@ class CustomEmailsToSendBlock(EmailsFormBlock):
 class CustomFormSubmission(*wfp.form_submission_classes):
     """A custom model for form submission, extended with mixins to extend its features"""
 
-    class Meta:  # type: ignore
-        pass
-
 
 class CustomFormFieldsBlock(*wfp.form_block_classes):
     """The custom Wagtail block used when adding fields to a form."""
 
     templating_formatter_class = CustomTemplatingFormatter
-
-    class Meta:  # type: ignore
-        pass
-
-
-class CustomFileInput(AbstractFileInput):
-    pass
 
 
 class CustomFormField(*wfp.form_field_classes):
@@ -251,7 +240,6 @@ class CustomFormPage(*wfp.form_page_classes):
     validation_form_class = CustomValidationForm
     templating_formatter_class = CustomTemplatingFormatter
     form_field_class = CustomFormField
-    file_input_class = CustomFileInput
 
     file_input_upload_dir = "demo_forms_uploads/%Y/%m/%d"
     token_validation_from_email = settings.FORMS_FROM_EMAIL

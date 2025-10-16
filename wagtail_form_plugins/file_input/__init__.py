@@ -2,7 +2,7 @@ from wagtail_form_plugins.streamfield.plugin import Plugin
 
 from .blocks import FileInputFormBlock
 from .forms import FileInputFormBuilder
-from .models import AbstractFileInput, FileInputFormPage
+from .models import AbstractFileInput, DefaultFileInput, FileInputFormPage
 from .views import FileInputSubmissionsListView
 
 
@@ -15,6 +15,7 @@ class FileInput(Plugin):
 
 __all__ = [
     "AbstractFileInput",
+    "DefaultFileInput",
     "FileInput",
     "FileInputFormBlock",
     "FileInputFormBuilder",

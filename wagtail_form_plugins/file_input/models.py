@@ -41,12 +41,16 @@ class AbstractFileInput(models.Model):
         return dir_path / new_file_name
 
 
+class DefaultFileInput(AbstractFileInput):
+    pass
+
+
 class FileInputFormPage(StreamFieldFormPage):
     """Form page for the FileInput plugin, used for instance to get the file url in submission."""
 
     submissions_list_view_class = FileInputSubmissionsListView
     file_input_upload_dir = "forms_uploads/%Y/%m/%d"
-    file_input_class: type[AbstractFileInput]
+    file_input_class = DefaultFileInput
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
