@@ -38,7 +38,7 @@ class ValidationFormSubmission(StreamFieldFormSubmission):
     def get_data(self) -> dict[str, Any]:
         """Return dict with form data."""
         data = super().get_data()
-        if data["email"] == "-":
+        if not data.get("email", None):
             data["email"] = self.email
         return data
 
