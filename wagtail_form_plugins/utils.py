@@ -30,7 +30,7 @@ def create_links(html_message: str) -> str:
     return re.sub(email_regex, r'<a href="mailto:\1">\1</a>', html_message)
 
 
-def validate_identifier(slug: str) -> None:
+def validate_slug(slug: str) -> None:
     if slug != get_field_clean_name(slug):
         raise ValidationError(
             _("Slugs must only contain lower-case letters, digits or underscore."),

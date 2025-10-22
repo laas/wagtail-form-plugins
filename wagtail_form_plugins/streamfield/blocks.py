@@ -13,15 +13,19 @@ from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
 from wagtail.blocks import StreamValue, struct_block
 
-from wagtail_form_plugins.utils import validate_identifier
+from wagtail_form_plugins.utils import validate_slug
 
 
-class UniqueCharBlock(blocks.CharBlock):
+class SlugBlock(blocks.CharBlock):
     """A CharBlock that displays duplication errors."""
+
+    def __init__(self, *arg, **kwargs):
+        kwargs["validators"] = [validate_slug]
+        super().__init__(*arg, **kwargs)
 
     def clean(self, value: str) -> Any:
         """Raise a ValidationError if the block class has a duplicates attribute."""
-        duplicates = self.duplicates.get(value)  # type: ignore
+        duplicates = getattr(self, "duplicates", {}).get(value, None)
         if duplicates:
             msg = _("The id '{field_id}' is already in use in fields {duplicates}.").format(
                 field_id=value,
@@ -53,13 +57,10 @@ class FormFieldBlock(blocks.StructBlock):
         help_text=_("Short text describing the field."),
         form_classname="formbuilder-field-block-label",
     )
-    slug = UniqueCharBlock(
+    slug = SlugBlock(
         label=_("Slug"),
         required=True,
-        help_text=_(
-            "The identifier used to identify this field, for instance in conditional fields."
-        ),
-        validators=[validate_identifier],
+        help_text=_("Identifier used to identify this field, for instance in conditional fields."),
     )
     help_text = blocks.CharBlock(
         label=_("Help text"),

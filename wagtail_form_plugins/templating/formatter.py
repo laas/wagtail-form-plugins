@@ -12,7 +12,7 @@ from wagtail.admin.panels import RichText
 from wagtail.contrib.forms.models import FormSubmission
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
-from wagtail_form_plugins.utils import create_links, validate_identifier
+from wagtail_form_plugins.utils import create_links, validate_slug
 
 from .dicts import DataDict, FormDataDict, ResultDataDict, UserDataDict
 
@@ -199,7 +199,7 @@ class TemplatingFormatter:
             sep = f"{TMPL_SEP_LEFT}{tmpl_prefix}."
             tmpl_suffix = [*text.split(sep, 1), ""][1].split(TMPL_SEP_RIGHT, 1)[0]
             if tmpl_suffix:
-                validate_identifier(tmpl_suffix)
+                validate_slug(tmpl_suffix)
                 return True
 
         if TMPL_SEP_LEFT in text or TMPL_SEP_RIGHT in text:
