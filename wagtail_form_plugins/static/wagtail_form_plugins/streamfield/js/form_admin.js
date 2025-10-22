@@ -26,19 +26,21 @@ class FormFieldBlockDefinition extends window.wagtailStreamField.blocks.StructBl
 		const dom_field_block = block.container[0];
 		const dom_blocks_container =
 			dom_field_block.parentElement.parentElement.parentElement.parentElement;
-		const dom_inputs = dom_blocks_container.querySelectorAll(
+		const dom_slugs_input = dom_blocks_container.querySelectorAll(
 			".formbuilder-field-block [data-contentpath=slug] input",
 		);
 
+		on_field_label_changed(dom_field_block);
+
 		const prefixes = {};
-		for (const dom_input of dom_inputs) {
-			let prefix = dom_input.value.split("_").slice(0, -1).join("_");
-			const counter = parseInt(dom_input.value.split("_").slice(-1).join(""));
-			prefix = Number.isNaN(counter) ? dom_input.value : prefix;
+		for (const dom_slug_input of dom_slugs_input) {
+			const raw_prefix = dom_slug_input.value.split("_").slice(0, -1).join("_");
+			const counter = parseInt(dom_slug_input.value.split("_").slice(-1).join(""));
+			const prefix = Number.isNaN(counter) ? dom_slug_input.value : raw_prefix;
 
 			if (prefix in prefixes) {
 				prefixes[prefix] += 1;
-				dom_input.value = `${prefix}_${prefixes[prefix]}`;
+				dom_slug_input.value = `${prefix}_${prefixes[prefix]}`;
 			} else {
 				prefixes[prefix] = 1;
 			}
