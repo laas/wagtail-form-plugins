@@ -53,7 +53,7 @@ class StreamFieldFormField(WaftailFormField):
 
         if choices_list:
             initial = [get_field_clean_name(ch) for ch in choices_list if ch[0] == "*"]
-            if field_data["type"] in ["dropdown", "radio"]:
+            if initial and field_data["type"] in ["dropdown", "radio"]:
                 initial = initial[0]
         else:
             initial = field_value.get("initial", "")
