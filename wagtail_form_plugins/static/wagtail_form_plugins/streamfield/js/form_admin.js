@@ -46,6 +46,7 @@ class FormFieldBlockDefinition extends window.wagtailStreamField.blocks.StructBl
 
 		const dom_field_label = dom_field_block.querySelector("[data-contentpath=label]");
 		dom_field_label.addEventListener("change", () => on_field_label_changed(dom_field_block));
+		dom_field_label.addEventListener("focusout", () => on_field_label_changed(dom_field_block));
 		return block;
 	}
 }
