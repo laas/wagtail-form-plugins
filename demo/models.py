@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser, AnonymousUser, Group, Permi
 from django.core.mail import EmailMultiAlternatives
 from django.core.management.base import OutputWrapper
 from django.db import models
-from django.forms import EmailField, ValidationError
+from django.forms import EmailField
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -28,7 +28,8 @@ from wagtail_form_plugins.label import Label
 from wagtail_form_plugins.named_form import AuthForm, UniqueResponseFieldPanel
 from wagtail_form_plugins.nav_buttons import NavButtons
 from wagtail_form_plugins.streamfield import WagtailFormPlugin
-from wagtail_form_plugins.templating import Templating, TemplatingFormatter, TemplatingFormBlock
+from wagtail_form_plugins.templating import Templating, TemplatingFormatter
+from wagtail_form_plugins.templating.blocks import TemplatingFormBlock
 from wagtail_form_plugins.templating.dicts import ResultDataDict, UserDataDict
 from wagtail_form_plugins.token_validation import Validation, ValidationFieldPanel, ValidationForm
 from wagtail_form_plugins.utils import LocalBlocks, print_email
@@ -197,21 +198,11 @@ class CustomEmailsToSendBlock(EmailsFormBlock):
     templating_formatter_class = CustomTemplatingFormatter
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
-        TemplatingFormBlock.add_help_messages(
-            self.__class__.declared_blocks.values(),  # type: ignore
-            ["subject", "message", "recipient_list", "reply_to"],
-            self.templating_formatter_class.help(),
-        )
         super().__init__(local_blocks, search_index, **kwargs)
-
-    def validate_email(self, field_value: str) -> None:
-        """Validate the email addresses field value."""
-        try:
-            if not self.templating_formatter_class.contains_template(field_value):
-                super().validate_email(field_value)
-        except ValueError as err:
-            err_message = _("Wrong template syntax. See tooltip for a list of available keywords.")
-            raise ValidationError(err_message) from err
+        TemplatingFormBlock.add_help_messages(
+            self.child_blocks.values(),
+            ["subject", "message", "recipient_list", "reply_to"],
+        )
 
     class Meta:  # type: ignore
         collapsed = True

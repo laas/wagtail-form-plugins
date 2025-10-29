@@ -1,6 +1,6 @@
 """Form-related classes for the File Input plugin."""
 
-from typing import Any, ClassVar
+from typing import Any
 
 from django.core.files.base import File
 from django.core.validators import FileExtensionValidator
@@ -15,7 +15,7 @@ class FileInputFormBuilder(StreamFieldFormBuilder):
     """Form builder class that adds file input functionnality to a form."""
 
     file_input_max_size = 1 * 1024 * 1024
-    file_input_allowed_extensions: ClassVar = ["pdf"]
+    file_input_allowed_extensions = ("pdf",)
 
     def __init__(self, fields: list[StreamFieldFormField]):
         super().__init__(fields)

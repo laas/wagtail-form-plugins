@@ -3,6 +3,7 @@
 from typing import Any, ClassVar
 
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.forms import Media
 from django.utils.functional import cached_property
 from django.utils.text import format_lazy
@@ -175,7 +176,7 @@ class MultilineFormFieldBlock(FormFieldBlock):
 class EmailFormFieldBlock(FormFieldBlock):
     """A struct block used to build an email form field."""
 
-    initial = blocks.EmailBlock(**init_options(__("E-mail")))
+    initial = blocks.CharBlock(**init_options(__("E-mail")), validators=[validate_email])
 
     class Meta:  # type: ignore
         icon = "mail"

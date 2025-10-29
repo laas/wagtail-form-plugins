@@ -1,7 +1,7 @@
 from datetime import date, datetime, time
 from typing import Literal, TypedDict
 
-from typing_extensions import NotRequired
+from typing_extensions import LiteralString, NotRequired
 
 
 class EntryDict(TypedDict):
@@ -21,7 +21,7 @@ class RuleBlockDict(TypedDict):
 
 
 class RuleBlockValueDict(TypedDict):
-    field: str
+    field: LiteralString
     operator: str
     value_char: str
     value_number: int

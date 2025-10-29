@@ -1,13 +1,13 @@
 """Blocks definition for the Templating plugin."""
 
-from typing import Any
-
+from django.core.validators import validate_email
+from django.forms import ValidationError
 from django.forms.fields import CharField, EmailField
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.blocks.field_block import RichTextBlock
 
-from wagtail_form_plugins.streamfield.blocks import StreamFieldFormBlock
+from wagtail_form_plugins.streamfield.blocks import FormFieldBlock, StreamFieldFormBlock
 from wagtail_form_plugins.utils import LocalBlocks
 
 from .formatter import TemplatingFormatter
@@ -31,18 +31,34 @@ class TemplatingFormBlock(StreamFieldFormBlock):
     templating_formatter_class = TemplatingFormatter
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
-        blocks = list(self.get_blocks().values())
-        self.add_help_messages(blocks, ["initial"], self.templating_formatter_class.help())
         super().__init__(local_blocks, search_index, **kwargs)
 
+        self.add_help_messages(self.child_blocks.values(), ["initial"])
+        self.override_initial_validators()
+
+    def templating_email_validator(self, email: str) -> None:
+        try:
+            if not self.templating_formatter_class.contains_template(email):
+                validate_email(email)
+        except ValueError as err:
+            err_message = _("Wrong template syntax. See tooltip for a list of available keywords.")
+            raise ValidationError(err_message) from err
+
+    def override_initial_validators(self) -> None:
+        """Disable fields validation if it contains templating syntax."""
+        for block_type, block in self.child_blocks.items():
+            if "initial" in block.child_blocks and block_type == "email":
+                block.child_blocks["initial"].field.validators = [self.templating_email_validator]
+
     @classmethod
-    def add_help_messages(cls, blocks: list[Any], field_names: list[str], help_msg: str) -> None:
+    def add_help_messages(cls, blocks: list[FormFieldBlock], field_names: list[str]) -> None:
         """Add a tooltip to wagtail blocks in order that lists all available template variables."""
+        help_msg = cls.templating_formatter_class.help()
         for block in blocks:
-            for n in field_names:
+            for field_name in field_names:
                 if (
-                    n in block.child_blocks
-                    and not isinstance(block.child_blocks[n], RichTextBlock)
-                    and isinstance(block.child_blocks[n].field, (CharField, EmailField))
+                    field_name in block.child_blocks
+                    and not isinstance(block.child_blocks[field_name], RichTextBlock)
+                    and isinstance(block.child_blocks[field_name].field, (CharField, EmailField))
                 ):
-                    block.child_blocks[n].field.help_text += build_help_html(help_msg)
+                    block.child_blocks[field_name].field.help_text += build_help_html(help_msg)
