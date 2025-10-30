@@ -1,7 +1,8 @@
 """Models definition for the Templating form plugin."""
 
+from django.contrib.auth.models import User
 from django.forms import BaseForm
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest
 from django.template.response import TemplateResponse
 
 from wagtail_form_plugins.streamfield.forms import StreamFieldFormField
@@ -52,27 +53,29 @@ class TemplatingFormPage(StreamFieldFormPage):
     #         },
     #     }
 
+    def get_form(self, *args, page: StreamFieldFormPage, user: User, **kwargs) -> BaseForm:
+        form = super().get_form(*args, page=page, user=user, **kwargs)
+
+        formatter = self.templating_formatter_class(form_page=page, user=user)
+        for field_slug, field in form.fields.items():
+            if field.initial:
+                form.fields[field_slug].initial = formatter.format(field.initial)
+
+        return form
+
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
-        response = super().serve(request, *args, **kwargs)
 
-        if isinstance(response, HttpResponseRedirect) or not response.context_data:
-            return response
+        context = self.get_context(request)
+        if request.method == "POST" and "form" not in context:
+            form_page: StreamFieldFormPage = context["page"]
+            form_submission: StreamFieldFormSubmission = context["form_submission"]
+            formatter = self.templating_formatter_class(form_page, request.user, form_submission)  # type: ignore
 
-        formatter = self.templating_formatter_class(response.context_data, False)
-
-        if request.method == "GET":
-            form: BaseForm = response.context_data["form"]
-            for field in form.fields.values():
-                if field.initial:
-                    field.initial = formatter.format(field.initial)
-
-        elif "form" not in response.context_data:
-            form_submission: StreamFieldFormSubmission = response.context_data["form_submission"]
-            form_page: StreamFieldFormPage = response.context_data["page"]
             form_fields = form_page.get_form_fields_dict()
             self.format_submission(form_submission, form_fields, formatter)
-        return response
+
+        return super().serve(request, *args, **kwargs)
 
     class Meta:  # type: ignore
         abstract = True

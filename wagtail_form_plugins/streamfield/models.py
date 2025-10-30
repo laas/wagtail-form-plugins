@@ -117,7 +117,7 @@ class StreamFieldFormPage(FormMixin, Page):
     def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
-        form.render()  # required to make multiselect inital values work - black magic here
+        # form.render()  # required to make multiselect inital values work - black magic here
 
         for field_value in form.fields.values():
             if field_value.help_text:

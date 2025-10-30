@@ -9,8 +9,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.management.base import OutputWrapper
 from django.db import models
 from django.forms import EmailField
-from django.http import HttpRequest, HttpResponseRedirect
-from django.template.response import TemplateResponse
+from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
@@ -244,15 +243,10 @@ class CustomFormPage(*wfp.form_page_classes):
         """Return the name of the form admin user group."""
         return f"{FORM_GROUP_PREFIX}{self.slug}"
 
-    def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
-        """Serve the form page."""
-        response = super().serve(request, *args, **kwargs)
-
-        if isinstance(response, HttpResponseRedirect) or not response.context_data:
-            return response  # type: ignore
-
-        response.context_data["page"].outro = settings.FORMS_RGPD_TEXT.strip()
-        return response
+    def get_context(self, request: HttpRequest) -> dict[str, Any]:
+        context = super().get_context(request)
+        context["page"].outro = settings.FORMS_RGPD_TEXT.strip()
+        return context
 
     def send_action_email(self, email: EmailMultiAlternatives) -> None:
         """Print the action e-mail instead sending it when debugging."""

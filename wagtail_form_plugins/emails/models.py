@@ -3,7 +3,7 @@
 from typing import Any
 
 from django.core.mail import EmailMultiAlternatives
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest
 from django.template.response import TemplateResponse
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
@@ -19,22 +19,20 @@ class EmailActionsFormPage(StreamFieldFormPage):
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
-        response = super().serve(request, *args, **kwargs)
-        if isinstance(response, HttpResponseRedirect) or not response.context_data:
-            return response
+        context = self.get_context(request)
 
-        if "form_submission" in response.context_data:
-            form_page: StreamFieldFormPage = response.context_data["page"]
+        if "form_submission" in context:
+            form_page: StreamFieldFormPage = context["page"]
 
             fmt_class = getattr(self, "templating_formatter_class", None)
-            text_formatter = fmt_class(response.context_data, False) if fmt_class else None
-            html_formatter = fmt_class(response.context_data, True) if fmt_class else None
+            text_formatter = fmt_class(context, False) if fmt_class else None
+            html_formatter = fmt_class(context, True) if fmt_class else None
 
             for email in getattr(form_page, self.emails_field_attr_name, []):
                 email = self.build_action_email(email.value, text_formatter, html_formatter)
                 self.send_action_email(email)
 
-        return response
+        return super().serve(request, *args, **kwargs)
 
     def build_action_email(
         self, email_value: EmailsToSendBlockDict, text_formatter: Any, html_formatter: Any

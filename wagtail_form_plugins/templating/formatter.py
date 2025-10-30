@@ -1,10 +1,7 @@
 """Classes and variables used to format the template syntax."""
 
-from typing import Any
-
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
-from django.http import HttpRequest
 from django.utils.translation import gettext as _
 
 from wagtail.admin.admin_url_finder import AdminURLFinder
@@ -24,17 +21,23 @@ TMPL_DYNAMIC_PREFIXES = ["field_label", "field_value"]
 class TemplatingFormatter:
     """Class used to format the template syntax."""
 
-    def __init__(self, context: dict[str, Any], in_html: bool):
-        self.submission: FormSubmission | None = context.get("form_submission", None)
-        self.form_page: StreamFieldFormPage = context["page"]
-        self.request: HttpRequest = context["request"]
+    def __init__(
+        self,
+        form_page: StreamFieldFormPage,
+        user: User,
+        submission: FormSubmission | None = None,
+        in_html: bool = False,
+    ):
+        self.submission = submission
+        self.form_page = form_page
+        self.user = user
         self.in_html = in_html
 
     def get_data(self) -> DataDict:
         """Return the template data. Override to customize template."""
         formated_fields = self.get_formated_fields()
         return {
-            "user": self.get_user_data(self.request.user),  # type: ignore
+            "user": self.get_user_data(self.user),
             "author": self.get_user_data(self.form_page.owner),
             "form": self.get_form_data(),
             "result": self.get_result_data(formated_fields),
@@ -90,7 +93,7 @@ class TemplatingFormatter:
         finder = AdminURLFinder()
         return {
             "title": self.form_page.title,
-            "url": self.request.build_absolute_uri(self.form_page.url),
+            "url": settings.WAGTAILADMIN_BASE_URL + self.form_page.url,
             "publish_date": self.form_page.first_published_at.strftime("%d/%m/%Y"),
             "publish_time": self.form_page.first_published_at.strftime("%H:%M"),
             "url_results": settings.WAGTAILADMIN_BASE_URL + finder.get_edit_url(self.form_page),
