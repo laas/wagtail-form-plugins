@@ -120,7 +120,7 @@ class TemplatingFormatter:
         for val_key, value in self.get_values().items():
             look_for = TMPL_SEP_LEFT + val_key + TMPL_SEP_RIGHT
             if look_for in fmt_message:
-                fmt_message = fmt_message.replace(look_for, value)
+                fmt_message = fmt_message.replace(look_for, value or "")
 
         if self.in_html:
             fmt_message = create_links(fmt_message.replace("\n", "<br/>\n"))
