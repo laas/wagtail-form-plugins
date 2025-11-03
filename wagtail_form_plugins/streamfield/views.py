@@ -27,9 +27,8 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
             for col_idx, col_value in enumerate(row["fields"]):
                 field_header = header[col_idx]
                 if field_header in fields:
-                    fmt_value = self.form_page.format_field_value(
-                        fields[field_header], submission.form_data[field_header], True
-                    )
+                    value = submission.form_data.get(field_header, None)
+                    fmt_value = self.form_page.format_field_value(fields[field_header], value, True)
                 elif field_header == "submit_time":
                     fmt_value = col_value.strftime("%d/%m/%Y, %H:%M")
                 else:

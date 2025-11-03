@@ -82,11 +82,14 @@ class StreamFieldFormPage(FormMixin, Page):
         Used to display user-friendly values in result table and emails.
         """
 
+        if value is None:
+            return None
+
         if form_field.type in ["checkboxes", "multiselect"]:
             return format_choices([v for k, v in form_field.choices if k in value], in_html)
 
         if form_field.type in ["dropdown", "radio"]:
-            return dict(form_field.choices)[value]
+            return dict(form_field.choices)[value] if value else None
 
         if form_field.type == "multiline":
             return ("<br/>" if in_html else "\n") + value
