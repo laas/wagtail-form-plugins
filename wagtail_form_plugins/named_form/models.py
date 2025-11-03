@@ -33,14 +33,15 @@ class AuthFormSubmission(StreamFieldFormSubmission):
             "email": self.user.email if self.user else "-",
         }
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True
 
 
 class AuthFormPage(StreamFieldFormPage):
-    """A form page class used to add named form functionnality to a form, allowing to identify the user who
-    answered the form, in order to display it on form results and authorise a user to answer a form
-    only once."""
+    """A form page class used to add named form functionnality to a form, allowing to identify the
+    user who answered the form, in order to display it on form results and authorise a user to
+    answer a form only once.
+    """
 
     unique_response = models.BooleanField(
         verbose_name=_("Unique response"),
@@ -67,8 +68,8 @@ class AuthFormPage(StreamFieldFormPage):
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         submission_data = super().pre_process_form_submission(form)
 
-        user = form.user  # type: ignore
-        submission_data["user"] = None if isinstance(user, AnonymousUser) else user  # type: ignore
+        user = form.user  # type: ignore[unresolved-attribute]
+        submission_data["user"] = None if isinstance(user, AnonymousUser) else user  # type: ignore[invalid-key]
 
         return submission_data
 
@@ -81,5 +82,5 @@ class AuthFormPage(StreamFieldFormPage):
 
         return response
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

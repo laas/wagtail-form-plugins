@@ -1,4 +1,4 @@
-"Define the `init` Django command used to initialize an example database for demonstration."
+"""Define the `init` Django command used to initialize an example database for demonstration."""
 
 import logging
 
@@ -22,10 +22,10 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.logger = logging.getLogger("demo.commands.init")
 
-    def handle(self, *args, **options) -> None:
+    def handle(self, *_args, **_kwargs) -> None:
         """The actual logic of the "init" command."""
         if not settings.DEBUG:
-            print("This command is only available in debug mode.")
+            self.logger.warning("This command is only available in debug mode.")
             return
 
         self.init_pages()
@@ -45,14 +45,14 @@ class Command(BaseCommand):
         """Initialize users."""
         self.logger.info("\ninitializing users...")
 
-        User: AbstractUser = get_user_model()  # type: ignore # noqa: N806
+        User: AbstractUser = get_user_model()  # noqa: N806 # type: ignore[reportAssignmentType]
         User.objects.all().delete()
 
         self.logger.info("  admin user")
         User.objects.create_superuser(
             username="admin",
             email="admin@example.com",
-            password="admin",
+            password=settings.INIT_ADMIN_PW,
             first_name="Admin",
             last_name="Admin",
         )
@@ -63,7 +63,7 @@ class Command(BaseCommand):
             User.objects.create_user(
                 username=slugify(user_names),
                 email=f"{slugify(user_names)}@example.com",
-                password="1234",
+                password=settings.INIT_USERS_PW,
                 first_name=first_name,
                 last_name=last_name,
             )
@@ -85,7 +85,7 @@ class Command(BaseCommand):
 
         self.logger.info("\naffecting users to groups...")
 
-        User: AbstractUser = get_user_model()  # type: ignore # noqa: N806
+        User: AbstractUser = get_user_model()  # noqa: N806 # type: ignore[reportAssignmentType]
         for username in moderator_usernames:
             User.objects.get(username=username).groups.add(moderators)
 

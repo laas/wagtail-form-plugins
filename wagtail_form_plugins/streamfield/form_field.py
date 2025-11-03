@@ -10,8 +10,7 @@ from typing_extensions import Self
 
 @dataclass
 class WaftailFormField:
-    """
-    A dataclass containing field attributes used by wagtail such as in FormMixin.get_data_fields,
+    """A dataclass containing field attributes used by wagtail such as in FormMixin.get_data_fields,
     FormBuilder.formfields(), FormBuilder.get_field_options(), and in first attribute of all
     create_field methods.
     """
@@ -27,9 +26,7 @@ class WaftailFormField:
 
 @dataclass
 class StreamFieldFormField(WaftailFormField):
-    """
-    A data class representing a field with some extra attributes and syntactic sugar.
-    """
+    """A data class representing a field with some extra attributes and syntactic sugar."""
 
     block_id: str
     options: dict[str, Any]

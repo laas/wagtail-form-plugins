@@ -145,11 +145,11 @@ class CustomTemplatingFormatter(TemplatingFormatter):
         user_data = super().get_user_data(user)
 
         if isinstance(user, AnonymousUser):
-            user_data["city"] = "-"  # type: ignore
+            user_data["city"] = "-"  # type: ignore[invalid-key]
             if self.submission:
-                user_data["email"] = self.submission.email  # type: ignore
+                user_data["email"] = self.submission.email  # type: ignore[possibly-missing-attribute]
         else:
-            user_data["city"] = getattr(user, "city", "").lower()  # type: ignore
+            user_data["city"] = getattr(user, "city", "").lower()  # type: ignore[invalid-key]
 
         return user_data
 
@@ -157,7 +157,7 @@ class CustomTemplatingFormatter(TemplatingFormatter):
         """Return a dict used to format template variables related to the form results."""
         result_data = super().get_result_data(formated_fields)
         if result_data:
-            result_data["index"] = self.submission.index  # type: ignore
+            result_data["index"] = self.submission.index  # type: ignore[possibly-missing-attribute]
         return result_data
 
     @classmethod
@@ -196,19 +196,19 @@ class CustomEmailsToSendBlock(EmailsFormBlock):
 
     templating_formatter_class = CustomTemplatingFormatter
 
-    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
+    def __init__(self, local_blocks: LocalBlocks = None, *, search_index: bool = True, **kwargs):
         super().__init__(local_blocks, search_index, **kwargs)
         TemplatingFormBlock.add_help_messages(
             self.child_blocks.values(),
             ["subject", "message", "recipient_list", "reply_to"],
         )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         collapsed = True
 
 
 class CustomFormSubmission(*wfp.form_submission_classes):
-    """A custom model for form submission, extended with mixins to extend its features"""
+    """A custom model for form submission, extended with mixins to extend its features."""
 
 
 class CustomFormFieldsBlock(*wfp.form_block_classes):
@@ -218,7 +218,7 @@ class CustomFormFieldsBlock(*wfp.form_block_classes):
 
 
 class CustomFormField(*wfp.form_field_classes):
-    pass
+    """A custom form field extending form field features from all plugins."""
 
 
 class CustomFormPage(*wfp.form_page_classes):
@@ -244,6 +244,7 @@ class CustomFormPage(*wfp.form_page_classes):
         return f"{FORM_GROUP_PREFIX}{self.slug}"
 
     def get_context(self, request: HttpRequest) -> dict[str, Any]:
+        """Update context to modify page outro."""
         context = super().get_context(request)
         context["page"].outro = settings.FORMS_RGPD_TEXT.strip()
         return context
@@ -285,7 +286,7 @@ class CustomFormPage(*wfp.form_page_classes):
 
         return result
 
-    def delete(self, *args, **kwargs) -> Any:
+    def delete(self, *args, **kwargs) -> tuple[int, dict[str, int]]:
         """Delete the form."""
         result = super().delete(*args, **kwargs)
         Group.objects.get(name=self.get_group_name()).delete()
@@ -298,7 +299,7 @@ class CustomFormPage(*wfp.form_page_classes):
             permission = Permission.objects.get(codename=f"{permission_name}_page")
             GroupPagePermission.objects.get_or_create(group=group, page=self, permission=permission)
 
-    class Meta:  # type: ignore
+    class Meta:
         abstract = True
 
 

@@ -6,9 +6,8 @@ from django.utils.translation import gettext as _
 
 from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.admin.panels import RichText
-from wagtail.contrib.forms.models import FormSubmission
 
-from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.models import StreamFieldFormatter
 from wagtail_form_plugins.utils import create_links, validate_slug
 
 from .dicts import DataDict, FormDataDict, ResultDataDict, UserDataDict
@@ -18,20 +17,8 @@ TMPL_SEP_RIGHT = "}"
 TMPL_DYNAMIC_PREFIXES = ["field_label", "field_value"]
 
 
-class TemplatingFormatter:
+class TemplatingFormatter(StreamFieldFormatter):
     """Class used to format the template syntax."""
-
-    def __init__(
-        self,
-        form_page: StreamFieldFormPage,
-        user: User,
-        submission: FormSubmission | None = None,
-        in_html: bool = False,
-    ):
-        self.submission = submission
-        self.form_page = form_page
-        self.user = user
-        self.in_html = in_html
 
     def get_data(self) -> DataDict:
         """Return the template data. Override to customize template."""
@@ -71,7 +58,7 @@ class TemplatingFormatter:
                 continue
 
             value = self.submission.form_data[field.slug]
-            fmt_value = self.form_page.format_field_value(field, value, self.in_html)
+            fmt_value = self.form_page.format_field_value(field, value, in_html=self.in_html)
             if fmt_value is not None:
                 fields[field.slug] = (field.label, fmt_value)
 

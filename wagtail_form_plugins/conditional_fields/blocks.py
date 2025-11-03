@@ -89,7 +89,7 @@ class RuleBlock(blocks.StructBlock):
         form_classname="formbuilder-beb-val-datetime",
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         label = _("Visibility condition")
         required = False
         collapsed = True
@@ -97,7 +97,7 @@ class RuleBlock(blocks.StructBlock):
 
 
 class RuleBlockAdapter(struct_block.StructBlockAdapter):
-    """Inject javascript and css files to a Wagtail admin page for the boolean expression builder."""
+    """Inject js and css files to a Wagtail admin page for the boolean expression builder."""
 
     js_constructor = "forms.blocks.BooleanExpressionBuilderBlock"
 
@@ -108,8 +108,8 @@ class RuleBlockAdapter(struct_block.StructBlockAdapter):
         js_file_path = "wagtail_form_plugins/conditional_fields/js/form_admin.js"
 
         return Media(
-            js=[*streamblock_media._js, js_file_path],  # type: ignore
-            css=streamblock_media._css,  # type: ignore
+            js=[*streamblock_media._js, js_file_path],  # type: ignore[reportAttributeAccessIssue] # noqa: SLF001
+            css=streamblock_media._css,  # type: ignore[reportAttributeAccessIssue] # noqa: SLF001
         )
 
 
@@ -119,7 +119,7 @@ register_adapter(RuleBlockAdapter(), RuleBlock)
 class RuleBlockLvl3(RuleBlock):
     """A struct block used to construct a third-level boolean expression."""
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         form_classname = "formbuilder-beb formbuilder-beb-lvl3"
 
 
@@ -133,7 +133,7 @@ class RuleBlockLvl2(RuleBlock):
         default=[],
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         form_classname = "formbuilder-beb formbuilder-beb-lvl2"
 
 
@@ -147,14 +147,14 @@ class RuleBlockLvl1(RuleBlock):
         default=[],
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         form_classname = "formbuilder-beb formbuilder-beb-lvl1"
 
 
 class ConditionalFieldsFormBlock(StreamFieldFormBlock):
-    """Form field block used to add conditional fields functionnality to form field wagtail blocks."""
+    """Form field block used to add conditional fields functionnality to wagtail field blocks."""
 
-    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):  # noqa:FBT001,FBT002
         local_blocks = local_blocks or []
         rule = blocks.ListBlock(
             RuleBlockLvl1(),

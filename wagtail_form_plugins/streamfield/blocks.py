@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
-from wagtail.blocks import StreamValue, struct_block
+from wagtail.blocks import Block, FieldBlock, StreamValue, struct_block
 
 from wagtail_form_plugins.utils import validate_slug
 
@@ -24,7 +24,7 @@ class SlugBlock(blocks.CharBlock):
         kwargs["validators"] = [validate_slug]
         super().__init__(*arg, **kwargs)
 
-    def clean(self, value: str) -> Any:
+    def clean(self, value: str) -> FieldBlock:
         """Raise a ValidationError if the block class has a duplicates attribute."""
         duplicates = getattr(self, "duplicates", {}).get(value, None)
         if duplicates:
@@ -87,7 +87,7 @@ class FormFieldBlockAdapter(struct_block.StructBlockAdapter):
         streamblock_media = super().media
         js_file_path = "wagtail_form_plugins/streamfield/js/form_admin.js"
 
-        return Media(js=[*streamblock_media._js, js_file_path])  # type: ignore
+        return Media(js=[*streamblock_media._js, js_file_path])  # type: ignore[reportAttributeAccessIssue] # noqa: SLF001
 
 
 register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
@@ -116,17 +116,17 @@ class ChoiceBlock(blocks.StructBlock):
         required=False,
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         label = _("Choice")
 
 
 class ChoicesList(blocks.ListBlock):
     """To Be Deleted"""
 
-    def __init__(self, child_block: Any = None, **kwargs):
-        super().__init__(child_block or ChoiceBlock(), search_index=True, **kwargs)
+    def __init__(self, child_block: Block, **kwargs):
+        super().__init__(child_block or ChoiceBlock(), **kwargs)
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         label = _("Choices")
         form_classname = "formbuilder-choices"
 
@@ -146,7 +146,7 @@ class SinglelineFormFieldBlock(FormFieldBlock):
         default=255,
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "pilcrow"
         label = _("Single line text")
         form_classname = "formbuilder-field-block formbuilder-field-block-singleline"
@@ -167,7 +167,7 @@ class MultilineFormFieldBlock(FormFieldBlock):
         default=1024,
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "pilcrow"
         label = _("Multi-line text")
         form_classname = "formbuilder-field-block formbuilder-field-block-multiline"
@@ -178,7 +178,7 @@ class EmailFormFieldBlock(FormFieldBlock):
 
     initial = blocks.CharBlock(**init_options(__("E-mail")), validators=[validate_email])
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "mail"
         label = _("E-mail")
         form_classname = "formbuilder-field-block formbuilder-field-block-email"
@@ -199,7 +199,7 @@ class NumberFormFieldBlock(FormFieldBlock):
         required=False,
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "decimal"
         label = _("Number")
         form_classname = "formbuilder-field-block formbuilder-field-block-number"
@@ -210,7 +210,7 @@ class URLFormFieldBlock(FormFieldBlock):
 
     initial = blocks.URLBlock(**init_options(__("URL")))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "link-external"
         label = _("URL")
         form_classname = "formbuilder-field-block formbuilder-field-block-url"
@@ -226,7 +226,7 @@ class CheckBoxFormFieldBlock(FormFieldBlock):
         help_text=_("If checked, the box will be checked by default."),
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "tick-inverse"
         label = _("Checkbox")
         form_classname = "formbuilder-field-block formbuilder-field-block-checkbox"
@@ -238,7 +238,7 @@ class CheckBoxesFormFieldBlock(FormFieldBlock):
     is_required = RequiredBlock(__("at least one box must be checked"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "tick-inverse"
         label = _("Checkboxes")
         form_classname = "formbuilder-field-block formbuilder-field-block-checkboxes"
@@ -250,7 +250,7 @@ class DropDownFormFieldBlock(FormFieldBlock):
     is_required = RequiredBlock(__("an item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "list-ul"
         label = _("Drop down")
         form_classname = "formbuilder-field-block formbuilder-field-block-dropdown"
@@ -262,7 +262,7 @@ class MultiSelectFormFieldBlock(FormFieldBlock):
     is_required = RequiredBlock(__("at least one item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "list-ul"
         label = _("Multiple select")
         form_classname = "formbuilder-field-block formbuilder-field-block-multiselect"
@@ -274,7 +274,7 @@ class RadioFormFieldBlock(FormFieldBlock):
     is_required = RequiredBlock(__("an item must be selected"))
     choices = blocks.TextBlock(label=_("Choices list, one per line"))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "radio-empty"
         label = _("Radio buttons")
         form_classname = "formbuilder-field-block formbuilder-field-block-radio"
@@ -285,7 +285,7 @@ class DateFormFieldBlock(FormFieldBlock):
 
     initial = blocks.DateBlock(**init_options(__("Date")))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "date"
         label = _("Date")
         form_classname = "formbuilder-field-block formbuilder-field-block-date"
@@ -296,7 +296,7 @@ class TimeFormFieldBlock(FormFieldBlock):
 
     initial = blocks.TimeBlock(**init_options(__("Time")))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "time"
         label = _("Time")
         form_classname = "formbuilder-field-block formbuilder-field-block-time"
@@ -307,7 +307,7 @@ class DateTimeFormFieldBlock(FormFieldBlock):
 
     initial = blocks.DateTimeBlock(**init_options(__("Date and time")))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "date"
         label = _("Date and time")
         form_classname = "formbuilder-field-block formbuilder-field-block-datetime"
@@ -318,7 +318,7 @@ class HiddenFormFieldBlock(FormFieldBlock):
 
     initial = blocks.CharBlock(**init_options(__("Hidden text")))
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "no-view"
         label = _("Hidden text")
         form_classname = "formbuilder-field-block formbuilder-field-block-hidden"
@@ -344,7 +344,7 @@ class StreamFieldFormBlock(blocks.StreamBlock):
 
     subclasses: ClassVar = []
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         form_classname = "formbuilder-fields-block"
         collapsed = True
 
@@ -354,7 +354,7 @@ class StreamFieldFormBlock(blocks.StreamBlock):
         duplicates = {}
         for idx, slug in enumerate([block.value.get("slug", None) for block in blocks]):
             if slug:
-                duplicates[slug] = (duplicates[slug] if slug in duplicates else []) + [idx]
+                duplicates[slug] = [*duplicates.get(slug, []), idx]
         return {k: v for k, v in duplicates.items() if len(v) > 1}
 
     def __init_subclass__(cls, **kwargs):
@@ -368,10 +368,10 @@ class StreamFieldFormBlock(blocks.StreamBlock):
             declared_blocks.update(subclass.declared_blocks)
         return declared_blocks
 
-    def clean(self, value: StreamValue, ignore_required_constraints: bool = False) -> StreamValue:
+    def clean(self, value: StreamValue, ignore_required_constraints: bool = False) -> StreamValue:  # noqa: FBT001, FBT002
         """Add duplicates attribute in the block class."""
         if len(value) > 0:
-            block = value[0].block.child_blocks.get("slug", None)  # type: ignore
+            block = value[0].block.child_blocks.get("slug", None)  # type: ignore[reportAttributeAccessIssue]
             if block:
                 block.duplicates = self.get_duplicates(value)
 

@@ -42,7 +42,7 @@ class ValidationFormSubmission(StreamFieldFormSubmission):
             data["email"] = self.email
         return data
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True
 
 
@@ -50,8 +50,8 @@ class ValidationFormPage(StreamFieldFormPage):
     """A mixin used to add validation functionnality to a form."""
 
     token_validation_form_class = ValidationForm
-    token_validation_title_field_name = "validation_title"
-    token_validation_body_field_name = "validation_body"
+    token_validation_title_field_name = "validation_title"  # noqa: S105
+    token_validation_body_field_name = "validation_body"  # noqa: S105
     token_validation_from_email = ""
     token_validation_reply_to: ClassVar = []
     token_validation_expiration_delay = 60
@@ -95,7 +95,7 @@ class ValidationFormPage(StreamFieldFormPage):
         """Return a dictionary containing the attributes to pass to the submission constructor."""
         submission_data = super().pre_process_form_submission(form)
 
-        submission_data["email"] = self.extract_email(form)  # type: ignore
+        submission_data["email"] = self.extract_email(form)  # type: ignore[invalid-key]
 
         return submission_data
 
@@ -119,7 +119,7 @@ class ValidationFormPage(StreamFieldFormPage):
                     self.send_validation_email(email)
 
                     msg_str = _(
-                        "We just send you an e-mail. Please click on the link to continue the form submission.",
+                        "We just send you an e-mail. Please click on the link to continue the form submission.",  # noqa: E501
                     )
                     messages.add_message(request, messages.INFO, msg_str)
                 else:
@@ -144,7 +144,7 @@ class ValidationFormPage(StreamFieldFormPage):
     def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:
         """Create and return submission instance. Update email value."""
         submission = super().process_form_submission(form)
-        submission.email = self.extract_email(form)  # type: ignore
+        submission.email = self.extract_email(form)  # type: ignore[unresolved-attribute]
         return submission
 
     def build_validation_email(self, email_address: str, token: str) -> EmailMultiAlternatives:
@@ -170,5 +170,5 @@ class ValidationFormPage(StreamFieldFormPage):
         """Send the validation e-mail."""
         email.send()
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

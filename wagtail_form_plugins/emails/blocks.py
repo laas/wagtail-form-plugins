@@ -50,7 +50,7 @@ class EmailsToSendStructBlock(blocks.StructBlock):
         help_text=_("The body of the e-mail."),
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         label = _("E-mail to send")
 
 
@@ -64,13 +64,13 @@ class EmailsFormBlock(blocks.StreamBlock):
         for email in field_value.split(","):
             validate_email(email.strip())
 
-    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
-        for child_block in self.__class__.declared_blocks.values():  # type: ignore
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):  # noqa: FBT001, FBT002
+        for child_block in self.__class__.declared_blocks.values():  # type: ignore[unresolved-attribute]
             child_block.child_blocks["recipient_list"].field.validators = [self.validate_email]
             child_block.child_blocks["reply_to"].field.validators = [self.validate_email]
             child_block.child_blocks["from_email"].field.validators = [self.validate_email]
 
         super().__init__(local_blocks, search_index, **kwargs)
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         blank = True

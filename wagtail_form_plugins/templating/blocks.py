@@ -30,7 +30,7 @@ class TemplatingFormBlock(StreamFieldFormBlock):
 
     templating_formatter_class = TemplatingFormatter
 
-    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):
+    def __init__(self, local_blocks: LocalBlocks = None, *, search_index: bool = True, **kwargs):
         super().__init__(local_blocks, search_index, **kwargs)
 
         self.add_help_messages(self.child_blocks.values(), ["initial"])

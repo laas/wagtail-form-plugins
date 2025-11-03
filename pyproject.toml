@@ -13,7 +13,7 @@ dev = [
 ]
 
 [project]
-name = "wagtail_form_plugins"
+name = "wagtail-form-plugins"
 version = "0.4.3"
 description = "A set of plugins used to customize and improve the Wagtail form builder in a modular way."
 readme = "README.md"
@@ -46,11 +46,11 @@ django_settings_module = "demo.settings"
 
 [tool.poe.tasks]
 check = ["ruff-lint", "ruff-format", "pyright", "ty", "django-check", "uv-dry-sync"]
-ruff-lint = "ruff check --fix"
-ruff-format = "ruff format"
-pyright = "pyright ."
+ruff-lint = "uv run ruff check --fix"
+ruff-format = "uv run ruff format"
+pyright = "uv run pyright ."
 ty = "uv run ty check"
-django-check = "python manage.py check"
+django-check = "uv run python manage.py check"
 uv-dry-sync = "uv sync --extra demo --dry-run"
 
 [tool.pyright]
@@ -62,8 +62,8 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-extend-select = ["I", "ANN", "A", "B", "C", "COM", "DJ", "EM", "EXE", "G", "I", "N", "PTH", "RET", "RUF", "UP", "W", "YTT"]
-extend-ignore = ["I", "ANN002", "ANN003", "ANN204", "ANN401", "COM812"]
+select = ["ALL"]
+ignore = ["D", "ANN002", "ANN003", "ANN204"]
 
 [tool.ruff.lint.isort]
 section-order = ["future", "standard-library", "django", "wagtail", "first-party", "local-folder", "third-party"]

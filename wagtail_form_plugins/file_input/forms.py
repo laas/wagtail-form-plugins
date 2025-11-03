@@ -28,7 +28,11 @@ class FileInputFormBuilder(StreamFieldFormBuilder):
             error_msg = f"File is too big. Max size is {size_mo:.2f} MiB."
             raise ValidationError(error_msg)
 
-    def create_file_field(self, form_field: Any, options: dict[str, Any]) -> FileField:
+    def create_file_field(
+        self,
+        form_field: StreamFieldFormField,
+        options: dict[str, Any],
+    ) -> FileField:
         """Create a Django file field."""
         allowed_ext = form_field.options["allowed_extensions"]
         validators = [

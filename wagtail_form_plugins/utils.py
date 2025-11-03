@@ -1,5 +1,6 @@
 """A set of utility functions used in several places in this project."""
 
+import logging
 import re
 from typing import Any
 from urllib.parse import quote
@@ -13,6 +14,16 @@ from wagtail.contrib.forms.utils import get_field_clean_name
 
 LocalBlocks = list[tuple[str, Any]] | None
 
+logging.basicConfig(level=logging.INFO)
+
+
+def get_logger(file_name: str) -> logging.Logger:
+    """Return a logger based on the file name."""
+    return logging.getLogger(file_name.split(".", 1)[-1])
+
+
+LOGGER = get_logger(__file__)
+
 
 def create_links(html_message: str) -> str:
     """Detect and convert urls and emails into html links."""
@@ -23,7 +34,8 @@ def create_links(html_message: str) -> str:
             link=match.group(1),
         )
 
-    url_regex = r"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))"  # based on https://stackoverflow.com/a/3809435
+    # regex based on https://stackoverflow.com/a/3809435
+    url_regex = r"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))"  # noqa: E501
     email_regex = r"([\w.-]+@[\w.-]+)"
 
     html_message = re.sub(url_regex, replace_url, html_message)
@@ -37,7 +49,7 @@ def validate_slug(slug: str) -> None:
         )
 
 
-def build_email(
+def build_email(  # noqa:  PLR0913
     subject: str,
     message: str,
     from_email: str,
@@ -62,11 +74,11 @@ def build_email(
 
 
 def print_email(email: EmailMultiAlternatives) -> None:
-    print("=== sending e-mail ===")
-    print(f"subject: {email.subject}")
-    print(f"from_email: {email.from_email}")
-    print(f"recipient_list: {email.to}")
-    print(f"reply_to: {email.reply_to}")
-    print(f"message: {email.body}")
+    LOGGER.info("=== sending e-mail ===")
+    LOGGER.info("subject: %s", email.subject)
+    LOGGER.info("from_email: %s", email.from_email)
+    LOGGER.info("recipient_list: %s", email.to)
+    LOGGER.info("reply_to: %s", email.reply_to)
+    LOGGER.info("message: %s", email.body)
     for alternative in email.alternatives:
-        print(f"html_message: {alternative.content}")  # type: ignore
+        LOGGER.info("html_message: %s", alternative.content)  # type: ignore[unresolved-attribute]

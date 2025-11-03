@@ -4,6 +4,7 @@ from typing import Any
 
 from django.forms import CharField, widgets
 
+from wagtail_form_plugins.streamfield.form_field import StreamFieldFormField
 from wagtail_form_plugins.streamfield.models import StreamFieldFormBuilder
 
 
@@ -17,7 +18,10 @@ class Label(widgets.TextInput):
 class LabelFormBuilder(StreamFieldFormBuilder):
     """Form builder class that use streamfields to define form fields in form admin page."""
 
-    def create_label_field(self, field: Any, options: dict[str, Any]) -> CharField:
+    def create_label_field(
+        self,
+        _field: StreamFieldFormField,
+        options: dict[str, Any],
+    ) -> CharField:
         """Create a label without html input field."""
-
         return CharField(widget=Label(), **options)

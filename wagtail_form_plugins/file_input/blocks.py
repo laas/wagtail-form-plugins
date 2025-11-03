@@ -18,7 +18,7 @@ class FileInputFormFieldBlock(FormFieldBlock):
         widget=forms.CheckboxSelectMultiple,
     )
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         icon = "doc-full"
         label = _("File")
         form_classname = "formbuilder-field-block formbuilder-field-block-file"

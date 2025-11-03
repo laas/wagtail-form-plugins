@@ -1,15 +1,22 @@
 """Models definition for the Emails form plugin."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
-from wagtail_form_plugins.streamfield.models import StreamFieldFormPage, StreamFieldFormSubmission
+from wagtail_form_plugins.streamfield.models import (
+    StreamFieldFormatter,
+    StreamFieldFormPage,
+    StreamFieldFormSubmission,
+)
 from wagtail_form_plugins.utils import build_email
 
 from .dicts import EmailsToSendBlockDict
+
+if TYPE_CHECKING:
+    from django.contrib.auth.models import User
 
 
 class EmailActionsFormPage(StreamFieldFormPage):
@@ -28,23 +35,27 @@ class EmailActionsFormPage(StreamFieldFormPage):
             form_page: StreamFieldFormPage = response.context_data["page"]
 
             if hasattr(self, "templating_formatter_class"):
-                fmt_class = self.templating_formatter_class
+                fmt_class: type[StreamFieldFormatter] = self.templating_formatter_class  # type: ignore[reportAttributeAccessIssue]
                 form_page: StreamFieldFormPage = response.context_data["page"]
+                user: User = request.user  # type: ignore[reportAssignmentType]
                 form_submis: StreamFieldFormSubmission = response.context_data["form_submission"]
-                text_formatter = fmt_class(form_page, request.user, form_submis, False)
-                html_formatter = fmt_class(form_page, request.user, form_submis, True)
+                text_formatter = fmt_class(form_page, user, form_submis, in_html=False)
+                html_formatter = fmt_class(form_page, user, form_submis, in_html=True)
             else:
                 text_formatter = None
                 html_formatter = None
 
-            for email in getattr(form_page, self.emails_field_attr_name, []):
-                email = self.build_action_email(email.value, text_formatter, html_formatter)
+            for raw_email in getattr(form_page, self.emails_field_attr_name, []):
+                email = self.build_action_email(raw_email.value, text_formatter, html_formatter)
                 self.send_action_email(email)
 
         return response
 
     def build_action_email(
-        self, email_value: EmailsToSendBlockDict, text_formatter: Any, html_formatter: Any
+        self,
+        email_value: EmailsToSendBlockDict,
+        text_formatter: StreamFieldFormatter | None,
+        html_formatter: StreamFieldFormatter | None,
     ) -> EmailMultiAlternatives:
         def format_text(text: str) -> str:
             return text_formatter.format(text) if text_formatter else text
@@ -65,5 +76,5 @@ class EmailActionsFormPage(StreamFieldFormPage):
         """Send an e-mail"""
         email.send()
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

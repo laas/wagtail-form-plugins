@@ -1,11 +1,13 @@
 """View classes for the Conditional Fields plugin."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from wagtail.contrib.forms.models import FormSubmission
 from wagtail.contrib.forms.views import SubmissionsListView
 
 from .models import StreamFieldFormPage
+
+if TYPE_CHECKING:
+    from wagtail.contrib.forms.models import FormSubmission
 
 
 class StreamFieldSubmissionsListView(SubmissionsListView):
@@ -14,7 +16,7 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
     form_page: StreamFieldFormPage
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        """Return context for view"""
+        """Return context for view."""
         ctx_data = super().get_context_data(**kwargs)
 
         submissions: dict[str, FormSubmission] = {sub.id: sub for sub in ctx_data["submissions"]}
@@ -27,8 +29,11 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
             for col_idx, col_value in enumerate(row["fields"]):
                 field_header = header[col_idx]
                 if field_header in fields:
-                    value = submission.form_data.get(field_header, None)
-                    fmt_value = self.form_page.format_field_value(fields[field_header], value, True)
+                    fmt_value = self.form_page.format_field_value(
+                        fields[field_header],
+                        submission.form_data.get(field_header, None),
+                        in_html=True,
+                    )
                 elif field_header == "submit_time":
                     fmt_value = col_value.strftime("%d/%m/%Y, %H:%M")
                 else:

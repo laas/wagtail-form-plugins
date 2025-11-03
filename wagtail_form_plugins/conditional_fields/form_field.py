@@ -19,7 +19,6 @@ class ConditionalFieldsFormField(StreamFieldFormField):
 
     def format_rule(self, rule: RuleBlockValueDict) -> FormattedRuleDict:
         """Recusively format a field rule in order to facilitate its parsing on the client side."""
-
         if rule["field"] in ("and", "or"):
             rules = [self.format_rule(_rule["value"]) for _rule in rule["rules"]]
             return {"bool_opr": rule["field"], "subrules": rules}

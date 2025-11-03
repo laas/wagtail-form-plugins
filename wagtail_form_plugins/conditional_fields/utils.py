@@ -3,7 +3,7 @@ from datetime import date, datetime, time, timezone
 
 def date_to_timestamp(value: date | str | None) -> int:
     if not value:
-        value_dt = datetime.now()
+        value_dt = datetime.now(tz=timezone.utc)
     elif isinstance(value, str):
         value_dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=timezone.utc)
     else:
@@ -13,7 +13,7 @@ def date_to_timestamp(value: date | str | None) -> int:
 
 def time_to_timestamp(value: time | str | None) -> int:
     if not value:
-        value_dt = datetime.now()
+        value_dt = datetime.now(tz=timezone.utc)
     elif isinstance(value, str):
         value_dt = datetime.fromisoformat(f"1970-01-01T{value}")
     else:
@@ -23,7 +23,7 @@ def time_to_timestamp(value: time | str | None) -> int:
 
 def datetime_to_timestamp(value: datetime | str | None) -> int:
     if not value:
-        value_dt = datetime.now()
+        value_dt = datetime.now(tz=timezone.utc)
     elif isinstance(value, str):
         value_dt = datetime.fromisoformat(value)
     else:

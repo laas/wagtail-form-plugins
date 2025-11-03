@@ -25,13 +25,13 @@ class FileInputSubmissionsListView(StreamFieldSubmissionsListView):
             for col_idx, value in enumerate(row["fields"]):
                 field_slug = fields_slug[col_idx]
                 if field_slug in fields and fields[field_slug].type == "file":
-                    file_link = self.get_file_link(value, True)
+                    file_link = self.get_file_link(value, to_html=True)
                     context_data["data_rows"][row_idx]["fields"][col_idx] = file_link
 
         return context_data
 
     @staticmethod
-    def get_file_link(file_url: str, to_html: bool) -> str:
+    def get_file_link(file_url: str, *, to_html: bool) -> str:
         """Build an html link poiting to a file url, or `-` if there is no url."""
         if not file_url:
             return "-"

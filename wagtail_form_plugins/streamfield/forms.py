@@ -19,22 +19,28 @@ class StreamFieldFormBuilder(FormBuilder):
         super().__init__(fields)
         self.extra_field_options = []
 
-    def create_singleline_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_singleline_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.CharField:
         """Create a singleline form field."""
         widget = widgets.TextInput(attrs={"slug": form_field.slug})
         return forms.CharField(widget=widget, **options)
 
-    def create_multiline_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_multiline_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.CharField:
         """Create a multiline form field."""
         widget = widgets.Textarea(attrs={"slug": form_field.slug})
         return forms.CharField(widget=widget, **options)
 
-    def create_date_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_date_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.DateField:
         """Create a date form field."""
 
@@ -45,7 +51,9 @@ class StreamFieldFormBuilder(FormBuilder):
         return forms.DateField(widget=widget, **options)
 
     def create_time_field(
-        self, form_field: StreamFieldFormField, options: AnyDict
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.TimeField:
         """Create a time form field."""
 
@@ -55,8 +63,10 @@ class StreamFieldFormBuilder(FormBuilder):
         widget = TimeInput(attrs={"slug": form_field.slug})
         return forms.TimeField(widget=widget, **options)
 
-    def create_datetime_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_datetime_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.DateTimeField:
         """Create a datetime form field."""
 
@@ -70,70 +80,88 @@ class StreamFieldFormBuilder(FormBuilder):
         widget = DateTimeInput(attrs={"slug": form_field.slug})
         return forms.DateTimeField(widget=widget, **options)
 
-    def create_email_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_email_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.EmailField:
         """Create a email form field."""
         widget = widgets.EmailInput(attrs={"slug": form_field.slug})
         return forms.EmailField(widget=widget, **options)
 
-    def create_url_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
-    ) -> forms.URLField:  # type: ignore
+    def create_url_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
+    ) -> forms.URLField:
         """Create a url form field."""
         widget = widgets.URLInput(attrs={"slug": form_field.slug})
         return forms.URLField(widget=widget, **options)
 
-    def create_number_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_number_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.DecimalField:
         """Create a number form field."""
         widget = widgets.NumberInput(attrs={"slug": form_field.slug})
         return forms.DecimalField(widget=widget, **options)
 
-    def create_checkbox_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_checkbox_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.BooleanField:
         """Create a checkbox form field."""
         widget = widgets.CheckboxInput(attrs={"slug": form_field.slug})
         return forms.BooleanField(widget=widget, **options)
 
-    def create_hidden_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_hidden_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.CharField:
         """Create a hidden form field."""
         widget = widgets.HiddenInput(attrs={"slug": form_field.slug})
         return forms.CharField(widget=widget, **options)
 
-    def create_dropdown_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_dropdown_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.ChoiceField:
         """Create a dropdown form field."""
         widget = widgets.Select(attrs={"slug": form_field.slug})
         return forms.ChoiceField(widget=widget, **options)
 
-    def create_multiselect_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_multiselect_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.MultipleChoiceField:
         """Create a multiselect form field."""
         widget = widgets.SelectMultiple(attrs={"slug": form_field.slug})
         return forms.MultipleChoiceField(widget=widget, **options)
 
-    def create_radio_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_radio_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.ChoiceField:
         """Create a Django choice field with radio widget."""
         widget = widgets.RadioSelect(attrs={"slug": form_field.slug})
         return forms.ChoiceField(widget=widget, **options)
 
-    def create_checkboxes_field(  # type: ignore
-        self, form_field: StreamFieldFormField, options: AnyDict
+    def create_checkboxes_field(  # type: ignore[reportIncompatibleMethodOverride]
+        self,
+        form_field: StreamFieldFormField,
+        options: AnyDict,
     ) -> forms.MultipleChoiceField:
         """Create a Django multiple choice field with checkboxes widget."""
         widget = widgets.CheckboxSelectMultiple(attrs={"slug": form_field.slug})
         return forms.MultipleChoiceField(widget=widget, **options)
 
-    def get_field_options(self, form_field: StreamFieldFormField) -> AnyDict:  # type: ignore
+    def get_field_options(self, form_field: StreamFieldFormField) -> AnyDict:  # type: ignore[reportIncompatibleMethodOverride]
         """Return the options given to a field. Override to add or modify some options."""
         options = super().get_field_options(form_field)  # label, help_text, required, initial
 

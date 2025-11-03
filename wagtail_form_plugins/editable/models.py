@@ -19,7 +19,7 @@ class EditableFormPage(StreamFieldFormPage):
         """Handle POST request of form page edition, return redirect url or empty string."""
         submission_id = int(request.POST["edit"])
         submission = get_object_or_404(self.form_submission_class, pk=submission_id)
-        form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)  # type: ignore
+        form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)  # type: ignore[reportAttributeAccessIssue]
         form_fields = list(form.fields.values())
 
         for field in form_fields:
@@ -28,9 +28,10 @@ class EditableFormPage(StreamFieldFormPage):
         form.full_clean()
 
         if form.is_valid():
-            file_fields = [f.slug for f in form_fields if isinstance(f.widget, FileInput)]  # type: ignore
+            file_fields = [f.slug for f in form_fields if isinstance(f.widget, FileInput)]  # type: ignore[unresolved-attribute]
 
-            submission_data = self.pre_process_form_submission(form)  # type: ignore
+            submission_data = self.pre_process_form_submission(form)
+
             submission_data["form_data"] = {
                 k: v if (k not in file_fields or v) else submission.form_data[k]
                 for k, v in submission_data["form_data"].items()
@@ -72,7 +73,7 @@ class EditableFormPage(StreamFieldFormPage):
             if request.method == "POST" and "edit" in request.POST:
                 redirect_url = self.edit_post(request)
                 if redirect_url:
-                    return redirect(redirect_url)  # type: ignore
+                    return redirect(redirect_url)  # type: ignore[invalid-return-type]
 
             elif request.method == "GET" and "edit" in request.GET:
                 context = self.edit_get(request)
@@ -80,5 +81,5 @@ class EditableFormPage(StreamFieldFormPage):
 
         return response
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

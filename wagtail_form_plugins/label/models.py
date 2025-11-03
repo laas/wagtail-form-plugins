@@ -9,5 +9,5 @@ class LabelFormPage(StreamFieldFormPage):
         form_fields = self.get_form_fields_dict()
         return [slug for slug in enabled_fields if form_fields[slug].type != "label"]
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

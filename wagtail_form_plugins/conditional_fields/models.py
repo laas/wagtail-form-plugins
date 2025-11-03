@@ -7,6 +7,7 @@ from typing import Any
 from django.forms import BaseForm
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
+from wagtail_form_plugins.utils import LOGGER
 
 from .dicts import RuleBlockValueDict
 from .form_field import ConditionalFieldsFormField
@@ -30,8 +31,8 @@ OPERATIONS: dict[str, Operation] = {
     "ate": lambda a, b: a >= b,
     "ct": lambda a, b: b in a,
     "nct": lambda a, b: b not in a,
-    "c": lambda a, b: bool(a),
-    "nc": lambda a, b: not a,
+    "c": lambda a, _b: bool(a),
+    "nc": lambda a, _b: not a,
 }
 
 
@@ -41,10 +42,10 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
     def get_form(self, *args, **kwargs) -> BaseForm:
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
-        form_fields: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore
+        form_fields: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore[ invalid-assignment]
 
         for field_value in form.fields.values():
-            form_field = form_fields[field_value.slug]  # type: ignore
+            form_field = form_fields[field_value.slug]  # type: ignore[unresolved-attribute]
             rule = form_field.rule
             if rule:
                 field_value.widget.attrs.update(
@@ -53,38 +54,43 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
                         "data-label": form_field.label,
                         "data-type": form_field.type,
                         "data-rule": json.dumps(rule),
-                    }
+                    },
                 )
 
         form.full_clean()
         return form
 
     def get_right_operand(
-        self, field: ConditionalFieldsFormField, leaf_rule: RuleBlockValueDict
+        self,
+        field: ConditionalFieldsFormField,
+        leaf_rule: RuleBlockValueDict,
     ) -> str | int:
-        """
-        Return the right operand of the rule operation.
+        """Return the right operand of the rule operation.
         The leaf_rule is a rule that does not contain a sub rule.
         """
         char_fields = ["singleline", "multiline", "email", "hidden", "url"]
         choice_fields = ["checkboxes", "dropdown", "multiselect", "radio"]
 
-        if field.type in char_fields:
-            return leaf_rule["value_char"]
-        if field.type == "number":
-            return int(leaf_rule["value_number"])
-        if field.type in choice_fields:
-            dd_val = leaf_rule["value_dropdown"]
-            return dict(field.choices)[dd_val] if (dd_val and field.choices) else dd_val
-        if field.type == "date":
-            return date_to_timestamp(leaf_rule["value_date"])
-        if field.type == "time":
-            return time_to_timestamp(leaf_rule["value_time"])
-        if field.type == "datetime":
-            return datetime_to_timestamp(leaf_rule["value_datetime"])
-        return ""
+        right_operand = ""
 
-    # TODO: typer form_data
+        if field.type in char_fields:
+            right_operand = leaf_rule["value_char"]
+        elif field.type == "number":
+            right_operand = int(leaf_rule["value_number"])
+        elif field.type in choice_fields:
+            dd_val = leaf_rule["value_dropdown"]
+            right_operand = dict(field.choices)[dd_val] if (dd_val and field.choices) else dd_val
+        elif field.type == "date":
+            right_operand = date_to_timestamp(leaf_rule["value_date"])
+        elif field.type == "time":
+            right_operand = time_to_timestamp(leaf_rule["value_time"])
+        elif field.type == "datetime":
+            right_operand = datetime_to_timestamp(leaf_rule["value_datetime"])
+        else:
+            right_operand = ""
+
+        return right_operand
+
     def process_rule(
         self,
         fields: dict[str, ConditionalFieldsFormField],
@@ -104,19 +110,18 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
         func = OPERATIONS[rule["operator"]]
         left_operand = form_data[field.slug]
-        # TODO: vérifier si form_data est bien formaté ici (date en timestamp, number en int, etc)
         right_operand = self.get_right_operand(field, rule)
 
         try:
             return func(left_operand, right_operand)
-        except Exception:
-            print("error when solving rule:", left_operand, rule["operator"], right_operand)
+        except Exception:  # noqa: BLE001
+            LOGGER.error("error when solving rule:", left_operand, rule["operator"], right_operand)
             return False
 
     def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
-        """Return the list of fields slug where the computed conditional value of the field is true."""
+        """Return the fields slug list where the computed conditional value of the field is true."""
         enabled_fields = super().get_enabled_fields(form_data)
-        fields_dict: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore
+        fields_dict: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore[invalid-assignment]
 
         new_enabled_fields = []
         for field_slug in enabled_fields:
@@ -137,5 +142,5 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
         return new_enabled_fields
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

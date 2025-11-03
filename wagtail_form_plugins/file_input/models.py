@@ -1,7 +1,7 @@
 """Models definition for the File Input form plugin."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +15,8 @@ from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 
 from .views import FileInputSubmissionsListView
 
+from typing_extensions import Self
+
 
 class AbstractFileInput(models.Model):
     """The file input model class, containing several Django fields such as the file field."""
@@ -22,10 +24,10 @@ class AbstractFileInput(models.Model):
     file = models.FileField()
     field_name = models.CharField(blank=True, max_length=254)
 
-    class Meta:  # type: ignore
+    class Meta:
         abstract = True
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.upload_dir = ""
         self.file.field.upload_to = self.get_file_path
@@ -33,10 +35,10 @@ class AbstractFileInput(models.Model):
     def __str__(self) -> str:
         return f"{self.field_name}: {self.file.name if self.file else '-'}"
 
-    def get_file_path(self, instance: Any, file_name: str) -> Path:
+    def get_file_path(self, _instance: Self, file_name: str) -> Path:
         """Get the path of the uploaded file."""
         file_path = Path(file_name)
-        dir_path = Path(datetime.now().strftime(str(self.upload_dir)))
+        dir_path = Path(datetime.now(tz=timezone.utc).strftime(str(self.upload_dir)))
         new_file_name = f"{file_path.stem}_{uuid.uuid4()}{file_path.suffix}"
         return dir_path / new_file_name
 
@@ -70,16 +72,20 @@ class FileInputFormPage(StreamFieldFormPage):
 
         return submission_data
 
-    def format_field_value(  # type: ignore
-        self, field: StreamFieldFormField, value: Any, in_html: bool
+    def format_field_value(
+        self,
+        form_field: StreamFieldFormField,
+        value: Any,  # noqa: ANN401
+        *,
+        in_html: bool,
     ) -> str | list[str] | None:
         """Format the field value. Used to display user-friendly values in result table."""
-        fmt_value = super().format_field_value(field, value, in_html)
+        fmt_value = super().format_field_value(form_field, value, in_html=in_html)
 
-        if field.type == "file":
+        if form_field.type == "file":
             return (settings.WAGTAILADMIN_BASE_URL + fmt_value) if value else None
 
         return fmt_value
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

@@ -1,5 +1,6 @@
 """Settings of the demo app."""
 
+import os
 from pathlib import Path
 
 DEMO_APP_DIR = Path(__file__).parent
@@ -8,7 +9,7 @@ BASE_DIR = DEMO_APP_DIR.parent
 # Dev-specific
 
 DEBUG = True
-SECRET_KEY = "django-insecure-+7(xh=@&cgu23n$rb*!_^(w5(4&%qwklyr-5iq0!zrjlvs#zso"
+SECRET_KEY = os.environ.get("SECRET_KEY", "insecure secret key")
 ALLOWED_HOSTS = ["*"]
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 AUTH_PASSWORD_VALIDATORS = []
@@ -164,3 +165,6 @@ FORMS_DEV_SEND_MAIL = False
 FORMS_RGPD_TEXT = """
 Data collected in this form is stored by the IT team in order to process your request.
 """
+
+INIT_ADMIN_PW = "admin"
+INIT_USERS_PW = "1234"

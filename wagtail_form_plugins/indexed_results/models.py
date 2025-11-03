@@ -31,7 +31,7 @@ class IndexedResultsFormSubmission(StreamFieldFormSubmission):
 
         return super().save(*args, **kwargs)
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True
 
 
@@ -45,5 +45,5 @@ class IndexedResultsFormPage(StreamFieldFormPage):
             *super().get_data_fields(),
         ]
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True

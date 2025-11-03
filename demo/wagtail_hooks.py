@@ -22,11 +22,11 @@ hooks.register("insert_global_admin_css", emails.hook_emails_admin_css)
 hooks.register("insert_global_admin_css", nav_buttons.hook_nav_buttons_admin_css)
 
 
-@hooks.register("register_page_listing_buttons")  # type: ignore
+@hooks.register("register_page_listing_buttons")  # type: ignore[ reportOptionalCall]
 def page_listing_buttons(
     page: Page,
-    user: User,
-    next_url: str | None = None,
+    _user: User,
+    _next_url: str | None = None,
 ) -> Generator[ListingButton, Any, None]:
     """Add a button on each row of the admin form list table to access the list of submissions."""
     if isinstance(page, FormPage):
@@ -39,7 +39,7 @@ def page_listing_buttons(
         )
 
 
-@hooks.register("construct_main_menu")  # type: ignore
-def hide_old_form_menu_item(request: HttpRequest, menu_items: list[MenuItem]) -> None:
+@hooks.register("construct_main_menu")  # type: ignore[ reportOptionalCall]
+def hide_old_form_menu_item(_request: HttpRequest, menu_items: list[MenuItem]) -> None:
     """Hide the old form item from the main menu."""
     menu_items[:] = [mi for mi in menu_items if not isinstance(mi, FormsMenuItem)]

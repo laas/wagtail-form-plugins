@@ -3,9 +3,12 @@
 from datetime import date, datetime, time
 from typing import Any
 
+from django.contrib.auth.models import User
 from django.forms import BaseForm
 from django.http import HttpRequest
+from django.template.response import TemplateResponse
 
+from wagtail.admin.panels import RichText
 from wagtail.contrib.forms.models import AbstractFormSubmission, FormMixin
 from wagtail.contrib.forms.views import SubmissionsListView
 from wagtail.models import Page
@@ -18,7 +21,9 @@ from .utils import format_choices
 
 
 class StreamFieldFormSubmission(AbstractFormSubmission):
-    class Meta:  # type: ignore
+    """A custom form submission class used for StreamField forms."""
+
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True
 
 
@@ -35,15 +40,16 @@ class StreamFieldFormPage(FormMixin, Page):
     @classmethod
     @property
     def form_builder(cls) -> type[StreamFieldFormBuilder]:
+        """Return form builder class (used in wagtail.FormMixin): alias for form_builder_class."""
         return cls.form_builder_class
 
-    def get_submission_class(self) -> type[StreamFieldFormSubmission]:  # type: ignore
-        """Used in wagtail.FormMixin."""
+    def get_submission_class(self) -> type[StreamFieldFormSubmission]:  # type: ignore[reportIncompatibleMethodOverride]
+        """Return for submission class. Used in wagtail.FormMixin."""
         return self.form_submission_class
 
-    def serve_preview(self, request: HttpRequest, mode_name: str) -> Any:
-        """Fix typing (FormMixin.serve_preview and Page.serve_preview return types are different)"""
-        return
+    def serve_preview(self, request: HttpRequest, mode_name: str) -> TemplateResponse | None:  # type: ignore[reportIncompatibleMethodOverride]
+        """Fix typing: FormMixin.serve_preview and Page.serve_preview return types are different."""
+        return super().serve_preview(request, mode_name)
 
     def get_form_fields(self) -> list[StreamFieldFormField]:
         """Return the form fields based on streamfield data."""
@@ -54,9 +60,11 @@ class StreamFieldFormPage(FormMixin, Page):
         ]
 
     def get_form_fields_dict(self) -> dict[str, StreamFieldFormField]:
+        """Return a field_slug:field dictionnary of all form fields."""
         return {field.slug: field for field in self.get_form_fields()}
 
     def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
+        """Return a list of slugs corresponding to enabled fields (usually via a condition)."""
         return [slug for slug, field_data in form_data.items() if field_data is not None]
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
@@ -69,58 +77,66 @@ class StreamFieldFormPage(FormMixin, Page):
             "page": self,
         }
 
-    def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:  # type: ignore
+    def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:  # type: ignore[reportIncompatibleMethodOverride]
         """Create and return the submission instance."""
         submission_data = self.pre_process_form_submission(form)
         return self.form_submission_class.objects.create(**submission_data)
 
     def format_field_value(  # noqa: C901
-        self, form_field: StreamFieldFormField, value: Any, in_html: bool
+        self,
+        form_field: StreamFieldFormField,
+        value: Any,  # noqa: ANN401
+        *,
+        in_html: bool,
     ) -> str | list[str] | None:
-        """
-        Format the field value, or return None if the value should not be displayed.
+        """Format the field value, or return None if the value should not be displayed.
+
         Used to display user-friendly values in result table and emails.
         """
 
+        formatted_value = value
+
         if value is None:
-            return None
+            formatted_value = None
 
-        if form_field.type in ["checkboxes", "multiselect"]:
-            return format_choices([v for k, v in form_field.choices if k in value], in_html)
+        elif form_field.type in ["checkboxes", "multiselect"]:
+            formatted_value = format_choices(
+                [v for k, v in form_field.choices if k in value],
+                in_html=in_html,
+            )
 
-        if form_field.type in ["dropdown", "radio"]:
-            return dict(form_field.choices)[value] if value else None
+        elif form_field.type in ["dropdown", "radio"]:
+            formatted_value = dict(form_field.choices)[value] if value else None
 
-        if form_field.type == "multiline":
-            return ("<br/>" if in_html else "\n") + value
+        elif form_field.type == "multiline":
+            formatted_value = ("<br/>" if in_html else "\n") + value
 
-        if form_field.type == "datetime":
+        elif form_field.type == "datetime":
             if isinstance(value, str):
                 value = datetime.fromisoformat(value.replace("Z", "+00:00"))
-            return value.strftime("%d/%m/%Y, %H:%M")
+            formatted_value = value.strftime("%d/%m/%Y, %H:%M")
 
-        if form_field.type == "date":
+        elif form_field.type == "date":
             if isinstance(value, str):
                 value = date.fromisoformat(value)
-            return value.strftime("%d/%m/%Y")
+            formatted_value = value.strftime("%d/%m/%Y")
 
-        if form_field.type == "time":
+        elif form_field.type == "time":
             if isinstance(value, str):
                 value = time.fromisoformat(value)
-            return value.strftime("%H:%M")
+            formatted_value = value.strftime("%H:%M")
 
-        if form_field.type == "number":
-            return str(value)
+        elif form_field.type == "number":
+            formatted_value = str(value)
 
-        if form_field.type == "checkbox":
-            return "✔" if value else "✘"
+        elif form_field.type == "checkbox":
+            formatted_value = "✔" if value else "✘"
 
-        return value
+        return formatted_value
 
-    def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore
+    def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore[reportIncompatibleMethodOverride]
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
-        # form.render()  # required to make multiselect inital values work - black magic here
 
         for field_value in form.fields.values():
             if field_value.help_text:
@@ -130,11 +146,31 @@ class StreamFieldFormPage(FormMixin, Page):
             form.full_clean()
             enabled_fields = self.get_enabled_fields(form.cleaned_data)
             for field_value in form.fields.values():
-                if field_value.widget.attrs.get("slug", None) not in enabled_fields:  # type: ignore
+                if field_value.widget.attrs.get("slug", None) not in enabled_fields:
                     field_value.required = False
 
         form.full_clean()
         return form
 
-    class Meta:  # type: ignore
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True
+
+
+class StreamFieldFormatter:
+    """Class used as an interface for TemplatingFormatter."""
+
+    def __init__(
+        self,
+        form_page: StreamFieldFormPage,
+        user: User,
+        submission: StreamFieldFormSubmission | None = None,
+        *,
+        in_html: bool = False,
+    ) -> None:
+        self.submission = submission
+        self.form_page = form_page
+        self.user = user
+        self.in_html = in_html
+
+    def format(self, message: str | RichText) -> str:
+        raise NotImplementedError
