@@ -74,10 +74,12 @@ class AuthFormPage(StreamFieldFormPage):
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
+        response = super().serve(request, *args, **kwargs)
+
         if self.unique_response and self.get_user_submissions_qs(request.user).exists():
             raise PermissionDenied(_("You have already filled in this form."))
 
-        return super().serve(request, *args, **kwargs)
+        return response
 
     class Meta:  # type: ignore
         abstract = True

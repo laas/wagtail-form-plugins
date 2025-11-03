@@ -101,10 +101,11 @@ class ValidationFormPage(StreamFieldFormPage):
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
+        response = super().serve(request, *args, **kwargs)
         self.flush()
 
         if not request.user.is_anonymous:
-            return super().serve(request, *args, **kwargs)
+            return response
 
         if request.method == "POST":
             if "validation_email" in request.POST:
@@ -125,7 +126,7 @@ class ValidationFormPage(StreamFieldFormPage):
                     messages.add_message(request, messages.ERROR, _("This e-mail is not valid."))
             elif "wfp_token" in request.POST and request.POST["wfp_token"] in self.tokens:
                 del self.tokens[request.POST["wfp_token"]]
-                return super().serve(request, *args, **kwargs)
+                return response
 
         if request.method == "GET" and "token" in request.GET:
             token = request.GET["token"]
@@ -133,7 +134,7 @@ class ValidationFormPage(StreamFieldFormPage):
                 msg_str = _("Your e-mail has been validated. You can now fill the form.")
                 messages.add_message(request, messages.SUCCESS, msg_str)
 
-                return super().serve(request, *args, **kwargs)
+                return response
             messages.add_message(request, messages.ERROR, _("This token is not valid."))
 
         context = self.get_context(request)

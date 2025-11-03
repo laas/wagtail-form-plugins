@@ -66,6 +66,7 @@ class EditableFormPage(StreamFieldFormPage):
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
+        response = super().serve(request, *args, **kwargs)
 
         if self.permissions_for_user(request.user).can_edit():
             if request.method == "POST" and "edit" in request.POST:
@@ -77,7 +78,7 @@ class EditableFormPage(StreamFieldFormPage):
                 context = self.edit_get(request)
                 return TemplateResponse(request, self.get_template(request), context)
 
-        return super().serve(request, *args, **kwargs)
+        return response
 
     class Meta:  # type: ignore
         abstract = True

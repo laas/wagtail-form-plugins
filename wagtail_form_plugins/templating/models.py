@@ -2,7 +2,7 @@
 
 from django.contrib.auth.models import User
 from django.forms import BaseForm
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
 from wagtail_form_plugins.streamfield.forms import StreamFieldFormField
@@ -65,17 +65,20 @@ class TemplatingFormPage(StreamFieldFormPage):
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
+        response = super().serve(request, *args, **kwargs)  # call process_form_submission()
 
-        context = self.get_context(request)
-        if request.method == "POST" and "form" not in context:
-            form_page: StreamFieldFormPage = context["page"]
-            form_submission: StreamFieldFormSubmission = context["form_submission"]
+        if isinstance(response, HttpResponseRedirect) or not response.context_data:
+            return response
+
+        if request.method == "POST" and "form" not in response.context_data:
+            form_page: StreamFieldFormPage = response.context_data["page"]
+            form_submission: StreamFieldFormSubmission = response.context_data["form_submission"]
             formatter = self.templating_formatter_class(form_page, request.user, form_submission)  # type: ignore
 
             form_fields = form_page.get_form_fields_dict()
             self.format_submission(form_submission, form_fields, formatter)
 
-        return super().serve(request, *args, **kwargs)
+        return response
 
     class Meta:  # type: ignore
         abstract = True

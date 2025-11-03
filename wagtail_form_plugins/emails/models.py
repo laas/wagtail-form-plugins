@@ -3,10 +3,10 @@
 from typing import Any
 
 from django.core.mail import EmailMultiAlternatives
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
-from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
+from wagtail_form_plugins.streamfield.models import StreamFieldFormPage, StreamFieldFormSubmission
 from wagtail_form_plugins.utils import build_email
 
 from .dicts import EmailsToSendBlockDict
@@ -19,20 +19,29 @@ class EmailActionsFormPage(StreamFieldFormPage):
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
-        context = self.get_context(request)
+        response = super().serve(request, *args, **kwargs)
 
-        if "form_submission" in context:
-            form_page: StreamFieldFormPage = context["page"]
+        if isinstance(response, HttpResponseRedirect) or not response.context_data:
+            return response
 
-            fmt_class = getattr(self, "templating_formatter_class", None)
-            text_formatter = fmt_class(context, False) if fmt_class else None
-            html_formatter = fmt_class(context, True) if fmt_class else None
+        if "form_submission" in response.context_data:
+            form_page: StreamFieldFormPage = response.context_data["page"]
+
+            if hasattr(self, "templating_formatter_class"):
+                fmt_class = self.templating_formatter_class
+                form_page: StreamFieldFormPage = response.context_data["page"]
+                form_submis: StreamFieldFormSubmission = response.context_data["form_submission"]
+                text_formatter = fmt_class(form_page, request.user, form_submis, False)
+                html_formatter = fmt_class(form_page, request.user, form_submis, True)
+            else:
+                text_formatter = None
+                html_formatter = None
 
             for email in getattr(form_page, self.emails_field_attr_name, []):
                 email = self.build_action_email(email.value, text_formatter, html_formatter)
                 self.send_action_email(email)
 
-        return super().serve(request, *args, **kwargs)
+        return response
 
     def build_action_email(
         self, email_value: EmailsToSendBlockDict, text_formatter: Any, html_formatter: Any
