@@ -15,8 +15,10 @@ class IndexedResultsFormSubmission(StreamFieldFormSubmission):
 
     def get_data(self) -> dict[str, Any]:
         """Return dict with form data."""
+        data = super().get_data()
+
         return {
-            **super().get_data(),
+            **data,
             "index": self.index,
         }
 
@@ -40,9 +42,11 @@ class IndexedResultsFormPage(StreamFieldFormPage):
 
     def get_data_fields(self) -> list[tuple[str, Any]]:
         """Return a list fields data as tuples of slug and label."""
+        data_fields = super().get_data_fields()
+
         return [
             ("index", _("Subscription index")),
-            *super().get_data_fields(),
+            *data_fields,
         ]
 
     class Meta:  # type: ignore[reportIncompatibleVariableOverride]

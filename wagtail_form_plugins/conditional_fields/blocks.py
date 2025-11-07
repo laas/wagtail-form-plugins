@@ -155,6 +155,8 @@ class ConditionalFieldsFormBlock(StreamFieldFormBlock):
     """Form field block used to add conditional fields functionnality to wagtail field blocks."""
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):  # noqa:FBT001,FBT002
+        super().__init__(local_blocks, search_index, **kwargs)
+
         local_blocks = local_blocks or []
         rule = blocks.ListBlock(
             RuleBlockLvl1(),
@@ -167,5 +169,3 @@ class ConditionalFieldsFormBlock(StreamFieldFormBlock):
         for child_block_id, child_block in self.get_blocks().items():
             new_child_block = child_block.__class__(local_blocks=[("rule", rule)])
             local_blocks += [(child_block_id, new_child_block)]
-
-        super().__init__(local_blocks, search_index, **kwargs)

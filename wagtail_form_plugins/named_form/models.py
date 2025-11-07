@@ -27,8 +27,10 @@ class AuthFormSubmission(StreamFieldFormSubmission):
 
     def get_data(self) -> dict[str, Any]:
         """Return dict with form data."""
+        data = super().get_data()
+
         return {
-            **super().get_data(),
+            **data,
             "user": self.user.get_full_name() if self.user else "-",
             "email": self.user.email if self.user else "-",
         }
@@ -58,10 +60,12 @@ class AuthFormPage(StreamFieldFormPage):
 
     def get_data_fields(self) -> list[tuple[str, Any]]:
         """Return a list fields data as tuples of slug and label."""
+        data_fields = super().get_data_fields()
+
         return [
             ("user", _("Form user")),
             ("email", _("User e-mail")),
-            *super().get_data_fields(),
+            *data_fields,
         ]
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:

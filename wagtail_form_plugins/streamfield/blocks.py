@@ -26,14 +26,16 @@ class SlugBlock(blocks.CharBlock):
 
     def clean(self, value: str) -> FieldBlock:
         """Raise a ValidationError if the block class has a duplicates attribute."""
-        duplicates = getattr(self, "duplicates", {}).get(value, None)
-        if duplicates:
+        cleaned = super().clean(value)
+
+        if duplicates := getattr(self, "duplicates", {}).get(value, None):
             msg = _("The id '{field_id}' is already in use in fields {duplicates}.").format(
                 field_id=value,
                 duplicates=", ".join([f"n°{idx + 1}" for idx in duplicates]),
             )
             raise ValidationError(msg)
-        return super().clean(value)
+
+        return cleaned
 
 
 class RequiredBlock(blocks.BooleanBlock):
@@ -370,9 +372,11 @@ class StreamFieldFormBlock(blocks.StreamBlock):
 
     def clean(self, value: StreamValue, ignore_required_constraints: bool = False) -> StreamValue:  # noqa: FBT001, FBT002
         """Add duplicates attribute in the block class."""
+        cleaned = super().clean(value, ignore_required_constraints)
+
         if len(value) > 0:
             block = value[0].block.child_blocks.get("slug", None)  # type: ignore[reportAttributeAccessIssue]
             if block:
                 block.duplicates = self.get_duplicates(value)
 
-        return super().clean(value, ignore_required_constraints)
+        return cleaned
