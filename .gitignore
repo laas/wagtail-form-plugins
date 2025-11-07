@@ -17,5 +17,5 @@ media/
 # Files used for development purpose
 ___*
 
-# We use uv so keeping poetry.lock is not required
-poetry.lock
+# Django static files for demo project
+static/

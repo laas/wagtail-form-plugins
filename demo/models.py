@@ -19,6 +19,7 @@ from wagtail.admin.widgets.button import HeaderButton
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import GroupPagePermission, Page
 
+from wagtail_form_plugins.conditional_fields import ConditionalFields
 from wagtail_form_plugins.editable import Editable
 from wagtail_form_plugins.emails import EmailActions, EmailsFormBlock, email_to_block
 from wagtail_form_plugins.file_input import FileInput
@@ -64,7 +65,9 @@ Have a nice day.""",
 ]
 
 
+# Form plugins definition. Comment a line to disable the corresponding plugin.
 wfp = WagtailFormPlugin(
+    ConditionalFields,
     Editable,
     EmailActions,
     FileInput,
