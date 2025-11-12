@@ -60,7 +60,7 @@ class EmailsFormBlock(blocks.StreamBlock):
     email_to_send = EmailsToSendStructBlock()
 
     def validate_email(self, field_value: str) -> None:
-        """Validate the email addresses field value."""
+        """Validate the email addresses field value. Extend it to personalize email validation."""
         for email in field_value.split(","):
             validate_email(email.strip())
 

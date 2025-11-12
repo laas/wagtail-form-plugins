@@ -11,7 +11,7 @@ from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
 from wagtail.blocks import struct_block
 
-from wagtail_form_plugins.streamfield.blocks import StreamFieldFormBlock
+from wagtail_form_plugins.streamfield import blocks as streamfield_blocks
 from wagtail_form_plugins.utils import LocalBlocks
 
 
@@ -151,13 +151,11 @@ class RuleBlockLvl1(RuleBlock):
         form_classname = "formbuilder-beb formbuilder-beb-lvl1"
 
 
-class ConditionalFieldsFormBlock(StreamFieldFormBlock):
-    """Form field block used to add conditional fields functionnality to wagtail field blocks."""
+class ConditionalFieldsFormBlock(streamfield_blocks.StreamFieldFormBlock):
+    @classmethod
+    def get_field_child_blocks(cls, local_blocks: LocalBlocks = None) -> LocalBlocks:
+        local_blocks = super().get_field_child_blocks(local_blocks) or []
 
-    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):  # noqa:FBT001,FBT002
-        super().__init__(local_blocks, search_index, **kwargs)
-
-        local_blocks = local_blocks or []
         rule = blocks.ListBlock(
             RuleBlockLvl1(),
             label=_("Visibility condition"),
@@ -165,7 +163,6 @@ class ConditionalFieldsFormBlock(StreamFieldFormBlock):
             default=[],
             max_num=1,
         )
+        local_blocks.append(("rule", rule))
 
-        for child_block_id, child_block in self.get_blocks().items():
-            new_child_block = child_block.__class__(local_blocks=[("rule", rule)])
-            local_blocks += [(child_block_id, new_child_block)]
+        return local_blocks

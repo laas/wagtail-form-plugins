@@ -14,7 +14,7 @@ from wagtail import blocks
 from wagtail.admin.telepath import register as register_adapter
 from wagtail.blocks import Block, FieldBlock, StreamValue, struct_block
 
-from wagtail_form_plugins.utils import validate_slug
+from wagtail_form_plugins.utils import LocalBlocks, validate_slug
 
 
 class SlugBlock(blocks.CharBlock):
@@ -326,7 +326,40 @@ class HiddenFormFieldBlock(FormFieldBlock):
         form_classname = "formbuilder-field-block formbuilder-field-block-hidden"
 
 
-class StreamFieldFormBlock(blocks.StreamBlock):
+class BaseFormBlock(blocks.StreamBlock):
+    subclasses: ClassVar = []
+
+    @classmethod
+    def __init_subclass__(cls, **kwargs) -> None:
+        super().__init_subclass__(**kwargs)
+        cls.subclasses.append(cls)
+
+    @classmethod
+    def get_blocks(cls) -> dict[str, Block]:
+        """Get all the declared blocks from all subclasses."""
+        declared_blocks = {}
+
+        for subclass in cls.subclasses:
+            declared_blocks.update(subclass.declared_blocks)
+
+        return declared_blocks
+
+    @classmethod
+    def get_field_child_blocks(cls, local_blocks: LocalBlocks = None) -> LocalBlocks:
+        return local_blocks or []
+
+    def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):  # noqa:FBT001,FBT002
+        local_blocks = local_blocks or []
+
+        if field_child_blocks := self.get_field_child_blocks():
+            for child_block_id, child_block in self.get_blocks().items():
+                new_child_block = child_block.__class__(local_blocks=field_child_blocks)
+                local_blocks += [(child_block_id, new_child_block)]
+
+        super().__init__(local_blocks, search_index, **kwargs)
+
+
+class StreamFieldFormBlock(BaseFormBlock):
     """A mixin used to use StreamField in a form builder, by selecting some blocks to add fields."""
 
     singleline = SinglelineFormFieldBlock()
@@ -344,8 +377,6 @@ class StreamFieldFormBlock(blocks.StreamBlock):
     datetime = DateTimeFormFieldBlock()
     hidden = HiddenFormFieldBlock()
 
-    subclasses: ClassVar = []
-
     class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         form_classname = "formbuilder-fields-block"
         collapsed = True
@@ -358,17 +389,6 @@ class StreamFieldFormBlock(blocks.StreamBlock):
             if slug:
                 duplicates[slug] = [*duplicates.get(slug, []), idx]
         return {k: v for k, v in duplicates.items() if len(v) > 1}
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        cls.subclasses.append(cls)
-
-    def get_blocks(self) -> dict[str, blocks.StreamBlock]:
-        """Get all the declared blocks from all subclasses."""
-        declared_blocks = {}
-        for subclass in self.subclasses:
-            declared_blocks.update(subclass.declared_blocks)
-        return declared_blocks
 
     def clean(self, value: StreamValue, ignore_required_constraints: bool = False) -> StreamValue:  # noqa: FBT001, FBT002
         """Add duplicates attribute in the block class."""
