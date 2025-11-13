@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-16 14:11+0000\n"
+"POT-Creation-Date: 2025-11-13 14:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,52 +18,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: demo/models.py:86
+#: demo/models.py:89
 msgid "Form index page introduction"
 msgstr "Texte d'introduction de la page d'index des formulaire"
 
-#: demo/models.py:87
+#: demo/models.py:90
 msgid "A rich text introduction to be displayed before the list of forms."
 msgstr ""
 "Une introduction en RichText à afficher avant la liste des formulaires."
 
-#: demo/models.py:89
+#: demo/models.py:92
 msgid "Forms list"
 msgstr "Liste des formulaires"
 
-#: demo/models.py:137
+#: demo/models.py:140
 msgid "City"
 msgstr "Ville"
 
-#: demo/models.py:213
-msgid "Wrong template syntax. See tooltip for a list of available keywords."
-msgstr ""
-"Syntaxe invalide. Voir l'infobulle pour la liste des mot-clés disponibles."
-
-#: demo/models.py:324
+#: demo/models.py:313
 msgid "Form introduction text"
 msgstr "Texte d'introduction du formulaire"
 
-#: demo/models.py:329
+#: demo/models.py:318
 msgid "Form fields"
 msgstr "Champs du formulaire"
 
-#: demo/models.py:333
+#: demo/models.py:322
 msgid "Text displayed after form submission"
 msgstr "Texte affiché après soumission du formulaire"
 
-#: demo/models.py:334
+#: demo/models.py:323
 msgid "Thank you!"
 msgstr "Merci !"
 
-#: demo/models.py:339
+#: demo/models.py:328
 msgid "E-mails to send after form submission"
 msgstr "E-mails à envoyer après soumission du formulaire"
 
-#: demo/models.py:345
+#: demo/models.py:334
 msgid "administrators"
 msgstr "administrateurs"
 
 #: demo/templates/demo/form_page.html:26
 msgid "Submit"
 msgstr "Envoyer"
+
+#~ msgid "Wrong template syntax. See tooltip for a list of available keywords."
+#~ msgstr ""
+#~ "Syntaxe invalide. Voir l'infobulle pour la liste des mot-clés disponibles."
