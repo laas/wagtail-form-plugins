@@ -37,11 +37,10 @@ class StreamFieldFormPage(FormMixin, Page):
 
     fields_field_attr_name = "form_fields"
 
-    @classmethod
     @property
-    def form_builder(cls) -> type[StreamFieldFormBuilder]:
+    def form_builder(self) -> type[StreamFieldFormBuilder]:
         """Return form builder class (used in wagtail.FormMixin): alias for form_builder_class."""
-        return cls.form_builder_class
+        return self.form_builder_class
 
     def get_submission_class(self) -> type[StreamFieldFormSubmission]:  # type: ignore[reportIncompatibleMethodOverride]
         """Return for submission class. Used in wagtail.FormMixin."""
