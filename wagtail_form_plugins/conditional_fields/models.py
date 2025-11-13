@@ -46,15 +46,8 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
         for field_slug, field_value in form.fields.items():
             form_field = form_fields[field_slug]
-            if rule := form_field.rule:
-                field_value.widget.attrs.update(
-                    {
-                        "id": form_field.block_id,
-                        "data-label": form_field.label,
-                        "data-type": form_field.type,
-                        "data-rule": json.dumps(rule),
-                    },
-                )
+            if form_field.rule:
+                field_value.widget.attrs["data-rule"] = json.dumps(form_field.rule)
 
         form.full_clean()
         return form

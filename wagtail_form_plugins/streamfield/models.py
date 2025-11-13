@@ -137,8 +137,14 @@ class StreamFieldFormPage(FormMixin, Page):
     def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore[reportIncompatibleMethodOverride]
         """Build and return the form instance."""
         form = super().get_form(*args, **kwargs)
+        form_fields = self.get_form_fields_dict()
 
-        for field_value in form.fields.values():
+        for field_slug, field_value in form.fields.items():
+            form_field = form_fields[field_slug]
+            field_value.widget.attrs["id"] = form_field.block_id
+            field_value.widget.attrs["data-label"] = form_field.label
+            field_value.widget.attrs["data-type"] = form_field.type
+
             if field_value.help_text:
                 field_value.help_text = create_links(str(field_value.help_text)).replace("\n", "")
 

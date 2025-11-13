@@ -9,16 +9,16 @@ function get_value(dom_input) {
 	if (["checkboxes", "radio"].includes(field_type)) {
 		const values = Array.from(dom_input.querySelectorAll("input"))
 			.map((dom, index) => [`c${index + 1}`, dom.checked])
-			.filter(([i, checked]) => checked)
-			.map(([val_id, c]) => val_id);
+			.filter(([_index, checked]) => checked)
+			.map(([val_id, _checked]) => val_id);
 
 		return field_type === "radio" ? values[0] : values;
 	}
 	if (["dropdown", "multiselect"].includes(field_type)) {
 		const values = Array.from(dom_input.querySelectorAll("option"))
 			.map((dom, index) => [`c${index + 1}`, dom.selected])
-			.filter(([i, selected]) => selected)
-			.map(([val_id, c]) => val_id);
+			.filter(([_index, selected]) => selected)
+			.map(([val_id, _selected]) => val_id);
 
 		return field_type === "dropdown" ? values[0] : values;
 	}
@@ -29,7 +29,7 @@ function get_value(dom_input) {
 	return dom_input.value;
 }
 
-// [label, char, widgets, processing function]
+// [char, widgets, processing function]
 const OPERATORS = {
 	eq: ["=", "senu", (a, b) => a === b],
 	neq: ["≠", "senu", (a, b) => a !== b],
@@ -59,8 +59,8 @@ const DEBOUNCE_DELAY = 300;
 
 function compute_rule(rule) {
 	if (rule.entry) {
-		let dom_field = document.getElementById(rule.entry.target);
-		const [opr_char, w, opr_func] = OPERATORS[rule.entry.opr];
+		const dom_field = document.getElementById(rule.entry.target);
+		const [opr_char, _widgets, opr_func] = OPERATORS[rule.entry.opr];
 		const value = get_value(dom_field);
 
 		return {
@@ -68,7 +68,7 @@ function compute_rule(rule) {
 			str: `${value} ${opr_char} ${rule.entry.val}`,
 			is_active:
 				opr_func(value, rule.entry.val) && dom_field.getAttribute("data-active") !== "n",
-			indent_level: parseInt(dom_field.getAttribute("data-level")) + 1,
+			indent_level: parseInt(dom_field.getAttribute("data-level"), 10) + 1,
 		};
 	}
 
@@ -108,7 +108,7 @@ function debounce(callback) {
 function update_fields_visibility() {
 	console.log("\n===== updating fields visibility =====\n\n");
 
-	for (const dom_field of document.querySelectorAll("form [data-label]")) {
+	for (const dom_field of document.querySelectorAll("form [data-rule]")) {
 		const rule = JSON.parse(dom_field.getAttribute("data-rule"));
 		const computed_rule = compute_rule(rule);
 		const dom_input_block =

@@ -18,4 +18,4 @@ media/
 ___*
 
 # Django static files for demo project
-static/
+/static/
