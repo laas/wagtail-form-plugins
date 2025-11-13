@@ -44,10 +44,9 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         form = super().get_form(*args, **kwargs)
         form_fields: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore[ invalid-assignment]
 
-        for field_value in form.fields.values():
-            form_field = form_fields[field_value.slug]  # type: ignore[unresolved-attribute]
-            rule = form_field.rule
-            if rule:
+        for field_slug, field_value in form.fields.items():
+            form_field = form_fields[field_slug]
+            if rule := form_field.rule:
                 field_value.widget.attrs.update(
                     {
                         "id": form_field.block_id,
