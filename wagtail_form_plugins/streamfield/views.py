@@ -2,6 +2,8 @@
 
 from typing import TYPE_CHECKING, Any
 
+from django.utils.html import format_html
+
 from wagtail.contrib.forms.views import SubmissionsListView
 
 from .models import StreamFieldFormPage
@@ -23,9 +25,10 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
         header: list[str] = [head["name"] for head in ctx_data["data_headings"]]
         fields = self.form_page.get_form_fields_dict()
 
+        ctx_data["data_headings"].append({"name": "edit_button", "label": "Edit", "order": None})
+
         for row_idx, row in enumerate(ctx_data["data_rows"]):
-            submission_id = ctx_data["data_rows"][row_idx]["model_id"]
-            submission = submissions[submission_id]
+            submission = submissions[row["model_id"]]
             for col_idx, col_value in enumerate(row["fields"]):
                 field_header = header[col_idx]
                 if field_header in fields:
@@ -40,5 +43,12 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
                     fmt_value = col_value
 
                 ctx_data["data_rows"][row_idx]["fields"][col_idx] = fmt_value or "-"
+
+            link_html = format_html(
+                '<a class="w-header-button button" href="{url}?edit={submission_id}">edit</a>',
+                url=submission.page.url,
+                submission_id=row["model_id"],
+            )
+            ctx_data["data_rows"][row_idx]["fields"].append(link_html)
 
         return ctx_data
