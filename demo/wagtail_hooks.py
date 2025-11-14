@@ -13,14 +13,9 @@ from wagtail.admin.widgets.button import ListingButton
 from wagtail.contrib.forms.wagtail_hooks import FormsMenuItem
 from wagtail.models import Page
 
-from demo.models import CustomFormSubmission, FormPage
-from wagtail_form_plugins import conditional_fields, emails, nav_buttons, streamfield, templating
+from demo.models import CustomFormSubmission, FormPage, wfp
 
-hooks.register("insert_global_admin_css", streamfield.hook_streamfield_admin_css)
-hooks.register("insert_global_admin_css", templating.hook_templating_admin_css)
-hooks.register("insert_global_admin_css", conditional_fields.hook_conditional_fields_admin_css)
-hooks.register("insert_global_admin_css", emails.hook_emails_admin_css)
-hooks.register("insert_global_admin_css", nav_buttons.hook_nav_buttons_admin_css)
+hooks.register("insert_global_admin_css", wfp.injected_admin_css)
 
 
 @hooks.register("register_page_listing_buttons")  # type: ignore[ reportOptionalCall]

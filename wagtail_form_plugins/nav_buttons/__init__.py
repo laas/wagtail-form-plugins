@@ -1,6 +1,8 @@
+from django.templatetags.static import static
+from django.utils.html import format_html
+
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
-from .hooks import hook_nav_buttons_admin_css
 from .models import NavButtonsFormPage
 from .views import NavButtonsSubmissionsListView
 
@@ -8,11 +10,14 @@ from .views import NavButtonsSubmissionsListView
 class NavButtons(Plugin):
     form_page_class = NavButtonsFormPage
     submission_list_view_class = NavButtonsSubmissionsListView
+    injected_admin_css = format_html(
+        '<link rel="stylesheet" href="{href}">',
+        href=static("wagtail_form_plugins/nav_buttons/css/form_admin.css"),
+    )
 
 
 __all__ = [
     "NavButtons",
     "NavButtonsFormPage",
     "NavButtonsSubmissionsListView",
-    "hook_nav_buttons_admin_css",
 ]

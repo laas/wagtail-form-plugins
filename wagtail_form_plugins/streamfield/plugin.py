@@ -1,3 +1,6 @@
+from django.templatetags.static import static
+from django.utils.html import format_html
+
 from .blocks import StreamFieldFormBlock
 from .forms import StreamFieldFormBuilder, StreamFieldFormField
 from .models import StreamFieldFormPage, StreamFieldFormSubmission
@@ -11,6 +14,10 @@ class Plugin:
     form_submission_class = StreamFieldFormSubmission
     form_page_class = StreamFieldFormPage
     submission_list_view_class = StreamFieldSubmissionsListView
+    injected_admin_css = format_html(
+        '<link rel="stylesheet" href="{}">',
+        static("wagtail_form_plugins/streamfield/css/form_admin.css"),
+    )
 
 
 class WagtailFormPlugin:
@@ -70,3 +77,14 @@ class WagtailFormPlugin:
             if plugin.submission_list_view_class != StreamFieldSubmissionsListView
         ]
         return base_classes if base_classes else [StreamFieldSubmissionsListView]
+
+    def injected_admin_css(self) -> str:
+        streamfield_injected_admin_css = format_html(
+            '<link rel="stylesheet" href="{}">',
+            static("wagtail_form_plugins/streamfield/css/form_admin.css"),
+        )
+        all_injected_admin_css = [
+            streamfield_injected_admin_css,
+            *[plugin.injected_admin_css for plugin in self.plugins],
+        ]
+        return "\n".join(all_injected_admin_css)
