@@ -14,8 +14,9 @@ from wagtail.contrib.forms.wagtail_hooks import FormsMenuItem
 from wagtail.models import Page
 
 from demo.models import CustomFormSubmission, FormPage
-from wagtail_form_plugins import conditional_fields, emails, nav_buttons, templating
+from wagtail_form_plugins import conditional_fields, emails, nav_buttons, streamfield, templating
 
+hooks.register("insert_global_admin_css", streamfield.hook_streamfield_admin_css)
 hooks.register("insert_global_admin_css", templating.hook_templating_admin_css)
 hooks.register("insert_global_admin_css", conditional_fields.hook_conditional_fields_admin_css)
 hooks.register("insert_global_admin_css", emails.hook_emails_admin_css)
