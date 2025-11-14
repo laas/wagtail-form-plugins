@@ -19,19 +19,9 @@ from wagtail.admin.widgets.button import HeaderButton
 from wagtail.fields import RichTextField, StreamField
 from wagtail.models import GroupPagePermission, Page
 
-from wagtail_form_plugins.conditional_fields import ConditionalFields
-from wagtail_form_plugins.editable import Editable
-from wagtail_form_plugins.emails import EmailActions, EmailsFormBlock, email_to_block
-from wagtail_form_plugins.file_input import FileInput
-from wagtail_form_plugins.indexed_results import IndexedResults
-from wagtail_form_plugins.label import Label
-from wagtail_form_plugins.named_form import AuthForm, UniqueResponseFieldPanel
-from wagtail_form_plugins.nav_buttons import NavButtons
-from wagtail_form_plugins.streamfield import WagtailFormPlugin
-from wagtail_form_plugins.templating import Templating, TemplatingFormatter
-from wagtail_form_plugins.templating.blocks import TemplatingFormBlock
-from wagtail_form_plugins.templating.dicts import ResultDataDict, UserDataDict
-from wagtail_form_plugins.token_validation import Validation, ValidationFieldPanel, ValidationForm
+from wagtail_form_plugins import plugins
+from wagtail_form_plugins.plugins.emails.blocks import EmailsFormBlock, email_to_block
+from wagtail_form_plugins.streamfield.plugin import WagtailFormPlugin
 from wagtail_form_plugins.utils import LocalBlocks, print_email
 
 from modelcluster.fields import ParentalManyToManyField
@@ -67,16 +57,16 @@ Have a nice day.""",
 
 # Form plugins definition. Comment a line to disable the corresponding plugin.
 wfp = WagtailFormPlugin(
-    ConditionalFields,
-    Editable,
-    EmailActions,
-    FileInput,
-    IndexedResults,
-    Label,
-    AuthForm,
-    NavButtons,
-    Templating,
-    Validation,
+    plugins.ConditionalFields,
+    plugins.Editable,
+    plugins.EmailActions,
+    plugins.FileInput,
+    plugins.IndexedResults,
+    plugins.Label,
+    plugins.AuthForm,
+    plugins.NavButtons,
+    plugins.Templating,
+    plugins.Validation,
 )
 
 
@@ -140,10 +130,10 @@ class CustomUser(AbstractUser):
     city = models.CharField(max_length=255, verbose_name=_("City"))
 
 
-class CustomTemplatingFormatter(TemplatingFormatter):
+class CustomTemplatingFormatter(plugins.templating.TemplatingFormatter):
     """Custom templating formatter used to personalize template formatting such as user template."""
 
-    def get_user_data(self, user: User) -> UserDataDict:
+    def get_user_data(self, user: User) -> plugins.templating.UserDataDict:
         """Return a dict used to format template variables related to the form user or author."""
         user_data = super().get_user_data(user)
 
@@ -156,7 +146,10 @@ class CustomTemplatingFormatter(TemplatingFormatter):
 
         return user_data
 
-    def get_result_data(self, formated_fields: dict[str, tuple[str, str]]) -> ResultDataDict | None:
+    def get_result_data(
+        self,
+        formated_fields: dict[str, tuple[str, str]],
+    ) -> plugins.templating.ResultDataDict | None:
         """Return a dict used to format template variables related to the form results."""
         result_data = super().get_result_data(formated_fields)
         if result_data:
@@ -185,7 +178,7 @@ class CustomSubmissionListView(*wfp.submission_list_view_classes):
     parent_form_page_class = FormIndexPage
 
 
-class CustomValidationForm(ValidationForm):
+class CustomValidationForm(plugins.token_validation.ValidationForm):
     """A small form with an email field, used to send validation email to access the actual form."""
 
     validation_email = EmailField(
@@ -201,7 +194,7 @@ class CustomEmailsToSendBlock(EmailsFormBlock):
 
     def __init__(self, local_blocks: LocalBlocks = None, *, search_index: bool = True, **kwargs):
         super().__init__(local_blocks, search_index, **kwargs)
-        TemplatingFormBlock.add_help_messages(
+        plugins.templating.TemplatingFormBlock.add_help_messages(
             self.child_blocks.values(),
             ["subject", "message", "recipient_list", "reply_to"],
         )
@@ -340,8 +333,8 @@ class FormPage(CustomFormPage):
         FieldPanel("intro"),
         FieldPanel("form_fields"),
         FieldPanel("thank_you_text"),
-        ValidationFieldPanel(),
+        plugins.token_validation.ValidationFieldPanel(),
         FieldPanel("emails_to_send"),
         AutocompletePanel("administrators"),
-        UniqueResponseFieldPanel(),
+        plugins.named_form.UniqueResponseFieldPanel(),
     ]

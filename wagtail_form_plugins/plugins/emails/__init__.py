@@ -3,7 +3,7 @@ from django.utils.html import format_html
 
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
-from .blocks import EmailsFormBlock, email_to_block
+from .blocks import EmailsFormBlock, EmailsToSendStructBlock, email_to_block
 from .dicts import EmailsToSendBlockDict
 from .models import EmailActionsFormPage
 
@@ -21,5 +21,6 @@ __all__ = [
     "EmailActionsFormPage",
     "EmailsFormBlock",
     "EmailsToSendBlockDict",
+    "EmailsToSendStructBlock",
     "email_to_block",
 ]
