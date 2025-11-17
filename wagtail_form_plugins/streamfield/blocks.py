@@ -109,28 +109,12 @@ def init_options(field_type: str) -> dict[str, Any]:
 class ChoiceBlock(blocks.StructBlock):
     """To Be Deleted"""
 
-    label = blocks.CharBlock(
-        label=_("Label"),
-        form_classname="formbuilder-choice-label",
-    )
-    initial = blocks.BooleanBlock(
-        label=_("Selected"),
-        required=False,
-    )
-
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
-        label = _("Choice")
-
 
 class ChoicesList(blocks.ListBlock):
     """To Be Deleted"""
 
-    def __init__(self, child_block: Block, **kwargs):
+    def __init__(self, child_block: Block | None = None, **kwargs):
         super().__init__(child_block or ChoiceBlock(), **kwargs)
-
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
-        label = _("Choices")
-        form_classname = "formbuilder-choices"
 
 
 class SinglelineFormFieldBlock(FormFieldBlock):
