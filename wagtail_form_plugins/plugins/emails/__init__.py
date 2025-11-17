@@ -10,10 +10,13 @@ from .models import EmailActionsFormPage
 
 class EmailActions(Plugin):
     form_page_class = EmailActionsFormPage
-    injected_admin_css = format_html(
-        '<link rel="stylesheet" href="{href}">',
-        href=static("wagtail_form_plugins/emails/css/form_admin.css"),
-    )
+
+    @classmethod
+    def get_injected_admin_css(cls) -> str:
+        return format_html(
+            '<link rel="stylesheet" href="{href}">',
+            href=static("wagtail_form_plugins/emails/css/form_admin.css"),
+        )
 
 
 __all__ = [

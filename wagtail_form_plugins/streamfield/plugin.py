@@ -14,10 +14,10 @@ class Plugin:
     form_submission_class = StreamFieldFormSubmission
     form_page_class = StreamFieldFormPage
     submission_list_view_class = StreamFieldSubmissionsListView
-    injected_admin_css = format_html(
-        '<link rel="stylesheet" href="{}">',
-        static("wagtail_form_plugins/streamfield/css/form_admin.css"),
-    )
+
+    @classmethod
+    def get_injected_admin_css(cls) -> str:
+        return ""
 
 
 class WagtailFormPlugin:
@@ -80,11 +80,11 @@ class WagtailFormPlugin:
 
     def injected_admin_css(self) -> str:
         streamfield_injected_admin_css = format_html(
-            '<link rel="stylesheet" href="{}">',
-            static("wagtail_form_plugins/streamfield/css/form_admin.css"),
+            '<link rel="stylesheet" href="{href}">',
+            href=static("wagtail_form_plugins/streamfield/css/form_admin.css"),
         )
         all_injected_admin_css = [
             streamfield_injected_admin_css,
-            *[plugin.injected_admin_css for plugin in self.plugins],
+            *[plugin.get_injected_admin_css() for plugin in self.plugins],
         ]
         return "\n".join(all_injected_admin_css)
