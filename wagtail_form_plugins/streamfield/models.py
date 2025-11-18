@@ -105,7 +105,7 @@ class StreamFieldFormPage(FormMixin, Page):
             )
 
         elif form_field.type in ["dropdown", "radio"]:
-            formatted_value = dict(form_field.choices)[value] if value else None
+            formatted_value = dict(form_field.choices)[value] if value else "-"
 
         elif form_field.type == "multiline":
             formatted_value = ("<br/>" if in_html else "\n") + value
