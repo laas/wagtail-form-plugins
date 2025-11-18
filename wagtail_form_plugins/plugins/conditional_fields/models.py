@@ -71,7 +71,9 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
             right_operand = int(leaf_rule["value_number"])
         elif field.type in choice_fields:
             dd_val = leaf_rule["value_dropdown"]
-            right_operand = dict(field.choices)[dd_val] if (dd_val and field.choices) else dd_val
+            choices = dict(field.choices)
+            is_choice_valid = dd_val and choices and dd_val in choices
+            right_operand = choices[dd_val] if is_choice_valid else dd_val
         elif field.type == "date":
             right_operand = date_to_timestamp(leaf_rule["value_date"])
         elif field.type == "time":
