@@ -9,7 +9,7 @@ from django.forms import BaseForm
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
 from wagtail_form_plugins.utils import LOGGER
 
-from .dicts import RuleBlockValueDict
+from .dicts import RuleBlockDict, RuleBlockValueDict
 from .form_field import ConditionalFieldsFormField
 from .utils import date_to_timestamp, datetime_to_timestamp, time_to_timestamp
 
@@ -118,14 +118,14 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         new_enabled_fields = []
         for field_slug in enabled_fields:
             field = fields_dict[field_slug]
-            rules: list[RuleBlockValueDict] = field.options.get("rule", [])
+            rules: list[RuleBlockDict] = field.options.get("rule", [])
 
             if not rules:
                 new_enabled_fields.append(field_slug)
                 continue
 
-            is_rule_true = self.process_rule(fields_dict, form_data, rules[0])
-            field_attr = rules[0]["field"]
+            is_rule_true = self.process_rule(fields_dict, form_data, rules[0]["value"])
+            field_attr = rules[0]["value"]["field"]
             rule_field = next(fld for fld in fields_dict.values() if fld.block_id == field_attr)
             is_rule_field_enabled = field_attr in ["and", "or"] or rule_field.slug in enabled_fields
 
