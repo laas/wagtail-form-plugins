@@ -36,12 +36,10 @@ class TemplatingFormatter(StreamFieldFormatter):
         """Return a dict containing all formatter values on the root level."""
         values = {}
 
-        for val_name, value in self.get_data().items():
+        for key_prefix, value in self.get_data().items():
             if isinstance(value, dict):
-                for sub_val_name, sub_value in value.items():
-                    values[f"{val_name}.{sub_val_name}"] = sub_value
-            else:
-                values[val_name] = value
+                for key_suffix, sub_value in value.items():
+                    values[f"{key_prefix}.{key_suffix}"] = sub_value
 
         return values
 
@@ -110,7 +108,18 @@ class TemplatingFormatter(StreamFieldFormatter):
         for val_key, value in self.get_values().items():
             look_for = TMPL_SEP_LEFT + val_key + TMPL_SEP_RIGHT
             if look_for in fmt_message:
-                fmt_message = fmt_message.replace(look_for, "" if value is None else str(value))
+                replaced = "" if value is None else str(value)
+                fmt_message = fmt_message.replace(look_for, replaced)
+
+        # handle disabled fields
+        for field in self.form_page.get_form_fields():
+            look_for = TMPL_SEP_LEFT + "field_value." + field.slug + TMPL_SEP_RIGHT
+            if look_for in fmt_message:
+                fmt_message = fmt_message.replace(look_for, "---")
+
+            look_for = TMPL_SEP_LEFT + "field_label." + field.slug + TMPL_SEP_RIGHT
+            if look_for in fmt_message:
+                fmt_message = fmt_message.replace(look_for, field.label)
 
         if self.in_html:
             fmt_message = create_links(fmt_message.replace("\n", "<br/>\n"))
