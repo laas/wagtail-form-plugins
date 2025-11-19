@@ -128,8 +128,8 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
             is_rule_true = self.process_rule(fields_dict, form_data, rules[0]["value"])
             field_attr = rules[0]["value"]["field"]
-            rule_field = next(fld for fld in fields_dict.values() if fld.block_id == field_attr)
-            is_rule_field_enabled = field_attr in ["and", "or"] or rule_field.slug in enabled_fields
+            matches = [fld for fld in fields_dict.values() if fld.block_id == field_attr]
+            is_rule_field_enabled = field_attr in ["and", "or"] or matches[0].slug in enabled_fields
 
             if is_rule_true and is_rule_field_enabled:
                 new_enabled_fields.append(field_slug)
