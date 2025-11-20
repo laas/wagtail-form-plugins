@@ -22,6 +22,7 @@ HELP_TEXT_SUFFIX = """<span
 
 
 def build_help_html(help_text: str) -> str:
+    """Return the html code used in the field help tooltip."""
     return HELP_TEXT_SUFFIX % f"{TEMPLATING_HELP_INTRO}\n{help_text}"
 
 
@@ -37,6 +38,7 @@ class TemplatingFormBlock(StreamFieldFormBlock):
         self.override_initial_validators()
 
     def templating_email_validator(self, email: str) -> None:
+        """Validate email field: raise a ValidationError if it contains a wrong template syntax."""
         try:
             if not self.templating_formatter_class.contains_template(email):
                 validate_email(email)

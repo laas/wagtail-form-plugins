@@ -18,7 +18,7 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
     form_page: StreamFieldFormPage
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        """Return context for view."""
+        """Alter submission context data to format results."""
         ctx_data = super().get_context_data(**kwargs)
 
         submissions: dict[str, FormSubmission] = {sub.id: sub for sub in ctx_data["submissions"]}

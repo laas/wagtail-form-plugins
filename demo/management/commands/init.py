@@ -23,7 +23,7 @@ class Command(BaseCommand):
         self.logger = logging.getLogger("demo.commands.init")
 
     def handle(self, *_args, **_kwargs) -> None:
-        """The actual logic of the "init" command."""
+        """Handle the "init" command."""
         if not settings.DEBUG:
             self.logger.warning("This command is only available in debug mode.")
             return

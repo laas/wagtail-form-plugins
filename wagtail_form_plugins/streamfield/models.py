@@ -28,7 +28,7 @@ class StreamFieldFormSubmission(AbstractFormSubmission):
 
 
 class StreamFieldFormPage(FormMixin, Page):
-    """Form mixin for the Streamfield plugin."""
+    """Base form page that will be extended with plugins."""
 
     form_builder_class = StreamFieldFormBuilder
     form_submission_class = StreamFieldFormSubmission
@@ -92,7 +92,6 @@ class StreamFieldFormPage(FormMixin, Page):
 
         Used to display user-friendly values in result table and emails.
         """
-
         formatted_value = value
 
         if value is None:
@@ -178,4 +177,5 @@ class StreamFieldFormatter:
         self.in_html = in_html
 
     def format(self, message: str | RichText) -> str:
+        """Format the given message."""
         raise NotImplementedError

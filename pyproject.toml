@@ -63,7 +63,7 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "ANN002", "ANN003", "ANN204"]
+ignore = ["D106", "D107", "ANN002", "ANN003", "ANN204"]
 
 [tool.ruff.lint.isort]
 section-order = ["future", "standard-library", "django", "wagtail", "first-party", "local-folder", "third-party"]

@@ -1,3 +1,5 @@
+"""Define the ConditionalFieldsFormField data class, representing a field with a rule attribute."""
+
 from dataclasses import dataclass
 
 from wagtail_form_plugins.streamfield.form_field import StreamFieldFormField
@@ -8,10 +10,13 @@ from .utils import date_to_timestamp, datetime_to_timestamp, time_to_timestamp
 
 @dataclass
 class ConditionalFieldsFormField(StreamFieldFormField):
+    """Add the rule attribute to the form field object."""
+
     _rule: FormattedRuleDict | None = None
 
     @property
     def rule(self) -> FormattedRuleDict | None:
+        """Rule attribute used in conditional fields (format it on first call)."""
         if self._rule is None:
             raw_rule = self.options.get("rule", None)
             self._rule = self.format_rule(raw_rule[0]["value"]) if raw_rule else None

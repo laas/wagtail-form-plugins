@@ -9,7 +9,7 @@ class ConditionalFieldsSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as displaying `-` when a value is set to None."""
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        """Return context for view"""
+        """Return context for view."""
         context_data = super().get_context_data(**kwargs)
 
         if self.is_export:

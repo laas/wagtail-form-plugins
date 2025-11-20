@@ -1,7 +1,10 @@
+"""A set of utility functions used in the Conditional Fields plugin, mainly to format datetime."""
+
 from datetime import date, datetime, time, timezone
 
 
 def date_to_timestamp(value: date | str | None) -> int:
+    """Return a timestamp based on a date object or stringified date."""
     if not value:
         value_dt = datetime.now(tz=timezone.utc)
     elif isinstance(value, str):
@@ -12,6 +15,7 @@ def date_to_timestamp(value: date | str | None) -> int:
 
 
 def time_to_timestamp(value: time | str | None) -> int:
+    """Return a timestamp based on a time object or stringified time."""
     if not value:
         value_dt = datetime.now(tz=timezone.utc)
     elif isinstance(value, str):
@@ -22,6 +26,7 @@ def time_to_timestamp(value: time | str | None) -> int:
 
 
 def datetime_to_timestamp(value: datetime | str | None) -> int:
+    """Return a timestamp based on a datetime object or stringified datetime."""
     if not value:
         value_dt = datetime.now(tz=timezone.utc)
     elif isinstance(value, str):

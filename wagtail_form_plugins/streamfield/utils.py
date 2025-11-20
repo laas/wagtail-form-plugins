@@ -1,3 +1,5 @@
+"""A set of utility functions used in various places in the project."""
+
 from django.utils.html import format_html
 
 

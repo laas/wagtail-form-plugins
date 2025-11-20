@@ -40,10 +40,7 @@ class AuthFormSubmission(StreamFieldFormSubmission):
 
 
 class AuthFormPage(StreamFieldFormPage):
-    """A form page class used to add named form functionnality to a form, allowing to identify the
-    user who answered the form, in order to display it on form results and authorise a user to
-    answer a form only once.
-    """
+    """Form mixin for the AuthFormPage plugin."""
 
     unique_response = models.BooleanField(
         verbose_name=_("Unique response"),

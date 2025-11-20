@@ -1,4 +1,4 @@
-"""Form-related classes for the Streamfield plugin."""
+"""Form-related classes for the plugins."""
 
 from typing import Any
 

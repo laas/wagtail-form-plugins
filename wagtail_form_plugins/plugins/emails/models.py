@@ -57,6 +57,8 @@ class EmailActionsFormPage(StreamFieldFormPage):
         text_formatter: StreamFieldFormatter | None,
         html_formatter: StreamFieldFormatter | None,
     ) -> EmailMultiAlternatives:
+        """Build the action email based on the value in an email form block."""
+
         def format_text(text: str) -> str:
             return text_formatter.format(text) if text_formatter else text
 
@@ -73,7 +75,7 @@ class EmailActionsFormPage(StreamFieldFormPage):
         )
 
     def send_action_email(self, email: EmailMultiAlternatives) -> None:
-        """Send an e-mail"""
+        """Send an e-mail. Can be overrided to change behaviour."""
         email.send()
 
     class Meta:  # type: ignore[reportIncompatibleVariableOverride]

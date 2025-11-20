@@ -1,3 +1,5 @@
+"""The plugins package containing plugins definition. Exports plugin packages and classes."""
+
 from . import (
     conditional_fields,
     editable,

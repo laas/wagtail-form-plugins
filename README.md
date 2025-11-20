@@ -13,7 +13,7 @@ Available plugins:
 - **emails**: send multiple emails when a form is submitted;
 - **file_input**: allow users to send a file via the form;
 - **indexed_results**: add an index value in the results (can be used in the templating plugin);
-- **label**: add a new _Label_ form type to put subtitles in your form, in order to split it into sections;
+- **label**: add a new _Label_ field type to put subtitles in forms, in order to split it into sections;
 - **named_form**: add user value in form sumission, allowing to fill the form only once per user;
 - **nav_buttons**: add some buttons for an easier novigation for form admins;
 - **templating**: allow to inject variables in field initial values and emails such as the user name, etc;

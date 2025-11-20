@@ -1,3 +1,5 @@
+"""Conditional fields: make a field appear or not depending on the value of a previous field."""
+
 from django.templatetags.static import static
 from django.utils.html import format_html
 

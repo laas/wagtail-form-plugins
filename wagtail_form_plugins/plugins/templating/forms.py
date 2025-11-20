@@ -1,3 +1,5 @@
+"""Form-related classes for the Templating plugin."""
+
 from wagtail_form_plugins.streamfield.forms import StreamFieldFormBuilder
 
 

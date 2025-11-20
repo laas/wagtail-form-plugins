@@ -1,3 +1,5 @@
+"""Base classes for plugins, uses Wagtail Streamfields."""
+
 from .blocks import StreamFieldFormBlock
 from .dicts import StreamFieldDataDict, StreamFieldValueDict, SubmissionData
 from .form_field import StreamFieldFormField

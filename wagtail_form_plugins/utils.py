@@ -43,6 +43,7 @@ def create_links(html_message: str) -> str:
 
 
 def validate_slug(slug: str) -> None:
+    """Validate a slug."""
     if slug != get_field_clean_name(slug):
         raise ValidationError(
             _("Slugs must only contain lower-case letters, digits or underscore."),
@@ -57,6 +58,7 @@ def build_email(  # noqa:  PLR0913
     reply_to: str | list[str] | None,
     html_message: str | None = None,
 ) -> EmailMultiAlternatives:
+    """Build an email as a EmailMultiAlternatives object."""
     if isinstance(recipient_list, str):
         recipient_list = [email.strip() for email in recipient_list.split(",")]
     if isinstance(reply_to, str):
@@ -74,6 +76,7 @@ def build_email(  # noqa:  PLR0913
 
 
 def print_email(email: EmailMultiAlternatives) -> None:
+    """Print an email to the logger - useful for developping."""
     LOGGER.info("=== sending e-mail ===")
     LOGGER.info("subject: %s", email.subject)
     LOGGER.info("from_email: %s", email.from_email)

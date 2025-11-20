@@ -1,3 +1,5 @@
+"""File input plugin: allow users to send a file via the form."""
+
 from wagtail_form_plugins.streamfield.plugin import Plugin
 
 from .blocks import FileInputFormBlock
@@ -7,6 +9,8 @@ from .views import FileInputSubmissionsListView
 
 
 class FileInput(Plugin):
+    """File input plugin: allow users to send a file via the form."""
+
     form_block_class = FileInputFormBlock
     form_builder_class = FileInputFormBuilder
     form_page_class = FileInputFormPage

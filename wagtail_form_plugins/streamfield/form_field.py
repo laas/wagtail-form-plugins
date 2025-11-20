@@ -1,3 +1,5 @@
+"""Define the StreamFieldFormField data class, representing a field."""
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -10,7 +12,9 @@ from typing_extensions import Self
 
 @dataclass
 class WaftailFormField:
-    """A dataclass containing field attributes used by wagtail such as in FormMixin.get_data_fields,
+    """A dataclass containing field attributes used by wagtail.
+
+    Such as in FormMixin.get_data_fields,
     FormBuilder.formfields(), FormBuilder.get_field_options(), and in first attribute of all
     create_field methods.
     """
@@ -34,10 +38,12 @@ class StreamFieldFormField(WaftailFormField):
 
     @property
     def slug(self) -> str:
+        """Alias for clean_name attribute."""
         return self.clean_name
 
     @property
     def type(self) -> str:
+        """Alias for field_type attribute."""
         return self.field_type
 
     @classmethod

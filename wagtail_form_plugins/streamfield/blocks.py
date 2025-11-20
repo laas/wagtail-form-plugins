@@ -96,6 +96,7 @@ register_adapter(FormFieldBlockAdapter(), FormFieldBlock)
 
 
 def init_options(field_type: str) -> dict[str, Any]:
+    """Return default options for initial field of all blocks."""
     return {
         "label": _("Default value"),
         "required": False,
@@ -107,11 +108,11 @@ def init_options(field_type: str) -> dict[str, Any]:
 
 
 class ChoiceBlock(blocks.StructBlock):
-    """To Be Deleted"""
+    """To Be Deleted."""
 
 
 class ChoicesList(blocks.ListBlock):
-    """To Be Deleted"""
+    """To Be Deleted."""
 
     def __init__(self, child_block: Block | None = None, **kwargs):
         super().__init__(child_block or ChoiceBlock(), **kwargs)
@@ -311,10 +312,13 @@ class HiddenFormFieldBlock(FormFieldBlock):
 
 
 class BaseFormBlock(blocks.StreamBlock):
+    """A base StreamBlock that exposes the get_blocks function."""
+
     subclasses: ClassVar = []
 
     @classmethod
     def __init_subclass__(cls, **kwargs) -> None:
+        """Add the subclass in the subclasses attribute."""
         super().__init_subclass__(**kwargs)
         cls.subclasses.append(cls)
 
@@ -330,6 +334,7 @@ class BaseFormBlock(blocks.StreamBlock):
 
     @classmethod
     def get_field_child_blocks(cls, local_blocks: LocalBlocks = None) -> LocalBlocks:
+        """Return the form fields child blocks. Can be extended to add more blocks to each field."""
         return local_blocks or []
 
     def __init__(self, local_blocks: LocalBlocks = None, search_index: bool = True, **kwargs):  # noqa:FBT001,FBT002

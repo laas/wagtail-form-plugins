@@ -12,7 +12,7 @@ class FileInputSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as adding a link on file fields for each row."""
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        """Return context for view"""
+        """Alter submission context data to display a link to the file."""
         context_data = super().get_context_data(**kwargs)
 
         if self.is_export:

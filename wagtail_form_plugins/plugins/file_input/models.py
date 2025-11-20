@@ -33,6 +33,7 @@ class AbstractFileInput(models.Model):
         self.file.field.upload_to = self.get_file_path
 
     def __str__(self) -> str:
+        """Pretty prints the FileInput object for convenience."""
         return f"{self.field_name}: {self.file.name if self.file else '-'}"
 
     def get_file_path(self, _instance: Self, file_name: str) -> Path:
@@ -44,7 +45,7 @@ class AbstractFileInput(models.Model):
 
 
 class DefaultFileInput(AbstractFileInput):
-    pass
+    """Default file input doing nothing more than the AbstractFileInput except it's not abstract."""
 
 
 class FileInputFormPage(StreamFieldFormPage):

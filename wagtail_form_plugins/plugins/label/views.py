@@ -9,7 +9,7 @@ class LabelSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as displaying `-` when a value is set to None."""
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        """Return context for view"""
+        """Alter submission context data to don't show label fields."""
         ctx_data = super().get_context_data(**kwargs)
 
         header: list[str] = [head["name"] for head in ctx_data["data_headings"]]

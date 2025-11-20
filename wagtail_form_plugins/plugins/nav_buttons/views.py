@@ -17,7 +17,7 @@ class NavButtonsSubmissionsListView(StreamFieldSubmissionsListView):
     parent_form_page_class = Page
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        """Return context for view"""
+        """Alter submission context data to add buttons to the page header."""
         context_data = super().get_context_data(**kwargs)
 
         if self.is_export:

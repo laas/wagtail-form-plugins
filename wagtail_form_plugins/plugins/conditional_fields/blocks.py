@@ -27,6 +27,7 @@ class ChoiceError(ValidationError):
 
 
 def validate_field(value: str) -> None:
+    """Validate a field input used in rules, which can be either a and/or, or the field id."""
     if value in ["and", "or"]:
         return
 
@@ -152,8 +153,11 @@ class RuleBlockLvl1(RuleBlock):
 
 
 class ConditionalFieldsFormBlock(streamfield_blocks.StreamFieldFormBlock):
+    """Add a rule block to each form field."""
+
     @classmethod
     def get_field_child_blocks(cls, local_blocks: LocalBlocks = None) -> LocalBlocks:
+        """Add to the form field a rule block used to define a condition."""
         local_blocks = super().get_field_child_blocks(local_blocks) or []
 
         rule = blocks.ListBlock(

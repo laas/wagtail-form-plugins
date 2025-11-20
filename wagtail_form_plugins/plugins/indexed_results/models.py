@@ -23,7 +23,7 @@ class IndexedResultsFormSubmission(StreamFieldFormSubmission):
         }
 
     def save(self, *args, **kwargs) -> None:
-        """Save the submission"""
+        """Insert the index value before to save the form submission."""
         if self.index == 0:
             qs_submissions = self.__class__.objects.filter(page=self.page)
             try:

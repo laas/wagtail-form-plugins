@@ -57,9 +57,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         field: ConditionalFieldsFormField,
         leaf_rule: RuleBlockValueDict,
     ) -> str | int:
-        """Return the right operand of the rule operation.
-        The leaf_rule is a rule that does not contain a sub rule.
-        """
+        """Return the right operand of the rule operation."""
         char_fields = ["singleline", "multiline", "email", "hidden", "url"]
         choice_fields = ["checkboxes", "dropdown", "multiselect", "radio"]
 
@@ -91,6 +89,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         form_data: dict[str, Any],
         rule: RuleBlockValueDict,
     ) -> bool:
+        """Process the rule by applying the operator with left and right operands."""
         rule_field_attr = rule["field"]
 
         if rule_field_attr in ["and", "or"]:
