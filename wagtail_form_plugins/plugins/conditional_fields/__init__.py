@@ -10,7 +10,6 @@ from .dicts import FormattedRuleDict, RuleBlockDict, RuleBlockValueDict
 from .form_field import ConditionalFieldsFormField
 from .forms import ConditionalFieldsFormBuilder
 from .models import ConditionalFieldsFormPage
-from .views import ConditionalFieldsSubmissionsListView
 
 
 class ConditionalFields(Plugin):
@@ -18,7 +17,6 @@ class ConditionalFields(Plugin):
     form_field_class = ConditionalFieldsFormField
     form_page_class = ConditionalFieldsFormPage
     form_builder_class = ConditionalFieldsFormBuilder
-    submission_list_view_class = ConditionalFieldsSubmissionsListView
 
     @classmethod
     def get_injected_admin_css(cls) -> str:
@@ -33,7 +31,6 @@ __all__ = [
     "ConditionalFieldsFormBuilder",
     "ConditionalFieldsFormField",
     "ConditionalFieldsFormPage",
-    "ConditionalFieldsSubmissionsListView",
     "FormattedRuleDict",
     "RuleBlockDict",
     "RuleBlockValueDict",
