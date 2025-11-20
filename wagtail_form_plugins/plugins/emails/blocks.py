@@ -10,10 +10,12 @@ from wagtail import blocks
 
 from wagtail_form_plugins.utils import LocalBlocks
 
+from .dicts import EmailsToSendBlockDict
 
-def email_to_block(email_dict: dict[str, Any]) -> dict[str, Any]:
+
+def email_to_block(email_dict: EmailsToSendBlockDict) -> dict[str, Any]:
     """Return a dict that can be used to fill an email form block based on an email dict."""
-    email_dict["message"] = email_dict["message"].replace("\n", "</p><p>")
+    email_dict["message"] = str(email_dict["message"]).replace("\n", "</p><p>")
     return {
         "type": "email_to_send",
         "value": email_dict,

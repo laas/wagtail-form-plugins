@@ -21,6 +21,7 @@ from wagtail.models import GroupPagePermission, Page
 
 from wagtail_form_plugins import plugins
 from wagtail_form_plugins.plugins.emails.blocks import EmailsFormBlock, email_to_block
+from wagtail_form_plugins.plugins.emails.dicts import EmailsToSendBlockDict
 from wagtail_form_plugins.streamfield.plugin import WagtailFormPlugin
 from wagtail_form_plugins.utils import LocalBlocks, print_email
 
@@ -29,9 +30,11 @@ from wagtailautocomplete.edit_handlers import AutocompletePanel
 
 FORM_GROUP_PREFIX = "form_moderator_"
 
-DEFAULT_EMAILS = [
+DEFAULT_EMAILS: list[EmailsToSendBlockDict] = [
     {
         "recipient_list": "{author.email}",
+        "from_email": "",
+        "reply_to": "",
         "subject": 'New entry for form "{form.title}"',
         "message": """Hello {author.full_name},
 On {result.publish_date} at {result.publish_time}, the user {user.full_name} has submitted \
@@ -43,6 +46,8 @@ Have a nice day.""",
     },
     {
         "recipient_list": "{user.email}",
+        "from_email": "",
+        "reply_to": "",
         "subject": 'Confirmation of the submission of the form "{form.title}"',
         "message": """Hello {user.full_name},
 You just submitted the form "{form.title}", with the following content:
