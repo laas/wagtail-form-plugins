@@ -1,30 +1,31 @@
 """View classes for the Conditional Fields plugin."""
 
-from typing import TYPE_CHECKING, Any
-
 from django.utils.html import format_html
 
-from wagtail.contrib.forms.views import SubmissionsListView
+from wagtail_form_plugins.streamfield.dicts import (
+    SubmissionContextData,
+    SubmissionContextDataHeading,
+)
+from wagtail_form_plugins.streamfield.views import StreamFieldSubmissionsListView
 
 from .models import StreamFieldFormPage
 
-if TYPE_CHECKING:
-    from wagtail.contrib.forms.models import FormSubmission
 
-
-class StreamFieldSubmissionsListView(SubmissionsListView):
+class EditableSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as displaying `-` when a value is set to None."""
 
     form_page: StreamFieldFormPage
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, **kwargs) -> SubmissionContextData:
         """Alter submission context data to format results."""
-        ctx_data = super().get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
 
-        submissions: dict[str, FormSubmission] = {sub.id: sub for sub in ctx_data["submissions"]}
-        ctx_data["data_headings"].append({"name": "edit_button", "label": "Edit", "order": None})
+        header: SubmissionContextDataHeading = {"name": "edit_btn", "label": "Edit", "order": None}
+        context_data["data_headings"].append(header)
 
-        for row_idx, row in enumerate(ctx_data["data_rows"]):
+        submissions = self.get_submissions(context_data)
+
+        for row_idx, row in enumerate(context_data["data_rows"]):
             submission = submissions[row["model_id"]]
 
             link_html = format_html(
@@ -32,6 +33,6 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
                 url=submission.page.url,
                 submission_id=row["model_id"],
             )
-            ctx_data["data_rows"][row_idx]["fields"].append(link_html)
+            context_data["data_rows"][row_idx]["fields"].append(link_html)
 
-        return ctx_data
+        return context_data

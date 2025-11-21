@@ -9,8 +9,6 @@ from wagtail.contrib.forms.forms import FormBuilder
 
 from .form_field import StreamFieldFormField
 
-AnyDict = dict[str, Any]
-
 
 class StreamFieldFormBuilder(FormBuilder):
     """Form builder mixin that use streamfields to define form fields in form admin page."""
@@ -22,7 +20,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_singleline_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.CharField:
         """Create a singleline form field."""
         widget = widgets.TextInput(attrs={"slug": form_field.slug})
@@ -31,7 +29,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_multiline_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.CharField:
         """Create a multiline form field."""
         widget = widgets.Textarea(attrs={"slug": form_field.slug})
@@ -40,7 +38,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_date_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.DateField:
         """Create a date form field."""
 
@@ -53,7 +51,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_time_field(
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.TimeField:
         """Create a time form field."""
 
@@ -66,7 +64,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_datetime_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.DateTimeField:
         """Create a datetime form field."""
 
@@ -83,7 +81,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_email_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.EmailField:
         """Create a email form field."""
         widget = widgets.EmailInput(attrs={"slug": form_field.slug})
@@ -92,7 +90,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_url_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.URLField:
         """Create a url form field."""
         widget = widgets.URLInput(attrs={"slug": form_field.slug})
@@ -101,7 +99,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_number_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.DecimalField:
         """Create a number form field."""
         widget = widgets.NumberInput(attrs={"slug": form_field.slug})
@@ -110,7 +108,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_checkbox_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.BooleanField:
         """Create a checkbox form field."""
         widget = widgets.CheckboxInput(attrs={"slug": form_field.slug})
@@ -119,7 +117,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_hidden_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.CharField:
         """Create a hidden form field."""
         widget = widgets.HiddenInput(attrs={"slug": form_field.slug})
@@ -128,7 +126,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_dropdown_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.ChoiceField:
         """Create a dropdown form field."""
         widget = widgets.Select(attrs={"slug": form_field.slug})
@@ -137,7 +135,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_multiselect_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.MultipleChoiceField:
         """Create a multiselect form field."""
         widget = widgets.SelectMultiple(attrs={"slug": form_field.slug})
@@ -146,7 +144,7 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_radio_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.ChoiceField:
         """Create a Django choice field with radio widget."""
         widget = widgets.RadioSelect(attrs={"slug": form_field.slug})
@@ -155,13 +153,13 @@ class StreamFieldFormBuilder(FormBuilder):
     def create_checkboxes_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         form_field: StreamFieldFormField,
-        options: AnyDict,
+        options: dict[str, Any],
     ) -> forms.MultipleChoiceField:
         """Create a Django multiple choice field with checkboxes widget."""
         widget = widgets.CheckboxSelectMultiple(attrs={"slug": form_field.slug})
         return forms.MultipleChoiceField(widget=widget, **options)
 
-    def get_field_options(self, form_field: StreamFieldFormField) -> AnyDict:  # type: ignore[reportIncompatibleMethodOverride]
+    def get_field_options(self, form_field: StreamFieldFormField) -> dict[str, Any]:  # type: ignore[reportIncompatibleMethodOverride]
         """Return the options given to a field. Override to add or modify some options."""
         options = super().get_field_options(form_field)  # label, help_text, required, initial
 

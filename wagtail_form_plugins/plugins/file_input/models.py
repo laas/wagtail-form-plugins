@@ -1,9 +1,8 @@
 """Models definition for the File Input form plugin."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, time, timezone
 from pathlib import Path
-from typing import Any
 
 from django.conf import settings
 from django.db import models
@@ -76,10 +75,10 @@ class FileInputFormPage(StreamFieldFormPage):
     def format_field_value(
         self,
         form_field: StreamFieldFormField,
-        value: Any,  # noqa: ANN401
+        value: str | list | date | time | datetime | None,
         *,
         in_html: bool,
-    ) -> str | list[str] | None:
+    ) -> str | None:
         """Format the field value. Used to display user-friendly values in result table."""
         fmt_value = super().format_field_value(form_field, value, in_html=in_html)
 

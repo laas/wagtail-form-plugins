@@ -81,56 +81,63 @@ class StreamFieldFormPage(FormMixin, Page):
         submission_data = self.pre_process_form_submission(form)
         return self.form_submission_class.objects.create(**submission_data)
 
-    def format_field_value(  # noqa: C901
+    def format_field_value(  # noqa: C901, PLR0912
         self,
         form_field: StreamFieldFormField,
-        value: Any,  # noqa: ANN401
+        value: str | list | date | time | datetime | None,
         *,
         in_html: bool,
-    ) -> str | list[str] | None:
+    ) -> str | None:
         """Format the field value, or return None if the value should not be displayed.
 
         Used to display user-friendly values in result table and emails.
         """
-        formatted_value = value
+        fmt_value = value
 
         if value is None:
-            formatted_value = None
+            fmt_value = None
 
-        elif form_field.type in ["checkboxes", "multiselect"]:
-            formatted_value = format_choices(
+        elif form_field.type in ["checkboxes", "multiselect"] and isinstance(value, list):
+            fmt_value = format_choices(
                 [v for k, v in form_field.choices if k in value],
                 in_html=in_html,
             )
 
-        elif form_field.type in ["dropdown", "radio"]:
-            formatted_value = dict(form_field.choices)[value] if value else "-"
+        elif form_field.type in ["dropdown", "radio"] and isinstance(value, str):
+            fmt_value = dict(form_field.choices)[value] if value else "-"
 
-        elif form_field.type == "multiline":
-            formatted_value = ("<br/>" if in_html else "\n") + value
+        elif form_field.type == "multiline" and isinstance(value, str):
+            fmt_value = ("<br/>" if in_html else "\n") + value
 
         elif form_field.type == "datetime":
             if isinstance(value, str):
                 value = datetime.fromisoformat(value.replace("Z", "+00:00"))
-            formatted_value = value.strftime("%d/%m/%Y, %H:%M")
+            elif isinstance(value, datetime):
+                fmt_value = value.strftime("%d/%m/%Y, %H:%M")
 
         elif form_field.type == "date":
             if isinstance(value, str):
                 value = date.fromisoformat(value)
-            formatted_value = value.strftime("%d/%m/%Y")
+            elif isinstance(value, date):
+                fmt_value = value.strftime("%d/%m/%Y")
 
         elif form_field.type == "time":
             if isinstance(value, str):
                 value = time.fromisoformat(value)
-            formatted_value = value.strftime("%H:%M")
+            elif isinstance(value, time):
+                fmt_value = value.strftime("%H:%M")
 
         elif form_field.type == "number":
-            formatted_value = str(value)
+            fmt_value = str(value)
 
         elif form_field.type == "checkbox":
-            formatted_value = "✔" if value else "✘"
+            fmt_value = "✔" if value else "✘"
 
-        return formatted_value
+        if not isinstance(fmt_value, str | None):
+            msg = f"col_value '{fmt_value}' is of type {type(fmt_value)} instead of str or None."
+            raise TypeError(msg)
+
+        return fmt_value
 
     def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore[reportIncompatibleMethodOverride]
         """Build and return the form instance."""

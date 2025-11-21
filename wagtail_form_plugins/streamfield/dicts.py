@@ -1,7 +1,10 @@
 """A set a typed dict used for better type hints."""
 
+from datetime import datetime
 from typing import Any, TypedDict
 
+from wagtail.admin.widgets.button import HeaderButton
+from wagtail.contrib.forms.models import FormSubmission
 from wagtail.models import Page
 
 
@@ -10,6 +13,32 @@ class SubmissionData(TypedDict):
 
     form_data: dict[str, Any]
     page: Page
+
+
+class SubmissionContextDataHeading(TypedDict):
+    """A typed dict that holds the header value of a submision context data."""
+
+    name: str
+    label: str
+    order: str | None
+
+
+class SubmissionContextDataRow(TypedDict):
+    """A typed dict that holds the row value of a submision context data."""
+
+    model_id: str
+    fields: list[str | datetime | None]
+
+
+class SubmissionContextData(TypedDict):
+    """A typed dict that holds a submision context data."""
+
+    submissions: list[FormSubmission]
+    form_page: Page
+    data_headings: list[SubmissionContextDataHeading]
+    header_buttons: list[HeaderButton]
+    data_rows: list[SubmissionContextDataRow]
+    next_url: str
 
 
 class StreamFieldValueDict(TypedDict):

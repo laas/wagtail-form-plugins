@@ -1,15 +1,12 @@
-"""View classes for the Conditional Fields plugin."""
+"""View classes for the plugins."""
 
-from typing import TYPE_CHECKING, Any
+from datetime import datetime
 
-from django.utils.html import format_html
-
+from wagtail.contrib.forms.models import FormSubmission
 from wagtail.contrib.forms.views import SubmissionsListView
 
+from .dicts import SubmissionContextData
 from .models import StreamFieldFormPage
-
-if TYPE_CHECKING:
-    from wagtail.contrib.forms.models import FormSubmission
 
 
 class StreamFieldSubmissionsListView(SubmissionsListView):
@@ -17,15 +14,23 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
 
     form_page: StreamFieldFormPage
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_header(self, context_data: SubmissionContextData) -> list[str]:
+        """Return slugs of context data header entries."""
+        return [head["name"] for head in context_data["data_headings"]]
+
+    def get_submissions(self, context_data: SubmissionContextData) -> dict[str, FormSubmission]:
+        """Return a dictionnary containing context data submissions."""
+        return {s.pk: s for s in context_data["submissions"]}
+
+    def get_context_data(self, **kwargs) -> SubmissionContextData:  # type: ignore reportAssignmentType
         """Alter submission context data to format results."""
-        ctx_data = super().get_context_data(**kwargs)
+        context_data: SubmissionContextData = super().get_context_data(**kwargs)  # type: ignore reportAssignmentType
 
-        submissions: dict[str, FormSubmission] = {sub.id: sub for sub in ctx_data["submissions"]}
-        header: list[str] = [head["name"] for head in ctx_data["data_headings"]]
+        header = self.get_header(context_data)
         fields = self.form_page.get_form_fields_dict()
+        submissions = self.get_submissions(context_data)
 
-        for row_idx, row in enumerate(ctx_data["data_rows"]):
+        for row_idx, row in enumerate(context_data["data_rows"]):
             submission = submissions[row["model_id"]]
             for col_idx, col_value in enumerate(row["fields"]):
                 field_header = header[col_idx]
@@ -35,18 +40,11 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
                         submission.form_data.get(field_header, None),
                         in_html=True,
                     )
-                elif field_header == "submit_time":
+                elif field_header == "submit_time" and isinstance(col_value, datetime):
                     fmt_value = col_value.strftime("%d/%m/%Y, %H:%M")
                 else:
                     fmt_value = col_value
 
-                ctx_data["data_rows"][row_idx]["fields"][col_idx] = fmt_value or "-"
+                context_data["data_rows"][row_idx]["fields"][col_idx] = fmt_value or "-"
 
-            link_html = format_html(
-                '<a class="w-header-button button" href="{url}?edit={submission_id}">edit</a>',
-                url=submission.page.url,
-                submission_id=row["model_id"],
-            )
-            ctx_data["data_rows"][row_idx]["fields"].append(link_html)
-
-        return ctx_data
+        return context_data
