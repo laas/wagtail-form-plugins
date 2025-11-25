@@ -14,11 +14,10 @@ from wagtail.contrib.forms.models import AbstractFormSubmission, FormMixin
 from wagtail.contrib.forms.views import SubmissionsListView
 from wagtail.models import Page
 
-from wagtail_form_plugins.utils import create_links
+from wagtail_form_plugins.utils import create_links, format_list, multiline_to_html
 
 from .dicts import SubmissionData
 from .forms import StreamFieldFormBuilder, StreamFieldFormField
-from .utils import format_choices
 
 
 class StreamFieldFormSubmission(AbstractFormSubmission):
@@ -100,8 +99,9 @@ class StreamFieldFormPage(FormMixin, Page):
             fmt_value = None
 
         elif form_field.type in ["checkboxes", "multiselect"] and isinstance(value, list):
-            fmt_value = format_choices(
+            fmt_value = format_list(
                 [v for k, v in form_field.choices if k in value],
+                "  •",
                 in_html=in_html,
             )
 
@@ -109,25 +109,28 @@ class StreamFieldFormPage(FormMixin, Page):
             fmt_value = dict(form_field.choices).get(value, "-")
 
         elif form_field.type == "multiline" and isinstance(value, str):
-            value_break = format_html("<br/>{value}", value=value) if in_html else f"\n{value}"
-            fmt_value = "" if value.strip() == "" else value_break
+            fmt_value = (
+                format_html("<br/>{value}", value=multiline_to_html(value))
+                if in_html
+                else f"\n{value.strip()}"
+            )
 
         elif form_field.type == "datetime":
             if isinstance(value, str):
                 value = datetime.fromisoformat(value.replace("Z", "+00:00"))
-            elif isinstance(value, datetime):
+            if isinstance(value, datetime):
                 fmt_value = value.strftime("%d/%m/%Y, %H:%M")
 
         elif form_field.type == "date":
             if isinstance(value, str):
                 value = date.fromisoformat(value)
-            elif isinstance(value, date):
+            if isinstance(value, date):
                 fmt_value = value.strftime("%d/%m/%Y")
 
         elif form_field.type == "time":
             if isinstance(value, str):
                 value = time.fromisoformat(value)
-            elif isinstance(value, time):
+            if isinstance(value, time):
                 fmt_value = value.strftime("%H:%M")
 
         elif form_field.type == "number":

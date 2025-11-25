@@ -2,13 +2,14 @@
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
+from django.utils.html import format_html
 from django.utils.translation import gettext as _
 
 from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.admin.panels import RichText
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormatter
-from wagtail_form_plugins.utils import multiline_to_html, validate_slug
+from wagtail_form_plugins.utils import format_list, validate_slug
 
 from .dicts import DataDict, FormDataDict, ResultDataDict, UserDataDict
 
@@ -90,14 +91,13 @@ class TemplatingFormatter(StreamFieldFormatter):
         if not self.submission:
             return None
 
-        values = formated_fields.values()
-        if self.in_html:
-            data = "<ul>" + "".join([f"<li>{lbl}: {val}</li>" for lbl, val in values]) + "</ul>"
-        else:
-            data = "\n".join([f"◦ {lbl}: {val}" for lbl, val in values])
+        values = [
+            format_html("{lbl}: {val}", lbl=lbl, val=val) for lbl, val in formated_fields.values()
+        ]
+        fmt_list = format_list(values, "◦", in_html=self.in_html)
 
         return {
-            "data": data,
+            "data": fmt_list,
             "publish_date": self.submission.submit_time.strftime("%d/%m/%Y"),
             "publish_time": self.submission.submit_time.strftime("%H:%M"),
         }
@@ -120,9 +120,6 @@ class TemplatingFormatter(StreamFieldFormatter):
             look_for = TMPL_SEP_LEFT + "field_label." + field.slug + TMPL_SEP_RIGHT
             if look_for in fmt_message:
                 fmt_message = fmt_message.replace(look_for, field.label)
-
-        if self.in_html:
-            fmt_message = multiline_to_html(fmt_message)
 
         return fmt_message
 

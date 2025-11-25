@@ -2,6 +2,7 @@
 
 import logging
 import re
+from collections.abc import Sequence
 from typing import Any
 from urllib.parse import quote
 
@@ -26,31 +27,55 @@ def get_logger(file_name: str) -> logging.Logger:
 LOGGER = get_logger(__file__)
 
 
-def create_links(html_message: str) -> str:
-    """Detect and convert urls and emails into html links."""
+url_regex = (
+    r"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}"
+    r"\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))"
+)
+email_regex = r"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"
+pattern = re.compile(rf"(?P<url>{url_regex})|(?P<email>{email_regex})")
 
-    def replace_url(match: re.Match[str]) -> str:
-        return format_html(
-            '<a href="{url}">{link}</a>',
-            url=quote(match.group(1), safe="/:?&#"),
-            link=match.group(1),
-        )
 
-    def replace_mail(match: re.Match[str]) -> str:
-        return format_html('<a href="mailto:{mail}">{mail}</a>', mail=match.group(1))
+def create_links(html_message: str) -> SafeString:
+    """Detect and convert urls into html links."""
+    parts = []
+    last_end = 0
 
-    # regex based on https://stackoverflow.com/a/3809435
-    url_regex = r"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))"  # noqa: E501
-    email_regex = r"([\w.-]+@[\w.-]+)"
+    for match in pattern.finditer(html_message):
+        start, end = match.span()
 
-    html_message = re.sub(url_regex, replace_url, html_message)
-    return re.sub(email_regex, replace_mail, html_message)
+        if start > last_end:
+            parts.append(html_message[last_end:start])
+
+        if match.group("url"):
+            url = match.group("url")
+            parts.append(
+                format_html('<a href="{url}">{link}</a>', url=quote(url, safe="/:?&#"), link=url),
+            )
+
+        elif match.group("email"):
+            mail = match.group("email")
+            parts.append(format_html('<a href="mailto:{mail}">{mail}</a>', mail=mail))
+
+        last_end = end
+
+    if last_end < len(html_message):
+        parts.append(html_message[last_end:])
+
+    return format_html_join("", "{}", ((p,) for p in parts))
 
 
 def multiline_to_html(text: str) -> SafeString:
     """Format a multiline text to html."""
-    paragraphs = [create_links(p) for p in text.strip().split("\n")]
+    paragraphs = [[create_links(p)] for p in text.strip().splitlines()]
     return format_html_join("\n", "<p>{}</p>", paragraphs)
+
+
+def format_list(items: Sequence[str | SafeString], bullet: str, *, in_html: bool) -> str:
+    """Format a list of items, into html or not."""
+    if in_html:
+        lists = format_html_join("\n", "<li>{}</li>", [[i] for i in items])
+        return format_html("<ul>{lists}</ul>", lists=lists)
+    return "".join([f"\n{bullet} {c}" for c in items])
 
 
 def validate_slug(slug: str) -> None:
