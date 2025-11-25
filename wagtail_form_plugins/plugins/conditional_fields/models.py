@@ -58,20 +58,14 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         leaf_rule: RuleBlockValueDict,
     ) -> str | int:
         """Return the right operand of the rule operation."""
-        char_fields = ["singleline", "multiline", "email", "hidden", "url"]
-        choice_fields = ["checkboxes", "dropdown", "multiselect", "radio"]
-
         right_operand = ""
 
-        if field.type in char_fields:
+        if field.type in ["singleline", "multiline", "email", "hidden", "url"]:
             right_operand = leaf_rule["value_char"]
         elif field.type == "number":
             right_operand = int(leaf_rule["value_number"])
-        elif field.type in choice_fields:
-            dd_val = leaf_rule["value_dropdown"]
-            choices = dict(field.choices)
-            is_choice_valid = dd_val and choices and dd_val in choices
-            right_operand = choices[dd_val] if is_choice_valid else dd_val
+        elif field.type in ["checkboxes", "dropdown", "multiselect", "radio"]:
+            right_operand = leaf_rule["value_dropdown"]
         elif field.type == "date":
             right_operand = date_to_timestamp(leaf_rule["value_date"])
         elif field.type == "time":

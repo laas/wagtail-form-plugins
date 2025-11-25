@@ -52,10 +52,10 @@ class StreamFieldFormField(WaftailFormField):
         base_attrs = ["slug", "label", "help_text", "is_required", "initial", "choices", "disabled"]
         field_value = field_data["value"]
 
-        choices_list = [t.strip() for t in field_value.get("choices", "").splitlines() if t.strip()]
+        choices = [t.strip() for t in field_value.get("choices", "").splitlines() if t.strip()]
 
-        if choices_list:
-            initial = [get_field_clean_name(ch) for ch in choices_list if ch[0] == "*"]
+        if choices:
+            initial = [f"c{idx + 1}" for idx, ch in enumerate(choices) if ch[0] == "*"]
             if initial and field_data["type"] in ["dropdown", "radio"]:
                 initial = initial[0]
         else:
@@ -70,6 +70,6 @@ class StreamFieldFormField(WaftailFormField):
             required=field_value.get("is_required", False),
             default_value=initial,
             disabled=field_value.get("disabled", False),
-            choices=[(get_field_clean_name(ch), ch.lstrip("*").strip()) for ch in choices_list],
+            choices=[(f"c{idx + 1}", ch.lstrip("*").strip()) for idx, ch in enumerate(choices)],
             options={k: v for k, v in field_value.items() if k not in base_attrs},
         )

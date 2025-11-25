@@ -68,16 +68,17 @@ class StreamFieldFormPage(FormMixin, Page):
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Pre-processing step before to create the form submission object."""
-        enabled_fields = self.get_enabled_fields(form.cleaned_data)
-        form_data = {k: (v if k in enabled_fields else None) for k, v in form.cleaned_data.items()}
-
         return {
-            "form_data": form_data,
+            "form_data": form.cleaned_data,
             "page": self,
         }
 
     def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:  # type: ignore[reportIncompatibleMethodOverride]
-        """Create and return the submission instance."""
+        """Create and return the submission instance.
+
+        This does not call the super method in order to call pre_process_form_submission before
+        instantiating the submission object.
+        """
         submission_data = self.pre_process_form_submission(form)
         return self.form_submission_class.objects.create(**submission_data)
 

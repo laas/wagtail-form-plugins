@@ -48,7 +48,7 @@ class TemplatingFormatter(StreamFieldFormatter):
         if not self.submission:
             return {}
 
-        fields = {}
+        fmt_fields = {}
         enabled_fields = self.form_page.get_enabled_fields(self.submission.form_data)
 
         for field in self.form_page.get_form_fields():
@@ -58,9 +58,9 @@ class TemplatingFormatter(StreamFieldFormatter):
             value = self.submission.form_data[field.slug]
             fmt_value = self.form_page.format_field_value(field, value, in_html=self.in_html)
             if fmt_value is not None:
-                fields[field.slug] = (field.label, fmt_value)
+                fmt_fields[field.slug] = (field.label, fmt_value)
 
-        return fields
+        return fmt_fields
 
     def get_user_data(self, user: User) -> UserDataDict:
         """Return a dict used to format template variables related to the form user or author."""
