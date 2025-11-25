@@ -7,7 +7,8 @@ from urllib.parse import quote
 
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailAlternative, EmailMultiAlternatives
-from django.utils.html import strip_tags
+from django.utils.html import format_html, format_html_join, strip_tags
+from django.utils.safestring import SafeString
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.contrib.forms.utils import get_field_clean_name
@@ -29,17 +30,27 @@ def create_links(html_message: str) -> str:
     """Detect and convert urls and emails into html links."""
 
     def replace_url(match: re.Match[str]) -> str:
-        return ' <a href="{url}">{link}</a> '.format(
+        return format_html(
+            '<a href="{url}">{link}</a>',
             url=quote(match.group(1), safe="/:?&#"),
             link=match.group(1),
         )
+
+    def replace_mail(match: re.Match[str]) -> str:
+        return format_html('<a href="mailto:{mail}">{mail}</a>', mail=match.group(1))
 
     # regex based on https://stackoverflow.com/a/3809435
     url_regex = r"(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))"  # noqa: E501
     email_regex = r"([\w.-]+@[\w.-]+)"
 
     html_message = re.sub(url_regex, replace_url, html_message)
-    return re.sub(email_regex, r'<a href="mailto:\1">\1</a>', html_message)
+    return re.sub(email_regex, replace_mail, html_message)
+
+
+def multiline_to_html(text: str) -> SafeString:
+    """Format a multiline text to html."""
+    paragraphs = [create_links(p) for p in text.strip().split("\n")]
+    return format_html_join("\n", "<p>{}</p>", paragraphs)
 
 
 def validate_slug(slug: str) -> None:

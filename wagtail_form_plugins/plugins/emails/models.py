@@ -11,7 +11,7 @@ from wagtail_form_plugins.streamfield.models import (
     StreamFieldFormPage,
     StreamFieldFormSubmission,
 )
-from wagtail_form_plugins.utils import build_email
+from wagtail_form_plugins.utils import build_email, multiline_to_html
 
 from .dicts import EmailsToSendBlockDict
 
@@ -63,7 +63,7 @@ class EmailActionsFormPage(StreamFieldFormPage):
             return text_formatter.format(text) if text_formatter else text
 
         def format_html(text: str) -> str:
-            return html_formatter.format(text) if html_formatter else text.replace("\n", "<br/>")
+            return html_formatter.format(text) if html_formatter else multiline_to_html(text)
 
         return build_email(
             subject=format_text(email_value["subject"]),

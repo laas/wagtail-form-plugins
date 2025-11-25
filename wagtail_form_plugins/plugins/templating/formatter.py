@@ -8,7 +8,7 @@ from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.admin.panels import RichText
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormatter
-from wagtail_form_plugins.utils import create_links, validate_slug
+from wagtail_form_plugins.utils import multiline_to_html, validate_slug
 
 from .dicts import DataDict, FormDataDict, ResultDataDict, UserDataDict
 
@@ -122,7 +122,7 @@ class TemplatingFormatter(StreamFieldFormatter):
                 fmt_message = fmt_message.replace(look_for, field.label)
 
         if self.in_html:
-            fmt_message = create_links(fmt_message.replace("\n", "<br/>\n"))
+            fmt_message = multiline_to_html(fmt_message)
 
         return fmt_message
 

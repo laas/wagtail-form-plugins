@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.forms import BaseForm
 from django.http import HttpRequest
 from django.template.response import TemplateResponse
+from django.utils.html import format_html
 
 from wagtail.admin.panels import RichText
 from wagtail.contrib.forms.models import AbstractFormSubmission, FormMixin
@@ -108,7 +109,8 @@ class StreamFieldFormPage(FormMixin, Page):
             fmt_value = dict(form_field.choices).get(value, "-")
 
         elif form_field.type == "multiline" and isinstance(value, str):
-            fmt_value = ("<br/>" if in_html else "\n") + value
+            value_break = format_html("<br/>{value}", value=value) if in_html else f"\n{value}"
+            fmt_value = "" if value.strip() == "" else value_break
 
         elif form_field.type == "datetime":
             if isinstance(value, str):
