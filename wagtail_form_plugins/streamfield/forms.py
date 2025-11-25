@@ -163,6 +163,7 @@ class StreamFieldFormBuilder(FormBuilder):
         """Return the options given to a field. Override to add or modify some options."""
         options = super().get_field_options(form_field)  # label, help_text, required, initial
 
+        options["disabled"] = form_field.disabled
         if form_field.choices:  # dropdown, multiselect, radio, checkboxes
             options["choices"] = form_field.choices
 
