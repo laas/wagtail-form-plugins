@@ -8,7 +8,6 @@ from wagtail_form_plugins.streamfield.plugin import Plugin
 from .blocks import TemplatingFormBlock
 from .dicts import DataDict, FormDataDict, ResultDataDict, UserDataDict
 from .formatter import TemplatingFormatter
-from .forms import TemplatingFormBuilder
 from .models import TemplatingFormPage
 
 
@@ -16,7 +15,6 @@ class Templating(Plugin):
     """Templating plugin: allow to inject variables in field initial values and emails."""
 
     form_block_class = TemplatingFormBlock
-    form_builder_class = TemplatingFormBuilder
     form_page_class = TemplatingFormPage
 
     @classmethod
