@@ -68,9 +68,9 @@ class EmailActionsFormPage(StreamFieldFormPage):
         return build_email(
             subject=format_text(email_value["subject"]),
             message=format_text(str(email_value["message"])),
-            from_email=email_value["from_email"],
+            from_email=format_text(email_value["from_email"]),
             recipient_list=format_text(email_value["recipient_list"]),
-            reply_to=email_value["reply_to"],
+            reply_to=format_text(email_value["reply_to"]),
             html_message=format_html(str(email_value["message"])),
         )
 
