@@ -163,7 +163,7 @@ class StreamFieldFormPage(FormMixin, Page):
             form.full_clean()
             enabled_fields = self.get_enabled_fields(form.cleaned_data)
             for field_value in form.fields.values():
-                if field_value.widget.attrs.get("slug", None) not in enabled_fields:
+                if field_value.widget.attrs.get("data-slug", None) not in enabled_fields:
                     field_value.required = False
 
         form.full_clean()

@@ -164,9 +164,11 @@ class StreamFieldFormBuilder(FormBuilder):
         options = super().get_field_options(form_field)  # label, help_text, required, initial
 
         options["widget_attrs"] = {
-            "slug": form_field.slug,  # note: probably not necessary and not strict-html-compliant
-            "readonly": "readonly" if form_field.disabled else "",
+            "data-slug": form_field.slug,
         }
+
+        if form_field.disabled:
+            options["widget_attrs"]["readonly"] = ""
 
         if form_field.choices:  # dropdown, multiselect, radio, checkboxes
             options["choices"] = form_field.choices
