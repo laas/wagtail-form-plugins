@@ -58,8 +58,8 @@ class EditableFormPage(StreamFieldFormPage):
             if isinstance(field_value.widget, FileInput):
                 field_value.required = False
 
-        edit_attrs = {"value": request.GET["edit"]}
-        form.fields["edit"] = CharField(widget=HiddenInput(attrs=edit_attrs))
+        widget_attrs = {"value": request.GET["edit"]}
+        form.fields["edit"] = CharField(widget=HiddenInput(attrs=widget_attrs))
 
         context = self.get_context(request)
         context["form"] = form

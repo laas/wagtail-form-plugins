@@ -8,13 +8,6 @@ from wagtail_form_plugins.streamfield.form_field import StreamFieldFormField
 from wagtail_form_plugins.streamfield.models import StreamFieldFormBuilder
 
 
-class Label(widgets.TextInput):
-    """A widget used to only display a label without a form input."""
-
-    def __init__(self, attrs: dict | None = None):
-        super().__init__({**(attrs or {}), "style": "display: none", "class": "form-title-input"})
-
-
 class LabelFormBuilder(StreamFieldFormBuilder):
     """Form builder class that use streamfields to define form fields in form admin page."""
 
@@ -24,4 +17,9 @@ class LabelFormBuilder(StreamFieldFormBuilder):
         options: dict[str, Any],
     ) -> CharField:
         """Create a label without html input field."""
-        return CharField(widget=Label(), **options)
+        widget_attrs = {
+            **options.pop("widget_attrs"),
+            "style": "display: none",
+            "class": "form-title-input",
+        }
+        return CharField(widget=widgets.TextInput(attrs=widget_attrs), **options)

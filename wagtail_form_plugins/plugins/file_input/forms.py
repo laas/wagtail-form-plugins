@@ -41,5 +41,9 @@ class FileInputFormBuilder(StreamFieldFormBuilder):
         ]
         str_allowed = ",".join([f".{ext}" for ext in allowed_ext])
         options["help_text"] += f" {_('Allowed:')} {str_allowed}"
-        widget = widgets.FileInput(attrs={"slug": form_field.slug, "accept": str_allowed})
-        return FileField(widget=widget, **options, validators=validators)
+        w_attrs = {
+            **options.pop("widget_attrs"),
+            "accept": str_allowed,
+        }
+
+        return FileField(widget=widgets.FileInput(attrs=w_attrs), **options, validators=validators)
