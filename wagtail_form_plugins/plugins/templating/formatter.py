@@ -85,7 +85,6 @@ class TemplatingFormatter(StreamFieldFormatter):
             "url_results": settings.WAGTAILADMIN_BASE_URL + finder.get_edit_url(self.form_page),
         }
 
-    # class Result
     def get_result_data(self, formated_fields: dict[str, tuple[str, str]]) -> ResultDataDict | None:
         """Return a dict used to format template variables related to the form results."""
         if not self.submission:
