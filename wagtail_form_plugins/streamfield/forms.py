@@ -157,6 +157,8 @@ class StreamFieldFormBuilder(FormBuilder):
     ) -> forms.MultipleChoiceField:
         """Create a Django multiple choice field with checkboxes widget."""
         wa = options.pop("widget_attrs")
+        if options["required"]:
+            wa["required"] = ""
         return forms.MultipleChoiceField(widget=widgets.CheckboxSelectMultiple(attrs=wa), **options)
 
     def get_field_options(self, form_field: StreamFieldFormField) -> dict[str, Any]:  # type: ignore[reportIncompatibleMethodOverride]
