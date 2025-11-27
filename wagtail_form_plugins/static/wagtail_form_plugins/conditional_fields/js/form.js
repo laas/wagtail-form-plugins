@@ -52,8 +52,8 @@ const OPERATORS = {
 	ct: ["∋", "mCL", (a, b) => a.includes(b)],
 	nct: ["∌", "mCL", (a, b) => !a.includes(b)],
 
-	c: ["✔", "c", (a, b) => a],
-	nc: ["✖", "c", (a, b) => !a],
+	c: ["✔", "c", (a, _b) => a],
+	nc: ["✖", "c", (a, _b) => !a],
 };
 const DEBOUNCE_DELAY = 300;
 
@@ -142,5 +142,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			"input",
 			debounce(() => update_fields_visibility()),
 		);
+		if (dom_input.hasAttribute("required") && dom_input.getAttribute("data-type") === "radio") {
+			for (const dom_input_option of dom_input.querySelectorAll("input")) {
+				dom_input_option.setAttribute("required", "");
+			}
+		}
 	}
 });
