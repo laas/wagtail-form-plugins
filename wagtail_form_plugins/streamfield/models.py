@@ -162,6 +162,11 @@ class StreamFieldFormPage(FormMixin, Page):
 
         if args:
             form.full_clean()
+
+            for k, v in form_fields.items():
+                if k not in form.cleaned_data and v.field_type in ["radio", "checkboxes"]:
+                    form.cleaned_data[k] = None
+
             enabled_fields = self.get_enabled_fields(form.cleaned_data)
             for field_value in form.fields.values():
                 if field_value.widget.attrs.get("data-slug", None) not in enabled_fields:
