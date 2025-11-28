@@ -28,7 +28,11 @@ class EmailActionsFormPage(StreamFieldFormPage):
         """Serve the form page."""
         response = super().serve(request, *args, **kwargs)
 
-        if isinstance(response, HttpResponseRedirect) or not response.context_data:
+        if (
+            isinstance(response, HttpResponseRedirect)
+            or not response.context_data
+            or (request.method == "POST" and "edit" in request.POST)
+        ):
             return response
 
         if "form_submission" in response.context_data:
