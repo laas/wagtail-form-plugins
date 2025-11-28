@@ -135,6 +135,32 @@ function update_fields_visibility() {
 	}
 }
 
+function set_required_attributes(dom_input) {
+	if (dom_input.hasAttribute("required")) {
+		if (dom_input.getAttribute("data-type") === "radio") {
+			for (const dom_input_option of dom_input.querySelectorAll("input")) {
+				dom_input_option.setAttribute("required", "");
+			}
+		} else if (dom_input.getAttribute("data-type") === "checkboxes") {
+			for (const dom_input_option of dom_input.querySelectorAll("input")) {
+				dom_input_option.setAttribute("required", "");
+				dom_input_option.addEventListener("change", (_event) => {
+					const one_input_is_checked = [...dom_input.querySelectorAll("input")]
+						.map((i) => i.checked)
+						.some((checked) => checked);
+					for (const _dom_input_option of dom_input.querySelectorAll("input")) {
+						if (one_input_is_checked) {
+							_dom_input_option.removeAttribute("required");
+						} else {
+							_dom_input_option.setAttribute("required", "");
+						}
+					}
+				});
+			}
+		}
+	}
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 	update_fields_visibility();
 	for (const dom_input of document.querySelectorAll("form [data-label]")) {
@@ -142,28 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			"input",
 			debounce(() => update_fields_visibility()),
 		);
-		if (dom_input.hasAttribute("required")) {
-			if (dom_input.getAttribute("data-type") === "radio") {
-				for (const dom_input_option of dom_input.querySelectorAll("input")) {
-					dom_input_option.setAttribute("required", "");
-				}
-			} else if (dom_input.getAttribute("data-type") === "checkboxes") {
-				for (const dom_input_option of dom_input.querySelectorAll("input")) {
-					dom_input_option.setAttribute("required", "");
-					dom_input_option.addEventListener("change", (_event) => {
-						const one_input_is_checked = [...dom_input.querySelectorAll("input")]
-							.map((i) => i.checked)
-							.some((checked) => checked);
-						for (const _dom_input_option of dom_input.querySelectorAll("input")) {
-							if (one_input_is_checked) {
-								_dom_input_option.removeAttribute("required");
-							} else {
-								_dom_input_option.setAttribute("required", "");
-							}
-						}
-					});
-				}
-			}
-		}
+		set_required_attributes(dom_input);
 	}
 });

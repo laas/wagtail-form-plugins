@@ -1,7 +1,6 @@
 """Define the StreamFieldFormField data class, representing a field."""
 
 from dataclasses import dataclass
-from typing import Any
 
 from wagtail.contrib.forms.utils import get_field_clean_name
 
@@ -33,7 +32,6 @@ class StreamFieldFormField(WaftailFormField):
     """A data class representing a field with some extra attributes and syntactic sugar."""
 
     block_id: str
-    options: dict[str, Any]
     disabled: bool
 
     @property
@@ -49,7 +47,6 @@ class StreamFieldFormField(WaftailFormField):
     @classmethod
     def from_streamfield_data(cls, field_data: StreamFieldDataDict) -> Self:
         """Return the form fields based the streamfield value of the form page form_fields field."""
-        base_attrs = ["slug", "label", "help_text", "is_required", "initial", "choices", "disabled"]
         field_value = field_data["value"]
 
         choices = [t.strip() for t in field_value.get("choices", "").splitlines() if t.strip()]
@@ -71,5 +68,4 @@ class StreamFieldFormField(WaftailFormField):
             default_value=initial,
             disabled=field_value.get("disabled", False),
             choices=[(f"c{idx + 1}", ch.lstrip("*").strip()) for idx, ch in enumerate(choices)],
-            options={k: v for k, v in field_value.items() if k not in base_attrs},
         )

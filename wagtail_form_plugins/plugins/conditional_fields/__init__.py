@@ -8,7 +8,6 @@ from wagtail_form_plugins.streamfield.plugin import Plugin
 from .blocks import ConditionalFieldsFormBlock
 from .dicts import FormattedRuleDict, RuleBlockDict, RuleBlockValueDict
 from .form_field import ConditionalFieldsFormField
-from .forms import ConditionalFieldsFormBuilder
 from .models import ConditionalFieldsFormPage
 
 
@@ -16,7 +15,6 @@ class ConditionalFields(Plugin):
     form_block_class = ConditionalFieldsFormBlock
     form_field_class = ConditionalFieldsFormField
     form_page_class = ConditionalFieldsFormPage
-    form_builder_class = ConditionalFieldsFormBuilder
 
     @classmethod
     def get_injected_admin_css(cls) -> str:
@@ -28,7 +26,6 @@ class ConditionalFields(Plugin):
 
 __all__ = [
     "ConditionalFieldsFormBlock",
-    "ConditionalFieldsFormBuilder",
     "ConditionalFieldsFormField",
     "ConditionalFieldsFormPage",
     "FormattedRuleDict",

@@ -13,10 +13,6 @@ from .form_field import StreamFieldFormField
 class StreamFieldFormBuilder(FormBuilder):
     """Form builder mixin that use streamfields to define form fields in form admin page."""
 
-    def __init__(self, fields: list[StreamFieldFormField]):
-        super().__init__(fields)
-        self.extra_field_options = []
-
     def create_singleline_field(  # type: ignore[reportIncompatibleMethodOverride]
         self,
         _form_field: StreamFieldFormField,
@@ -177,9 +173,5 @@ class StreamFieldFormBuilder(FormBuilder):
 
         if form_field.disabled:
             options["widget_attrs"]["readonly"] = ""
-
-        for k, v in form_field.options.items():
-            if k not in self.extra_field_options:
-                options[k] = v
 
         return options

@@ -7,11 +7,9 @@ from typing import Any
 from django.forms import BaseForm
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
-from wagtail_form_plugins.utils import LOGGER
 
-from .dicts import RuleBlockDict, RuleBlockValueDict
+from .dicts import FormattedRuleDict
 from .form_field import ConditionalFieldsFormField
-from .utils import date_to_timestamp, datetime_to_timestamp, time_to_timestamp
 
 Operation = Callable[[Any, Any], bool]
 
@@ -52,58 +50,34 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         form.full_clean()
         return form
 
-    def get_right_operand(
-        self,
-        field: ConditionalFieldsFormField,
-        leaf_rule: RuleBlockValueDict,
-    ) -> str | int:
-        """Return the right operand of the rule operation."""
-        right_operand = ""
-
-        if field.type in ["singleline", "multiline", "email", "hidden", "url"]:
-            right_operand = leaf_rule["value_char"]
-        elif field.type == "number":
-            right_operand = int(leaf_rule["value_number"])
-        elif field.type in ["checkboxes", "dropdown", "multiselect", "radio"]:
-            right_operand = leaf_rule["value_dropdown"]
-        elif field.type == "date":
-            right_operand = date_to_timestamp(leaf_rule["value_date"])
-        elif field.type == "time":
-            right_operand = time_to_timestamp(leaf_rule["value_time"])
-        elif field.type == "datetime":
-            right_operand = datetime_to_timestamp(leaf_rule["value_datetime"])
-        else:
-            right_operand = ""
-
-        return right_operand
-
     def process_rule(
         self,
         fields: dict[str, ConditionalFieldsFormField],
         form_data: dict[str, Any],
-        rule: RuleBlockValueDict,
+        rule: FormattedRuleDict,
     ) -> bool:
         """Process the rule by applying the operator with left and right operands."""
-        rule_field_attr = rule["field"]
+        if "bool_opr" in rule and "subrules" in rule:
+            results = [self.process_rule(fields, form_data, sr) for sr in rule["subrules"]]
+            return all(results) if rule["bool_opr"] == "and" else any(results)
 
-        if rule_field_attr in ["and", "or"]:
-            results = [
-                self.process_rule(fields, form_data, sub_rule["value"])
-                for sub_rule in rule["rules"]
-            ]
-            return all(results) if rule_field_attr == "and" else any(results)
+        if "entry" not in rule:
+            msg = "Either an entry or a bool_opr + subrules should be stored in the rule dict."
+            raise ValueError(msg)
 
-        field = next(field for field in fields.values() if field.block_id == rule_field_attr)
+        entry = rule["entry"]
+        target_id = entry["target"] if "entry" in rule else None
+        target_field = next(field for field in fields.values() if field.block_id == target_id)
+        this_value = form_data[target_field.slug]
+        that_value = entry["val"]
 
-        func = OPERATIONS[rule["operator"]]
-        left_operand = form_data[field.slug]
-        right_operand = self.get_right_operand(field, rule)
+        func = OPERATIONS[entry["opr"]]
 
         try:
-            return func(left_operand, right_operand)
-        except Exception:  # noqa: BLE001
-            LOGGER.error("error when solving rule:", left_operand, rule["operator"], right_operand)
-            return False
+            return func(this_value, that_value)
+        except Exception as err:
+            msg = f"error when solving rule: {this_value} {entry['opr']} {that_value}"
+            raise ArithmeticError(msg) from err
 
     def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
         """Return the fields slug list where the computed conditional value of the field is true."""
@@ -113,16 +87,15 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         new_enabled_fields = []
         for field_slug in enabled_fields:
             field = fields_dict[field_slug]
-            rules: list[RuleBlockDict] = field.options.get("rule", [])
 
-            if not rules:
+            if field.rule is None:
                 new_enabled_fields.append(field_slug)
                 continue
 
-            is_rule_true = self.process_rule(fields_dict, form_data, rules[0]["value"])
-            field_attr = rules[0]["value"]["field"]
-            matches = [fld for fld in fields_dict.values() if fld.block_id == field_attr]
-            is_rule_field_enabled = field_attr in ["and", "or"] or matches[0].slug in enabled_fields
+            is_rule_true = self.process_rule(fields_dict, form_data, field.rule)
+            target = field.rule["entry"]["target"] if "entry" in field.rule else None
+            matches = [fld for fld in fields_dict.values() if fld.block_id == target]
+            is_rule_field_enabled = "bool_opr" in field.rule or matches[0].slug in enabled_fields
 
             if is_rule_true and is_rule_field_enabled:
                 new_enabled_fields.append(field_slug)
