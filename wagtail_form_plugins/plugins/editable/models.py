@@ -28,7 +28,9 @@ class EditableFormPage(StreamFieldFormPage):
         form.full_clean()
 
         if form.is_valid():
-            file_fields = [f.slug for f in form_fields if isinstance(f.widget, FileInput)]  # type: ignore[unresolved-attribute]
+            file_fields = [
+                f.widget.attrs["data-slug"] for f in form_fields if isinstance(f.widget, FileInput)
+            ]
 
             submission_data = self.pre_process_form_submission(form)
 
