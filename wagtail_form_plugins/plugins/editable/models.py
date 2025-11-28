@@ -48,7 +48,7 @@ class EditableFormPage(StreamFieldFormPage):
         """Handle GET request of form page edition, return context."""
         submission_id = int(request.GET["edit"])
         submission = get_object_or_404(self.form_submission_class, pk=submission_id)
-        form = self.get_form(submission.form_data, page=self)
+        form = self.get_form(submission.form_data, page=self, user=submission.user)  # type: ignore[reportAttributeAccessIssue]
 
         for field_value in form.fields.values():
             field_value.disabled = False

@@ -4,6 +4,7 @@ import json
 from collections.abc import Callable
 from typing import Any
 
+from django.contrib.auth.models import User
 from django.forms import BaseForm
 
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage
@@ -37,9 +38,10 @@ OPERATIONS: dict[str, Operation] = {
 class ConditionalFieldsFormPage(StreamFieldFormPage):
     """Form page used to add conditional fields functionnality to a form."""
 
-    def get_form(self, *args, **kwargs) -> BaseForm:
+    def get_form(self, *args, page: StreamFieldFormPage, user: User, **kwargs) -> BaseForm:
         """Build and return the form instance."""
-        form = super().get_form(*args, **kwargs)
+        form = super().get_form(*args, page=page, user=user, **kwargs)
+
         form_fields: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore[ invalid-assignment]
 
         for field_slug, field_value in form.fields.items():

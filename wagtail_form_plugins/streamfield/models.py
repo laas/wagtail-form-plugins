@@ -145,9 +145,10 @@ class StreamFieldFormPage(FormMixin, Page):
 
         return fmt_value
 
-    def get_form(self, *args, **kwargs) -> BaseForm:  # type: ignore[reportIncompatibleMethodOverride]
+    def get_form(self, *args, page: "StreamFieldFormPage", user: User, **kwargs) -> BaseForm:  # type: ignore[reportIncompatibleMethodOverride]
         """Build and return the form instance."""
-        form = super().get_form(*args, **kwargs)
+        form = super().get_form(*args, page=page, user=user, **kwargs)
+
         form_fields = self.get_form_fields_dict()
 
         for field_slug, field_value in form.fields.items():
