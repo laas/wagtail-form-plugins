@@ -3,6 +3,7 @@
 import logging
 import re
 from collections.abc import Sequence
+from html import unescape
 from typing import Any
 from urllib.parse import quote
 
@@ -44,22 +45,22 @@ def create_links(html_message: str) -> SafeString:
         start, end = match.span()
 
         if start > last_end:
-            parts.append(html_message[last_end:start])
+            parts.append(unescape(html_message[last_end:start]))
 
         if match.group("url"):
-            url = match.group("url")
+            url = unescape(match.group("url"))
             parts.append(
                 format_html('<a href="{url}">{link}</a>', url=quote(url, safe="/:?&#"), link=url),
             )
 
         elif match.group("email"):
-            mail = match.group("email")
+            mail = unescape(match.group("email"))
             parts.append(format_html('<a href="mailto:{mail}">{mail}</a>', mail=mail))
 
         last_end = end
 
     if last_end < len(html_message):
-        parts.append(html_message[last_end:])
+        parts.append(unescape(html_message[last_end:]))
 
     return format_html_join("", "{}", ((p,) for p in parts))
 
