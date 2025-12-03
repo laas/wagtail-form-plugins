@@ -69,8 +69,6 @@ class EditableFormPage(StreamFieldFormPage):
 
     def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
         """Serve the form page."""
-        response = super().serve(request, *args, **kwargs)
-
         if self.permissions_for_user(request.user).can_edit():
             if request.method == "POST" and "edit" in request.POST:
                 redirect_url = self.edit_post(request)
@@ -81,7 +79,8 @@ class EditableFormPage(StreamFieldFormPage):
                 context = self.edit_get(request)
                 return TemplateResponse(request, self.get_template(request), context)
 
-        return response
+        # super must be called in last to prevent submission of the initial result
+        return super().serve(request, *args, **kwargs)
 
     class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         abstract = True
