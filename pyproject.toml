@@ -14,7 +14,7 @@ dev = [
 
 [project]
 name = "wagtail-form-plugins"
-version = "0.4.3"
+version = "0.5.0"
 description = "A set of plugins used to customize and improve the Wagtail form builder in a modular way."
 readme = "README.md"
 requires-python = ">=3.10"
