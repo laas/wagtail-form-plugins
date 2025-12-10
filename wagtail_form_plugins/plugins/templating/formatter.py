@@ -67,7 +67,7 @@ class TemplatingFormatter(StreamFieldFormatter):
         """Return a dict used to format template variables related to the form user or author."""
         is_anonymous = isinstance(user, AnonymousUser)
         return {
-            "login": user.username,
+            "login": "" if is_anonymous else user.username,
             "first_name": "" if is_anonymous else user.first_name,
             "last_name": "" if is_anonymous else user.last_name,
             "full_name": "" if is_anonymous else f"{user.first_name} {user.last_name}",
