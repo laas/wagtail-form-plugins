@@ -2,7 +2,7 @@
 
 import base64
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, ClassVar
 
 from django.conf import settings
@@ -15,6 +15,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
 from wagtail.fields import RichTextField
+from wagtail.models import Page
 
 from wagtail_form_plugins.streamfield.dicts import SubmissionData
 from wagtail_form_plugins.streamfield.models import StreamFieldFormPage, StreamFieldFormSubmission
@@ -28,6 +29,29 @@ class ValidationForm(Form):
         max_length=100,
         help_text=_("An e-mail validation is required to fill public forms when not connected."),
     )
+
+
+class ValidationToken(models.Model):
+    """Model class used to store validation tokens."""
+
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    token_value = models.CharField(unique=True)
+    date = models.DateTimeField()
+    email = models.EmailField()
+
+    def __str__(self) -> str:
+        """Return the string representation of the token."""
+        return f"{self.token_value} from {self.page.title} by {self.email} on {self.date}"
+
+    @staticmethod
+    def create(page: Page, email: str) -> str:
+        """Create a token based on a page instance and the email filed by the user."""
+        encoded_email = base64.b64encode(email.encode("utf-8")).decode("utf-8")
+        token_value = f"{encoded_email}-{uuid.uuid4()}"
+        date = datetime.now(timezone.utc)
+        token = ValidationToken(page=page, token_value=token_value, date=date, email=email)
+        token.save()
+        return token_value
 
 
 class ValidationFormSubmission(StreamFieldFormSubmission):
@@ -66,25 +90,11 @@ class ValidationFormPage(StreamFieldFormPage):
         default=_("Please click on the following link to fill the form: {validation_url} ."),
     )
 
-    def __init__(self, *args, **kwargs):
-        self.tokens: dict[str, datetime] = {}
-        super().__init__(*args, **kwargs)
-
-    def build_token(self, email: str) -> str:
-        """Generate and return the token used to validate the form."""
-        encoded_email = base64.b64encode(email.encode("utf-8")).decode("utf-8")
-        return f"{encoded_email}-{uuid.uuid4()}"
-
     def flush(self) -> None:
         """Remove the expired tokens."""
-        to_remove = []
-        for token, date in self.tokens.items():
-            delay = datetime.now(timezone.utc) - date
-            if delay.total_seconds() / 60 > self.token_validation_expiration_delay:
-                to_remove.append(token)
-
-        for token in to_remove:
-            del self.tokens[token]
+        expiration_delay = timedelta(minutes=self.token_validation_expiration_delay)
+        expiration_time = datetime.now(timezone.utc) - expiration_delay
+        ValidationToken.objects.filter(page=self, date__lt=expiration_time).delete()
 
     def extract_email(self, form: BaseForm) -> str:
         """Extract the email encoded in the token."""
@@ -112,10 +122,8 @@ class ValidationFormPage(StreamFieldFormPage):
                 form = self.token_validation_form_class(request.POST)
                 if form.is_valid():
                     validation_email = form.cleaned_data["validation_email"]
-                    token = self.build_token(validation_email)
-                    self.tokens[token] = datetime.now(timezone.utc)
-
-                    email = self.build_validation_email(validation_email, token)
+                    token_value = ValidationToken.create(self, validation_email)
+                    email = self.build_validation_email(validation_email, token_value)
                     self.send_validation_email(email)
 
                     msg_str = _(
@@ -124,21 +132,25 @@ class ValidationFormPage(StreamFieldFormPage):
                     messages.add_message(request, messages.INFO, msg_str)
                 else:
                     messages.add_message(request, messages.ERROR, _("This e-mail is not valid."))
-            elif "wfp_token" in request.POST and request.POST["wfp_token"] in self.tokens:
-                del self.tokens[request.POST["wfp_token"]]
+
+            elif token_value := request.POST.get("wfp_token", None):
+                token = ValidationToken.objects.filter(page=self, token_value=token_value)
+                if token.exists():
+                    token.delete()
                 return response
 
         if request.method == "GET" and "token" in request.GET:
-            token = request.GET["token"]
-            if token in self.tokens:
+            token_value = request.GET["token"]
+            token = ValidationToken.objects.filter(page=self, token_value=token_value)
+            if token.exists():
                 msg_str = _("Your e-mail has been validated. You can now fill the form.")
                 messages.add_message(request, messages.SUCCESS, msg_str)
-
                 return response
             messages.add_message(request, messages.ERROR, _("This token is not valid."))
 
         context = self.get_context(request)
         context["form"] = self.token_validation_form_class()
+
         return TemplateResponse(request, self.get_template(request), context)
 
     def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:

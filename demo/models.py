@@ -231,11 +231,11 @@ class CustomFormPage(*wfp.form_page_classes):
     form_builder_class = CustomFormBuilder
     form_submission_class = CustomFormSubmission
     submissions_list_view_class = CustomSubmissionListView
-    validation_form_class = CustomValidationForm
-    templating_formatter_class = CustomTemplatingFormatter
     form_field_class = CustomFormField
 
     file_input_upload_dir = "demo_forms_uploads/%Y/%m/%d"
+    templating_formatter_class = CustomTemplatingFormatter
+    token_validation_form_class = CustomValidationForm
     token_validation_from_email = settings.FORMS_FROM_EMAIL
     token_validation_reply_to: ClassVar = [settings.FORMS_FROM_EMAIL]
     token_validation_expiration_delay = settings.FORMS_VALIDATION_EXPIRATION_DELAY
