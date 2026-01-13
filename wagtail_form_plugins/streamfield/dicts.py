@@ -5,6 +5,7 @@ from typing import Any, TypedDict
 
 from wagtail.admin.widgets.button import HeaderButton
 from wagtail.contrib.forms.models import FormSubmission
+from wagtail.contrib.forms.views import SubmissionsListView
 from wagtail.models import Page
 
 
@@ -39,6 +40,7 @@ class SubmissionContextData(TypedDict):
     header_buttons: list[HeaderButton]
     data_rows: list[SubmissionContextDataRow]
     next_url: str
+    view: SubmissionsListView
 
 
 class StreamFieldValueDict(TypedDict):

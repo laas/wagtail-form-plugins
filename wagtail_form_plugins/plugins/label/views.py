@@ -11,6 +11,15 @@ class LabelSubmissionsListView(StreamFieldSubmissionsListView):
         """Alter submission context data to don't show label fields."""
         context_data = super().get_context_data(**kwargs)
 
+        fields = self.form_page.get_form_fields_dict()
+
+        if self.is_export:
+            for field_slug in context_data["view"].list_export:
+                if field_slug in fields and fields[field_slug].type == "label":
+                    context_data["view"].list_export.remove(field_slug)
+
+            return context_data
+
         header = self.get_header(context_data)
         fields = self.form_page.get_form_fields_dict()
 

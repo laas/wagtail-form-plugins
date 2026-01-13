@@ -20,6 +20,9 @@ class EditableSubmissionsListView(StreamFieldSubmissionsListView):
         """Alter submission context data to format results."""
         context_data = super().get_context_data(**kwargs)
 
+        if self.is_export:
+            return context_data
+
         header: SubmissionContextDataHeading = {"name": "edit_btn", "label": "Edit", "order": None}
         context_data["data_headings"].append(header)
 

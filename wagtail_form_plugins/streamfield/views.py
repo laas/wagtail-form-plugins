@@ -26,6 +26,9 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
         """Alter submission context data to format results."""
         context_data: SubmissionContextData = super().get_context_data(**kwargs)  # type: ignore reportAssignmentType
 
+        if self.is_export:
+            return context_data
+
         header = self.get_header(context_data)
         fields = self.form_page.get_form_fields_dict()
         submissions = self.get_submissions(context_data)
