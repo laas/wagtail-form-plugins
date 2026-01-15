@@ -42,7 +42,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
         """Build and return the form instance."""
         form = super().get_form(*args, page=page, user=user, **kwargs)
 
-        form_fields: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore[ invalid-assignment]
+        form_fields: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # ty: ignore[ invalid-assignment]
 
         for field_slug, field_value in form.fields.items():
             form_field = form_fields[field_slug]
@@ -84,7 +84,7 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
     def get_enabled_fields(self, form_data: dict[str, Any]) -> list[str]:
         """Return the fields slug list where the computed conditional value of the field is true."""
         enabled_fields = super().get_enabled_fields(form_data)
-        fields_dict: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # type: ignore[invalid-assignment]
+        fields_dict: dict[str, ConditionalFieldsFormField] = self.get_form_fields_dict()  # ty: ignore[invalid-assignment]
 
         new_enabled_fields = []
         for field_slug in enabled_fields:
@@ -104,5 +104,5 @@ class ConditionalFieldsFormPage(StreamFieldFormPage):
 
         return new_enabled_fields
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True

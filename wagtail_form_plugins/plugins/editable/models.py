@@ -4,7 +4,7 @@ from typing import Any
 
 from django.forms.fields import CharField
 from django.forms.widgets import FileInput, HiddenInput, TextInput
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -19,7 +19,7 @@ class EditableFormPage(StreamFieldFormPage):
         """Handle POST request of form page edition, return redirect url or empty string."""
         submission_id = int(request.POST["edit"])
         submission = get_object_or_404(self.form_submission_class, pk=submission_id)
-        form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)  # type: ignore[reportAttributeAccessIssue]
+        form = self.get_form(request.POST, request.FILES, page=self, user=submission.user)
         form_fields = list(form.fields.values())
 
         for field in form_fields:
@@ -50,7 +50,7 @@ class EditableFormPage(StreamFieldFormPage):
         """Handle GET request of form page edition, return context."""
         submission_id = int(request.GET["edit"])
         submission = get_object_or_404(self.form_submission_class, pk=submission_id)
-        form = self.get_form(submission.form_data, page=self, user=submission.user)  # type: ignore[reportAttributeAccessIssue]
+        form = self.get_form(submission.form_data, page=self, user=submission.user)
 
         for field_value in form.fields.values():
             field_value.disabled = False
@@ -67,13 +67,18 @@ class EditableFormPage(StreamFieldFormPage):
         context["form"] = form
         return context
 
-    def serve(self, request: HttpRequest, *args, **kwargs) -> TemplateResponse:
+    def serve(
+        self,
+        request: HttpRequest,
+        *args,
+        **kwargs,
+    ) -> TemplateResponse | HttpResponseRedirect:
         """Serve the form page."""
         if self.permissions_for_user(request.user).can_edit():
             if request.method == "POST" and "edit" in request.POST:
                 redirect_url = self.edit_post(request)
                 if redirect_url:
-                    return redirect(redirect_url)  # type: ignore[invalid-return-type]
+                    return redirect(redirect_url)
 
             elif request.method == "GET" and "edit" in request.GET:
                 context = self.edit_get(request)
@@ -82,5 +87,5 @@ class EditableFormPage(StreamFieldFormPage):
         # super must be called in last to prevent submission of the initial result
         return super().serve(request, *args, **kwargs)
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True

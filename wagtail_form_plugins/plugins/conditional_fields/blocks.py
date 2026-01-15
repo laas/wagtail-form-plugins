@@ -90,7 +90,7 @@ class RuleBlock(blocks.StructBlock):
         form_classname="formbuilder-beb-val-datetime",
     )
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         label = _("Visibility condition")
         required = False
         collapsed = True
@@ -109,8 +109,8 @@ class RuleBlockAdapter(struct_block.StructBlockAdapter):
         js_file_path = "wagtail_form_plugins/conditional_fields/js/form_admin.js"
 
         return Media(
-            js=[*streamblock_media._js, js_file_path],  # type: ignore[reportAttributeAccessIssue] # noqa: SLF001
-            css=streamblock_media._css,  # type: ignore[reportAttributeAccessIssue] # noqa: SLF001
+            js=[*streamblock_media._js, js_file_path],  # noqa: SLF001
+            css=streamblock_media._css,  # noqa: SLF001
         )
 
 
@@ -120,7 +120,7 @@ register_adapter(RuleBlockAdapter(), RuleBlock)
 class RuleBlockLvl3(RuleBlock):
     """A struct block used to construct a third-level boolean expression."""
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         form_classname = "formbuilder-beb formbuilder-beb-lvl3"
 
 
@@ -134,7 +134,7 @@ class RuleBlockLvl2(RuleBlock):
         default=[],
     )
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         form_classname = "formbuilder-beb formbuilder-beb-lvl2"
 
 
@@ -148,7 +148,7 @@ class RuleBlockLvl1(RuleBlock):
         default=[],
     )
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         form_classname = "formbuilder-beb formbuilder-beb-lvl1"
 
 

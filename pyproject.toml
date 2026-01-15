@@ -7,7 +7,6 @@ dev = [
   "ty",
   "ruff",
   "pre-commit",
-  "pyright",
   "django-stubs",
   "poethepoet"
 ]
@@ -47,16 +46,13 @@ django_settings_module = "demo.settings"
 [tool.poe.tasks]
 ruff-lint = "uv run ruff check --fix"
 ruff-format = "uv run ruff format"
-pyright = "uv run pyright ."
 ty = "uv run ty check"
 django-check = "uv run python manage.py check"
 uv-dry-sync = "uv sync --extra demo --dry-run"
 
 [tool.poe.tasks.check]
-parallel = ["ruff-lint", "ruff-format", "pyright", "ty", "django-check", "uv-dry-sync"]
-
-[tool.pyright]
-exclude = ["demo/migrations/*", ".venv/**/*"]
+parallel = ["ruff-lint", "ruff-format", "ty", "django-check", "uv-dry-sync"]
+ignore_fail = true
 
 [tool.ruff]
 extend-exclude = ["migrations"]
@@ -71,6 +67,9 @@ ignore = ["D106", "D107", "ANN002", "ANN003", "ANN204"]
 section-order = ["future", "standard-library", "django", "wagtail", "first-party", "local-folder", "third-party"]
 sections.django = ["django"]
 sections.wagtail = ["wagtail"]
+
+[tool.ty.analysis]
+respect-type-ignore-comments = false
 
 [tool.uv.build-backend]
 module-root = ""

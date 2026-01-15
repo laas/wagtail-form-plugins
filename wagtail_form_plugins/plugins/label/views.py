@@ -7,7 +7,7 @@ from wagtail_form_plugins.streamfield.views import StreamFieldSubmissionsListVie
 class LabelSubmissionsListView(StreamFieldSubmissionsListView):
     """Customize lists submissions view, such as displaying `-` when a value is set to None."""
 
-    def get_context_data(self, **kwargs) -> SubmissionContextData:  # type: ignore[invalid-method-override]
+    def get_context_data(self, **kwargs) -> SubmissionContextData:
         """Alter submission context data to don't show label fields."""
         context_data = super().get_context_data(**kwargs)
 

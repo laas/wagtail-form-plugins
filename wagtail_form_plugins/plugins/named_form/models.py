@@ -35,7 +35,7 @@ class AuthFormSubmission(StreamFieldFormSubmission):
             "email": self.user.email if self.user else "-",
         }
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True
 
 
@@ -67,10 +67,19 @@ class AuthFormPage(StreamFieldFormPage):
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
-        submission_data = super().pre_process_form_submission(form)
 
-        user = form.user  # type: ignore[unresolved-attribute]
-        submission_data["user"] = None if isinstance(user, AnonymousUser) else user  # type: ignore[invalid-key]
+        class AuthSubmissionData(SubmissionData):
+            user: AbstractBaseUser | None
+
+        submission_data: AuthSubmissionData = super().pre_process_form_submission(form)  # ty: ignore invalid-assignment
+
+        class AuthForm(BaseForm):
+            user: AbstractBaseUser
+
+        _form: AuthForm = form  # ty: ignore invalid-assignment
+
+        user = _form.user
+        submission_data["user"] = None if isinstance(user, AnonymousUser) else user
 
         return submission_data
 
@@ -83,5 +92,5 @@ class AuthFormPage(StreamFieldFormPage):
 
         return response
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True

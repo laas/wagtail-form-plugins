@@ -23,7 +23,7 @@ from .forms import StreamFieldFormBuilder, StreamFieldFormField
 class StreamFieldFormSubmission(AbstractFormSubmission):
     """A custom form submission class used for StreamField forms."""
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True
 
 
@@ -42,11 +42,11 @@ class StreamFieldFormPage(FormMixin, Page):
         """Return form builder class (used in wagtail.FormMixin): alias for form_builder_class."""
         return self.form_builder_class
 
-    def get_submission_class(self) -> type[StreamFieldFormSubmission]:  # type: ignore[reportIncompatibleMethodOverride]
+    def get_submission_class(self) -> type[StreamFieldFormSubmission]:
         """Return for submission class. Used in wagtail.FormMixin."""
         return self.form_submission_class
 
-    def serve_preview(self, request: HttpRequest, mode_name: str) -> TemplateResponse | None:  # type: ignore[reportIncompatibleMethodOverride]
+    def serve_preview(self, request: HttpRequest, mode_name: str) -> TemplateResponse | None:
         """Fix typing: FormMixin.serve_preview and Page.serve_preview return types are different."""
         return super().serve_preview(request, mode_name)
 
@@ -73,7 +73,7 @@ class StreamFieldFormPage(FormMixin, Page):
             "page": self,
         }
 
-    def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:  # type: ignore[reportIncompatibleMethodOverride]
+    def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:
         """Create and return the submission instance.
 
         This does not call the super method in order to call pre_process_form_submission before
@@ -145,7 +145,7 @@ class StreamFieldFormPage(FormMixin, Page):
 
         return fmt_value
 
-    def get_form(self, *args, page: "StreamFieldFormPage", user: User, **kwargs) -> BaseForm:  # type: ignore[reportIncompatibleMethodOverride]
+    def get_form(self, *args, page: "StreamFieldFormPage", user: User, **kwargs) -> BaseForm:
         """Build and return the form instance."""
         form = super().get_form(*args, page=page, user=user, **kwargs)
 
@@ -175,7 +175,7 @@ class StreamFieldFormPage(FormMixin, Page):
         form.full_clean()
         return form
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True
 
 

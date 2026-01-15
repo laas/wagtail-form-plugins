@@ -62,12 +62,12 @@ class TemplatingFormPage(StreamFieldFormPage):
         if request.method == "POST" and "form" not in response.context_data:
             form_page: StreamFieldFormPage = response.context_data["page"]
             form_submission: StreamFieldFormSubmission = response.context_data["form_submission"]
-            formatter = self.templating_formatter_class(form_page, request.user, form_submission)  # type: ignore[reportArgumentType]
+            formatter = self.templating_formatter_class(form_page, request.user, form_submission)
 
             form_fields = form_page.get_form_fields_dict()
             self.format_submission(form_submission, form_fields, formatter)
 
         return response
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True

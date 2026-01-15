@@ -120,8 +120,8 @@ class FormIndexPage(Page):
         stdout.write("creating form index page")
 
         forms_index_page = FormIndexPage(
-            title="Formulaires",
-            slug="formulaires",
+            title="Forms",
+            slug="forms",
             depth=home_page.depth + 1,
             locale_id=home_page.locale.id,
         )
@@ -143,11 +143,11 @@ class CustomTemplatingFormatter(plugins.templating.TemplatingFormatter):
         user_data = super().get_user_data(user)
 
         if isinstance(user, AnonymousUser):
-            user_data["city"] = "-"  # type: ignore[invalid-key]
-            if self.submission:
-                user_data["email"] = self.submission.email  # type: ignore[possibly-missing-attribute]
+            user_data["city"] = "-"  # ty: ignore invalid-key
+            if (subm := self.submission) and hasattr(subm, "email") and isinstance(subm.email, str):
+                user_data["email"] = subm.email
         else:
-            user_data["city"] = getattr(user, "city", "").lower()  # type: ignore[invalid-key]
+            user_data["city"] = getattr(user, "city", "").lower()  # ty: ignore invalid-key
 
         return user_data
 
@@ -157,8 +157,8 @@ class CustomTemplatingFormatter(plugins.templating.TemplatingFormatter):
     ) -> plugins.templating.ResultDataDict | None:
         """Return a dict used to format template variables related to the form results."""
         result_data = super().get_result_data(formated_fields)
-        if result_data:
-            result_data["index"] = self.submission.index  # type: ignore[possibly-missing-attribute]
+        if result_data and self.submission and hasattr(self.submission, "index"):
+            result_data["index"] = self.submission.index  # ty: ignore invalid-key
         return result_data
 
     @classmethod
@@ -204,7 +204,7 @@ class CustomEmailsToSendBlock(EmailsFormBlock):
             ["subject", "message", "recipient_list", "reply_to"],
         )
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         collapsed = True
 
 

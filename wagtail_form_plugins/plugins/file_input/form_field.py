@@ -23,9 +23,13 @@ class FileInputFormField(StreamFieldFormField):
     @classmethod
     def from_streamfield_data(cls, field_data: StreamFieldDataDict) -> Self:
         """Return the form fields based the streamfield value of the form page form_fields field."""
-        data = super().from_streamfield_data(field_data)
+        data: Self = super().from_streamfield_data(field_data)
 
-        field_value: FileInputValueDict = field_data["value"]  # type: ignore[invalid-assignment, reportAssignmentType]
-        data.allowed_extensions = field_value.get("allowed_extensions", None)  # type: ignore[reportAttributeAccessIssue]
+        class FileInputValueDict(StreamFieldValueDict):
+            allowed_extensions: tuple[str]
+
+        field_value: FileInputValueDict = field_data["value"]  # ty: ignore invalid-assignment
+        allowed_extensions = field_value.get("allowed_extensions", ())
+        data.allowed_extensions = allowed_extensions
 
         return data

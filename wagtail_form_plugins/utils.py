@@ -121,4 +121,5 @@ def print_email(email: EmailMultiAlternatives) -> None:
     LOGGER.info("reply_to: %s", email.reply_to)
     LOGGER.info("message: %s", email.body)
     for alternative in email.alternatives:
-        LOGGER.info("html_message: %s", alternative.content)  # type: ignore[unresolved-attribute]
+        if hasattr(alternative, "content"):
+            LOGGER.info("html_message: %s", alternative.content)

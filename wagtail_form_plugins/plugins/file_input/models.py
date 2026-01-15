@@ -87,5 +87,5 @@ class FileInputFormPage(StreamFieldFormPage):
 
         return fmt_value
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True

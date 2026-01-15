@@ -16,7 +16,7 @@ class EditableSubmissionsListView(StreamFieldSubmissionsListView):
 
     form_page: StreamFieldFormPage
 
-    def get_context_data(self, **kwargs) -> SubmissionContextData:  # type: ignore[invalid-method-override]
+    def get_context_data(self, **kwargs) -> SubmissionContextData:
         """Alter submission context data to format results."""
         context_data = super().get_context_data(**kwargs)
 

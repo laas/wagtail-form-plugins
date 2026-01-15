@@ -66,7 +66,7 @@ class ValidationFormSubmission(StreamFieldFormSubmission):
             data["email"] = self.email
         return data
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True
 
 
@@ -103,9 +103,12 @@ class ValidationFormPage(StreamFieldFormPage):
 
     def pre_process_form_submission(self, form: BaseForm) -> SubmissionData:
         """Return a dictionary containing the attributes to pass to the submission constructor."""
-        submission_data = super().pre_process_form_submission(form)
 
-        submission_data["email"] = self.extract_email(form)  # type: ignore[invalid-key]
+        class ValidationSubmissionData(SubmissionData):
+            email: str
+
+        submission_data: ValidationSubmissionData = super().pre_process_form_submission(form)  # ty: ignore[invalid-assignment]
+        submission_data["email"] = self.extract_email(form)
 
         return submission_data
 
@@ -155,8 +158,8 @@ class ValidationFormPage(StreamFieldFormPage):
 
     def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:
         """Create and return submission instance. Update email value."""
-        submission = super().process_form_submission(form)
-        submission.email = self.extract_email(form)  # type: ignore[unresolved-attribute]
+        submission: ValidationFormSubmission = super().process_form_submission(form)  # ty: ignore invalid-assignment
+        submission.email = self.extract_email(form)
         return submission
 
     def build_validation_email(self, email_address: str, token: str) -> EmailMultiAlternatives:
@@ -182,5 +185,5 @@ class ValidationFormPage(StreamFieldFormPage):
         """Send the validation e-mail."""
         email.send()
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True

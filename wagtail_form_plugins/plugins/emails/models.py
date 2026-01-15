@@ -39,9 +39,9 @@ class EmailActionsFormPage(StreamFieldFormPage):
             form_page: StreamFieldFormPage = response.context_data["page"]
 
             if hasattr(self, "templating_formatter_class"):
-                fmt_class: type[StreamFieldFormatter] = self.templating_formatter_class  # type: ignore[reportAttributeAccessIssue]
+                fmt_class: type[StreamFieldFormatter] = self.templating_formatter_class  # ty: ignore invalid-assignment
                 form_page: StreamFieldFormPage = response.context_data["page"]
-                user: User = request.user  # type: ignore[reportAssignmentType]
+                user: User = request.user  # ty: ignore invalid-assignment
                 form_submis: StreamFieldFormSubmission = response.context_data["form_submission"]
                 text_formatter = fmt_class(form_page, user, form_submis, in_html=False)
                 html_formatter = fmt_class(form_page, user, form_submis, in_html=True)
@@ -82,5 +82,5 @@ class EmailActionsFormPage(StreamFieldFormPage):
         """Send an e-mail. Can be overrided to change behaviour."""
         email.send()
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True

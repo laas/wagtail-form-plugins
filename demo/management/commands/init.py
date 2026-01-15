@@ -45,7 +45,7 @@ class Command(BaseCommand):
         """Initialize users."""
         self.logger.info("\ninitializing users...")
 
-        User: AbstractUser = get_user_model()  # noqa: N806 # type: ignore[reportAssignmentType]
+        User: AbstractUser = get_user_model()  # noqa: N806 # ty: ignore reportAssignmentType
         User.objects.all().delete()
 
         self.logger.info("  admin user")
@@ -85,7 +85,7 @@ class Command(BaseCommand):
 
         self.logger.info("\naffecting users to groups...")
 
-        User: AbstractUser = get_user_model()  # noqa: N806 # type: ignore[reportAssignmentType]
+        User: AbstractUser = get_user_model()  # noqa: N806 # ty: ignore reportAssignmentType
         for username in moderator_usernames:
             User.objects.get(username=username).groups.add(moderators)
 

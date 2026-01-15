@@ -15,7 +15,7 @@ class NavButtonsSubmissionsListView(StreamFieldSubmissionsListView):
 
     parent_form_page_class = Page
 
-    def get_context_data(self, **kwargs) -> SubmissionContextData:  # type: ignore reportAssignmentType
+    def get_context_data(self, **kwargs) -> SubmissionContextData:
         """Alter submission context data to add buttons to the page header."""
         context_data = super().get_context_data(**kwargs)
 

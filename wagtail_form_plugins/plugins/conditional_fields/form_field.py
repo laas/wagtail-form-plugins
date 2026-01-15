@@ -28,7 +28,7 @@ class ConditionalFieldsFormField(StreamFieldFormField):
         """Return the form fields based the streamfield value of the form page form_fields field."""
         data = super().from_streamfield_data(field_data)
 
-        field_value: ConditionalFieldsValueDict = field_data["value"]  # type: ignore[invalid-assignment, reportAssignmentType]
+        field_value: ConditionalFieldsValueDict = field_data["value"]  # ty: ignore[invalid-assignment]
         field_rule = field_value["rule"]
         data.rule = cls.format_rule(field_rule[0]["value"]) if field_rule else None
 

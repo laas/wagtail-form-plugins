@@ -22,9 +22,9 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
         """Return a dictionnary containing context data submissions."""
         return {s.pk: s for s in context_data["submissions"]}
 
-    def get_context_data(self, **kwargs) -> SubmissionContextData:  # type: ignore reportAssignmentType
+    def get_context_data(self, **kwargs) -> SubmissionContextData:  # ty: ignore invalid-method-override
         """Alter submission context data to format results."""
-        context_data: SubmissionContextData = super().get_context_data(**kwargs)  # type: ignore reportAssignmentType
+        context_data: SubmissionContextData = super().get_context_data(**kwargs)
 
         if self.is_export:
             return context_data

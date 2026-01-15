@@ -13,7 +13,7 @@ from .form_field import StreamFieldFormField
 class StreamFieldFormBuilder(FormBuilder):
     """Form builder mixin that use streamfields to define form fields in form admin page."""
 
-    def create_singleline_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_singleline_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -22,7 +22,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.CharField(widget=widgets.TextInput(attrs=widget_attrs), **options)
 
-    def create_multiline_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_multiline_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -31,7 +31,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.CharField(widget=widgets.Textarea(attrs=widget_attrs), **options)
 
-    def create_date_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_date_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -57,7 +57,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.TimeField(widget=TimeInput(attrs=widget_attrs), **options)
 
-    def create_datetime_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_datetime_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -74,7 +74,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.DateTimeField(widget=DateTimeInput(attrs=widget_attrs), **options)
 
-    def create_email_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_email_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -83,7 +83,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.EmailField(widget=widgets.EmailInput(attrs=widget_attrs), **options)
 
-    def create_url_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_url_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -92,7 +92,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.URLField(widget=widgets.URLInput(attrs=widget_attrs), **options)
 
-    def create_number_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_number_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -101,7 +101,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.DecimalField(widget=widgets.NumberInput(attrs=widget_attrs), **options)
 
-    def create_checkbox_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_checkbox_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -110,7 +110,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.BooleanField(widget=widgets.CheckboxInput(attrs=widget_attrs), **options)
 
-    def create_hidden_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_hidden_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -119,7 +119,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.CharField(widget=widgets.HiddenInput(attrs=widget_attrs), **options)
 
-    def create_dropdown_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_dropdown_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -128,7 +128,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.ChoiceField(widget=widgets.Select(attrs=widget_attrs), **options)
 
-    def create_multiselect_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_multiselect_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -137,7 +137,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widg_attrs = options.pop("widget_attrs")
         return forms.MultipleChoiceField(widget=widgets.SelectMultiple(attrs=widg_attrs), **options)
 
-    def create_radio_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_radio_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -146,7 +146,7 @@ class StreamFieldFormBuilder(FormBuilder):
         widget_attrs = options.pop("widget_attrs")
         return forms.ChoiceField(widget=widgets.RadioSelect(attrs=widget_attrs), **options)
 
-    def create_checkboxes_field(  # type: ignore[reportIncompatibleMethodOverride]
+    def create_checkboxes_field(  # ty: ignore invalid-method-override
         self,
         _form_field: StreamFieldFormField,
         options: dict[str, Any],
@@ -157,7 +157,7 @@ class StreamFieldFormBuilder(FormBuilder):
             wa["required"] = ""
         return forms.MultipleChoiceField(widget=widgets.CheckboxSelectMultiple(attrs=wa), **options)
 
-    def get_field_options(self, form_field: StreamFieldFormField) -> dict[str, Any]:  # type: ignore[reportIncompatibleMethodOverride]
+    def get_field_options(self, form_field: StreamFieldFormField) -> dict[str, Any]:  # ty: ignore invalid-method-override
         """Return the options given to a field. Override to add or modify some options."""
         options = super().get_field_options(form_field)  # label, help_text, required, initial
 

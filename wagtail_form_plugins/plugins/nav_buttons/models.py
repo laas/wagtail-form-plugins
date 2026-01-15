@@ -25,5 +25,5 @@ class NavButtonsFormPage(StreamFieldFormPage):
             ),
         ]
 
-    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
+    class Meta:
         abstract = True
