@@ -8,7 +8,10 @@ dev = [
   "ruff",
   "pre-commit",
   "django-stubs",
-  "poethepoet"
+  "poethepoet",
+  "behave",
+  "behave-django",
+  "beautifulsoup4>=4.14.3"
 ]
 
 [project]
@@ -40,6 +43,10 @@ homepage = "https://pypi.org/project/wagtail_form_plugins"
 source = "https://github.com/laas/wagtail-form-plugins"
 issues = "https://github.com/laas/wagtail-form-plugins/issues"
 
+[tool.behave]
+paths = ["demo/tests"]
+capture = true
+
 [tool.django-stubs]
 django_settings_module = "demo.settings"
 
@@ -49,9 +56,11 @@ ruff-format = "uv run ruff format"
 ty = "uv run ty check"
 django-check = "uv run python manage.py check"
 uv-dry-sync = "uv sync --extra demo --dry-run"
+test = "uv run python manage.py behave --simple"
+test-wip = "uv run python manage.py behave --simple -w"
 
 [tool.poe.tasks.check]
-parallel = ["ruff-lint", "ruff-format", "ty", "django-check", "uv-dry-sync"]
+parallel = ["ruff-lint", "ruff-format", "ty", "django-check", "uv-dry-sync", "test"]
 ignore_fail = true
 
 [tool.ruff]
@@ -61,7 +70,7 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D106", "D107", "ANN002", "ANN003", "ANN204"]
+ignore = ["D203", "D212", "D106", "D107", "ANN002", "ANN003", "ANN204"]
 
 [tool.ruff.lint.isort]
 section-order = ["future", "standard-library", "django", "wagtail", "first-party", "local-folder", "third-party"]
@@ -73,3 +82,9 @@ respect-type-ignore-comments = false
 
 [tool.uv.build-backend]
 module-root = ""
+
+[tool.uv.sources]
+# behave = { path = "../behave", editable = true }
+# behave = {git = "https://github.com/behave/behave.git", rev = "d659aab"}
+# behave = {git = "https://github.com/njourdane/behave.git", branch = "fix-stdout-pretty"}
+behave = {git = "https://github.com/vijaymodha/behave.git", branch = "fix-stub"}

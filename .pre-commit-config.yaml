@@ -37,7 +37,6 @@ repos:
           - id: fix-byte-order-marker
           - id: forbid-submodules
           - id: mixed-line-ending
-          - id: name-tests-test
           - id: pretty-format-json
           - id: sort-simple-yaml
           - id: trailing-whitespace

@@ -11,7 +11,8 @@ from typing_extensions import Self
 
 @dataclass
 class WaftailFormField:
-    """A dataclass containing field attributes used by wagtail.
+    """
+    A dataclass containing field attributes used by wagtail.
 
     Such as in FormMixin.get_data_fields,
     FormBuilder.formfields(), FormBuilder.get_field_options(), and in first attribute of all

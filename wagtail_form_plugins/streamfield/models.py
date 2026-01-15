@@ -74,7 +74,8 @@ class StreamFieldFormPage(FormMixin, Page):
         }
 
     def process_form_submission(self, form: BaseForm) -> StreamFieldFormSubmission:
-        """Create and return the submission instance.
+        """
+        Create and return the submission instance.
 
         This does not call the super method in order to call pre_process_form_submission before
         instantiating the submission object.
@@ -89,7 +90,8 @@ class StreamFieldFormPage(FormMixin, Page):
         *,
         in_html: bool,
     ) -> str | None:
-        """Format the field value, or return None if the value should not be displayed.
+        """
+        Format the field value, or return None if the value should not be displayed.
 
         Used to display user-friendly values in result table and emails.
         """

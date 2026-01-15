@@ -7,7 +7,8 @@ from .panels import UniqueResponseFieldPanel
 
 
 class AuthForm(Plugin):
-    """Named form plugin: add user identification functionality to the form.
+    """
+    Named form plugin: add user identification functionality to the form.
 
     This allows to display it on form results and authorise a user to answer a form only once.
     """
