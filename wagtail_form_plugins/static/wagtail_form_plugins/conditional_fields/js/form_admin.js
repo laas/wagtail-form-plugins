@@ -79,6 +79,7 @@ function get_value_choices(selected_field) {
 
 function get_field_choices(fields, field_index) {
 	return [
+		[undefined, "<Select field>", false],
 		["", "Fields:", true],
 		...Object.values(fields)
 			.filter((f) => field_index > f.index)
@@ -118,7 +119,15 @@ function on_rule_subject_selected(dom_dropdown) {
 		dom_rules.classList.toggle("formbuilder-hide", false);
 	} else {
 		const selected_field = get_fields()[dom_dropdown.value];
-		const [field_type_id, widget_type] = FIELD_CUSTOMIZATION[selected_field.type];
+		const dom_operator_select = dom_operator.querySelector("select");
+		let [field_type_id, widget_type] = [undefined, undefined];
+
+		if (selected_field === undefined) {
+			dom_operator_select.setAttribute("disabled", "");
+		} else {
+			dom_operator_select.removeAttribute("disabled");
+			[field_type_id, widget_type] = FIELD_CUSTOMIZATION[selected_field.type];
+		}
 
 		dom_operator.classList.toggle("formbuilder-hide", false);
 		dom_val_char.classList.toggle("formbuilder-hide", widget_type !== "char");
@@ -179,7 +188,6 @@ function build_virtual_dropdown(dom_input, choices) {
 		dom_dropdown.appendChild(dom_option);
 	}
 
-	// console.log(dom_dropdown)
 	return dom_dropdown;
 }
 

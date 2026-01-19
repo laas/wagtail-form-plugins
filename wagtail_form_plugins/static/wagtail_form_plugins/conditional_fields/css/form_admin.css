@@ -33,6 +33,10 @@
 	display: none;
 }
 
+.formbuilder-beb-field select {
+	min-width: 10.5em;
+}
+
 /* boolean expressions builder rules */
 .formbuilder-beb-rules > div {
 	/* only display the last "add rule" button */
