@@ -51,16 +51,20 @@ capture = true
 django_settings_module = "demo.settings"
 
 [tool.poe.tasks]
-ruff-lint = "uv run ruff check --fix"
-ruff-format = "uv run ruff format"
-ty = "uv run ty check"
+behave = "uv run python manage.py behave --simple --force-color"
+biome-check = "biome check --line-width=100 */static/"
 django-check = "uv run python manage.py check"
+ruff-check = "uv run ruff check"
+ruff-format = "uv run ruff format"
+ty-check = "uv run ty check --color always"
 uv-dry-sync = "uv sync --extra demo --dry-run"
-test = "uv run python manage.py behave --simple"
-test-wip = "uv run python manage.py behave --simple -w"
 
 [tool.poe.tasks.check]
-parallel = ["ruff-lint", "ruff-format", "ty", "django-check", "uv-dry-sync", "test"]
+parallel = ["biome-check", "django-check", "ruff-check", "ruff-format", "ty-check", "uv-dry-sync"]
+ignore_fail = true
+
+[tool.poe.tasks.fix]
+parallel = ["biome-check --write", "ruff-check --fix"]
 ignore_fail = true
 
 [tool.ruff]
