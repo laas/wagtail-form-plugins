@@ -76,17 +76,20 @@
 /* hide the rule block of the first displayed field block */
 .formbuilder-fields-block > div > div[data-contentpath]:not([aria-hidden]) {
 	> section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rule) {
+		/* biome-ignore lint/complexity/noImportantStyles: necessary to surcharge wagtail ui */
 		display: none !important;
 	}
 	~ & > section > div > .formbuilder-field-block > div:has(.formbuilder-field-block-rule) {
+		/* biome-ignore lint/complexity/noImportantStyles: necessary to surcharge wagtail ui */
 		display: inherit !important;
 	}
 }
 
 /* hide unnecessary buttons in the root rules block that contains a boolean expressions builder */
 .formbuilder-field-block-rule
-	> div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
+> div:has(> div:not([aria-hidden]) > section > div > .formbuilder-beb-lvl1) {
 	> button.c-sf-add-button {
+		/* biome-ignore lint/complexity/noImportantStyles: necessary to surcharge wagtail ui */
 		display: none !important;
 	}
 

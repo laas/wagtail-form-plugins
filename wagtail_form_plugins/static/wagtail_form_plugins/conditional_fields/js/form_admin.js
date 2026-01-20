@@ -22,8 +22,8 @@ const OPERATORS = {
 	ct: ["∋", "mCL", (a, b) => a.includes(b)],
 	nct: ["∌", "mCL", (a, b) => !a.includes(b)],
 
-	c: ["✔", "c", (a, b) => a],
-	nc: ["✖", "c", (a, b) => !a],
+	c: ["✔", "c", (a, _b) => a],
+	nc: ["✖", "c", (a, _b) => !a],
 };
 
 // [field type identifier, widget type]
@@ -141,8 +141,8 @@ function on_rule_subject_selected(dom_dropdown) {
 		}
 
 		const operators = Object.entries(OPERATORS)
-			.filter(([i, [c, opr_widgets, f]]) => opr_widgets.includes(field_type_id))
-			.map(([opr_id, cwf]) => opr_id);
+			.filter(([_i, [_c, opr_widgets, _f]]) => opr_widgets.includes(field_type_id))
+			.map(([opr_id, _cwf]) => opr_id);
 
 		for (dom_option of dom_operator.querySelectorAll("select > option")) {
 			dom_option.classList.toggle("formbuilder-hide", !operators.includes(dom_option.value));
@@ -169,11 +169,13 @@ function on_rule_subject_selected(dom_dropdown) {
 
 function build_virtual_dropdown(dom_input, choices) {
 	let dom_dropdown = dom_input.parentNode.querySelector("select");
-	const selection = dom_input.value || choices.find(([k, s, disabled]) => !disabled)[0];
+	const selection = dom_input.value || choices.find(([_k, _s, disabled]) => !disabled)[0];
 
 	if (dom_dropdown === null) {
 		dom_dropdown = document.createElement("select");
-		dom_dropdown.addEventListener("change", (event) => (dom_input.value = event.target.value));
+		dom_dropdown.addEventListener("change", (event) => {
+			dom_input.value = event.target.value;
+		});
 		dom_input.parentNode.insertBefore(dom_dropdown, dom_input);
 	} else {
 		dom_dropdown.innerHTML = "";

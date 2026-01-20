@@ -35,7 +35,7 @@ class FormFieldBlockDefinition extends window.wagtailStreamField.blocks.StructBl
 		const prefixes = {};
 		for (const dom_slug_input of dom_slugs_input) {
 			const raw_prefix = dom_slug_input.value.split("_").slice(0, -1).join("_");
-			const counter = parseInt(dom_slug_input.value.split("_").slice(-1).join(""));
+			const counter = parseInt(dom_slug_input.value.split("_").slice(-1).join(""), 10);
 			const prefix = Number.isNaN(counter) ? dom_slug_input.value : raw_prefix;
 
 			if (prefix in prefixes) {

@@ -52,7 +52,7 @@ django_settings_module = "demo.settings"
 
 [tool.poe.tasks]
 behave = "uv run python manage.py behave --simple --force-color"
-biome-check = "biome check --line-width=100 */static/"
+biome-check = "biome check --line-width=100 --indent-width=4 */static/"
 django-check = "uv run python manage.py check"
 ruff-check = "uv run ruff check"
 ruff-format = "uv run ruff format"
@@ -74,7 +74,7 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D203", "D212", "D106", "D107", "ANN002", "ANN003", "ANN204"]
+ignore = ["D203", "D212", "D106", "D107", "ANN002", "ANN003", "ANN204", "COM812"]
 
 [tool.ruff.lint.isort]
 section-order = ["future", "standard-library", "django", "wagtail", "first-party", "local-folder", "third-party"]
