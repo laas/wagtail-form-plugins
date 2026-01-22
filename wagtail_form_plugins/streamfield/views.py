@@ -1,16 +1,14 @@
 """View classes for the plugins."""
 
 from collections import OrderedDict
-from csv import DictWriter
 from datetime import datetime
+from typing import Any
 
 from wagtail.contrib.forms.models import FormSubmission
 from wagtail.contrib.forms.views import SubmissionsListView
 
 from .dicts import SubmissionContextData
 from .models import StreamFieldFormPage
-
-from openpyxl.worksheet.worksheet import Worksheet
 
 
 class StreamFieldSubmissionsListView(SubmissionsListView):
@@ -26,25 +24,19 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
         """Return a dictionnary containing context data submissions."""
         return {s.pk: s for s in context_data["submissions"]}
 
-    def write_csv_row(self, writer: DictWriter, row_dict: OrderedDict) -> OrderedDict:
-        """Generate cells to append to the csv worksheet (override)."""
-        return super().write_csv_row(writer, self.get_row_dict(row_dict))
+    def to_row_dict(self, item: FormSubmission) -> dict[str, Any]:
+        """Convert a form submission to a dict, overrided to format cells."""
+        row_dict = super().to_row_dict(item)
+        return self.format_row_dict(item, row_dict)
 
-    def generate_xlsx_row(
-        self, worksheet: Worksheet, row_dict: OrderedDict, date_format: str | None = None
-    ) -> OrderedDict:
-        """Generate cells to append to the xlsx worksheet (override)."""
-        return super().generate_xlsx_row(worksheet, self.get_row_dict(row_dict), date_format)
-
-    def get_row_dict(self, row_dict: dict) -> dict:
+    def format_row_dict(self, submission: FormSubmission, row_dict: dict[str, Any]) -> dict:
         """Format row cells for both csv/xslx exports and web table."""
         fields = self.form_page.get_form_fields_dict()
+
         for cell_key, cell_value in row_dict.items():
             if cell_key in fields:
                 fmt_value = self.form_page.format_field_value(
-                    fields[cell_key],
-                    cell_value,
-                    in_html=True,
+                    fields[cell_key], submission.form_data.get(cell_key, None), in_html=True
                 )
             elif cell_key == "submit_time" and isinstance(cell_value, datetime):
                 fmt_value = cell_value.strftime("%d/%m/%Y, %H:%M")
@@ -62,13 +54,15 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
             return context_data
 
         header = self.get_header(context_data)
+        submissions = self.get_submissions(context_data)
 
         for row_idx, row in enumerate(context_data["data_rows"]):
+            submission = submissions[row["model_id"]]
             row_items = [
                 (header[col_idx], context_data["data_rows"][row_idx]["fields"][col_idx])
                 for col_idx, col_value in enumerate(row["fields"])
             ]
-            row_dict = self.get_row_dict(OrderedDict(row_items))
+            row_dict = self.format_row_dict(submission, OrderedDict(row_items))
 
             for cell_idx, cell_value in enumerate(row_dict.values()):
                 context_data["data_rows"][row_idx]["fields"][cell_idx] = cell_value
