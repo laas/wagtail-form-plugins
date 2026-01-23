@@ -27,16 +27,18 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
     def to_row_dict(self, item: FormSubmission) -> dict[str, Any]:
         """Convert a form submission to a dict, overrided to format cells."""
         row_dict = super().to_row_dict(item)
-        return self.format_row_dict(item, row_dict)
+        return self.format_row_dict(item, row_dict, in_html=False)
 
-    def format_row_dict(self, submission: FormSubmission, row_dict: dict[str, Any]) -> dict:
+    def format_row_dict(
+        self, submission: FormSubmission, row_dict: dict[str, Any], *, in_html: bool
+    ) -> dict:
         """Format row cells for both csv/xslx exports and web table."""
         fields = self.form_page.get_form_fields_dict()
 
         for cell_key, cell_value in row_dict.items():
             if cell_key in fields:
                 fmt_value = self.form_page.format_field_value(
-                    fields[cell_key], submission.form_data.get(cell_key, None), in_html=True
+                    fields[cell_key], submission.form_data.get(cell_key, None), in_html=in_html
                 )
             elif cell_key == "submit_time" and isinstance(cell_value, datetime):
                 fmt_value = cell_value.strftime("%d/%m/%Y, %H:%M")
@@ -62,7 +64,7 @@ class StreamFieldSubmissionsListView(SubmissionsListView):
                 (header[col_idx], context_data["data_rows"][row_idx]["fields"][col_idx])
                 for col_idx, col_value in enumerate(row["fields"])
             ]
-            row_dict = self.format_row_dict(submission, OrderedDict(row_items))
+            row_dict = self.format_row_dict(submission, OrderedDict(row_items), in_html=True)
 
             for cell_idx, cell_value in enumerate(row_dict.values()):
                 context_data["data_rows"][row_idx]["fields"][cell_idx] = cell_value
