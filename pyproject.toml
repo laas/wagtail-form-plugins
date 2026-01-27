@@ -11,7 +11,8 @@ dev = [
   "poethepoet",
   "behave",
   "behave-django",
-  "beautifulsoup4>=4.14.3"
+  "beautifulsoup4",
+  "pygments"
 ]
 
 [project]
@@ -46,6 +47,7 @@ issues = "https://github.com/laas/wagtail-form-plugins/issues"
 [tool.behave]
 paths = ["demo/tests"]
 capture = true
+capture_log = true
 
 [tool.django-stubs]
 django_settings_module = "demo.settings"
@@ -59,7 +61,7 @@ check-uv = "uv sync --extra demo --dry-run"
 fix-biome = "poe check-biome --write"
 fix-ruff-check = "poe check-ruff --fix --fix-only"
 fix-ruff-format = "ruff format"
-test-behave = "python manage.py behave --simple --force-color"
+test = "python manage.py behave --simple"
 
 [tool.poe.tasks.check]
 parallel = ["check-biome", "check-django", "check-ruff", "check-ty", "check-uv"]

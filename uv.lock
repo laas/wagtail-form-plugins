@@ -719,6 +719,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pygments"
+version = "2.19.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/77/a5b8c569bf593b0140bde72ea885a803b82086995367bf2037de0159d924/pygments-2.19.2.tar.gz", hash = "sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887", size = 4968631, upload-time = "2025-06-21T13:39:12.283Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1054,6 +1063,7 @@ dev = [
     { name = "django-stubs" },
     { name = "poethepoet" },
     { name = "pre-commit" },
+    { name = "pygments" },
     { name = "ruff" },
     { name = "ty" },
 ]
@@ -1069,12 +1079,13 @@ provides-extras = ["demo"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "beautifulsoup4", specifier = ">=4.14.3" },
+    { name = "beautifulsoup4" },
     { name = "behave", git = "https://github.com/vijaymodha/behave.git?branch=fix-stub" },
     { name = "behave-django" },
     { name = "django-stubs" },
     { name = "poethepoet" },
     { name = "pre-commit" },
+    { name = "pygments" },
     { name = "ruff" },
     { name = "ty" },
 ]

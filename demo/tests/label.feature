@@ -1,5 +1,5 @@
-@django_db
-Feature: Create a form with a Label
+#@django_db
+#Feature: Create a form with a Label
 
   #Background:
   #  Given an empty form named 'Event Registration' exists

@@ -123,6 +123,7 @@ class ValidationFormPage(StreamFieldFormPage):
         if request.method == "POST":
             if "validation_email" in request.POST:
                 form = self.token_validation_form_class(request.POST)
+
                 if form.is_valid():
                     validation_email = form.cleaned_data["validation_email"]
                     token_value = ValidationToken.create(self, validation_email)
@@ -132,9 +133,12 @@ class ValidationFormPage(StreamFieldFormPage):
                     msg_str = _(
                         "We just send you an e-mail. Please click on the link to continue the form submission.",  # noqa: E501
                     )
-                    messages.add_message(request, messages.INFO, msg_str)
+                    msg_level = messages.INFO
                 else:
-                    messages.add_message(request, messages.ERROR, _("This e-mail is not valid."))
+                    msg_str = _("This e-mail is not valid.")
+                    msg_level = messages.ERROR
+
+                messages.add_message(request, msg_level, msg_str, extra_tags="form-validation")
 
             elif token_value := request.POST.get("wfp_token", None):
                 token = ValidationToken.objects.filter(page=self, token_value=token_value)
