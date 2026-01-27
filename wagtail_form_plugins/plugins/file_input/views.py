@@ -1,6 +1,5 @@
 """View classes for the File Input plugin."""
 
-from django.conf import settings
 from django.utils.html import format_html
 
 from wagtail_form_plugins.streamfield.dicts import SubmissionContextData
@@ -36,6 +35,5 @@ class FileInputSubmissionsListView(StreamFieldSubmissionsListView):
         if not file_url:
             return "-"
 
-        full_url = settings.WAGTAILADMIN_BASE_URL + file_url
         html_template = "<a href='{url}' target='_blank'>download</a>"
-        return format_html(html_template, url=full_url) if to_html else full_url
+        return format_html(html_template, url=file_url) if to_html else file_url
