@@ -14,6 +14,6 @@ Feature: Create some basic forms
       And a form named "Event Registration" exists
      When I visit "http://localhost:8000/forms/event-registration"
      Then the template used should be "demo/form_page.html"
-     Then the page title should be "Event Registration"
+      And the page title should be "Event Registration"
       And I should see an email input named "validation_email"
       And I should see 1 input in total
