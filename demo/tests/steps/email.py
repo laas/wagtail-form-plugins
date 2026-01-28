@@ -1,4 +1,4 @@
-"""Common step definitions used in many plugins."""
+"""Step definitions related to emails checks."""
 
 # ruff: noqa: D103, ANN201, PT009
 import logging

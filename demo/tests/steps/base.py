@@ -1,13 +1,12 @@
 """Common step definitions used in many plugins."""
 
 # ruff: noqa: D103, ANN201, PT009
-from typing import cast
 from urllib.parse import urlparse
 
 from demo.tests.environment import Context
 
 from behave import use_step_matcher, when
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 
 use_step_matcher("re")
 
@@ -25,21 +24,6 @@ def visit(context: Context, url: str):
             context.test.assertIsNotNone(field_name, "field name not found")
             field_value = field.checked if field.type == "checkbox" else field.get("value")
             context.form_data[field_name] = field_value
-
-
-@when(r'I fill the "(?P<input_name>.+?)" input with "(?P<input_value>.+?)"')
-def fill_form(context: Context, input_name: str, input_value: str):
-    context.form_data[input_name] = input_value
-
-
-@when("I validate the form")
-def validate_form(context: Context):
-    context.test.assertNotEqual(len(context.form_data.keys()), 0, "no form data")
-    context.test.assertIsNotNone(context.soup.form, "form not found")
-    form_action = str(cast("Tag", context.soup.form).get("action", ""))
-    context.response = context.test.client.post(form_action, context.form_data, follow=True)
-    context.test.assertEqual(context.response.status_code, 200)
-    context.soup = BeautifulSoup(context.response.text, "html.parser")
 
 
 @when("I click on that link")

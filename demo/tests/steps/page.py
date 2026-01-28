@@ -1,4 +1,4 @@
-"""Common step definitions used in many plugins."""
+"""Common step definitions to handle web page related checks."""
 
 # ruff: noqa: D103, ANN201, PT009
 import logging
