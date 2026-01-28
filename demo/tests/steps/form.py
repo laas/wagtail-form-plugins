@@ -1,20 +1,18 @@
 """Step definitions related to forms checks."""
 
 # ruff: noqa: D103, ANN201, PT009
-import logging
 from typing import cast
 
 from wagtail.models import Page
 
 from demo.models import FormIndexPage, FormPage
 from demo.tests.environment import Context
+from demo.tests.steps.page import check_page_title, check_template_name
 
 from behave import given, then, use_step_matcher, when
 from bs4 import BeautifulSoup, Tag
 
 use_step_matcher("re")
-
-logger = logging.getLogger(__name__)
 
 
 @given(r"the form index page exists")
@@ -26,6 +24,8 @@ def create_form_index_page(context: Context):
 
 @given(r'a form named "(?P<form_title>.+?)" exists')
 def create_form_page(context: Context, form_title: str):
+    create_form_index_page(context)
+
     form_index_page = FormIndexPage.objects.first()
     if not form_index_page:
         context.test.fail("FormIndexPage not created")
@@ -33,7 +33,10 @@ def create_form_page(context: Context, form_title: str):
 
     form_page = FormPage(title=form_title)
     form_index_page.add_child(instance=form_page)
-    form_page.save()
+
+    revision = form_page.save_revision()
+    revision.publish()
+
     context.test.assertTrue(FormPage.objects.filter(title=form_title).exists())
 
 
@@ -50,6 +53,14 @@ def validate_form(context: Context):
     context.response = context.test.client.post(form_action, context.form_data, follow=True)
     context.test.assertEqual(context.response.status_code, 200)
     context.soup = BeautifulSoup(context.response.text, "html.parser")
+
+
+@then(r'I should see the form page "(?P<form_title>.+?)"')
+def use_link(context: Context, form_title: str):
+    check_template_name(context, "demo/form_page.html")
+    check_page_title(context, form_title)
+    check_form_field(context, "email", "validation_email")
+    check_form_fields_amount(context, 1)
 
 
 @then(r'I should see (?:a|an) (?P<input_type>\w+) input named "(?P<input_name>.+?)"')

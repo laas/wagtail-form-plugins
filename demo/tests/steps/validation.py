@@ -3,7 +3,7 @@
 # ruff: noqa: D103, ANN201
 from demo.tests.environment import Context
 from demo.tests.steps import email as step_email
-from demo.tests.steps.base import use_link
+from demo.tests.steps.page import use_link
 
 from behave import then, when
 

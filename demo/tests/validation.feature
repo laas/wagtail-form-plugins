@@ -1,13 +1,18 @@
 @django_db
 Feature: Use form validation
+ Background:
 
-  Background:
+  Scenario: Check form validation page
+    Given a form named "Event Registration" exists
+     When I visit "/forms/event-registration"
+     Then I should see the form page "Event Registration"
+      And I should see an email input named "validation_email"
+      And I should see 1 input in total
 
   Scenario: Validate a form
-    Given the form index page exists
-      And a form named "Event Registration" exists
+    Given a form named "Event Registration" exists
 
-     When I visit "http://localhost:8000/forms/event-registration"
+     When I visit "/forms/event-registration"
       And I fill the "validation_email" input with "hello@example.fr"
       And I validate the form
 

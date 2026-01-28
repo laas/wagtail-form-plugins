@@ -1,7 +1,5 @@
 """Classes and variables used to format the template syntax."""
 
-from datetime import datetime, timezone
-
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser, User
 from django.utils.html import format_html
@@ -80,13 +78,12 @@ class TemplatingFormatter(StreamFieldFormatter):
     def get_form_data(self) -> FormDataDict:
         """Return a dict used to format template variables related to the form itself."""
         finder = AdminURLFinder()
-        published_at = self.form_page.first_published_at or datetime.now(tz=timezone.utc)
 
         return {
             "title": self.form_page.title,
             "url": settings.WAGTAILADMIN_BASE_URL + self.form_page.url,
-            "publish_date": published_at.strftime("%d/%m/%Y"),
-            "publish_time": published_at.strftime("%H:%M"),
+            "publish_date": self.form_page.first_published_at.strftime("%d/%m/%Y"),
+            "publish_time": self.form_page.first_published_at.strftime("%H:%M"),
             "url_results": settings.WAGTAILADMIN_BASE_URL + finder.get_edit_url(self.form_page),
         }
 

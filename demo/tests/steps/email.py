@@ -12,7 +12,7 @@ from behave import then, use_step_matcher
 
 use_step_matcher("re")
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 @then("I should receive an email")
@@ -78,14 +78,14 @@ def check_link_in_email_body(context: Context):
 @then(r"I dump the email details")
 def step_see_email_details(context: Context):
     email = context.last_email
-    logger.info("=== EMAIL DETAILS ===")
-    logger.info("Subject: %s", email.subject)
-    logger.info("From: %s", email.from_email)
-    logger.info("To: %s", email.to)
-    logger.info("Reply to: %s", email.reply_to)
-    logger.info("\nBody (text):\n%s", email.body)
+    LOGGER.info("=== EMAIL DETAILS ===")
+    LOGGER.info("Subject: %s", email.subject)
+    LOGGER.info("From: %s", email.from_email)
+    LOGGER.info("To: %s", email.to)
+    LOGGER.info("Reply to: %s", email.reply_to)
+    LOGGER.info("\nBody (text):\n%s", email.body)
 
     for content, mimetype in email.alternatives:
         if mimetype == "text/html":
-            logger.info("\nBody (html):\n%s", content)
-    logger.info("=====================")
+            LOGGER.info("\nBody (html):\n%s", content)
+    LOGGER.info("=====================")
