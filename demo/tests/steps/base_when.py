@@ -1,8 +1,8 @@
 """Common step definitions used in many plugins."""
 
 # ruff: noqa: D103, ANN201, PT009
-import logging
 from typing import cast
+from urllib.parse import urlparse
 
 from demo.tests.environment import Context
 
@@ -11,14 +11,12 @@ from bs4 import BeautifulSoup, Tag
 
 use_step_matcher("re")
 
-logger = logging.getLogger(__name__)
-
 
 @when(r'I visit "(?P<url>.+?)"')
 def visit(context: Context, url: str):
     context.response = context.test.client.get(url, follow=True)
-    context.test.assertEqual(context.response.status_code, 200)
     context.soup = BeautifulSoup(context.response.text, "html.parser")
+    context.test.assertEqual(context.response.status_code, 200)
 
     context.form_data = {}
     if context.soup.form is not None:
@@ -42,3 +40,12 @@ def validate_form(context: Context):
     context.response = context.test.client.post(form_action, context.form_data, follow=True)
     context.test.assertEqual(context.response.status_code, 200)
     context.soup = BeautifulSoup(context.response.text, "html.parser")
+
+
+@when("I click on that link")
+def use_link(context: Context):
+    context.test.assertTrue(hasattr(context, "link"), "no link found in previous steps")
+
+    url = urlparse(context.link)
+    url_path = url.path + (f"?{url.query}" if url.query else "")
+    visit(context, url_path)

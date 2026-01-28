@@ -133,12 +133,10 @@ class ValidationFormPage(StreamFieldFormPage):
                     msg_str = _(
                         "We just send you an e-mail. Please click on the link to continue the form submission.",  # noqa: E501
                     )
-                    msg_level = messages.INFO
+                    messages.add_message(request, messages.INFO, msg_str, "token-validation")
                 else:
                     msg_str = _("This e-mail is not valid.")
-                    msg_level = messages.ERROR
-
-                messages.add_message(request, msg_level, msg_str, extra_tags="form-validation")
+                    messages.add_message(request, messages.ERROR, msg_str, "token-validation")
 
             elif token_value := request.POST.get("wfp_token", None):
                 token = ValidationToken.objects.filter(page=self, token_value=token_value)
@@ -149,11 +147,15 @@ class ValidationFormPage(StreamFieldFormPage):
         if request.method == "GET" and "token" in request.GET:
             token_value = request.GET["token"]
             token = ValidationToken.objects.filter(page=self, token_value=token_value)
+
             if token.exists():
                 msg_str = _("Your e-mail has been validated. You can now fill the form.")
-                messages.add_message(request, messages.SUCCESS, msg_str)
+                messages.add_message(request, messages.SUCCESS, msg_str, "token-validation")
                 return super().serve(request, *args, **kwargs)
-            messages.add_message(request, messages.ERROR, _("This token is not valid."))
+
+            messages.add_message(
+                request, messages.ERROR, _("This token is not valid."), "token-validation"
+            )
 
         context = self.get_context(request)
         context["form"] = self.token_validation_form_class()
