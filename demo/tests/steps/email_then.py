@@ -30,8 +30,8 @@ def check_email_subject(context: Context, text: str):
     )
 
 
-@then(r'the email should be sent to "(?P<recipient>.+?)"')
-def check_email_recipient(context: Context, recipient: str):
+@then(r"the email should be sent to (?P<recipient>\S+@\S+)")
+def check_email_to(context: Context, recipient: str):
     context.test.assertIn(
         recipient,
         context.last_email.to,
@@ -39,7 +39,7 @@ def check_email_recipient(context: Context, recipient: str):
     )
 
 
-@then(r'the email should be sent from "(?P<sender>.+?)"')
+@then(r"the email should be sent from (?P<recipient>\S+@\S+)")
 def check_email_from(context: Context, sender: str):
     context.test.assertEqual(
         context.last_email.from_email,

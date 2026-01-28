@@ -31,7 +31,7 @@ def check_html_title(context: Context, html_title: str):
     context.test.assertIn(html_title, titles)
 
 
-@then(r"I should see (?:a|an) (?P<message_tag>[\w-]* )(?P<message_level>\w+) message")
+@then(r"I should see (?:a|an|the) (?P<message_tag>[\w-]* )(?P<message_level>\w+) message")
 def check_django_message(context: Context, message_tag: str, message_level: str):
     message_classes = [f"alert-{message_level}", message_tag]
     soup_message = context.soup.find("div", {"class": message_classes})

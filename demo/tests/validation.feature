@@ -11,15 +11,11 @@ Feature: Use form validation
       And I fill the "validation_email" input with "hello@example.fr"
       And I validate the form
 
-     Then I should see a token-validation info message
-      And I should receive an email
-      And the email subject should contain "validation"
-      And the email should be sent from "contact@example.com"
-      And the email should be sent to "hello@example.fr"
-      And the email body should contain a link
+     Then I should see the token-validation info message
+     And  I should receive a validation email from contact@example.com to hello@example.fr
 
-     When I click on that link
-     Then I should see a token-validation success message
+     When I click on the validation link
+     Then I should see the token-validation success message
 
      When I validate the form
      Then the page title should be "Event Registration"
