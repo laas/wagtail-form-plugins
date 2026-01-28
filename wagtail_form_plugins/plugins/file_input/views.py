@@ -23,7 +23,7 @@ class FileInputSubmissionsListView(StreamFieldSubmissionsListView):
             for col_idx, value in enumerate(row["fields"]):
                 field_slug = header[col_idx]
                 is_file = field_slug in fields and fields[field_slug].type == "file"
-                if is_file and isinstance(value, str):
+                if is_file and isinstance(value, str) and value != "-":
                     file_link = self.get_file_link(value, to_html=True)
                     context_data["data_rows"][row_idx]["fields"][col_idx] = file_link
 
