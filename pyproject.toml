@@ -48,6 +48,7 @@ issues = "https://github.com/laas/wagtail-form-plugins/issues"
 paths = ["demo/tests"]
 capture = true
 capture_log = true
+stop = true
 
 [tool.django-stubs]
 django_settings_module = "demo.settings"

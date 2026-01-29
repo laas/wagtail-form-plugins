@@ -51,10 +51,13 @@ def check_div(context: Context, div_id: str):
     context.test.assertIsNotNone(context.soup.find("div", {"id": div_id}))
 
 
-@then(r'I should see the title "(?P<html_title>.+?)"')
-def check_html_title(context: Context, html_title: str):
-    titles = [title.string.strip() for title in context.soup.find_all("h1")]  # ty: ignore possibly-missing-attribute
-    context.test.assertIn(html_title, titles)
+@then(r'I should see the title (h?P<level>h\d )"(?P<html_title>.+?)"')
+def check_html_title(context: Context, html_title: str, level: str = "h1"):
+    titles = [title.string.strip() for title in context.soup.find_all(level)]  # ty: ignore possibly-missing-attribute
+    context.test.assertGreater(len(titles), 0, f"no {level} title found in page")
+    context.test.assertIn(
+        html_title, titles, f"{level} title {html_title} not found, but found {', '.join(titles)}"
+    )
 
 
 @then(r"I should see (?:a|an|the) (?P<message_tag>[\w-]* )(?P<message_level>\w+) message")

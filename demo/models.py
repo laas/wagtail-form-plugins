@@ -33,7 +33,7 @@ FORM_GROUP_PREFIX = "form_moderator_"
 DEFAULT_EMAILS: list[EmailsToSendBlockDict] = [
     {
         "recipient_list": "{author.email}",
-        "from_email": "",
+        "from_email": settings.FORMS_FROM_EMAIL,
         "reply_to": "",
         "subject": 'New entry for form "{form.title}"',
         "message": """Hello {author.full_name},
@@ -46,7 +46,7 @@ Have a nice day.""",
     },
     {
         "recipient_list": "{user.email}",
-        "from_email": "",
+        "from_email": settings.FORMS_FROM_EMAIL,
         "reply_to": "",
         "subject": 'Confirmation of the submission of the form "{form.title}"',
         "message": """Hello {user.full_name},

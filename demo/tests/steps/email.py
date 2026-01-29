@@ -5,65 +5,70 @@ import logging
 import re
 
 from django.core import mail
+from django.core.mail import EmailMultiAlternatives
 
 from demo.tests.environment import Context
 
-from behave import then, use_step_matcher
+from behave import then, use_step_matcher, when
 
 use_step_matcher("re")
 
 LOGGER = logging.getLogger(__name__)
 
 
+@when("I send a test email")
+def step_test_emails(context: Context):
+    email = EmailMultiAlternatives("A test email", "Hello", "from@example.com", ["to@example.com"])
+    email_result = email.send()
+    context.test.assertEqual(email_result, 1)
+
+
+@then(r"I should have (?P<amount>\d+) emails? in my mailbox")
+def check_emails_amount(context: Context, amount: str):
+    context.test.assertEqual(len(mail.outbox), int(amount))
+
+
 @then("I should receive an email")
 def check_email(context: Context):
-    context.test.assertGreater(len(mail.outbox), 0, "no email was sent")
-    context.last_email = mail.outbox[-1]  # ty: ignore invalid-assignment
+    context.test.assertGreater(len(mail.outbox), 0, "mailbox is empty")
+    context.last_email = mail.outbox.pop()  # ty: ignore invalid-assignment
 
 
 @then(r'the email subject should contain "(?P<text>.+?)"')
 def check_email_subject(context: Context, text: str):
-    context.test.assertIn(
-        text.lower(),
-        str(context.last_email.subject).lower(),
-        f'text "{text}" not found in email subject "{context.last_email.subject}"',
-    )
+    expected = text.lower()
+    actual = str(context.last_email.subject).lower()
+    context.test.assertIn(expected, actual)
 
 
 @then(r"the email should be sent to (?P<recipient>\S+@\S+)")
 def check_email_to(context: Context, recipient: str):
-    context.test.assertIn(
-        recipient,
-        context.last_email.to,
-        f"recipient {recipient} not found in {context.last_email.to}",
-    )
+    context.test.assertIn(recipient, context.last_email.to)
 
 
 @then(r"the email should be sent from (?P<recipient>\S+@\S+)")
 def check_email_from(context: Context, sender: str):
-    context.test.assertEqual(
-        context.last_email.from_email,
-        sender,
-        f"expected sender: {sender}, got: {context.last_email.from_email}",
-    )
+    context.test.assertEqual(context.last_email.from_email, sender)
 
 
-@then(r'the email body should contain "(?P<text>.+?)"')
-def check_email_text_body(context: Context, text: str):
-    context.test.assertIn(
-        text.lower(), str(context.last_email.body).lower(), f'text "{text}" not found in email body'
-    )
+@then(r'the email body should (h?P<neg>not )contain "(?P<text>.+?)"')
+def check_email_text_body(context: Context, text: str, neg: str = ""):
+    expected = text.lower()
+    actual = str(context.last_email.body).lower()
+    assert_func = context.test.assertNotIn if neg == "not" else context.test.assertIn
+    assert_func(expected, actual)
 
 
-@then(r'the email html should contain "(?P<text>.+?)"')
-def check_email_html_body(context: Context, text: str):
-    html_content = ""
+@then(r'the email html should (h?P<neg>not )contain "(?P<text>.+?)"')
+def check_email_html_body(context: Context, text: str, neg: str = ""):
+    expected = text.lower()
+    actual = ""
     for content, mimetype in context.last_email.alternatives:
         if mimetype == "text/html":
-            html_content = str(content)
+            actual = str(content).lower()
             break
-
-    context.test.assertIn(text, html_content, f'text "{text}" not found in email HTML')
+    assert_func = context.test.assertNotIn if neg == "not" else context.test.assertIn
+    assert_func(expected, actual)
 
 
 @then("the email body should contain a link")

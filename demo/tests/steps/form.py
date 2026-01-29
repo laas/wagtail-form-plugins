@@ -1,13 +1,14 @@
 """Step definitions related to forms checks."""
 
-# ruff: noqa: D103, ANN201, PT009
+# ruff: noqa: D103, ANN201, PT009, E501
 from typing import cast
 
 from wagtail.models import Page
 
-from demo.models import FormIndexPage, FormPage
+from demo.models import CustomUser, FormIndexPage, FormPage
 from demo.tests.environment import Context
-from demo.tests.steps.page import check_page_title, check_template_name
+from demo.tests.steps import email as step_email
+from demo.tests.steps import page as step_page
 
 from behave import given, then, use_step_matcher, when
 from bs4 import BeautifulSoup, Tag
@@ -24,20 +25,23 @@ def create_form_index_page(context: Context):
 
 @given(r'a form named "(?P<form_title>.+?)" exists')
 def create_form_page(context: Context, form_title: str):
-    create_form_index_page(context)
+    form_index_page = cast("FormIndexPage", FormIndexPage.objects.first())
+    context.test.assertIsNotNone(form_index_page)
 
-    form_index_page = FormIndexPage.objects.first()
-    if not form_index_page:
-        context.test.fail("FormIndexPage not created")
-        return
-
-    form_page = FormPage(title=form_title)
+    form_page = FormPage(title=form_title, depth=form_index_page.depth + 1)
     form_index_page.add_child(instance=form_page)
-
-    revision = form_page.save_revision()
-    revision.publish()
+    form_page.save_revision().publish()
 
     context.test.assertTrue(FormPage.objects.filter(title=form_title).exists())
+
+
+@given(r'the form "(?P<form_title>.+?)" is created by the user (?P<username>\w+) \((?P<email>\S+@\S+)\)')  # fmt: skip
+def set_form_owner(context: Context, form_title: str, username: str, email: str):
+    form_page = FormPage.objects.get(title=form_title)
+    form_page.owner = CustomUser.objects.create_user(username, email, "password")
+    form_page.save()
+    context.test.assertEqual(form_page.owner.username, username)
+    context.test.assertEqual(form_page.owner.email, email)
 
 
 @when(r'I fill the "(?P<input_name>.+?)" input with "(?P<input_value>.+?)"')
@@ -55,12 +59,24 @@ def validate_form(context: Context):
     context.soup = BeautifulSoup(context.response.text, "html.parser")
 
 
+@then("I should see the form index page")
+def check_form_index_page(context: Context):
+    step_page.check_template_name(context, "demo/form_index_page.html")
+    step_page.check_page_title(context, "Forms")
+
+
 @then(r'I should see the form page "(?P<form_title>.+?)"')
-def use_link(context: Context, form_title: str):
-    check_template_name(context, "demo/form_page.html")
-    check_page_title(context, form_title)
-    check_form_field(context, "email", "validation_email")
-    check_form_fields_amount(context, 1)
+def check_form_page(context: Context, form_title: str):
+    step_page.check_template_name(context, "demo/form_page.html")
+    step_page.check_page_title(context, form_title)
+    step_page.check_html_title(context, form_title, "h2")
+
+
+@then(r'I should see the form landing page "(?P<form_title>.+?)"')
+def check_form_landing_page(context: Context, form_title: str):
+    step_page.check_template_name(context, "demo/form_page_landing.html")
+    step_page.check_page_title(context, form_title)
+    step_page.check_html_title(context, form_title, "h2")
 
 
 @then(r'I should see (?:a|an) (?P<input_type>\w+) input named "(?P<input_name>.+?)"')
@@ -69,7 +85,7 @@ def check_form_field(context: Context, input_type: str, input_name: str):
     context.test.assertIsNotNone(soup_input)
 
 
-@then(r"I should see (?P<amount>\d+) inputs? in total")
+@then(r"I should see (?P<amount>\d+) form fields?")
 def check_form_fields_amount(context: Context, amount: str):
     soup_inputs = [
         f"{si.attrs.get('type', '-')} {si.attrs.get('name', '-')}"
@@ -77,3 +93,23 @@ def check_form_fields_amount(context: Context, amount: str):
         if si.get("type", "-") != "hidden"
     ]
     context.test.assertEqual(len(soup_inputs), int(amount), ", ".join(soup_inputs))
+
+
+@then(r'I should receive at (?P<recipient>\S+@\S+) a confirmation email from (?P<sender>\S+@\S+) about the form "(?P<form_title>.+?)"')  # fmt: skip
+def check_validation_email(context: Context, sender: str, recipient: str, form_title: str):
+    step_email.check_email(context)
+    step_email.check_email_subject(context, f'submission of the form "{form_title}"')
+    step_email.check_email_from(context, sender)
+    step_email.check_email_to(context, recipient)
+    step_email.check_email_text_body(context, f'you just submitted the form "{form_title}"')
+    step_email.check_email_html_body(context, f'you just submitted the form "{form_title}"')
+
+
+@then(r'the form admin \((?P<recipient>\S+@\S+)\) should receive an information email from (?P<sender>\S+@\S+) about the form "(?P<form_title>.+?)"')  # fmt: skip
+def check_information_email(context: Context, sender: str, recipient: str, form_title: str):
+    step_email.check_email(context)
+    step_email.check_email_subject(context, f'New entry for form "{form_title}"')
+    step_email.check_email_from(context, sender)
+    step_email.check_email_to(context, recipient)
+    step_email.check_email_text_body(context, f'has submitted the form "{form_title}"')
+    step_email.check_email_html_body(context, f'has submitted the form "{form_title}"')
