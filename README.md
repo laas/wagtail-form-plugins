@@ -73,5 +73,3 @@ This package is [published on pypi](https://pypi.org/project/wagtail_form_plugin
 ## Contribution
 
 You are welcome to make pull requests to add you own plugins if you think they can be useful for others.
-
-This project is currently in beta: feedback is more than welcome, expect some API-breaks in minor releases.

@@ -17,7 +17,7 @@ dev = [
 
 [project]
 name = "wagtail-form-plugins"
-version = "0.5.0"
+version = "0.6.0"
 description = "A set of plugins used to customize and improve the Wagtail form builder in a modular way."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -93,7 +93,5 @@ respect-type-ignore-comments = false
 module-root = ""
 
 [tool.uv.sources]
-# behave = { path = "../behave", editable = true }
-# behave = {git = "https://github.com/behave/behave.git", rev = "d659aab"}
-# behave = {git = "https://github.com/njourdane/behave.git", branch = "fix-stdout-pretty"}
-behave = {git = "https://github.com/vijaymodha/behave.git", branch = "fix-stub"}
+# behave = {git = "https://github.com/behave/behave.git"}
+behave = {git = "https://github.com/vijaymodha/behave.git", branch = "fix-stub"} # see https://github.com/behave/behave/pull/1295
