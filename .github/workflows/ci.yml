@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+
+      - run: uv sync --locked --all-extras --dev
+      - run: uv run poe check
+      - run: uv run poe test
