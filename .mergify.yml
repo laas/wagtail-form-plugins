@@ -1,0 +1,10 @@
+pull_request_rules:
+  - name: merge [bot] PRs when CI pass
+    conditions:
+      - check-success = "test"
+      - check-success = "pre-commit.ci - pr"
+      - or:
+          - author = dependabot[bot]
+          - author = pre-commit-ci[bot]
+    actions:
+      merge:
