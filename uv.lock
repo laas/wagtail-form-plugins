@@ -43,7 +43,7 @@ wheels = [
 [[package]]
 name = "behave"
 version = "1.4.0.dev0"
-source = { git = "https://github.com/vijaymodha/behave.git?branch=fix-stub#687a758c2b8427a6c373f8654f505c8b1d4e7284" }
+source = { git = "https://github.com/behave/behave.git?branch=main#7aeb776387f2c8c39d3b8d763ffe0195e3341791" }
 dependencies = [
     { name = "colorama" },
     { name = "cucumber-expressions" },
@@ -67,6 +67,14 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/59/94/4976841a5a956357b91e1f73e55d885139d62973874e08de3ac9293dcb72/behave_django-1.9.0.tar.gz", hash = "sha256:cbae403b9c9873d4d079f3560d6c8b390eaea9fb8e8caff63439a0b06ea60309", size = 16313, upload-time = "2025-11-15T14:04:21.478Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/75/8d/f9a54742833f136dbf396bbbdb9aa0f62ddaf3f1621d772abecf5eac8cf6/behave_django-1.9.0-py3-none-any.whl", hash = "sha256:41c6d95886cd59413493037cc79fbe3346a828c83594431bbd596859ad12399b", size = 12233, upload-time = "2025-11-15T14:04:20.607Z" },
+]
+
+[[package]]
+name = "biome-js"
+version = "2.3.11"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/90/70f28bd05746110657f28ee250a3a69346df55a2ade3a022e6a9e4d1677e/biome_js-2.3.11-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:2149d7a55370e7c6d8d73493612fd85a8930cbfcbbf75752325bde0d82fb9fb3", size = 17857343, upload-time = "2026-01-20T14:32:20.749Z" },
 ]
 
 [[package]]
@@ -1045,6 +1053,13 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+check = [
+    { name = "biome-js" },
+    { name = "django-bootstrap5" },
+    { name = "ruff" },
+    { name = "ty" },
+    { name = "wagtail-autocomplete" },
+]
 demo = [
     { name = "django-bootstrap5" },
     { name = "wagtail-autocomplete" },
@@ -1065,17 +1080,21 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "biome-js", marker = "extra == 'check'" },
     { name = "django" },
     { name = "django-bootstrap5", marker = "extra == 'demo'" },
+    { name = "ruff", marker = "extra == 'check'" },
+    { name = "ty", marker = "extra == 'check'" },
     { name = "wagtail" },
     { name = "wagtail-autocomplete", marker = "extra == 'demo'" },
+    { name = "wagtail-form-plugins", extras = ["demo"], marker = "extra == 'check'" },
 ]
-provides-extras = ["demo"]
+provides-extras = ["demo", "check"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "beautifulsoup4" },
-    { name = "behave", git = "https://github.com/vijaymodha/behave.git?branch=fix-stub" },
+    { name = "behave", git = "https://github.com/behave/behave.git?branch=main" },
     { name = "behave-django" },
     { name = "django-stubs" },
     { name = "poethepoet" },

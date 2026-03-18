@@ -38,6 +38,12 @@ demo = [
   "django-bootstrap5",
   "wagtail-autocomplete"
 ]
+check = [
+  "wagtail-form-plugins[demo]",
+  "biome-js",
+  "ruff",
+  "ty"
+]
 
 [project.urls]
 homepage = "https://pypi.org/project/wagtail_form_plugins"
@@ -58,7 +64,7 @@ check-biome = "biome check --line-width=100 --indent-width=4 */static/"
 check-django = "python manage.py check"
 check-ruff = "ruff check"
 check-ty = "ty check --color always"
-check-uv = "uv sync --extra demo --dry-run"
+check-uv = "uv sync --extra check --dry-run"
 fix-biome = "poe check-biome --write"
 fix-ruff-check = "poe check-ruff --fix --fix-only"
 fix-ruff-format = "ruff format"
@@ -93,5 +99,4 @@ respect-type-ignore-comments = false
 module-root = ""
 
 [tool.uv.sources]
-# behave = {git = "https://github.com/behave/behave.git"}
-behave = {git = "https://github.com/vijaymodha/behave.git", branch = "fix-stub"} # see https://github.com/behave/behave/pull/1295
+behave = {git = "https://github.com/behave/behave.git", branch = "main"} # wait for release with https://github.com/behave/behave/pull/1295
