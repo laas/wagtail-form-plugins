@@ -1017,13 +1017,6 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-check = [
-    { name = "biome-js" },
-    { name = "django-bootstrap5" },
-    { name = "ruff" },
-    { name = "ty" },
-    { name = "wagtail-autocomplete" },
-]
 demo = [
     { name = "django-bootstrap5" },
     { name = "wagtail-autocomplete" },
@@ -1034,6 +1027,7 @@ dev = [
     { name = "beautifulsoup4" },
     { name = "behave" },
     { name = "behave-django" },
+    { name = "biome-js" },
     { name = "django-stubs" },
     { name = "poethepoet" },
     { name = "pre-commit" },
@@ -1044,22 +1038,19 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "biome-js", marker = "extra == 'check'" },
     { name = "django" },
     { name = "django-bootstrap5", marker = "extra == 'demo'" },
-    { name = "ruff", marker = "extra == 'check'" },
-    { name = "ty", marker = "extra == 'check'" },
     { name = "wagtail" },
     { name = "wagtail-autocomplete", marker = "extra == 'demo'" },
-    { name = "wagtail-form-plugins", extras = ["demo"], marker = "extra == 'check'" },
 ]
-provides-extras = ["demo", "check"]
+provides-extras = ["demo"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "beautifulsoup4" },
     { name = "behave", git = "https://github.com/behave/behave.git?branch=main" },
     { name = "behave-django" },
+    { name = "biome-js" },
     { name = "django-stubs" },
     { name = "poethepoet" },
     { name = "pre-commit" },

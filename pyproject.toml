@@ -12,6 +12,7 @@ dev = [
   "behave",
   "behave-django",
   "beautifulsoup4",
+  "biome-js",
   "pygments"
 ]
 
@@ -37,12 +38,6 @@ dependencies = [
 demo = [
   "django-bootstrap5",
   "wagtail-autocomplete"
-]
-check = [
-  "wagtail-form-plugins[demo]",
-  "biome-js",
-  "ruff",
-  "ty"
 ]
 
 [project.urls]
