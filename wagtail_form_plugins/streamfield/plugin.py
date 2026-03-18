@@ -39,7 +39,7 @@ class WagtailFormPlugin:
             for plugin in self.plugins
             if plugin.form_block_class != StreamFieldFormBlock
         ]
-        return base_classes if base_classes else [StreamFieldFormBlock]
+        return base_classes or [StreamFieldFormBlock]
 
     @property
     def form_builder_classes(self) -> list[type[StreamFieldFormBuilder]]:
@@ -49,7 +49,7 @@ class WagtailFormPlugin:
             for plugin in self.plugins
             if plugin.form_builder_class != StreamFieldFormBuilder
         ]
-        return base_classes if base_classes else [StreamFieldFormBuilder]
+        return base_classes or [StreamFieldFormBuilder]
 
     @property
     def form_field_classes(self) -> list[type[StreamFieldFormField]]:
@@ -59,7 +59,7 @@ class WagtailFormPlugin:
             for plugin in self.plugins
             if plugin.form_field_class != StreamFieldFormField
         ]
-        return base_classes if base_classes else [StreamFieldFormField]
+        return base_classes or [StreamFieldFormField]
 
     @property
     def form_submission_classes(self) -> list[type[StreamFieldFormSubmission]]:
@@ -69,7 +69,7 @@ class WagtailFormPlugin:
             for plugin in self.plugins
             if plugin.form_submission_class != StreamFieldFormSubmission
         ]
-        return base_classes if base_classes else [StreamFieldFormSubmission]
+        return base_classes or [StreamFieldFormSubmission]
 
     @property
     def form_page_classes(self) -> list[type[StreamFieldFormPage]]:
@@ -79,7 +79,7 @@ class WagtailFormPlugin:
             for plugin in self.plugins
             if plugin.form_page_class != StreamFieldFormPage
         ]
-        return base_classes if base_classes else [StreamFieldFormPage]
+        return base_classes or [StreamFieldFormPage]
 
     @property
     def submission_list_view_classes(self) -> list[type[StreamFieldSubmissionsListView]]:
@@ -89,7 +89,7 @@ class WagtailFormPlugin:
             for plugin in self.plugins
             if plugin.submission_list_view_class != StreamFieldSubmissionsListView
         ]
-        return base_classes if base_classes else [StreamFieldSubmissionsListView]
+        return base_classes or [StreamFieldSubmissionsListView]
 
     def injected_admin_css(self) -> str:
         """Return a string containing the injected css of the plugins."""

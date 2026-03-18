@@ -101,7 +101,7 @@ def build_email(  # noqa:  PLR0913
     if isinstance(reply_to, str):
         reply_to = [email.strip() for email in reply_to.split(",")]
 
-    html_message = html_message if html_message else message
+    html_message = html_message or message
     return EmailMultiAlternatives(
         subject=subject,
         body=strip_tags(message.replace("</p>", "\n")),
