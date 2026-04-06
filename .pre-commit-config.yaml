@@ -9,12 +9,12 @@ repos:
     - --target-version
     - '5.0'
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.6
+  rev: v0.15.9
   hooks:
   - id: ruff-check
   - id: ruff-format
 - repo: https://github.com/pappasam/toml-sort
-  rev: v0.24.3
+  rev: v0.24.4
   hooks:
   - id: toml-sort-fix
 - repo: https://github.com/pre-commit/pre-commit-hooks
