@@ -63,6 +63,7 @@ class RuleBlock(blocks.StructBlock):
             ("c", _("is checked")),
             ("nc", _("is not checked")),
         ],
+        required=False,
         form_classname="formbuilder-beb-operator",
     )
     value_char = blocks.CharBlock(

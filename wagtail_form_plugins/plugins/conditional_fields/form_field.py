@@ -43,7 +43,7 @@ class ConditionalFieldsFormField(StreamFieldFormField):
 
         if rule["value_char"]:
             fmt_value = rule["value_char"]
-        if rule["value_date"]:
+        elif rule["value_date"]:
             fmt_value = date_to_timestamp(rule["value_date"])
         elif rule["value_time"]:
             fmt_value = time_to_timestamp(rule["value_time"])
