@@ -44,7 +44,8 @@ class TemplatingFormPage(StreamFieldFormPage):
     def get_form(self, *args, page: StreamFieldFormPage, user: User, **kwargs) -> BaseForm:
         """Get the generated form."""
         form = super().get_form(*args, page=page, user=user, **kwargs)
-
+        if not page.live:
+            return form
         formatter = self.templating_formatter_class(form_page=page, user=user)
         for field_slug, field in form.fields.items():
             if field.initial:
