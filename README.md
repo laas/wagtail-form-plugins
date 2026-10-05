@@ -42,24 +42,29 @@ wfp = WagtailFormPlugin(
     plugins.Validation,
 )
 
+
 class CustomFormSubmission(*wfp.form_submission_classes):
     pass
+
 
 class CustomFormBuilder(*wfp.form_builder_classes):
     pass
 
+
 class CustomFormField(*wfp.form_field_classes):
     pass
+
 
 class CustomSubmissionListView(*wfp.submission_list_view_classes):
     pass
 
+
 class CustomFormPage(*wfp.form_page_classes):
     pass
 
+
 class CustomFormFieldsBlock(*wfp.form_block_classes):
     pass
-
 ```
 
 See the `demo` project for further understanding and up-to-date usage.

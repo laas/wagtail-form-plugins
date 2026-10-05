@@ -27,7 +27,7 @@ license-files = ["LICENSE"]
 keywords = ["wagtail", "form", "plugins"]
 classifiers = ["Framework :: Wagtail"]
 authors = [
-  {name = "Nathanaël Jourdane", email = "njourdane@laas.fr"}
+  { name = "Nathanaël Jourdane", email = "njourdane@laas.fr" }
 ]
 dependencies = [
   "django",
@@ -94,4 +94,4 @@ respect-type-ignore-comments = false
 module-root = ""
 
 [tool.uv.sources]
-behave = {git = "https://github.com/behave/behave.git", branch = "main"} # wait for release with https://github.com/behave/behave/pull/1295
+behave = { git = "https://github.com/behave/behave.git", branch = "main" } # wait for release with https://github.com/behave/behave/pull/1295
